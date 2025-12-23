@@ -1,0 +1,17 @@
+{
+  "hero": {
+    "title": "What do you want to create?",
+    "description": "Enter your prompt—transform ideas into stunning AI-powered results instantly."
+  },
+  "creativeInput": {
+    "placeholder": "Describe what you want to create......",
+    "image": "Image",
+    "video": "Video",
+    "randomPrompt": "Random Prompt"
+  },
+  "whatsNew": {
+    "title": "What's new",
+    "scrollLeft": "Scroll left",
+    "scrollRight": "Scroll right"
+  }
+}

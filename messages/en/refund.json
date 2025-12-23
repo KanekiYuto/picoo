@@ -1,0 +1,194 @@
+{
+  "meta": {
+    "title": "{siteName} - Refund Policy",
+    "description": "Learn about {siteName}'s refund policy, including subscription refunds, credit refunds, and application process"
+  },
+  "title": "Refund Policy",
+  "lastUpdated": "Last Updated: {lastUpdated}",
+  "overview": {
+    "title": "Refund Policy Overview",
+    "p1": "Welcome to {siteName}, an artificial intelligence platform that provides image generation, video creation, and other services. {siteName} is committed to providing quality services to users. We understand that sometimes you may need to request a refund. This Refund Policy explains our refund conditions, process, and limitations.",
+    "p2": "Please read this policy carefully. By using our paid services, you agree to the terms in this Refund Policy."
+  },
+  "subscription": {
+    "title": "Subscription Service Refunds",
+    "plans": {
+      "title": "Subscription Plans",
+      "intro": "For monthly or annual subscription plans:",
+      "items": [
+        "**7-Day Refund Guarantee**: First-time subscribers can request a full refund within 7 days of subscription",
+        "**Subscription Renewals**: Renewed subscriptions are not eligible for refunds unless there are significant technical issues with the service",
+        "**Cancel Subscription**: You can cancel your subscription at any time, and you will continue to enjoy the service until the end of the current billing period"
+      ]
+    },
+    "annual": {
+      "title": "Annual Subscriptions",
+      "items": [
+        "Annual subscriptions can be refunded on a prorated basis within the first 30 days of purchase",
+        "After 30 days, annual subscriptions are no longer eligible for refunds",
+        "Refund Amount = Total Fee - Monthly Price for Used Months"
+      ]
+    }
+  },
+  "credits": {
+    "title": "Credits and One-Time Purchases",
+    "packages": {
+      "title": "Credit Package Refunds",
+      "items": [
+        "**Unused Credits**: Full refund available within 48 hours of purchase if no credits have been used",
+        "**Partial Use**: Once credits are used, remaining credits are non-refundable",
+        "**Expired Credits**: Expired credits are not eligible for refunds"
+      ]
+    },
+    "features": {
+      "title": "Special Feature Purchases",
+      "items": [
+        "One-time purchases of special features or add-on services can be refunded within 48 hours if unused",
+        "Activated or used features are non-refundable"
+      ]
+    }
+  },
+  "ineligible": {
+    "title": "Situations Not Eligible for Refunds",
+    "intro": "The following situations are not eligible for refunds:",
+    "items": [
+      "**Violation of Terms**: Accounts suspended or terminated for violating Terms of Service or Acceptable Use Policy",
+      "**Service Abuse**: Clear abuse of the refund policy, including repeated purchases and refunds",
+      "**Third-Party Purchases**: Services purchased through third-party platforms (such as app stores) are subject to their refund policies",
+      "**Promotions and Discounts**: Services purchased using promotional codes, coupons, or special discounts may not be eligible for refunds",
+      "**Free Trials**: Automatic renewals after free trial periods are not eligible for refunds unless requested within 7 days of renewal"
+    ]
+  },
+  "technical": {
+    "title": "Technical Issues and Service Interruptions",
+    "quality": {
+      "title": "Service Quality Guarantee",
+      "intro": "If you encounter the following situations, you may be eligible for a refund or compensation:",
+      "items": [
+        "Persistent service interruptions (exceeding 24 hours)",
+        "Major functional failures affecting service use",
+        "Generation quality significantly below standard"
+      ]
+    },
+    "compensation": {
+      "title": "Compensation Methods",
+      "intro": "Depending on the severity of the issue, we may provide:",
+      "items": [
+        "Extended subscription period",
+        "Additional credit compensation",
+        "Partial or full refund"
+      ]
+    }
+  },
+  "process": {
+    "title": "Refund Request Process",
+    "submit": {
+      "title": "Submit Request",
+      "intro": "To request a refund, please:",
+      "steps": [
+        "Log in to your {siteName} account",
+        "Visit the \"Settings\" > \"Billing\" page",
+        "Click the \"Request Refund\" button",
+        "Fill out the refund request form explaining the reason for the refund",
+        "Submit the request and wait for review"
+      ],
+      "alternative": "Or contact us by email: **{email}**"
+    },
+    "info": {
+      "title": "Request Information",
+      "intro": "Refund requests must include:",
+      "items": [
+        "Account email address",
+        "Order number or transaction ID",
+        "Purchase date",
+        "Detailed reason for refund",
+        "Relevant screenshots or supporting materials (if applicable)"
+      ]
+    },
+    "review": {
+      "title": "Review Time",
+      "items": [
+        "Refund requests will be reviewed within 3-5 business days",
+        "Complex situations may take longer",
+        "Review results will be notified via email"
+      ]
+    }
+  },
+  "processing": {
+    "title": "Refund Processing",
+    "method": {
+      "title": "Refund Method",
+      "items": [
+        "Refunds will be returned to the original payment method",
+        "Refunds to different payment methods or accounts are not supported"
+      ]
+    },
+    "timing": {
+      "title": "Refund Arrival Time",
+      "items": [
+        "**Credit/Debit Card**: 5-10 business days",
+        "**PayPal**: 3-5 business days",
+        "**Alipay/WeChat Pay**: 1-3 business days",
+        "**Other Payment Methods**: Depends on payment provider"
+      ]
+    },
+    "confirmation": {
+      "title": "Refund Confirmation",
+      "content": "You will receive a confirmation email once the refund is processed. Actual arrival time depends on your bank or payment provider."
+    }
+  },
+  "partial": {
+    "title": "Partial Refunds and Adjustments",
+    "intro": "In certain circumstances, we may approve partial refunds:",
+    "items": [
+      "Service was partially available during the subscription period",
+      "Partial service or features were used",
+      "Reasonable adjustments based on specific circumstances"
+    ],
+    "note": "Partial refund amounts are determined by {siteName} at its discretion based on usage and problem severity."
+  },
+  "denial": {
+    "title": "Refund Denial",
+    "intro": "We reserve the right to deny refund requests, including but not limited to:",
+    "items": [
+      "Situations not eligible for refunds",
+      "Lack of sufficient refund justification",
+      "Detection of fraud or abuse",
+      "Exceeding the specified refund request period"
+    ],
+    "note": "If a refund request is denied, we will provide a detailed explanation."
+  },
+  "disputes": {
+    "title": "Dispute Resolution",
+    "internal": {
+      "title": "Internal Resolution",
+      "intro": "If you disagree with a refund decision:",
+      "steps": [
+        "Please reply within 7 days of receiving the denial notice",
+        "Provide additional information or supporting materials",
+        "We will review your request again"
+      ]
+    },
+    "thirdParty": {
+      "title": "Third-Party Disputes",
+      "intro": "For services purchased through third-party platforms, please contact the platform directly to handle disputes:",
+      "items": [
+        "**Apple App Store**: Request a refund through Apple Support",
+        "**Google Play**: Request a refund through Google Play Support",
+        "**Other Platforms**: Follow the respective platform's refund policy"
+      ]
+    }
+  },
+  "changes": {
+    "title": "Policy Changes",
+    "p1": "{siteName} reserves the right to modify this Refund Policy at any time. Policy changes will be posted on this page and indicated by the \"Last Updated\" date at the top of the page.",
+    "p2": "Significant changes may be communicated to users via email or platform notifications. Continued use of the service indicates acceptance of the updated Refund Policy."
+  },
+  "contact": {
+    "title": "Contact Us",
+    "intro": "If you have any questions about this Refund Policy or need assistance with a refund request, please contact us:",
+    "email": "Email: {email}",
+    "support": "Our customer support team will respond to your inquiry within 24-48 hours.",
+    "note": "**Note**: This Refund Policy is a supplementary document to the {siteName} Terms of Service. For matters not covered by this policy, please refer to our Terms of Service."
+  }
+}

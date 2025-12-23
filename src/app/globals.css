@@ -1,0 +1,256 @@
+@import "tailwindcss";
+
+:root {
+  --background: #0f0f0f;
+  --foreground: #ededed;
+  --primary: #ff3466;
+  --primary-hover: #ff5580;
+  --card-bg: #1a1a1a;
+  --border: #262626;
+  --muted: #6b7280;
+
+  /* 分层背景 - 从深到浅 */
+  --sidebar-bg: #141414;
+  --header-bg: #161616;
+  --footer-bg: #161616;
+  --sidebar-hover: #1f1f1f;
+  --sidebar-active: #2a2a2a;
+  --sidebar-active-accent: rgba(255, 52, 102, 0.12);
+
+  /* 交互元素背景 */
+  --input-tab-active: #3f3f3f;
+
+  /* 渐变色 */
+  --gradient-primary: linear-gradient(to right, #ff3466, #c721ff);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-card: var(--card-bg);
+  --color-border: var(--border);
+  --color-muted: var(--muted);
+
+  /* 分层背景颜色 */
+  --color-sidebar-bg: var(--sidebar-bg);
+  --color-header-bg: var(--header-bg);
+  --color-footer-bg: var(--footer-bg);
+  --color-sidebar-hover: var(--sidebar-hover);
+  --color-sidebar-active: var(--sidebar-active);
+
+  /* 交互元素背景 */
+  --color-input-tab-active: var(--input-tab-active);
+
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+/* 工具类 - 主渐变色 */
+.bg-gradient-primary {
+  background: var(--gradient-primary);
+}
+
+* {
+  border-color: #262626;
+}
+
+html {
+  background: #0f0f0f;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+}
+
+/* 防止闪烁 - 为固定元素设置初始背景 */
+aside {
+  background: #141414;
+}
+
+footer {
+  background: #161616;
+}
+
+/* 自定义滚动条样式 */
+.custom-scrollbar {
+  /* Firefox */
+  scrollbar-width: thin;
+  scrollbar-color: #2a2a2a #141414;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #141414;
+  border-radius: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #2a2a2a;
+  border-radius: 4px;
+  transition: background 0.2s ease;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #3a3a3a;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:active {
+  background: #4a4a4a;
+}
+
+/* 文档查看器样式 */
+.document-viewer {
+  /* 使用项目的暗色主题 */
+  --doc-text: #e5e5e5;
+  --doc-text-muted: #a1a1a1;
+  --doc-heading: #ededed;
+  --doc-border: #262626;
+  --doc-code-bg: #1e1e1e;
+  --doc-link: var(--primary);
+  --doc-link-hover: var(--primary-hover);
+}
+
+/* Prose 样式覆盖 */
+.prose {
+  color: var(--doc-text);
+  max-width: none;
+}
+
+.prose :where(code):not(:where([class~="not-prose"] *)) {
+  color: var(--primary);
+  font-weight: 400;
+}
+
+.prose :where(a):not(:where([class~="not-prose"] *)) {
+  color: var(--doc-link);
+  text-decoration: underline;
+}
+
+.prose :where(a):not(:where([class~="not-prose"] *)):hover {
+  color: var(--doc-link-hover);
+}
+
+.prose :where(strong):not(:where([class~="not-prose"] *)) {
+  color: var(--doc-heading);
+}
+
+/* 代码高亮主题 - VS Code Dark+ 风格 */
+pre[class*="language-"] {
+  background: var(--doc-code-bg);
+  border: 1px solid var(--doc-border);
+  border-radius: 0.5rem;
+  padding: 1rem;
+  overflow-x: auto;
+  margin: 1rem 0;
+  font-size: 0.875rem;
+  line-height: 1.7;
+}
+
+code[class*="language-"] {
+  font-family: var(--font-geist-mono), "Consolas", "Monaco", "Courier New", monospace;
+  text-shadow: none;
+}
+
+/* Prism 语法高亮颜色 */
+.token.comment,
+.token.prolog,
+.token.doctype,
+.token.cdata {
+  color: #6a9955;
+}
+
+.token.punctuation {
+  color: #d4d4d4;
+}
+
+.token.property,
+.token.tag,
+.token.boolean,
+.token.number,
+.token.constant,
+.token.symbol,
+.token.deleted {
+  color: #b5cea8;
+}
+
+.token.selector,
+.token.attr-name,
+.token.string,
+.token.char,
+.token.builtin,
+.token.inserted {
+  color: #ce9178;
+}
+
+.token.operator,
+.token.entity,
+.token.url,
+.language-css .token.string,
+.style .token.string {
+  color: #d4d4d4;
+}
+
+.token.atrule,
+.token.attr-value,
+.token.keyword {
+  color: #c586c0;
+}
+
+.token.function,
+.token.class-name {
+  color: #dcdcaa;
+}
+
+.token.regex,
+.token.important,
+.token.variable {
+  color: #d16969;
+}
+
+.token.important,
+.token.bold {
+  font-weight: bold;
+}
+
+.token.italic {
+  font-style: italic;
+}
+
+/* 行号样式 */
+.line-numbers .line-numbers-rows {
+  border-right: 1px solid var(--doc-border);
+  padding-right: 0.8rem;
+  margin-right: 0.8rem;
+}
+
+.line-numbers-rows > span:before {
+  color: #858585;
+}
+
+/* 行高亮 */
+.line-highlight {
+  background: rgba(255, 255, 255, 0.05);
+  border-left: 3px solid var(--primary);
+}
+
+/* 锚点链接样式 */
+.anchor-link {
+  position: relative;
+  scroll-margin-top: 5rem;
+}
+
+.anchor-link:hover::before {
+  content: "#";
+  position: absolute;
+  left: -1.5rem;
+  color: var(--primary);
+  opacity: 0.7;
+}

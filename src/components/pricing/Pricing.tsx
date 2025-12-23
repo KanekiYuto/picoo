@@ -1,0 +1,113 @@
+"use client";
+
+import { useState, useMemo } from "react";
+import { motion } from "framer-motion";
+import { PricingCard } from "./PricingCard";
+import { createPricingPlans, createBillingCycles } from "./data";
+import { BillingCycle } from "./types";
+import { useTranslations } from "next-intl";
+
+interface PricingProps {
+  /** 当前用户方案ID */
+  currentPlanId?: string;
+  /** 选择方案回调 */
+  onSelectPlan?: (planId: string) => void;
+  /** 自定义类名 */
+  className?: string;
+}
+
+/**
+ * 定价组件
+ * 展示所有定价方案，支持月付/季付/年付切换
+ */
+export function Pricing({
+  currentPlanId,
+  onSelectPlan,
+  className = "",
+}: PricingProps) {
+  const t = useTranslations("pricing");
+  const [billingCycle, setBillingCycle] = useState<BillingCycle>("yearly");
+
+  // 使用 useMemo 缓存国际化数据
+  const billingCycles = useMemo(() => createBillingCycles(t), [t]);
+  const pricingPlans = useMemo(() => createPricingPlans(t), [t]);
+
+  // 获取当前计费周期的折扣百分比
+  const currentCycle = billingCycles.find((c) => c.id === billingCycle);
+  const savePercent = currentCycle?.savePercent || 0;
+
+  return (
+    <div className={`py-16 ${className}`}>
+      <div className="container mx-auto px-4">
+        {/* 标题部分 */}
+        <div className="text-center mb-12">
+          <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
+            {t("header.title")}
+          </h1>
+          <p className="text-gray-400 text-lg max-w-2xl mx-auto">
+            {t("header.description")}
+          </p>
+        </div>
+
+        {/* 计费周期切换器 */}
+        <div className="flex justify-center mb-16">
+          <div className="relative inline-flex gap-2 rounded-full bg-card p-1">
+            {billingCycles.map((cycle) => (
+              <motion.button
+                key={cycle.id}
+                onClick={() => setBillingCycle(cycle.id)}
+                className={`
+                  relative px-8 py-2.5 rounded-full font-medium text-sm
+                  transition-colors cursor-pointer overflow-visible
+                  ${billingCycle === cycle.id
+                    ? "text-gray-900"
+                    : "text-gray-400 hover:text-gray-300"
+                  }
+                `}
+              >
+                {/* 节省标签 */}
+                {cycle.savePercent && (
+                  <span className="absolute -top-4 left-1/2 -translate-x-1/2 bg-gradient-primary text-white text-[10px] font-bold px-2.5 py-1 rounded-md whitespace-nowrap uppercase tracking-wide z-20">
+                    {t("billingCycle.save")} {cycle.savePercent}%
+                  </span>
+                )}
+
+                {/* 白色背景滑块 - 使用 Framer Motion layoutId 实现平滑动画 */}
+                {billingCycle === cycle.id && (
+                  <motion.div
+                    layoutId="billing-cycle-tab"
+                    className="absolute inset-0 rounded-full bg-white shadow-lg z-0"
+                    transition={{ type: "spring", duration: 0.5, bounce: 0.2 }}
+                  />
+                )}
+
+                <span className="relative z-10">{cycle.label}</span>
+              </motion.button>
+            ))}
+          </div>
+        </div>
+
+        {/* 定价卡片网格 */}
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mb-12">
+          {pricingPlans.map((plan) => (
+            <PricingCard
+              key={plan.id}
+              plan={plan}
+              billingCycle={billingCycle}
+              savePercent={savePercent}
+              onSelect={onSelectPlan}
+              isCurrent={currentPlanId === plan.id}
+            />
+          ))}
+        </div>
+
+        {/* 底部说明 */}
+        <div className="text-center">
+          <p className="text-gray-400 text-sm">
+            {t("footer.guarantee")}
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}

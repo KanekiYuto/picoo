@@ -1,0 +1,10 @@
+{
+  "nav": {
+    "title": "目录",
+    "empty": "暂无目录",
+    "expand": "展开",
+    "collapse": "收起",
+    "openNav": "打开导航",
+    "closeNav": "关闭导航"
+  }
+}

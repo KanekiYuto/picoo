@@ -1,0 +1,10 @@
+## 基础规则
+
+- 所有对话与输出内容必须使用中文
+- 所有代码中的注释必须使用中文
+- 前端使用 `console` 输出的日志文本必须使用英文
+- 站点名称（Picoo）进行国际化时，必须使用配置占位符的方式进行设置，禁止硬编码
+- json中的双引号必须使用反斜杠
+- \config\locales.js 的配置应该和 i18n\config.ts 保持一致
+- python 的命令应该是 `python` 而不是 `python3`
+- Next.js 中间件文件命名为 `middleware.ts`（16.0.x 版本）或 `proxy.ts`（16.1+ 版本）

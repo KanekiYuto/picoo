@@ -1,0 +1,17 @@
+{
+  "hero": {
+    "title": "你想创造什么？",
+    "description": "输入您的提示——立即将想法转化为令人惊叹的AI驱动效果。"
+  },
+  "creativeInput": {
+    "placeholder": "写下你想创作的内容......",
+    "image": "图像",
+    "video": "视频",
+    "randomPrompt": "随机提示词"
+  },
+  "whatsNew": {
+    "title": "最新动态",
+    "scrollLeft": "向左滚动",
+    "scrollRight": "向右滚动"
+  }
+}

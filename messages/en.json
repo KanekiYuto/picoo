@@ -1,0 +1,620 @@
+{
+  "auth": {},
+  "common": {},
+  "document": {
+    "nav": {
+      "title": "Table of Contents",
+      "empty": "No contents available",
+      "expand": "Expand",
+      "collapse": "Collapse",
+      "openNav": "Open navigation",
+      "closeNav": "Close navigation"
+    }
+  },
+  "footer": {
+    "sections": {
+      "product": "Product",
+      "tools": "Tools",
+      "resources": "Resources",
+      "community": "Community",
+      "contact": "Contact Us",
+      "legal": "Legal"
+    }
+  },
+  "home": {
+    "hero": {
+      "title": "What do you want to create?",
+      "description": "Enter your prompt—transform ideas into stunning AI-powered results instantly."
+    },
+    "creativeInput": {
+      "placeholder": "Describe what you want to create......",
+      "image": "Image",
+      "video": "Video",
+      "randomPrompt": "Random Prompt"
+    },
+    "whatsNew": {
+      "title": "What's new",
+      "scrollLeft": "Scroll left",
+      "scrollRight": "Scroll right"
+    }
+  },
+  "notFound": {
+    "title": "Page Not Found",
+    "description": "Sorry, the page you are looking for does not exist or has been removed.",
+    "buttons": {
+      "home": "Back to Home",
+      "pricing": "View Pricing"
+    }
+  },
+  "pricing": {
+    "faq": {
+      "title": "Your Questions, Our Answers!",
+      "items": [
+        {
+          "question": "What are credits?",
+          "answer": "Credits are the virtual currency unit of the {siteName} platform, used for various AI generation features. Different features consume different amounts of credits: image generation typically costs 5 credits per image, while video generation varies from 30-50 credits depending on duration and model. The credit system allows you to flexibly use various creative tools."
+        },
+        {
+          "question": "How do I accumulate credits?",
+          "answer": "There are several ways to obtain credits: 1) Subscription plans - automatically receive a fixed credit amount each month with automatic renewal; 2) Purchase credit packages separately - one-time purchase, never expires; 3) Free users receive 100 credits per month. Monthly credits for subscribers don't roll over to the next month, but purchased credit packages are retained permanently."
+        },
+        {
+          "question": "Can I use {siteName} for free?",
+          "answer": "Absolutely! Free users receive 100 credits per month, enough to generate about 20 images. However, free users can only use basic AI models, generated content is publicly visible, and video generation is not supported. To use more powerful models, maintain content privacy, or generate videos, we recommend upgrading to a paid plan."
+        },
+        {
+          "question": "Do I need to purchase a plan to unlock video generation?",
+          "answer": "Yes, video generation is a paid feature. You need to subscribe to the Basic plan ($10/month) or higher to use video generation. Basic plan users can generate about 40 videos per month, with Advanced and Professional plans offering more quota. Video generation includes text-to-video, image-to-video, and other creative modes."
+        },
+        {
+          "question": "What's the difference between buying credits and subscribing?",
+          "answer": "Subscription plans provide monthly fixed credit allowance, more concurrent generations, priority queue, dedicated customer service and other membership benefits, suitable for regular users. Purchasing credit packages gives you credits one-time that never expire but without membership privileges, suitable for occasional use. Generally, if you need to generate more than 50 images per month, subscription is more cost-effective."
+        },
+        {
+          "question": "How do I cancel my subscription?",
+          "answer": "In Account Settings > Subscription Management, click \"Cancel Subscription\". After cancellation, your subscription will automatically stop at the end of the current billing cycle, and you can still use all paid features and remaining credits until then. There are no fees for cancellation, and you can resubscribe at any time."
+        },
+        {
+          "question": "What is the refund policy?",
+          "answer": "We offer an unconditional 14-day money-back guarantee. If you're not satisfied within 14 days of your first subscription, you can request a full refund through customer service. After the refund is processed, subscription credits in your account will be cleared, but previously purchased credit packages are not affected. Renewal subscriptions are not eligible for refunds."
+        },
+        {
+          "question": "How do I downgrade or upgrade?",
+          "answer": "You can change your subscription plan anytime in Account Settings. Upgrades take effect immediately - you'll get the new plan's benefits right away and pay the prorated difference. Downgrades take effect at the end of the current billing cycle, and you can continue using all features of your current plan until then. Changing plans doesn't affect your purchased credit packages."
+        },
+        {
+          "question": "What if generation fails?",
+          "answer": "If an error or failure occurs during generation, the consumed credits will be automatically refunded to your account within minutes. Our system monitors generation status in real-time to ensure you won't lose credits due to system errors. If credits are not refunded promptly, please contact customer service."
+        },
+        {
+          "question": "Commercial Use Policy",
+          "answer": "All paid users (Basic, Advanced, Professional) can use generated content for commercial purposes, including but not limited to: advertising and marketing, product design, social media content, e-commerce materials, corporate promotion, etc. Free users' generated content is limited to personal learning and non-commercial use. You have usage rights to the generated content but must comply with our Terms of Service and AI model usage guidelines."
+        }
+      ]
+    },
+    "payment": {
+      "securePayment": "Secure and Reliable Payment Methods",
+      "noPaymentMethod": "Don't see your preferred payment method?",
+      "contactUs": "Contact Us",
+      "emailSubject": "Payment Method Suggestion"
+    },
+    "header": {
+      "title": "Choose Your Plan",
+      "description": "Flexible pricing plans to meet the needs of individuals and businesses"
+    },
+    "billingCycle": {
+      "monthly": "Monthly",
+      "yearly": "Yearly",
+      "save": "SAVE"
+    },
+    "footer": {
+      "guarantee": "All plans include a 14-day money-back guarantee · Cancel anytime"
+    },
+    "plans": {
+      "free": {
+        "name": "Free",
+        "ctaText": "Start for Free",
+        "features": [
+          "{credits} credits per month",
+          "Up to {images} images per month",
+          "Basic AI models",
+          "Content visibility: Public",
+          "{concurrent} concurrent image generation",
+          "Community support",
+          "Team {seats} seats",
+          "Video generation"
+        ]
+      },
+      "basic": {
+        "name": "Basic",
+        "ctaText": "Get Started",
+        "features": [
+          "{credits} credits per month",
+          "Up to {images} images per month",
+          "Up to {videos} videos per month",
+          "Most AI models",
+          "Content visibility: Private",
+          "{imageConcurrent} concurrent image generations",
+          "{videoConcurrent} concurrent video generations",
+          "Official {support} customer support",
+          "Team {seats} seats"
+        ]
+      },
+      "plus": {
+        "name": "Plus",
+        "ctaText": "Get Started",
+        "features": [
+          "{credits} credits per month",
+          "Up to {images} images per month",
+          "Up to {videos} videos per month",
+          "All AI models",
+          "Content visibility: Private",
+          "{imageConcurrent} concurrent image generations",
+          "{videoConcurrent} concurrent video generations",
+          "Official {support} customer support",
+          "Team {seats} seats"
+        ]
+      },
+      "pro": {
+        "name": "Professional",
+        "ctaText": "Get Started",
+        "features": [
+          "{credits} credits per month",
+          "Up to {images} images per month",
+          "Up to {videos} videos per month",
+          "Most AI models",
+          "Content visibility: Private",
+          "{imageConcurrent} concurrent image generations",
+          "{videoConcurrent} concurrent video generations",
+          "One-on-one {support} dedicated priority support",
+          "Priority queue processing",
+          "Team {seats} seats"
+        ]
+      }
+    }
+  },
+  "privacy": {
+    "meta": {
+      "title": "{siteName} - Privacy Policy",
+      "description": "Learn how {siteName} collects, uses, and protects your personal information"
+    },
+    "title": "Privacy Policy",
+    "lastUpdated": "Last Updated: {lastUpdated}",
+    "intro": {
+      "title": "Introduction",
+      "p1": "Welcome to {siteName}, an artificial intelligence platform that provides image generation, video creation, and other services. {siteName} (hereinafter referred to as \"we\") is committed to protecting your privacy and personal information. This Privacy Policy outlines our practices regarding the collection, storage, use, and sharing of your information when you access and use our services.",
+      "p2": "By using our services through the {siteName} website, you acknowledge that you have read, understood, and agreed to the practices described in this Privacy Policy. This policy also informs you of your privacy rights and how the law protects you."
+    },
+    "dataCollection": {
+      "title": "Information We Collect",
+      "intro": "We may collect various types of information to provide and improve our services:",
+      "provided": {
+        "title": "Information You Provide",
+        "items": [
+          "Account Information: Email address, username, password",
+          "Profile Data: Display name, avatar, bio",
+          "Payment Details: Billing information, transaction history",
+          "Communication Data: Feedback, support inquiries, or other information you send to us"
+        ]
+      },
+      "automatic": {
+        "title": "Automatically Collected Information",
+        "items": [
+          "Device Data: Device type, operating system, browser version, unique device identifiers",
+          "Usage Information: Features accessed, images generated, interaction patterns",
+          "Log Data: IP address, access times, pages viewed, referring URLs",
+          "Cookies and tracking technologies for analytics and functionality"
+        ]
+      },
+      "userContent": {
+        "title": "User-Generated Content",
+        "content": "Content you create using our services, including AI-generated images, text prompts, uploaded images, and project data. We may temporarily store this content to provide the service and, with your consent, use it to improve our AI models."
+      }
+    },
+    "dataUsage": {
+      "title": "How We Use Your Information",
+      "intro": "We use the collected information for the following purposes:",
+      "items": [
+        "Provide, operate, and maintain our AI image generation services",
+        "Process your transactions and manage your account",
+        "Improve our services through data analysis and usage pattern recognition",
+        "Train and enhance our AI models to provide better results",
+        "Send service notifications, updates, and promotional information (with your consent)",
+        "Detect, prevent, and address fraud, security issues, or technical problems",
+        "Comply with legal obligations and enforce our Terms of Service",
+        "Provide customer support and respond to your inquiries"
+      ]
+    },
+    "dataSharing": {
+      "title": "Information Sharing and Disclosure",
+      "intro": "We do not sell your personal information. We only share your information under the following circumstances:",
+      "items": [
+        "With your explicit consent or at your direction",
+        "With trusted service providers who assist in operating our platform (cloud hosting, payment processing, analytics)",
+        "With AI model providers under strict data protection agreements to process your generation requests",
+        "To comply with legal obligations, court orders, or valid government requests",
+        "To protect the rights, property, and safety of ourselves, our users, and the public",
+        "In the event of a merger, acquisition, or sale of assets, information may be transferred as a business asset"
+      ]
+    },
+    "dataStorage": {
+      "title": "Data Storage and Security",
+      "location": {
+        "title": "Storage Location",
+        "content": "Your information is stored on secure servers located in different regions globally to ensure optimal service performance and reliability. We use industry-leading cloud infrastructure providers."
+      },
+      "retention": {
+        "title": "Retention Period",
+        "content": "We retain your personal information only for as long as necessary to fulfill the purposes outlined in this policy or as required by law. Generated content may be retained based on your account settings and subscription type."
+      },
+      "security": {
+        "title": "Security Measures",
+        "content": "We employ industry-standard security measures, including encryption (in transit and at rest), access controls, regular security audits, and secure authentication mechanisms. However, no method of transmission or storage is 100% secure."
+      }
+    },
+    "cookies": {
+      "title": "Cookies and Tracking Technologies",
+      "intro": "We use cookies and similar technologies to enhance your experience:",
+      "items": [
+        "**Essential Cookies**: Required for basic service functionality and authentication",
+        "**Preference Cookies**: Remember your settings and personalization choices",
+        "**Analytics Cookies**: Help us understand usage patterns and improve our services",
+        "**Marketing Cookies**: Deliver relevant content and measure campaign effectiveness (with your consent)"
+      ],
+      "note": "You can control cookie preferences through your browser settings. Please note that disabling certain cookies may limit the functionality of our services."
+    },
+    "userRights": {
+      "title": "Your Privacy Rights",
+      "intro": "Depending on your region, you may have the following rights related to your personal information:",
+      "items": [
+        "**Access**: Request a copy of your personal information we hold",
+        "**Correction**: Correct inaccurate or incomplete information",
+        "**Deletion**: Request deletion of your personal data (\"Right to be Forgotten\")",
+        "**Restriction**: Limit how we process your information",
+        "**Portability**: Receive your data in a structured, commonly used format",
+        "**Object**: Object to processing of your information for certain purposes",
+        "**Withdraw Consent**: Withdraw previously given consent at any time",
+        "**Opt-Out**: Unsubscribe from marketing communications"
+      ]
+    },
+    "thirdParty": {
+      "title": "Third-Party Services and Links",
+      "content": "Our service may contain links to third-party websites, integrations, or services. We are not responsible for the privacy practices or content of these third parties. We recommend reviewing their privacy policies before providing any personal information."
+    },
+    "children": {
+      "title": "Children's Privacy",
+      "content": "Our services are not intended for individuals under the age of 13 (or the equivalent minimum age in your jurisdiction). We do not knowingly collect personal information from children. If we discover that we have collected data from a child without appropriate consent, we will take steps to delete it promptly."
+    },
+    "changes": {
+      "title": "Changes to This Privacy Policy",
+      "content": "We may update this Privacy Policy periodically to reflect changes in our practices or legal requirements. We will notify you of significant changes by posting the updated policy on this page and indicating the revised \"Last Updated\" date at the top. For major changes, we may also provide notice via email or prominently on our platform. We encourage you to review this policy regularly."
+    },
+    "contact": {
+      "title": "Contact Us",
+      "intro": "If you have any questions, concerns, or requests regarding this Privacy Policy or our data practices, please contact us:",
+      "email": "Email: {email}"
+    }
+  },
+  "refund": {
+    "meta": {
+      "title": "{siteName} - Refund Policy",
+      "description": "Learn about {siteName}'s refund policy, including subscription refunds, credit refunds, and application process"
+    },
+    "title": "Refund Policy",
+    "lastUpdated": "Last Updated: {lastUpdated}",
+    "overview": {
+      "title": "Refund Policy Overview",
+      "p1": "Welcome to {siteName}, an artificial intelligence platform that provides image generation, video creation, and other services. {siteName} is committed to providing quality services to users. We understand that sometimes you may need to request a refund. This Refund Policy explains our refund conditions, process, and limitations.",
+      "p2": "Please read this policy carefully. By using our paid services, you agree to the terms in this Refund Policy."
+    },
+    "subscription": {
+      "title": "Subscription Service Refunds",
+      "plans": {
+        "title": "Subscription Plans",
+        "intro": "For monthly or annual subscription plans:",
+        "items": [
+          "**7-Day Refund Guarantee**: First-time subscribers can request a full refund within 7 days of subscription",
+          "**Subscription Renewals**: Renewed subscriptions are not eligible for refunds unless there are significant technical issues with the service",
+          "**Cancel Subscription**: You can cancel your subscription at any time, and you will continue to enjoy the service until the end of the current billing period"
+        ]
+      },
+      "annual": {
+        "title": "Annual Subscriptions",
+        "items": [
+          "Annual subscriptions can be refunded on a prorated basis within the first 30 days of purchase",
+          "After 30 days, annual subscriptions are no longer eligible for refunds",
+          "Refund Amount = Total Fee - Monthly Price for Used Months"
+        ]
+      }
+    },
+    "credits": {
+      "title": "Credits and One-Time Purchases",
+      "packages": {
+        "title": "Credit Package Refunds",
+        "items": [
+          "**Unused Credits**: Full refund available within 48 hours of purchase if no credits have been used",
+          "**Partial Use**: Once credits are used, remaining credits are non-refundable",
+          "**Expired Credits**: Expired credits are not eligible for refunds"
+        ]
+      },
+      "features": {
+        "title": "Special Feature Purchases",
+        "items": [
+          "One-time purchases of special features or add-on services can be refunded within 48 hours if unused",
+          "Activated or used features are non-refundable"
+        ]
+      }
+    },
+    "ineligible": {
+      "title": "Situations Not Eligible for Refunds",
+      "intro": "The following situations are not eligible for refunds:",
+      "items": [
+        "**Violation of Terms**: Accounts suspended or terminated for violating Terms of Service or Acceptable Use Policy",
+        "**Service Abuse**: Clear abuse of the refund policy, including repeated purchases and refunds",
+        "**Third-Party Purchases**: Services purchased through third-party platforms (such as app stores) are subject to their refund policies",
+        "**Promotions and Discounts**: Services purchased using promotional codes, coupons, or special discounts may not be eligible for refunds",
+        "**Free Trials**: Automatic renewals after free trial periods are not eligible for refunds unless requested within 7 days of renewal"
+      ]
+    },
+    "technical": {
+      "title": "Technical Issues and Service Interruptions",
+      "quality": {
+        "title": "Service Quality Guarantee",
+        "intro": "If you encounter the following situations, you may be eligible for a refund or compensation:",
+        "items": [
+          "Persistent service interruptions (exceeding 24 hours)",
+          "Major functional failures affecting service use",
+          "Generation quality significantly below standard"
+        ]
+      },
+      "compensation": {
+        "title": "Compensation Methods",
+        "intro": "Depending on the severity of the issue, we may provide:",
+        "items": [
+          "Extended subscription period",
+          "Additional credit compensation",
+          "Partial or full refund"
+        ]
+      }
+    },
+    "process": {
+      "title": "Refund Request Process",
+      "submit": {
+        "title": "Submit Request",
+        "intro": "To request a refund, please:",
+        "steps": [
+          "Log in to your {siteName} account",
+          "Visit the \"Settings\" > \"Billing\" page",
+          "Click the \"Request Refund\" button",
+          "Fill out the refund request form explaining the reason for the refund",
+          "Submit the request and wait for review"
+        ],
+        "alternative": "Or contact us by email: **{email}**"
+      },
+      "info": {
+        "title": "Request Information",
+        "intro": "Refund requests must include:",
+        "items": [
+          "Account email address",
+          "Order number or transaction ID",
+          "Purchase date",
+          "Detailed reason for refund",
+          "Relevant screenshots or supporting materials (if applicable)"
+        ]
+      },
+      "review": {
+        "title": "Review Time",
+        "items": [
+          "Refund requests will be reviewed within 3-5 business days",
+          "Complex situations may take longer",
+          "Review results will be notified via email"
+        ]
+      }
+    },
+    "processing": {
+      "title": "Refund Processing",
+      "method": {
+        "title": "Refund Method",
+        "items": [
+          "Refunds will be returned to the original payment method",
+          "Refunds to different payment methods or accounts are not supported"
+        ]
+      },
+      "timing": {
+        "title": "Refund Arrival Time",
+        "items": [
+          "**Credit/Debit Card**: 5-10 business days",
+          "**PayPal**: 3-5 business days",
+          "**Alipay/WeChat Pay**: 1-3 business days",
+          "**Other Payment Methods**: Depends on payment provider"
+        ]
+      },
+      "confirmation": {
+        "title": "Refund Confirmation",
+        "content": "You will receive a confirmation email once the refund is processed. Actual arrival time depends on your bank or payment provider."
+      }
+    },
+    "partial": {
+      "title": "Partial Refunds and Adjustments",
+      "intro": "In certain circumstances, we may approve partial refunds:",
+      "items": [
+        "Service was partially available during the subscription period",
+        "Partial service or features were used",
+        "Reasonable adjustments based on specific circumstances"
+      ],
+      "note": "Partial refund amounts are determined by {siteName} at its discretion based on usage and problem severity."
+    },
+    "denial": {
+      "title": "Refund Denial",
+      "intro": "We reserve the right to deny refund requests, including but not limited to:",
+      "items": [
+        "Situations not eligible for refunds",
+        "Lack of sufficient refund justification",
+        "Detection of fraud or abuse",
+        "Exceeding the specified refund request period"
+      ],
+      "note": "If a refund request is denied, we will provide a detailed explanation."
+    },
+    "disputes": {
+      "title": "Dispute Resolution",
+      "internal": {
+        "title": "Internal Resolution",
+        "intro": "If you disagree with a refund decision:",
+        "steps": [
+          "Please reply within 7 days of receiving the denial notice",
+          "Provide additional information or supporting materials",
+          "We will review your request again"
+        ]
+      },
+      "thirdParty": {
+        "title": "Third-Party Disputes",
+        "intro": "For services purchased through third-party platforms, please contact the platform directly to handle disputes:",
+        "items": [
+          "**Apple App Store**: Request a refund through Apple Support",
+          "**Google Play**: Request a refund through Google Play Support",
+          "**Other Platforms**: Follow the respective platform's refund policy"
+        ]
+      }
+    },
+    "changes": {
+      "title": "Policy Changes",
+      "p1": "{siteName} reserves the right to modify this Refund Policy at any time. Policy changes will be posted on this page and indicated by the \"Last Updated\" date at the top of the page.",
+      "p2": "Significant changes may be communicated to users via email or platform notifications. Continued use of the service indicates acceptance of the updated Refund Policy."
+    },
+    "contact": {
+      "title": "Contact Us",
+      "intro": "If you have any questions about this Refund Policy or need assistance with a refund request, please contact us:",
+      "email": "Email: {email}",
+      "support": "Our customer support team will respond to your inquiry within 24-48 hours.",
+      "note": "**Note**: This Refund Policy is a supplementary document to the {siteName} Terms of Service. For matters not covered by this policy, please refer to our Terms of Service."
+    }
+  },
+  "settings": {},
+  "terms": {
+    "meta": {
+      "title": "{siteName} - Terms of Service",
+      "description": "Read {siteName}'s Terms of Service to understand the rules and conditions for using our AI platform"
+    },
+    "title": "Terms of Service",
+    "lastUpdated": "Last Updated: {lastUpdated}",
+    "sections": {
+      "acceptance": {
+        "title": "Acceptance of Terms",
+        "intro": "Welcome to {siteName}, an artificial intelligence platform providing image generation, video creation, and other services. These Terms of Service (\"Terms\", \"Agreement\") constitute a legally binding agreement between you (\"User\", \"You\", or \"Your\") and {siteName} (\"We\", \"Our\", or \"Us\") regarding your access to and use of our website services (collectively, the \"Services\").",
+        "content": "By accessing, browsing, or using the Services in any way, you acknowledge that you have read, understood, and agree to be bound by these Terms and our Privacy Policy. If you do not agree with these Terms, you must immediately cease using the Services."
+      },
+      "services": {
+        "title": "Service Overview",
+        "intro": "{siteName} provides AI-driven creative tools and services, including:",
+        "items": [
+          "AI image generation from text prompts using advanced machine learning models",
+          "AI video generation and creation features",
+          "Image editing, enhancement, and style transfer capabilities",
+          "Project management, organization, and cloud storage for generated content",
+          "Other advanced features and tools provided from time to time"
+        ]
+      },
+      "account": {
+        "title": "User Account and Registration",
+        "registration": {
+          "title": "Registration",
+          "content": "To access certain features, you must create an account by providing accurate, complete, and current information. You represent that all information you provide is truthful and that you will maintain the accuracy of this information."
+        },
+        "security": {
+          "title": "Account Security",
+          "content": "You are solely responsible for maintaining the confidentiality of your account credentials and for all activities that occur under your account. You agree to immediately notify us of any unauthorized access or security breach."
+        },
+        "transfer": {
+          "title": "Account Transfer",
+          "content": "Your account is personal to you and may not be transferred, sold, or assigned to any third party without our prior written consent."
+        }
+      },
+      "usage": {
+        "title": "Acceptable Use Policy",
+        "intro": "You agree not to use the Services to generate, upload, share, or distribute content that:",
+        "items": [
+          "Violates any applicable laws, regulations, or third-party rights",
+          "Contains illegal, harmful, threatening, abusive, harassing, defamatory, or obscene material",
+          "Depicts or promotes violence, discrimination, hatred, or intolerance based on protected characteristics",
+          "Includes explicit, pornographic, or age-inappropriate content",
+          "Infringes upon intellectual property rights, including copyrights, trademarks, or patents",
+          "Constitutes spam, phishing, malware, or attempts to compromise platform security",
+          "Impersonates any person or entity or misrepresents your affiliation",
+          "Involves automated scraping, mining, or unauthorized use of the Services in violation of our guidelines",
+          "Exploits, harms, or attempts to exploit minors in any way",
+          "Contains demonstrably false, misleading, or deceptive information"
+        ]
+      },
+      "ip": {
+        "title": "Intellectual Property",
+        "platform": {
+          "title": "Platform Ownership",
+          "content": "All content, features, functionality, software, designs, text, graphics, logos, and trademarks on the Services are owned by {siteName} or our licensors and are protected by international intellectual property laws. You may not copy, modify, distribute, or reverse engineer any part of the Services without authorization."
+        },
+        "userContent": {
+          "title": "User-Generated Content",
+          "content": "You retain ownership of images and content generated using the Services, subject to our limited license below. However, you are responsible for ensuring your use does not infringe third-party rights or violate applicable laws."
+        },
+        "license": {
+          "title": "License Grant",
+          "intro": "By using the Services, you grant us a non-exclusive, royalty-free license to use, reproduce, modify, and display your generated content worldwide, solely for the following purposes:",
+          "items": [
+            "(a) Providing and improving the Services",
+            "(b) Training and enhancing our AI models (with your consent)",
+            "(c) Marketing and promotional purposes where you have explicitly granted permission"
+          ]
+        }
+      },
+      "privacy": {
+        "title": "Privacy and Data Protection",
+        "content": "We take your privacy seriously. Our collection, use, and protection of your personal information is governed by our Privacy Policy, which is incorporated into these Terms by reference. Please read our Privacy Policy to understand our practices."
+      },
+      "termination": {
+        "title": "Service Modification and Termination",
+        "modification": {
+          "title": "Modifications",
+          "content": "We reserve the right to modify, suspend, or discontinue any aspect of the Services at any time, with or without notice. We may also restrict certain features or limit access to parts of the Services. We are not liable for any modifications or interruptions."
+        },
+        "ourTermination": {
+          "title": "Our Termination",
+          "content": "We may, at our sole discretion, immediately suspend or terminate your account and access to the Services without notice if you violate these Terms, engage in fraudulent activity, or for any other reason."
+        },
+        "effect": {
+          "title": "Effect of Termination",
+          "content": "Upon termination, your right to use the Services immediately ceases. We may delete your account data and generated content, although some information may be retained as required by law or for legitimate business purposes."
+        }
+      },
+      "disclaimer": {
+        "title": "Disclaimers and Limitations",
+        "asIs": {
+          "title": "As-Is Provision",
+          "content": "The Services are provided \"as is\" and \"as available\" without any warranties, express or implied, including but not limited to warranties of merchantability, fitness for a particular purpose, or non-infringement. We do not guarantee that the Services will be uninterrupted, error-free, or secure."
+        },
+        "liability": {
+          "title": "Limitation of Liability",
+          "content": "To the maximum extent permitted by law, {siteName} and its affiliates shall not be liable for any indirect, incidental, special, consequential, or punitive damages, including loss of profits, data, or goodwill, arising from your use or inability to use the Services."
+        },
+        "userResponsibility": {
+          "title": "User Responsibility",
+          "content": "You acknowledge that AI-generated content may produce unexpected or inaccurate results. You are solely responsible for reviewing, verifying, and determining the appropriateness of any content generated through the Services before using, publishing, or disseminating it."
+        }
+      },
+      "legal": {
+        "title": "Governing Law and Dispute Resolution",
+        "law": {
+          "title": "Governing Law",
+          "content": "These Terms shall be governed by and construed in accordance with the laws of the jurisdiction where {siteName} is registered, without regard to its conflict of law principles."
+        },
+        "disputes": {
+          "title": "Dispute Resolution",
+          "content": "Any disputes arising out of or relating to these Terms or the Services shall first be attempted to be resolved through good faith negotiation. If negotiation fails, disputes shall be resolved through binding arbitration or litigation in the courts of the applicable jurisdiction, as provided by applicable law."
+        }
+      },
+      "contact": {
+        "title": "Contact Information",
+        "intro": "If you have any questions, concerns, or feedback about these Terms of Service, please contact us:",
+        "email": "Email: {email}"
+      }
+    }
+  }
+}

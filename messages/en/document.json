@@ -1,0 +1,10 @@
+{
+  "nav": {
+    "title": "Table of Contents",
+    "empty": "No contents available",
+    "expand": "Expand",
+    "collapse": "Collapse",
+    "openNav": "Open navigation",
+    "closeNav": "Close navigation"
+  }
+}

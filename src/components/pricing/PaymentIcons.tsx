@@ -1,0 +1,80 @@
+"use client";
+
+import Image from "next/image";
+import { Shield } from "lucide-react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { siteConfig } from "@/config/site";
+import { useTranslations } from "next-intl";
+
+/**
+ * 支付方式配置
+ */
+const paymentMethods = [
+  { id: "visa", name: "Visa", image: "/payment-icons/visa.png", scale: 1.5 },
+  { id: "mastercard", name: "Mastercard", image: "/payment-icons/mastercard.png", scale: 1.5 },
+  { id: "amex", name: "American Express", image: "/payment-icons/amex.png", scale: 1.1 },
+  { id: "link", name: "Link by Stripe", image: "/payment-icons/link.png", scale: 1.1 },
+  { id: "googlepay", name: "Google Pay", image: "/payment-icons/googlepay.png", scale: 1.5 },
+  { id: "applepay", name: "Apple Pay", image: "/payment-icons/applepay.png", scale: 1.5 },
+];
+
+/**
+ * 支付方式图标组件
+ * 展示 Stripe 支持的主要支付方式
+ */
+export function PaymentIcons() {
+  const t = useTranslations("pricing.payment");
+
+  return (
+    <div className="text-center">
+      {/* 安全提示文字 */}
+      <div className="flex items-center justify-center gap-2 mb-6">
+        <Shield className="w-5 h-5 text-gray-400" />
+        <p className="text-gray-400 text-sm">{t("securePayment")}</p>
+      </div>
+
+      {/* 支付方式图标 */}
+      <TooltipProvider>
+        <div className="flex items-center justify-center gap-4 flex-wrap">
+          {paymentMethods.map((method) => (
+            <Tooltip key={method.id}>
+              <TooltipTrigger asChild>
+                <div className="w-24 h-[72px] rounded-lg overflow-hidden border border-white/10 cursor-pointer hover:border-white/20 transition-colors">
+                  <Image
+                    src={method.image}
+                    alt={method.name}
+                    width={96}
+                    height={72}
+                    className={`w-full h-full object-cover scale-[${method.scale}]`}
+                    unoptimized
+                  />
+                </div>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>{method.name}</p>
+              </TooltipContent>
+            </Tooltip>
+          ))}
+        </div>
+      </TooltipProvider>
+
+      {/* 没有找到支付方式提示 */}
+      <div className="mt-6">
+        <p className="text-gray-400 text-sm">
+          {t("noPaymentMethod")}
+          <a
+            href={`mailto:${siteConfig.contact.email}?subject=${encodeURIComponent(t("emailSubject"))}`}
+            className="ml-2 text-primary hover:text-primary-hover underline transition-colors"
+          >
+            {t("contactUs")}
+          </a>
+        </p>
+      </div>
+    </div>
+  );
+}
