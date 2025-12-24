@@ -1,6 +1,6 @@
 "use client";
 
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useRouter, usePathname } from "../../../i18n/routing";
 import { locales, localeNames, type Locale } from "../../../i18n/config";
 import { motion, AnimatePresence } from "framer-motion";
@@ -12,6 +12,7 @@ import { cn } from "@/lib/utils";
  * 语言切换模态框
  */
 export function LanguageModal() {
+  const t = useTranslations("common.languageModal");
   const locale = useLocale() as Locale;
   const router = useRouter();
   const pathname = usePathname();
@@ -45,18 +46,13 @@ export function LanguageModal() {
             >
               {/* 头部 */}
               <div className="mb-6 flex items-center justify-between">
-                <div>
-                  <h2 className="text-lg font-semibold text-foreground">
-                    选择语言
-                  </h2>
-                  <p className="text-sm text-muted">
-                    Select Language
-                  </p>
-                </div>
+                <h2 className="text-lg font-semibold text-foreground">
+                  {t("title")}
+                </h2>
                 <motion.button
                   onClick={closeLanguageModal}
                   className="flex h-8 w-8 items-center justify-center rounded-full text-muted transition-colors hover:bg-sidebar-hover hover:text-foreground"
-                  aria-label="关闭"
+                  aria-label={t("close")}
                 >
                   <X className="h-5 w-5" />
                 </motion.button>
@@ -69,11 +65,11 @@ export function LanguageModal() {
                     key={loc}
                     onClick={() => handleLanguageChange(loc)}
                     className={cn(
-                      "group w-full rounded-xl px-4 py-3 text-left relative",
+                      "group w-full rounded-xl px-4 py-3 text-left relative border-2 cursor-pointer",
                       "transition-all duration-300 ease-out",
                       locale === loc
-                        ? "bg-white text-black border-2 border-white font-medium rounded-xl"
-                        : "border-2 border-transparent bg-sidebar-hover text-muted hover:border-border hover:text-foreground hover:rounded-full hover:px-5"
+                        ? "bg-white text-black border-white font-medium"
+                        : "border-transparent bg-sidebar-hover text-muted hover:!border-white hover:text-white"
                     )}
                   >
                     <div className="flex items-center justify-between">

@@ -20,6 +20,9 @@
   /* 交互元素背景 */
   --input-tab-active: #3f3f3f;
 
+  /* Generator 面板卡片背景（比 main 稍浅） */
+  --generator-panel-card-bg: #1c1c1c;
+
   /* 渐变色 */
   --gradient-primary: linear-gradient(to right, #ff3466, #c721ff);
 }
@@ -42,6 +45,9 @@
 
   /* 交互元素背景 */
   --color-input-tab-active: var(--input-tab-active);
+
+  /* Generator 面板卡片背景 */
+  --color-generator-panel-card-bg: var(--generator-panel-card-bg);
 
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);

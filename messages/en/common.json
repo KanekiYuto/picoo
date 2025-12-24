@@ -1,1 +1,6 @@
-{}
+{
+  "languageModal": {
+    "title": "Select Language",
+    "close": "Close"
+  }
+}

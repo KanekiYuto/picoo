@@ -1,1 +1,6 @@
-{}
+{
+  "languageModal": {
+    "title": "选择语言",
+    "close": "关闭"
+  }
+}

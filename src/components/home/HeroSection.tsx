@@ -17,13 +17,13 @@ export function HeroSection() {
     >
       <motion.div
         variants={fadeInUp}
-        className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold"
+        className="text-4xl sm:text-5xl md:text-6xl lg:text-5xl xl:text-6xl font-bold"
       >
         {t("title")}
       </motion.div>
       <motion.p
         variants={fadeInUp}
-        className="mt-4 md:mt-6 max-w-2xl text-base md:text-lg text-muted"
+        className="mt-4 md:mt-6 max-w-2xl text-base md:text-lg lg:text-base xl:text-lg text-muted"
       >
         {t("description")}
       </motion.p>

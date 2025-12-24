@@ -1,6 +1,11 @@
 {
   "auth": {},
-  "common": {},
+  "common": {
+    "languageModal": {
+      "title": "选择语言",
+      "close": "关闭"
+    }
+  },
   "document": {
     "nav": {
       "title": "目录",
@@ -19,6 +24,70 @@
       "community": "社区",
       "contact": "联系我们",
       "legal": "法律"
+    }
+  },
+  "generator": {
+    "placeholder": "描述你想象中的图像",
+    "addImage": "添加图片",
+    "create": "创建",
+    "model": "模型",
+    "aspectRatio": "比例",
+    "version": "版本",
+    "uploadPanel": {
+      "title": "添加图片",
+      "clickToUpload": "点击上传",
+      "dragAndDrop": "拖拽上传",
+      "fileTypes": "JPG, PNG, WEBP 文件，最大 25MB",
+      "uploads": "上传记录",
+      "personalized": "个性化",
+      "recentUploads": "最近上传",
+      "personalize": "个性化"
+    },
+    "settingsPanel": {
+      "title": "设置",
+      "selectModel": "选择模型",
+      "imageSize": "图片尺寸",
+      "reset": "重置",
+      "variations": "生成数量",
+      "moreOptions": "更多选项",
+      "visibility": "可见性",
+      "public": "公开",
+      "private": "私密",
+      "features": {
+        "fast": "快速",
+        "highQuality": "高质量",
+        "latest": "最新",
+        "professional": "专业",
+        "highDetail": "高细节",
+        "ultraFast": "超快",
+        "economical": "经济",
+        "versatile": "多样",
+        "topQuality": "顶级质量",
+        "realtime": "实时",
+        "artistic": "艺术",
+        "creative": "创意",
+        "ultraHD": "超高清",
+        "detailed": "精细",
+        "classic": "经典",
+        "stable": "稳定",
+        "simple": "简单",
+        "google": "谷歌",
+        "advanced": "先进"
+      },
+      "modelDescriptions": {
+        "imagineart-1-5": "最新一代模型，具有出色的速度和质量平衡",
+        "imagineart-studio": "专业级桌面模型，具有最大细节控制能力",
+        "nano-banana-pro": "超快速生成，适用于快速原型设计和迭代",
+        "chatgpt-1-5": "多功能模型，适用于各种创意任务和风格",
+        "flux-2-max": "顶级质量模型，适用于最苛刻的专业工作",
+        "flux-2-pro": "专业模型，具有出色的质量和可靠性",
+        "z-image-turbo": "针对实时生成进行优化，延迟最小",
+        "seedream-v4-5": "专注于艺术和创意图像生成",
+        "flux-1-1-ultra": "超高清模型，适用于详细和精确的输出",
+        "chatgpt": "经典可靠模型，具有经过验证的稳定性",
+        "nano-banana": "简单快速的模型，适用于日常使用",
+        "imagen-4": "先进的谷歌驱动模型，采用尖端技术"
+      }
     }
   },
   "home": {

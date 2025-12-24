@@ -6,6 +6,7 @@ import { fadeInUp } from "@/lib/animations";
 import { Image as ImageIcon, Video, Dices } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useTranslations } from "next-intl";
+import { useGeneratorStore } from "@/stores/generatorStore";
 
 type MediaType = "image" | "video";
 
@@ -28,6 +29,7 @@ const videoPrompts = [
 
 export function CreativeInput() {
   const t = useTranslations("home.creativeInput");
+  const { openGeneratorModal } = useGeneratorStore();
   const [inputValue, setInputValue] = useState("");
   const [selectedType, setSelectedType] = useState<MediaType>("image");
 
@@ -38,8 +40,7 @@ export function CreativeInput() {
   };
 
   const handleSubmit = () => {
-    // TODO: 处理提交逻辑
-    console.log("Submitted:", inputValue, "Type:", selectedType);
+    openGeneratorModal();
   };
 
   return (

@@ -7,6 +7,7 @@ import { MobileSidebar } from "./MobileSidebar";
 import { Footer } from "./Footer";
 import { MainContent } from "./MainContent";
 import { LanguageModal } from "./LanguageModal";
+import { GlobalGeneratorModal } from "@/components/generator";
 import { cn } from "@/lib/utils";
 
 interface AppLayoutProps {
@@ -56,6 +57,9 @@ export function AppLayout({
 
       {/* 全局语言切换模态框 */}
       <LanguageModal />
+
+      {/* 全局生成器模态框 */}
+      <GlobalGeneratorModal />
     </>
   );
 }
