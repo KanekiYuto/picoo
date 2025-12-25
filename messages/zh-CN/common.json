@@ -2,5 +2,25 @@
   "languageModal": {
     "title": "选择语言",
     "close": "关闭"
+  },
+  "userMenu": {
+    "viewProfile": "查看个人资料",
+    "editProfile": "编辑",
+    "inviteMembers": "邀请成员",
+    "team": "团队",
+    "teamMembers": "{count} 位成员",
+    "personalData": "个人资料",
+    "teamOwner": "所有者",
+    "createOrJoinTeam": "加入或创建团队",
+    "points": "剩余积分",
+    "pointsDetails": "查看积分明细",
+    "upgrade": "升级",
+    "usageAnalysis": "使用情况分析",
+    "settings": "设置",
+    "manageSubscription": "管理订阅",
+    "logout": "注销",
+    "terms": "条款",
+    "privacy": "隐私",
+    "blog": "博客"
   }
 }

@@ -8,13 +8,13 @@ export function BillingInfo() {
           <div className="text-sm md:text-base font-semibold text-foreground mb-2">
             Current team plan
           </div>
-          <div className="inline-flex items-center px-3 py-1 bg-[#7c3aed]/20 text-[#c4b5fd] text-xs md:text-sm font-medium rounded-full">
+          <div className="inline-flex items-center px-3 py-1 bg-primary/10 text-primary text-xs md:text-sm font-medium rounded-full">
             Free plan
           </div>
         </div>
 
         {/* 升级按钮 */}
-        <button className="w-full sm:w-auto px-5 py-2 bg-[#7c3aed] hover:bg-[#6d28d9] text-white text-sm font-medium rounded-xl transition-colors whitespace-nowrap">
+        <button className="w-full sm:w-auto px-5 py-2 bg-gradient-primary text-white text-sm font-medium rounded-xl transition-all whitespace-nowrap hover:opacity-90">
           Upgrade plan
         </button>
       </div>

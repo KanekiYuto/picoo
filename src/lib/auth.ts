@@ -3,7 +3,7 @@ import { drizzleAdapter } from 'better-auth/adapters/drizzle';
 import { nextCookies } from 'better-auth/next-js';
 import { db } from './db';
 import * as schema from './db/schema';
-import { nanoid } from 'nanoid';
+import { eq } from 'drizzle-orm';
 
 // 导入 fetch 配置以解决 Google OAuth 超时问题
 import './fetch-config';
@@ -38,23 +38,25 @@ export const auth = betterAuth({
       create: {
         after: async (user) => {
           try {
-            // 创建团队
-            const teamId = nanoid();
-            await db.insert(schema.team).values({
-              id: teamId,
+            // 创建团队（ID 由数据库自动生成 UUID）
+            const [newTeam] = await db.insert(schema.team).values({
               name: `${user.name}'s personal`,
               ownerId: user.id,
-            });
+            }).returning({ id: schema.team.id });
 
             // 将用户添加为团队成员（owner角色）
             await db.insert(schema.teamMember).values({
-              id: nanoid(),
-              teamId: teamId,
+              teamId: newTeam.id,
               userId: user.id,
               role: 'owner',
             } as any);
 
-            console.log('Team created for user:', user.id);
+            // 设置当前团队ID为新创建的团队
+            await db.update(schema.user)
+              .set({ currentTeamId: newTeam.id })
+              .where(eq(schema.user.id, user.id));
+
+            console.log('Team created for user:', user.id, 'Team ID:', newTeam.id);
           } catch (error) {
             console.error('Failed to create team for user:', error);
           }

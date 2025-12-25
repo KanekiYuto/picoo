@@ -1,9 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { Menu } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { UserProfile } from "@/components/settings/UserProfile";
 import { BillingInfo } from "@/components/settings/BillingInfo";
 import { TeamList } from "@/components/settings/TeamList";
+import { useSettingsNav } from "@/components/settings/SettingsNavContext";
 
 interface User {
   id: string;
@@ -20,6 +23,8 @@ interface Organization {
 }
 
 export default function ProfilePage() {
+  const t = useTranslations("settings.profile");
+  const { openMenu } = useSettingsNav();
   const [user, setUser] = useState<User | null>(null);
   const [organizations, setOrganizations] = useState<Organization[]>([]);
   const [loading, setLoading] = useState(true);
@@ -34,11 +39,11 @@ export default function ProfilePage() {
           setUser(userData);
         }
 
-        // 获取组织数据
-        const orgsRes = await fetch("/api/user/organizations");
-        if (orgsRes.ok) {
-          const orgsData = await orgsRes.json();
-          setOrganizations(orgsData);
+        // 获取团队数据
+        const teamsRes = await fetch("/api/user/teams");
+        if (teamsRes.ok) {
+          const teamsData = await teamsRes.json();
+          setOrganizations(teamsData);
         }
       } catch (error) {
         console.error("Failed to fetch profile data:", error);
@@ -67,28 +72,43 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="space-y-12">
-      <div className="space-y-2">
-        <div className="text-2xl md:text-3xl font-semibold text-foreground">
-          Profile settings
+    <div className="space-y-6 md:space-y-8">
+      {/* Header */}
+      <div className="bg-sidebar-bg border border-border rounded-2xl p-5 md:p-6">
+        <div className="space-y-3">
+          <div className="flex items-center gap-3">
+            <button
+              onClick={openMenu}
+              className="lg:hidden flex-shrink-0 flex items-center justify-center h-9 w-9 rounded-lg bg-sidebar-hover border border-border text-foreground hover:bg-sidebar-active transition-colors"
+              aria-label={t("openMenu")}
+            >
+              <Menu className="h-4.5 w-4.5" />
+            </button>
+            <h1 className="text-xl sm:text-2xl md:text-3xl font-semibold text-foreground">
+              {t("title")}
+            </h1>
+          </div>
+          <p className="text-sm text-muted-foreground max-w-2xl">
+            {t("description")}
+          </p>
         </div>
       </div>
 
       {/* 设置部分 */}
-      <div className="space-y-4">
-        <div className="text-sm font-medium text-muted">Settings</div>
+      <div className="space-y-3">
+        <h2 className="text-sm font-medium text-muted">{t("sections.settings")}</h2>
         <UserProfile user={user} />
       </div>
 
       {/* 账单部分 */}
-      <div className="space-y-4">
-        <div className="text-sm font-medium text-muted">Billing</div>
+      <div className="space-y-3">
+        <h2 className="text-sm font-medium text-muted">{t("sections.billing")}</h2>
         <BillingInfo />
       </div>
 
       {/* 我的团队部分 */}
-      <div className="space-y-4">
-        <div className="text-sm font-medium text-muted">My teams</div>
+      <div className="space-y-3">
+        <h2 className="text-sm font-medium text-muted">{t("sections.teams")}</h2>
         <TeamList organizations={organizations} />
       </div>
     </div>

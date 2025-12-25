@@ -4,6 +4,26 @@
     "languageModal": {
       "title": "Select Language",
       "close": "Close"
+    },
+    "userMenu": {
+      "viewProfile": "View profile",
+      "editProfile": "Edit",
+      "inviteMembers": "Invite",
+      "team": "Team",
+      "teamMembers": "{count, plural, =1 {# member} other {# members}}",
+      "personalData": "Personal data",
+      "teamOwner": "Team owner",
+      "createOrJoinTeam": "Create or join team",
+      "points": "Points",
+      "pointsDetails": "View points details",
+      "upgrade": "Upgrade",
+      "usageAnalysis": "Usage analysis",
+      "settings": "Settings",
+      "manageSubscription": "Manage subscription",
+      "logout": "Logout",
+      "terms": "Terms",
+      "privacy": "Privacy",
+      "blog": "Blog"
     }
   },
   "document": {
@@ -558,7 +578,54 @@
       "note": "**Note**: This Refund Policy is a supplementary document to the {siteName} Terms of Service. For matters not covered by this policy, please refer to our Terms of Service."
     }
   },
-  "settings": {},
+  "settings": {
+    "profile": {
+      "title": "Profile settings",
+      "description": "Manage your personal information, billing details, and team memberships",
+      "openMenu": "Open settings menu",
+      "sections": {
+        "settings": "Settings",
+        "billing": "Billing",
+        "teams": "My teams"
+      },
+      "teams": {
+        "empty": "No teams yet",
+        "members": "{count, plural, =1 {member} other {members}}",
+        "roles": {
+          "owner": "Owner",
+          "admin": "Admin",
+          "member": "Member"
+        }
+      }
+    },
+    "team": {
+      "title": "Team settings",
+      "description": "Manage your team profile, members, and billing",
+      "openMenu": "Open settings menu",
+      "noTeam": "No team found",
+      "sections": {
+        "settings": "Settings",
+        "teams": "Teams",
+        "usageAnalytics": "Usage analytics",
+        "billing": "Billing"
+      },
+      "members": "{count, plural, =1 {# member} other {# members}}",
+      "member": "{count, plural, =1 {member} other {members}}",
+      "editProfile": "Edit profile",
+      "whoHasAccess": "Who has access",
+      "inviteMember": "Invite member",
+      "manageAccess": "Manage access",
+      "analyzeTeamSpends": "Analyze your team spends",
+      "details": "Details",
+      "currentTeamPlan": "Current team plan",
+      "upgradePlan": "Upgrade plan",
+      "plans": {
+        "free": "Free plan",
+        "pro": "Pro plan",
+        "enterprise": "Enterprise plan"
+      }
+    }
+  },
   "terms": {
     "meta": {
       "title": "{siteName} - Terms of Service",

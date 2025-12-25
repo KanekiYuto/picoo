@@ -2,5 +2,25 @@
   "languageModal": {
     "title": "Select Language",
     "close": "Close"
+  },
+  "userMenu": {
+    "viewProfile": "View profile",
+    "editProfile": "Edit",
+    "inviteMembers": "Invite",
+    "team": "Team",
+    "teamMembers": "{count, plural, =1 {# member} other {# members}}",
+    "personalData": "Personal data",
+    "teamOwner": "Team owner",
+    "createOrJoinTeam": "Create or join team",
+    "points": "Points",
+    "pointsDetails": "View points details",
+    "upgrade": "Upgrade",
+    "usageAnalysis": "Usage analysis",
+    "settings": "Settings",
+    "manageSubscription": "Manage subscription",
+    "logout": "Logout",
+    "terms": "Terms",
+    "privacy": "Privacy",
+    "blog": "Blog"
   }
 }

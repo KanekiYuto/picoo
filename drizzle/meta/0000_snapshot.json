@@ -1,5 +1,5 @@
 {
-  "id": "907b126c-073e-4a3a-9122-4cf68355f146",
+  "id": "887c68b0-d3a1-4504-9f0f-af5a369b7ce1",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -10,9 +10,10 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "text",
+          "type": "uuid",
           "primaryKey": true,
-          "notNull": true
+          "notNull": true,
+          "default": "gen_random_uuid()"
         },
         "user_id": {
           "name": "user_id",
@@ -22,7 +23,7 @@
         },
         "team_id": {
           "name": "team_id",
-          "type": "text",
+          "type": "uuid",
           "primaryKey": false,
           "notNull": false
         },
@@ -132,9 +133,10 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "text",
+          "type": "uuid",
           "primaryKey": true,
-          "notNull": true
+          "notNull": true,
+          "default": "gen_random_uuid()"
         },
         "name": {
           "name": "name",
@@ -153,6 +155,13 @@
           "type": "text",
           "primaryKey": false,
           "notNull": false
+        },
+        "type": {
+          "name": "type",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'free'"
         },
         "owner_id": {
           "name": "owner_id",
@@ -203,13 +212,14 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "text",
+          "type": "uuid",
           "primaryKey": true,
-          "notNull": true
+          "notNull": true,
+          "default": "gen_random_uuid()"
         },
         "team_id": {
           "name": "team_id",
-          "type": "text",
+          "type": "uuid",
           "primaryKey": false,
           "notNull": true
         },
@@ -318,12 +328,11 @@
           "primaryKey": false,
           "notNull": false
         },
-        "user_type": {
-          "name": "user_type",
-          "type": "text",
+        "current_team_id": {
+          "name": "current_team_id",
+          "type": "uuid",
           "primaryKey": false,
-          "notNull": false,
-          "default": "'free'"
+          "notNull": false
         },
         "country": {
           "name": "country",

@@ -1,7 +1,7 @@
 CREATE TABLE "file_resource" (
-	"id" text PRIMARY KEY NOT NULL,
+	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"user_id" text NOT NULL,
-	"team_id" text,
+	"team_id" uuid,
 	"key" text NOT NULL,
 	"url" text NOT NULL,
 	"file_name" text NOT NULL,
@@ -15,18 +15,19 @@ CREATE TABLE "file_resource" (
 );
 --> statement-breakpoint
 CREATE TABLE "team" (
-	"id" text PRIMARY KEY NOT NULL,
+	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"name" text NOT NULL,
 	"description" text,
 	"image" text,
+	"type" text DEFAULT 'free' NOT NULL,
 	"owner_id" text NOT NULL,
 	"created_at" timestamp DEFAULT now() NOT NULL,
 	"updated_at" timestamp DEFAULT now() NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE "team_member" (
-	"id" text PRIMARY KEY NOT NULL,
-	"team_id" text NOT NULL,
+	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"team_id" uuid NOT NULL,
 	"user_id" text NOT NULL,
 	"role" text DEFAULT 'member' NOT NULL,
 	"joined_at" timestamp DEFAULT now() NOT NULL,
@@ -40,7 +41,7 @@ CREATE TABLE "user" (
 	"email" text NOT NULL,
 	"email_verified" boolean DEFAULT false NOT NULL,
 	"image" text,
-	"user_type" text DEFAULT 'free',
+	"current_team_id" uuid,
 	"country" text,
 	"ip_address" text,
 	"utm_source" text,

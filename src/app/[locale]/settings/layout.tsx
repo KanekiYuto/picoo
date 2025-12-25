@@ -1,10 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { User, Users, Home, CreditCard, Receipt, Menu, X } from "lucide-react";
+import { User, Users, Home, CreditCard, Receipt, X } from "lucide-react";
+import { SettingsNavProvider } from "@/components/settings/SettingsNavContext";
 
 interface NavItem {
   label: string;
@@ -16,34 +17,6 @@ interface NavSection {
   title: string;
   items: NavItem[];
 }
-
-const navSections: NavSection[] = [
-  {
-    title: "我的信息",
-    items: [
-      { label: "轮廓", href: "/settings/profile", icon: User },
-    ],
-  },
-  {
-    title: "团队信息",
-    items: [
-      { label: "概述", href: "/settings/team", icon: Home },
-    ],
-  },
-  {
-    title: "成员",
-    items: [
-      { label: "团队", href: "/settings/members", icon: Users },
-    ],
-  },
-  {
-    title: "账单",
-    items: [
-      { label: "订阅计划", href: "/settings/billing", icon: CreditCard },
-      { label: "账单详情", href: "/settings/billing/details", icon: Receipt },
-    ],
-  },
-];
 
 export default function SettingsLayout({
   children,
@@ -79,21 +52,28 @@ export default function SettingsLayout({
 
   const closeMobileMenu = () => setMobileMenuOpen(false);
 
-  return (
-    <div className="flex min-h-screen bg-background text-foreground">
-      {/* 移动端菜单按钮 */}
-      <button
-        onClick={() => setMobileMenuOpen(true)}
-        className="fixed top-4 left-4 z-40 lg:hidden flex items-center justify-center h-10 w-10 rounded-xl bg-sidebar-bg border border-border text-foreground hover:bg-sidebar-hover transition-colors"
-        aria-label="Open menu"
-      >
-        <Menu className="h-5 w-5" />
-      </button>
+  useEffect(() => {
+    if (!mobileMenuOpen) return;
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = prevOverflow;
+    };
+  }, [mobileMenuOpen]);
 
+  return (
+    <SettingsNavProvider
+      value={{
+        isMenuOpen: mobileMenuOpen,
+        openMenu: () => setMobileMenuOpen(true),
+        closeMenu: closeMobileMenu,
+      }}
+    >
+      <div className="flex min-h-screen bg-background text-foreground">
       {/* 移动端遮罩 */}
       {mobileMenuOpen && (
         <div
-          className="fixed inset-0 z-40 bg-black/60 lg:hidden"
+          className="fixed inset-x-0 top-16 bottom-0 z-40 bg-black/60 lg:hidden"
           onClick={closeMobileMenu}
         />
       )}
@@ -101,13 +81,13 @@ export default function SettingsLayout({
       {/* 侧边栏 */}
       <aside
         className={cn(
-          "fixed inset-y-0 left-0 z-50 w-64 border-r border-border bg-sidebar-bg transition-transform lg:static lg:translate-x-0",
+          "fixed left-0 top-16 bottom-0 z-50 w-[min(20rem,85vw)] border-r border-border bg-sidebar-bg transition-transform lg:static lg:translate-x-0 lg:w-64",
           mobileMenuOpen ? "translate-x-0" : "-translate-x-full"
         )}
       >
-        <div className="p-6">
+        <div className="h-full overflow-y-auto custom-scrollbar p-5 lg:p-6">
           {/* 移动端关闭按钮 */}
-          <div className="flex items-center justify-between mb-6 lg:hidden">
+          <div className="flex items-center justify-between mb-5 lg:hidden">
             <div className="text-sm font-medium text-muted">Settings</div>
             <button
               onClick={closeMobileMenu}
@@ -155,10 +135,11 @@ export default function SettingsLayout({
 
       {/* 主内容区域 */}
       <main className="flex-1 overflow-auto">
-        <div className="max-w-6xl mx-auto p-6 md:p-8 lg:p-12">
+        <div className="max-w-6xl mx-auto px-5 py-6 sm:p-6 md:p-8 lg:p-12">
           {children}
         </div>
       </main>
-    </div>
+      </div>
+    </SettingsNavProvider>
   );
 }

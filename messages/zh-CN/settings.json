@@ -1,1 +1,48 @@
-{}
+{
+  "profile": {
+    "title": "个人设置",
+    "description": "管理您的个人信息、账单详情和团队成员资格",
+    "openMenu": "打开设置菜单",
+    "sections": {
+      "settings": "设置",
+      "billing": "账单",
+      "teams": "我的团队"
+    },
+    "teams": {
+      "empty": "暂无团队",
+      "members": "{count} 位成员",
+      "roles": {
+        "owner": "所有者",
+        "admin": "管理员",
+        "member": "成员"
+      }
+    }
+  },
+  "team": {
+    "title": "团队设置",
+    "description": "管理您的团队资料、成员和账单",
+    "openMenu": "打开设置菜单",
+    "noTeam": "未找到团队",
+    "sections": {
+      "settings": "设置",
+      "teams": "团队",
+      "usageAnalytics": "使用分析",
+      "billing": "账单"
+    },
+    "members": "{count} 位成员",
+    "member": "位成员",
+    "editProfile": "编辑资料",
+    "whoHasAccess": "谁有访问权限",
+    "inviteMember": "邀请成员",
+    "manageAccess": "管理访问权限",
+    "analyzeTeamSpends": "分析团队消费",
+    "details": "详情",
+    "currentTeamPlan": "当前团队套餐",
+    "upgradePlan": "升级套餐",
+    "plans": {
+      "free": "免费套餐",
+      "pro": "专业版",
+      "enterprise": "企业版"
+    }
+  }
+}

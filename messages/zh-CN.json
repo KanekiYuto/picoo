@@ -4,6 +4,26 @@
     "languageModal": {
       "title": "选择语言",
       "close": "关闭"
+    },
+    "userMenu": {
+      "viewProfile": "查看个人资料",
+      "editProfile": "编辑",
+      "inviteMembers": "邀请成员",
+      "team": "团队",
+      "teamMembers": "{count} 位成员",
+      "personalData": "个人资料",
+      "teamOwner": "所有者",
+      "createOrJoinTeam": "加入或创建团队",
+      "points": "剩余积分",
+      "pointsDetails": "查看积分明细",
+      "upgrade": "升级",
+      "usageAnalysis": "使用情况分析",
+      "settings": "设置",
+      "manageSubscription": "管理订阅",
+      "logout": "注销",
+      "terms": "条款",
+      "privacy": "隐私",
+      "blog": "博客"
     }
   },
   "document": {
@@ -558,7 +578,54 @@
       "note": "**注意**：本退款政策是 {siteName} 服务条款的补充文件。在本政策未涉及的事项上，应参照我们的服务条款。"
     }
   },
-  "settings": {},
+  "settings": {
+    "profile": {
+      "title": "个人设置",
+      "description": "管理您的个人信息、账单详情和团队成员资格",
+      "openMenu": "打开设置菜单",
+      "sections": {
+        "settings": "设置",
+        "billing": "账单",
+        "teams": "我的团队"
+      },
+      "teams": {
+        "empty": "暂无团队",
+        "members": "{count} 位成员",
+        "roles": {
+          "owner": "所有者",
+          "admin": "管理员",
+          "member": "成员"
+        }
+      }
+    },
+    "team": {
+      "title": "团队设置",
+      "description": "管理您的团队资料、成员和账单",
+      "openMenu": "打开设置菜单",
+      "noTeam": "未找到团队",
+      "sections": {
+        "settings": "设置",
+        "teams": "团队",
+        "usageAnalytics": "使用分析",
+        "billing": "账单"
+      },
+      "members": "{count} 位成员",
+      "member": "位成员",
+      "editProfile": "编辑资料",
+      "whoHasAccess": "谁有访问权限",
+      "inviteMember": "邀请成员",
+      "manageAccess": "管理访问权限",
+      "analyzeTeamSpends": "分析团队消费",
+      "details": "详情",
+      "currentTeamPlan": "当前团队套餐",
+      "upgradePlan": "升级套餐",
+      "plans": {
+        "free": "免费套餐",
+        "pro": "专业版",
+        "enterprise": "企业版"
+      }
+    }
+  },
   "terms": {
     "meta": {
       "title": "{siteName} - 服务条款",
