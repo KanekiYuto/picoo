@@ -53,15 +53,39 @@ export default function SettingsLayout({
   const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
+  const locale = pathname.split("/")[1] ?? "";
+  const basePath = locale ? `/${locale}` : "";
+  const navSectionsUi: NavSection[] = [
+    {
+      title: "My Info",
+      items: [{ label: "Profile", href: `${basePath}/settings/profile`, icon: User }],
+    },
+    {
+      title: "Team Info",
+      items: [{ label: "Overview", href: `${basePath}/settings/team`, icon: Home }],
+    },
+    {
+      title: "Members",
+      items: [{ label: "Team", href: `${basePath}/settings/members`, icon: Users }],
+    },
+    {
+      title: "Billing",
+      items: [
+        { label: "Subscription plan", href: `${basePath}/settings/billing`, icon: CreditCard },
+        { label: "Billing details", href: `${basePath}/settings/billing/details`, icon: Receipt },
+      ],
+    },
+  ];
+
   const closeMobileMenu = () => setMobileMenuOpen(false);
 
   return (
-    <div className="flex min-h-screen bg-background">
+    <div className="flex min-h-screen bg-background text-foreground">
       {/* 移动端菜单按钮 */}
       <button
         onClick={() => setMobileMenuOpen(true)}
-        className="fixed top-4 left-4 z-40 lg:hidden flex items-center justify-center h-10 w-10 rounded-lg bg-card border border-border text-foreground hover:bg-muted transition-colors"
-        aria-label="打开菜单"
+        className="fixed top-4 left-4 z-40 lg:hidden flex items-center justify-center h-10 w-10 rounded-xl bg-sidebar-bg border border-border text-foreground hover:bg-sidebar-hover transition-colors"
+        aria-label="Open menu"
       >
         <Menu className="h-5 w-5" />
       </button>
@@ -77,43 +101,43 @@ export default function SettingsLayout({
       {/* 侧边栏 */}
       <aside
         className={cn(
-          "fixed inset-y-0 left-0 z-50 w-64 border-r border-border bg-card transition-transform lg:static lg:translate-x-0",
+          "fixed inset-y-0 left-0 z-50 w-64 border-r border-border bg-sidebar-bg transition-transform lg:static lg:translate-x-0",
           mobileMenuOpen ? "translate-x-0" : "-translate-x-full"
         )}
       >
         <div className="p-6">
           {/* 移动端关闭按钮 */}
           <div className="flex items-center justify-between mb-6 lg:hidden">
-            <div className="text-sm font-medium text-muted">设置</div>
+            <div className="text-sm font-medium text-muted">Settings</div>
             <button
               onClick={closeMobileMenu}
-              className="flex items-center justify-center h-8 w-8 rounded-lg text-foreground hover:bg-muted transition-colors"
-              aria-label="关闭菜单"
+              className="flex items-center justify-center h-8 w-8 rounded-lg text-foreground hover:bg-sidebar-hover transition-colors"
+              aria-label="Close menu"
             >
               <X className="h-5 w-5" />
             </button>
           </div>
 
-          <div className="hidden lg:block text-sm font-medium text-muted mb-6">设置</div>
+          <div className="hidden lg:block text-sm font-medium text-muted mb-6">Settings</div>
 
           <nav className="space-y-6">
-            {navSections.map((section) => (
+            {navSectionsUi.map((section) => (
               <div key={section.title}>
-                <div className="text-xs text-muted mb-2">{section.title}</div>
+                <div className="text-xs text-muted/80 mb-2 uppercase tracking-wider">{section.title}</div>
                 <ul className="space-y-1">
                   {section.items.map((item) => {
                     const Icon = item.icon;
-                    const isActive = pathname === item.href;
+                    const isActive = pathname === item.href || pathname.startsWith(`${item.href}/`);
                     return (
                       <li key={item.href}>
                         <Link
                           href={item.href}
                           onClick={closeMobileMenu}
                           className={cn(
-                            "flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors",
+                            "flex items-center gap-3 px-3 py-2 rounded-xl text-sm transition-colors",
                             isActive
-                              ? "bg-primary/10 text-primary font-medium"
-                              : "text-foreground hover:bg-muted"
+                              ? "bg-sidebar-active text-foreground font-medium"
+                              : "text-muted hover:bg-sidebar-hover hover:text-foreground"
                           )}
                         >
                           <Icon className="h-4 w-4" />
@@ -131,7 +155,7 @@ export default function SettingsLayout({
 
       {/* 主内容区域 */}
       <main className="flex-1 overflow-auto">
-        <div className="max-w-5xl mx-auto p-6 md:p-8 lg:p-12">
+        <div className="max-w-6xl mx-auto p-6 md:p-8 lg:p-12">
           {children}
         </div>
       </main>

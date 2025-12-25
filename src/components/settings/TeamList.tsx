@@ -12,16 +12,16 @@ interface TeamListProps {
 }
 
 const roleMap: Record<string, string> = {
-  owner: "所有者",
-  admin: "管理员",
-  member: "成员",
+  owner: "Owner",
+  admin: "Admin",
+  member: "Member",
 };
 
 export function TeamList({ organizations }: TeamListProps) {
   if (organizations.length === 0) {
     return (
-      <div className="bg-card border border-border rounded-xl p-4 md:p-6">
-        <div className="text-sm text-muted text-center">暂无团队</div>
+      <div className="bg-card border border-border rounded-2xl p-5 md:p-6">
+        <div className="text-sm text-muted text-center">No teams yet</div>
       </div>
     );
   }
@@ -31,7 +31,7 @@ export function TeamList({ organizations }: TeamListProps) {
       {organizations.map((org) => (
         <div
           key={org.id}
-          className="bg-card border border-border rounded-xl p-4 md:p-6 hover:bg-muted/50 transition-colors cursor-pointer"
+          className="bg-card border border-border rounded-2xl p-5 md:p-6 hover:bg-sidebar-hover transition-colors cursor-pointer"
         >
           <div className="flex items-center gap-3 md:gap-4">
             {/* 团队图标 */}
@@ -45,7 +45,8 @@ export function TeamList({ organizations }: TeamListProps) {
                 {org.name}
               </div>
               <div className="text-xs md:text-sm text-muted">
-                {roleMap[org.role] || org.role} · {org.memberCount}名成员
+                {(roleMap[org.role] ?? org.role)} • {org.memberCount}{" "}
+                {org.memberCount === 1 ? "member" : "members"}
               </div>
             </div>
           </div>

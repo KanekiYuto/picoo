@@ -52,50 +52,43 @@ export default function ProfilePage() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="text-muted">加载中...</div>
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <div className="text-muted">Loading...</div>
       </div>
     );
   }
 
   if (!user) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="text-muted">未登录</div>
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <div className="text-muted">Not signed in</div>
       </div>
     );
   }
 
   return (
-    <div className="space-y-8">
-      {/* 页面标题 */}
-      <div>
-        <div className="text-2xl md:text-3xl font-bold text-foreground">
-          配置文件设置
+    <div className="space-y-12">
+      <div className="space-y-2">
+        <div className="text-2xl md:text-3xl font-semibold text-foreground">
+          Profile settings
         </div>
       </div>
 
       {/* 设置部分 */}
-      <div className="space-y-6">
-        <div className="text-base md:text-lg font-semibold text-foreground">
-          设置
-        </div>
+      <div className="space-y-4">
+        <div className="text-sm font-medium text-muted">Settings</div>
         <UserProfile user={user} />
       </div>
 
       {/* 账单部分 */}
-      <div className="space-y-6">
-        <div className="text-base md:text-lg font-semibold text-foreground">
-          账单
-        </div>
+      <div className="space-y-4">
+        <div className="text-sm font-medium text-muted">Billing</div>
         <BillingInfo />
       </div>
 
       {/* 我的团队部分 */}
-      <div className="space-y-6">
-        <div className="text-base md:text-lg font-semibold text-foreground">
-          我的团队
-        </div>
+      <div className="space-y-4">
+        <div className="text-sm font-medium text-muted">My teams</div>
         <TeamList organizations={organizations} />
       </div>
     </div>

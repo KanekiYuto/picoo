@@ -13,7 +13,7 @@ interface UserProfileProps {
 
 export function UserProfile({ user }: UserProfileProps) {
   return (
-    <div className="bg-card border border-border rounded-xl p-4 md:p-6">
+    <div className="bg-card border border-border rounded-2xl p-5 md:p-6">
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div className="flex items-center gap-3 md:gap-4">
           {/* 用户头像 */}
@@ -43,8 +43,8 @@ export function UserProfile({ user }: UserProfileProps) {
         </div>
 
         {/* 编辑按钮 */}
-        <button className="w-full sm:w-auto px-4 py-2 bg-muted hover:bg-muted/80 text-foreground text-sm font-medium rounded-lg transition-colors whitespace-nowrap">
-          编辑个人资料
+        <button className="w-full sm:w-auto px-4 py-2 bg-sidebar-hover hover:bg-sidebar-active border border-border text-foreground text-sm font-medium rounded-xl transition-colors whitespace-nowrap">
+          Edit profile
         </button>
       </div>
     </div>
