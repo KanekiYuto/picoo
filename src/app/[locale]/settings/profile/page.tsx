@@ -1,61 +1,21 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { Menu } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { UserProfile } from "@/components/settings/UserProfile";
 import { BillingInfo } from "@/components/settings/BillingInfo";
 import { TeamList } from "@/components/settings/TeamList";
 import { useSettingsNav } from "@/components/settings/SettingsNavContext";
-
-interface User {
-  id: string;
-  name: string;
-  email: string;
-  image: string | null;
-}
-
-interface Organization {
-  id: string;
-  name: string;
-  memberCount: number;
-  role: string;
-}
+import { useUserStore } from "@/stores/userStore";
 
 export default function ProfilePage() {
   const t = useTranslations("settings.profile");
   const { openMenu } = useSettingsNav();
-  const [user, setUser] = useState<User | null>(null);
-  const [organizations, setOrganizations] = useState<Organization[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { user, isLoading } = useUserStore();
 
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        // 获取用户数据
-        const userRes = await fetch("/api/user/profile");
-        if (userRes.ok) {
-          const userData = await userRes.json();
-          setUser(userData);
-        }
+  const organizations = user?.teams || [];
 
-        // 获取团队数据
-        const teamsRes = await fetch("/api/user/teams");
-        if (teamsRes.ok) {
-          const teamsData = await teamsRes.json();
-          setOrganizations(teamsData);
-        }
-      } catch (error) {
-        console.error("Failed to fetch profile data:", error);
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    fetchData();
-  }, []);
-
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
         <div className="text-muted">Loading...</div>

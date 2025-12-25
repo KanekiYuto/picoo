@@ -1,25 +1,59 @@
 "use client";
 
 import { useEffect } from "react";
-import { useSession } from "@/lib/auth-client";
-import { useUserStore } from "@/stores/userStore";
+import { useUserStore, type User } from "@/stores/userStore";
 
 export function UserStoreProvider({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const { data: session, isPending } = useSession();
-  const { setSession, setLoading } = useUserStore();
+  const { setLoading, setUser } = useUserStore();
 
-  // 监听会话变化并更新 store
+  // 获取用户完整信息（包括团队）
   useEffect(() => {
-    setLoading(isPending);
+    const fetchUserProfile = async () => {
+      setLoading(true);
 
-    if (!isPending) {
-      setSession(session ?? null);
-    }
-  }, [session, isPending, setSession, setLoading]);
+      try {
+        const response = await fetch("/api/user/profile");
+
+        if (!response.ok) {
+          if (response.status === 401) {
+            // 未登录
+            setUser(null);
+          } else {
+            console.error("Failed to fetch user profile");
+          }
+          return;
+        }
+
+        const data = await response.json();
+
+        // 构建完整的用户信息
+        const user: User = {
+          id: data.id,
+          name: data.name,
+          email: data.email,
+          emailVerified: data.emailVerified || false,
+          image: data.image,
+          currentTeamId: data.currentTeamId || null,
+          teams: data.teams || [],
+          createdAt: data.createdAt ? new Date(data.createdAt) : new Date(),
+          updatedAt: data.updatedAt ? new Date(data.updatedAt) : new Date(),
+        };
+
+        setUser(user);
+      } catch (error) {
+        console.error("Failed to fetch user profile:", error);
+        setUser(null);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUserProfile();
+  }, [setUser, setLoading]);
 
   return <>{children}</>;
 }

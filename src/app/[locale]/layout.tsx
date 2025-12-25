@@ -4,6 +4,7 @@ import { AppLayout } from "@/components/layout";
 import { siteConfig } from "@/config/site";
 import { UserProvider } from "@/components/providers/UserProvider";
 import { UserStoreProvider } from "@/components/providers/UserStoreProvider";
+import { CreateTeamProvider } from "@/components/team/CreateTeamProvider";
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, setRequestLocale } from 'next-intl/server';
 import { routing } from '../../../i18n/routing';
@@ -54,7 +55,9 @@ export default async function LocaleLayout({
         <NextIntlClientProvider locale={locale} messages={messages}>
           <UserProvider>
             <UserStoreProvider>
-              <AppLayout>{children}</AppLayout>
+              <CreateTeamProvider>
+                <AppLayout>{children}</AppLayout>
+              </CreateTeamProvider>
             </UserStoreProvider>
           </UserProvider>
         </NextIntlClientProvider>

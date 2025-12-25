@@ -24,6 +24,21 @@
       "terms": "Terms",
       "privacy": "Privacy",
       "blog": "Blog"
+    },
+    "team": {
+      "createModal": {
+        "title": "Create a team",
+        "subtitle": "Choose a unique name for your team.",
+        "nameLabel": "Team name",
+        "namePlaceholder": "Enter team name",
+        "descriptionLabel": "Description",
+        "descriptionPlaceholder": "What is this team for?",
+        "optional": "optional",
+        "characters": "characters",
+        "cancel": "Cancel",
+        "create": "Create team",
+        "creating": "Creating..."
+      }
     }
   },
   "document": {

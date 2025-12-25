@@ -2,16 +2,17 @@
 
 import { useEffect } from "react";
 import { usePathname } from "next/navigation";
-import { useSession, oneTap } from "@/lib/auth-client";
+import { oneTap } from "@/lib/auth-client";
 import { siteConfig } from "@/config/site";
+import { useUserStore } from "@/stores/userStore";
 
 export function UserProvider({ children }: { children: React.ReactNode }) {
-  const { data: session } = useSession();
+  const { isAuthenticated, isLoading } = useUserStore();
   const pathname = usePathname();
 
   // 初始化 Google One Tap（仅在生产环境）
   useEffect(() => {
-    if (!session && process.env.NODE_ENV === "production") {
+    if (!isAuthenticated && !isLoading && process.env.NODE_ENV === "production") {
       const initializeOneTap = async () => {
         try {
           const callbackURL = pathname === "/" ? siteConfig.auth.defaultRedirectAfterLogin : pathname;
@@ -25,7 +26,7 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
       const timer = setTimeout(initializeOneTap, 1000);
       return () => clearTimeout(timer);
     }
-  }, [session, pathname]);
+  }, [isAuthenticated, isLoading, pathname]);
 
   return <>{children}</>;
 }

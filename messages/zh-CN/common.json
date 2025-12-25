@@ -21,6 +21,26 @@
     "logout": "注销",
     "terms": "条款",
     "privacy": "隐私",
-    "blog": "博客"
+    "blog": "博客",
+    "roles": {
+      "owner": "所有者",
+      "admin": "管理员",
+      "member": "成员"
+    }
+  },
+  "team": {
+    "createModal": {
+      "title": "组建团队",
+      "subtitle": "为你的团队选择一个独一无二的名字。",
+      "nameLabel": "团队名称",
+      "namePlaceholder": "输入团队名称",
+      "descriptionLabel": "描述",
+      "descriptionPlaceholder": "这个团队是做什么的？",
+      "optional": "可选",
+      "characters": "字符",
+      "cancel": "取消",
+      "create": "创建团队",
+      "creating": "创建中..."
+    }
   }
 }

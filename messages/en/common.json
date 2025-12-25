@@ -21,6 +21,26 @@
     "logout": "Logout",
     "terms": "Terms",
     "privacy": "Privacy",
-    "blog": "Blog"
+    "blog": "Blog",
+    "roles": {
+      "owner": "Owner",
+      "admin": "Admin",
+      "member": "Member"
+    }
+  },
+  "team": {
+    "createModal": {
+      "title": "Create a team",
+      "subtitle": "Choose a unique name for your team.",
+      "nameLabel": "Team name",
+      "namePlaceholder": "Enter team name",
+      "descriptionLabel": "Description",
+      "descriptionPlaceholder": "What is this team for?",
+      "optional": "optional",
+      "characters": "characters",
+      "cancel": "Cancel",
+      "create": "Create team",
+      "creating": "Creating..."
+    }
   }
 }
