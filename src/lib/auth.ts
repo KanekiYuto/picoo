@@ -38,25 +38,25 @@ export const auth = betterAuth({
       create: {
         after: async (user) => {
           try {
-            // 创建组织
-            const organizationId = nanoid();
-            await db.insert(schema.organization).values({
-              id: organizationId,
+            // 创建团队
+            const teamId = nanoid();
+            await db.insert(schema.team).values({
+              id: teamId,
               name: `${user.name}'s personal`,
               ownerId: user.id,
             });
 
-            // 将用户添加为组织成员（owner角色）
-            await db.insert(schema.organizationMember).values({
+            // 将用户添加为团队成员（owner角色）
+            await db.insert(schema.teamMember).values({
               id: nanoid(),
-              organizationId,
+              teamId: teamId,
               userId: user.id,
               role: 'owner',
-            });
+            } as any);
 
-            console.log('Organization created for user:', user.id);
+            console.log('Team created for user:', user.id);
           } catch (error) {
-            console.error('Failed to create organization for user:', error);
+            console.error('Failed to create team for user:', error);
           }
         },
       },

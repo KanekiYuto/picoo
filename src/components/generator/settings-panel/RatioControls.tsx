@@ -80,7 +80,7 @@ export function RatioControls({
           {options.map((opt) => {
             const hasPair = Boolean(opt.landscape && opt.landscape !== opt.portrait);
             const isActive = value === opt.portrait || value === opt.landscape;
-            const label = hasPair ? `${opt.portrait} | ${opt.landscape}` : opt.portrait;
+            const label = hasPair ? `${opt.portrait}/${opt.landscape}` : opt.portrait;
 
             return (
               <button
@@ -91,14 +91,16 @@ export function RatioControls({
                   onChange(value === opt.portrait ? (opt.landscape as AspectRatio) : opt.portrait);
                 }}
                 className={cn(
-                  "rounded-xl border px-3 py-2 text-left transition-colors",
+                  "cursor-pointer rounded-xl border px-3 py-2 text-center transition-colors",
+                  "flex flex-col items-center justify-start",
+                  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60 focus-visible:ring-offset-2 focus-visible:ring-offset-background",
                   isActive
-                    ? "border-white/60 bg-sidebar-active text-white"
-                    : "border-border/60 bg-sidebar-hover/40 text-muted hover:text-foreground hover:bg-sidebar-hover/60 hover:border-border/80"
+                    ? "border-white/80 bg-sidebar-active text-white"
+                    : "border-border/60 bg-[var(--color-generator-panel-card-bg)] text-muted/80 hover:text-foreground hover:bg-sidebar-hover/60 hover:border-border/80"
                 )}
               >
-                <div className="text-[11px] font-semibold leading-tight">{opt.title}</div>
-                <div className="mt-0.5 text-[11px] leading-tight opacity-90">{label}</div>
+                <div className="text-xs font-semibold leading-tight sm:text-[13px]">{opt.title}</div>
+                <div className="mt-0.5 text-xs leading-tight opacity-90 sm:text-[13px]">{label}</div>
               </button>
             );
           })}

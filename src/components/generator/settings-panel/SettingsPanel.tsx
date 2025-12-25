@@ -124,7 +124,7 @@ export function SettingsPanel({ onClose, settings, onSettingsChange }: SettingsP
                         type="button"
                         onClick={() => setVariations(num)}
                         className={cn(
-                          "h-10 rounded-lg text-sm font-medium transition-colors sm:h-11",
+                          "h-10 cursor-pointer rounded-lg text-sm font-medium transition-colors sm:h-11",
                           variations === num
                             ? "bg-sidebar-active text-white"
                             : "bg-sidebar-hover text-muted hover:text-foreground"

@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { db } from "@/lib/db";
-import { organization, organizationMember } from "@/lib/db/schema";
+import { team, teamMember } from "@/lib/db/schema";
 import { eq, sql } from "drizzle-orm";
 
 export async function GET() {
@@ -18,30 +18,30 @@ export async function GET() {
       );
     }
 
-    // 查询用户所属的所有组织
-    const userOrganizations = await db
+    // 查询用户所属的所有团队
+    const userTeams = await db
       .select({
-        id: organization.id,
-        name: organization.name,
-        role: organizationMember.role,
+        id: team.id,
+        name: team.name,
+        role: teamMember.role,
         memberCount: sql<number>`(
           SELECT COUNT(*)::int
-          FROM ${organizationMember} om
-          WHERE om."organizationId" = ${organization.id}
+          FROM ${teamMember} tm
+          WHERE tm."team_id" = ${team.id}
         )`,
       })
-      .from(organizationMember)
+      .from(teamMember)
       .innerJoin(
-        organization,
-        eq(organizationMember.organizationId, organization.id)
+        team,
+        eq(teamMember.teamId, team.id)
       )
-      .where(eq(organizationMember.userId, session.user.id));
+      .where(eq(teamMember.userId, session.user.id));
 
-    return NextResponse.json(userOrganizations);
+    return NextResponse.json(userTeams);
   } catch (error) {
-    console.error("Failed to fetch user organizations:", error);
+    console.error("Failed to fetch user teams:", error);
     return NextResponse.json(
-      { error: "获取组织信息失败" },
+      { error: "获取团队信息失败" },
       { status: 500 }
     );
   }

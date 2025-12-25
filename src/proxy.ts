@@ -22,7 +22,7 @@ const intlMiddleware = createMiddleware({
   alternateLinks: true,
 });
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   // 处理 i18n 路由
   return intlMiddleware(request);
 }

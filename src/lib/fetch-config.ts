@@ -20,6 +20,22 @@
  */
 
 /**
+ * 检查是否为超时相关错误
+ *
+ * @param error - 错误对象
+ * @returns boolean - 是否为超时错误
+ */
+function isTimeoutError(error: unknown): boolean {
+  const err = error as any;
+  return (
+    err?.name?.includes('Abort') ||
+    err?.message?.includes('ETIMEDOUT') ||
+    err?.message?.includes('timeout') ||
+    err?.cause?.code?.includes('TIMEOUT')
+  );
+}
+
+/**
  * 智能重试 fetch 函数
  *
  * @param originalFetch - 原始的 fetch 函数
@@ -53,21 +69,14 @@ async function fetchWithRetry(
       lastError = error as Error;
 
       // 如果是最后一次尝试，或者不是网络超时错误，直接抛出
-      const errorObj = error as any;
-      if (
-        attempt === retries ||
-        (!errorObj.name?.includes('Abort') &&
-          !errorObj.message?.includes('ETIMEDOUT') &&
-          !errorObj.message?.includes('timeout') &&
-          !errorObj.cause?.code?.includes('TIMEOUT'))
-      ) {
+      if (attempt === retries || !isTimeoutError(error)) {
         throw error;
       }
 
       // 等待一段时间后重试，递增等待时间
       const waitTime = attempt * 1000;
       console.log(
-        `🔄 网络请求超时，${waitTime}ms 后进行第 ${attempt + 1} 次重试...`
+        `Retry attempt ${attempt + 1}/${retries} after ${waitTime}ms due to timeout...`
       );
       await new Promise((resolve) => setTimeout(resolve, waitTime));
     }
@@ -76,129 +85,163 @@ async function fetchWithRetry(
   throw lastError!;
 }
 
-// 在 Node.js 环境中配置全局代理超时时间
-if (typeof process !== 'undefined' && process.env.NODE_ENV !== 'test') {
-  // 设置 Node.js 全局代理的超时时间
-  const http = require('http');
-  const https = require('https');
+/**
+ * 代理配置类 - 统一管理代理环境变量
+ */
+class ProxyConfig {
+  readonly httpProxy: string | undefined;
+  readonly httpsProxy: string | undefined;
+  readonly proxyUrl: string | undefined;
 
-  // 检查是否有代理设置
-  const httpProxy = process.env.http_proxy || process.env.HTTP_PROXY;
-  const httpsProxy = process.env.https_proxy || process.env.HTTPS_PROXY;
-
-  // 创建支持代理的 Agent
-  if (httpProxy) {
-    try {
-      const { HttpsProxyAgent } = require('https-proxy-agent');
-      const proxyAgent = new HttpsProxyAgent(httpsProxy || httpProxy);
-      proxyAgent.timeout = 45_000;
-      proxyAgent.keepAlive = true;
-      proxyAgent.keepAliveMsecs = 60_000;
-      https.globalAgent = proxyAgent;
-      console.log(`🌐 使用 HTTPS 代理: ${httpsProxy || httpProxy}`);
-    } catch {
-      console.log('⚠️ https-proxy-agent 不可用，使用标准代理配置');
-    }
-  } else {
-    // 增加 HTTP 代理的超时时间
-    if (http.globalAgent) {
-      http.globalAgent.timeout = 45_000;
-      http.globalAgent.keepAlive = true;
-      http.globalAgent.keepAliveMsecs = 60_000;
-      http.globalAgent.maxSockets = 50;
-      http.globalAgent.maxFreeSockets = 10;
-    }
-
-    // 增加 HTTPS 代理的超时时间
-    if (https.globalAgent) {
-      https.globalAgent.timeout = 45_000;
-      https.globalAgent.keepAlive = true;
-      https.globalAgent.keepAliveMsecs = 60_000;
-      https.globalAgent.maxSockets = 50;
-      https.globalAgent.maxFreeSockets = 10;
-    }
+  constructor() {
+    this.httpProxy = process.env.http_proxy || process.env.HTTP_PROXY;
+    this.httpsProxy = process.env.https_proxy || process.env.HTTPS_PROXY;
+    this.proxyUrl = this.httpsProxy || this.httpProxy;
   }
 
-  // 尝试配置 undici 全局代理（如果可用）
-  try {
-    const undici = require('undici');
-    if (undici?.Agent && undici?.setGlobalDispatcher) {
-      let globalAgent: any;
-
-      // 如果有代理设置，使用 ProxyAgent
-      if (httpsProxy || httpProxy) {
-        const proxyUrl = httpsProxy || httpProxy;
-        globalAgent = new undici.ProxyAgent({
-          uri: proxyUrl,
-          // 连接超时设置为 45 秒
-          connectTimeout: 45_000,
-          // 请求头超时设置为 45 秒
-          headersTimeout: 45_000,
-          // body 超时设置为 90 秒
-          bodyTimeout: 90_000,
-          // keep-alive 设置
-          keepAliveTimeout: 60_000,
-          keepAliveMaxTimeout: 600_000,
-        });
-        console.log(`🌐 undici 使用代理: ${proxyUrl}`);
-      } else {
-        globalAgent = new undici.Agent({
-          // 连接超时设置为 45 秒
-          connectTimeout: 45_000,
-          // 请求头超时设置为 45 秒
-          headersTimeout: 45_000,
-          // body 超时设置为 90 秒
-          bodyTimeout: 90_000,
-          // keep-alive 设置
-          keepAliveTimeout: 60_000,
-          keepAliveMaxTimeout: 600_000,
-          // 连接池设置
-          maxCachedSessions: 100,
-          // 每个源的最大连接数
-          connections: 50,
-        });
-      }
-
-      undici.setGlobalDispatcher(globalAgent);
-      console.log('✅ 已配置 undici 全局代理，连接超时 45 秒');
-    }
-  } catch {
-    // undici 可能不可用，继续使用标准 HTTP 代理配置
-    console.log('📡 使用标准 HTTP/HTTPS 代理配置，连接超时 45 秒');
+  hasProxy(): boolean {
+    return Boolean(this.proxyUrl);
   }
 
-  // 设置全局 fetch 重试机制
-  const originalFetch = globalThis.fetch;
-  if (originalFetch && typeof originalFetch === 'function') {
-    globalThis.fetch = async (input: RequestInfo | URL, init?: RequestInit) => {
-      // 对于 Google OAuth 相关的请求，使用重试机制
-      const url =
-        typeof input === 'string'
-          ? input
-          : input instanceof URL
-            ? input.toString()
-            : input?.url;
-      const isGoogleOAuth =
-        url.includes('googleapis.com') ||
-        url.includes('accounts.google.com') ||
-        url.includes('oauth2.googleapis.com');
-
-      if (isGoogleOAuth) {
-        return fetchWithRetry(originalFetch, input, init, 3);
-      }
-
-      // 非 Google OAuth 请求使用标准处理
-      return fetchWithRetry(originalFetch, input, init, 1);
-    };
+  getStatusMessage(): string {
+    return this.hasProxy() ? `proxy: ${this.proxyUrl}` : 'direct connection';
   }
 }
 
-// 检查代理配置并显示状态
-const httpProxy = process.env.http_proxy || process.env.HTTP_PROXY;
-const httpsProxy = process.env.https_proxy || process.env.HTTPS_PROXY;
-const proxyStatus =
-  httpProxy || httpsProxy ? `使用代理: ${httpsProxy || httpProxy}` : '直接连接';
+/**
+ * Agent 配置常量
+ */
+const AGENT_CONFIG = {
+  timeout: 45_000,
+  keepAlive: true,
+  keepAliveMsecs: 60_000,
+  maxSockets: 50,
+  maxFreeSockets: 10,
+} as const;
 
-console.log(
-  `🔧 已加载 Google OAuth 连接超时配置 (45秒超时 + 重试机制, ${proxyStatus})`
-);
+const UNDICI_CONFIG = {
+  connectTimeout: 45_000,
+  headersTimeout: 45_000,
+  bodyTimeout: 90_000,
+  keepAliveTimeout: 60_000,
+  keepAliveMaxTimeout: 600_000,
+} as const;
+
+/**
+ * 配置标准 HTTP/HTTPS 全局 Agent
+ */
+function configureHttpAgent(http: any, https: any, proxyConfig: ProxyConfig) {
+  if (proxyConfig.hasProxy()) {
+    // 使用 https-proxy-agent
+    try {
+      const { HttpsProxyAgent } = require('https-proxy-agent');
+      const proxyAgent = new HttpsProxyAgent(proxyConfig.proxyUrl!, {
+        timeout: AGENT_CONFIG.timeout,
+        keepAlive: AGENT_CONFIG.keepAlive,
+        keepAliveMsecs: AGENT_CONFIG.keepAliveMsecs,
+      });
+      https.globalAgent = proxyAgent;
+      console.log(`HTTPS proxy configured: ${proxyConfig.proxyUrl}`);
+    } catch {
+      console.log('https-proxy-agent not available, using standard config');
+    }
+  } else {
+    // 配置标准 HTTP/HTTPS Agent
+    [http, https].forEach((module) => {
+      if (module.globalAgent) {
+        Object.assign(module.globalAgent, AGENT_CONFIG);
+      }
+    });
+  }
+}
+
+/**
+ * 配置 undici 全局 Dispatcher
+ */
+function configureUndiciAgent(proxyConfig: ProxyConfig) {
+  try {
+    const undici = require('undici');
+    if (!undici?.Agent || !undici?.setGlobalDispatcher) {
+      return;
+    }
+
+    let globalAgent: any;
+
+    if (proxyConfig.hasProxy()) {
+      // 使用 ProxyAgent
+      globalAgent = new undici.ProxyAgent({
+        uri: proxyConfig.proxyUrl,
+        ...UNDICI_CONFIG,
+      });
+      console.log(`undici proxy configured: ${proxyConfig.proxyUrl}`);
+    } else {
+      // 使用标准 Agent
+      globalAgent = new undici.Agent({
+        ...UNDICI_CONFIG,
+        maxCachedSessions: 100,
+        connections: 50,
+      });
+    }
+
+    undici.setGlobalDispatcher(globalAgent);
+    console.log(`undici global dispatcher configured with ${AGENT_CONFIG.timeout}ms timeout`);
+  } catch {
+    console.log(`Using standard HTTP/HTTPS config with ${AGENT_CONFIG.timeout}ms timeout`);
+  }
+}
+
+/**
+ * 判断是否为 Google OAuth 相关请求
+ */
+function isGoogleOAuthRequest(input: RequestInfo | URL): boolean {
+  const url =
+    typeof input === 'string'
+      ? input
+      : input instanceof URL
+        ? input.toString()
+        : input?.url;
+
+  return (
+    url?.includes('googleapis.com') ||
+    url?.includes('accounts.google.com') ||
+    url?.includes('oauth2.googleapis.com')
+  );
+}
+
+/**
+ * 配置全局 fetch 重试机制
+ */
+function configureFetchRetry(originalFetch: typeof fetch) {
+  return async (input: RequestInfo | URL, init?: RequestInit) => {
+    // Google OAuth 请求使用 3 次重试，其他请求不重试
+    const retries = isGoogleOAuthRequest(input) ? 3 : 1;
+    return fetchWithRetry(originalFetch, input, init, retries);
+  };
+}
+
+// 在 Node.js 环境中配置全局代理超时时间
+if (typeof process !== 'undefined' && process.env.NODE_ENV !== 'test') {
+  const proxyConfig = new ProxyConfig();
+
+  // 配置 Node.js 全局 Agent
+  const http = require('http');
+  const https = require('https');
+  configureHttpAgent(http, https, proxyConfig);
+
+  // 配置 undici 全局 Dispatcher
+  configureUndiciAgent(proxyConfig);
+
+  // 配置全局 fetch 重试机制
+  const originalFetch = globalThis.fetch;
+  if (originalFetch && typeof originalFetch === 'function') {
+    globalThis.fetch = configureFetchRetry(originalFetch);
+  }
+
+  // 输出配置状态
+  console.log(
+    `Google OAuth fetch config loaded: ${AGENT_CONFIG.timeout}ms timeout + retry mechanism, ${proxyConfig.getStatusMessage()}`
+  );
+}
+
+// 导出一个空对象，使其成为有效的 ES 模块
+export {};
