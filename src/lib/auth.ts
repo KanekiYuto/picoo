@@ -41,6 +41,7 @@ export const auth = betterAuth({
             // 创建团队（ID 由数据库自动生成 UUID）
             const [newTeam] = await db.insert(schema.team).values({
               name: `${user.name}'s personal`,
+              memberCount: 1, // 初始化成员数为1（创建者）
               ownerId: user.id,
             }).returning({ id: schema.team.id });
 

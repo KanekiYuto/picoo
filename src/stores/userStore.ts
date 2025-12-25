@@ -6,6 +6,7 @@ import type { Session } from "@/lib/auth";
 export interface Team {
   id: string;
   name: string;
+  type: string; // free, pro, enterprise
   role: string; // owner, admin, member
   memberCount: number;
 }

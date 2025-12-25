@@ -3,7 +3,7 @@ import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { db } from "@/lib/db";
 import { team, teamMember, user } from "@/lib/db/schema";
-import { eq, sql, and } from "drizzle-orm";
+import { eq, and } from "drizzle-orm";
 
 export async function GET() {
   try {
@@ -31,12 +31,9 @@ export async function GET() {
       .select({
         id: team.id,
         name: team.name,
+        type: team.type,
         role: teamMember.role,
-        memberCount: sql<number>`(
-          SELECT COUNT(*)::int
-          FROM ${teamMember} tm
-          WHERE tm."team_id" = ${team.id}
-        )`,
+        memberCount: team.memberCount,
       })
       .from(teamMember)
       .innerJoin(
@@ -52,12 +49,9 @@ export async function GET() {
         .select({
           id: team.id,
           name: team.name,
+          type: team.type,
           role: teamMember.role,
-          memberCount: sql<number>`(
-            SELECT COUNT(*)::int
-            FROM ${teamMember} tm
-            WHERE tm."team_id" = ${team.id}
-          )`,
+          memberCount: team.memberCount,
         })
         .from(team)
         .innerJoin(

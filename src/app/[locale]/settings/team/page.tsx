@@ -1,16 +1,22 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Menu, Users } from "lucide-react";
+import { Menu } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useSettingsNav } from "@/components/settings/SettingsNavContext";
+import { useUserStore } from "@/stores/userStore";
 
 interface Team {
   id: string;
   name: string;
-  plan: string;
+  description?: string | null;
+  image?: string | null;
+  type: string;
   memberCount: number;
+  ownerId: string;
   members: TeamMember[];
+  createdAt: string;
+  updatedAt: string;
 }
 
 interface TeamMember {
@@ -19,38 +25,24 @@ interface TeamMember {
   email: string;
   image: string | null;
   role: string;
+  joinedAt: string;
 }
 
 export default function TeamPage() {
   const t = useTranslations("settings.team");
   const { openMenu } = useSettingsNav();
+  const { currentTeam } = useUserStore();
   const [team, setTeam] = useState<Team | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function fetchTeamData() {
       try {
-        // TODO: 实现获取团队数据的 API
-        // const response = await fetch("/api/team/current");
-        // const data = await response.json();
-        // setTeam(data);
-
-        // 模拟数据
-        setTeam({
-          id: "1",
-          name: "Picoo's Team",
-          plan: "free",
-          memberCount: 1,
-          members: [
-            {
-              id: "1",
-              name: "周恩达",
-              email: "kaneki.yuto.404@gmail.com",
-              image: null,
-              role: "owner",
-            },
-          ],
-        });
+        const response = await fetch("/api/team/current");
+        if (response.ok) {
+          const data = await response.json();
+          setTeam(data);
+        }
       } catch (error) {
         console.error("Failed to fetch team data:", error);
       } finally {
@@ -58,8 +50,12 @@ export default function TeamPage() {
       }
     }
 
-    fetchTeamData();
-  }, []);
+    if (currentTeam) {
+      fetchTeamData();
+    } else {
+      setLoading(false);
+    }
+  }, [currentTeam]);
 
   if (loading) {
     return (
@@ -117,7 +113,7 @@ export default function TeamPage() {
                   {team.name}
                 </div>
                 <div className="text-xs md:text-sm text-muted">
-                  {t(`plans.${team.plan}`)} · {" "}
+                  {t(`plans.${team.type}`)} · {" "}
                   {t("members", { count: team.memberCount })}
                 </div>
               </div>
@@ -250,7 +246,7 @@ export default function TeamPage() {
                 {t("currentTeamPlan")}
               </div>
               <div className="inline-flex items-center px-3 py-1 bg-primary/10 text-primary text-xs md:text-sm font-medium rounded-full">
-                {t(`plans.${team.plan}`)}
+                {t(`plans.${team.type}`)}
               </div>
             </div>
 

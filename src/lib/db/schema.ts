@@ -26,6 +26,7 @@ export const team = pgTable('team', {
   description: text('description'),
   image: text('image'),
   type: text('type').notNull().default('free'),
+  memberCount: integer('member_count').notNull().default(0),
   ownerId: text('owner_id')
     .notNull()
     .references(() => user.id),

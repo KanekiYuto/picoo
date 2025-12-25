@@ -43,6 +43,7 @@ export async function POST(request: NextRequest) {
         name: name.trim(),
         description: description?.trim() || null,
         image: image || null,
+        memberCount: 1, // 初始化成员数为1（创建者）
         ownerId: session.user.id,
         createdAt: new Date(),
         updatedAt: new Date(),
