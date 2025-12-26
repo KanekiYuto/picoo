@@ -8,12 +8,6 @@
     "userMenu": {
       "viewProfile": "View profile",
       "editProfile": "Edit",
-      "inviteMembers": "Invite",
-      "team": "Team",
-      "teamMembers": "{count, plural, =1 {# member} other {# members}}",
-      "personalData": "Personal data",
-      "teamOwner": "Team owner",
-      "createOrJoinTeam": "Create or join team",
       "points": "Points",
       "pointsDetails": "View points details",
       "upgrade": "Upgrade",
@@ -24,21 +18,6 @@
       "terms": "Terms",
       "privacy": "Privacy",
       "blog": "Blog"
-    },
-    "team": {
-      "createModal": {
-        "title": "Create a team",
-        "subtitle": "Choose a unique name for your team.",
-        "nameLabel": "Team name",
-        "namePlaceholder": "Enter team name",
-        "descriptionLabel": "Description",
-        "descriptionPlaceholder": "What is this team for?",
-        "optional": "optional",
-        "characters": "characters",
-        "cancel": "Cancel",
-        "create": "Create team",
-        "creating": "Creating..."
-      }
     }
   },
   "document": {
@@ -594,50 +573,56 @@
     }
   },
   "settings": {
-    "profile": {
-      "title": "Profile settings",
-      "description": "Manage your personal information, billing details, and team memberships",
-      "openMenu": "Open settings menu",
-      "sections": {
-        "settings": "Settings",
+    "layout": {
+      "title": "Settings",
+      "closeMenu": "Close menu",
+      "nav": {
+        "myInfo": "My Info",
+        "profile": "Profile",
+        "credits": "Credits",
+        "creditsBalance": "Credits",
+        "usage": "Usage",
         "billing": "Billing",
-        "teams": "My teams"
-      },
-      "teams": {
-        "empty": "No teams yet",
-        "members": "{count, plural, =1 {member} other {members}}",
-        "roles": {
-          "owner": "Owner",
-          "admin": "Admin",
-          "member": "Member"
-        }
+        "subscriptionPlan": "Subscription plan",
+        "billingDetails": "Billing details"
       }
     },
-    "team": {
-      "title": "Team settings",
-      "description": "Manage your team profile, members, and billing",
+    "profile": {
+      "title": "Profile settings",
+      "description": "Manage your personal information and billing details",
       "openMenu": "Open settings menu",
-      "noTeam": "No team found",
+      "editProfile": "Edit profile",
       "sections": {
         "settings": "Settings",
-        "teams": "Teams",
-        "usageAnalytics": "Usage analytics",
         "billing": "Billing"
       },
-      "members": "{count, plural, =1 {# member} other {# members}}",
-      "member": "{count, plural, =1 {member} other {members}}",
-      "editProfile": "Edit profile",
-      "whoHasAccess": "Who has access",
-      "inviteMember": "Invite member",
-      "manageAccess": "Manage access",
-      "analyzeTeamSpends": "Analyze your team spends",
-      "details": "Details",
-      "currentTeamPlan": "Current team plan",
-      "upgradePlan": "Upgrade plan",
-      "plans": {
-        "free": "Free plan",
-        "pro": "Pro plan",
-        "enterprise": "Enterprise plan"
+      "billing": {
+        "currentPlan": "Current subscription plan",
+        "plans": {
+          "free": "Free",
+          "basic": "Basic",
+          "plus": "Plus",
+          "pro": "Professional"
+        },
+        "upgradePlan": "Upgrade plan"
+      },
+      "editModal": {
+        "title": "Edit Profile",
+        "subtitle": "Update your personal information and avatar",
+        "avatarLabel": "Avatar",
+        "uploadAvatar": "Upload avatar",
+        "avatarHint": "JPG, PNG, WEBP formats supported, max 5MB",
+        "nameLabel": "Name",
+        "namePlaceholder": "Enter your name",
+        "emailLabel": "Email",
+        "emailPlaceholder": "Enter your email address",
+        "emailHint": "Email address cannot be changed",
+        "characters": "characters",
+        "cancel": "Cancel",
+        "save": "Save",
+        "saving": "Saving...",
+        "invalidImageType": "Unsupported image format",
+        "imageTooLarge": "Image size cannot exceed 5MB"
       }
     }
   },

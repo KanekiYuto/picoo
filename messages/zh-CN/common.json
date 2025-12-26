@@ -6,12 +6,6 @@
   "userMenu": {
     "viewProfile": "查看个人资料",
     "editProfile": "编辑",
-    "inviteMembers": "邀请成员",
-    "team": "团队",
-    "teamMembers": "{count} 位成员",
-    "personalData": "个人资料",
-    "teamOwner": "所有者",
-    "createOrJoinTeam": "加入或创建团队",
     "points": "剩余积分",
     "pointsDetails": "查看积分明细",
     "upgrade": "升级",
@@ -21,26 +15,6 @@
     "logout": "注销",
     "terms": "条款",
     "privacy": "隐私",
-    "blog": "博客",
-    "roles": {
-      "owner": "所有者",
-      "admin": "管理员",
-      "member": "成员"
-    }
-  },
-  "team": {
-    "createModal": {
-      "title": "组建团队",
-      "subtitle": "为你的团队选择一个独一无二的名字。",
-      "nameLabel": "团队名称",
-      "namePlaceholder": "输入团队名称",
-      "descriptionLabel": "描述",
-      "descriptionPlaceholder": "这个团队是做什么的？",
-      "optional": "可选",
-      "characters": "字符",
-      "cancel": "取消",
-      "create": "创建团队",
-      "creating": "创建中..."
-    }
+    "blog": "博客"
   }
 }

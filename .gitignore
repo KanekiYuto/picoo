@@ -39,3 +39,7 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# merged translation files (generated from source files in messages/*/
+messages/en.json
+messages/zh-CN.json

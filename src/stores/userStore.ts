@@ -2,15 +2,6 @@ import { create } from "zustand";
 import { devtools } from "zustand/middleware";
 import type { Session } from "@/lib/auth";
 
-// 团队信息类型
-export interface Team {
-  id: string;
-  name: string;
-  type: string; // free, pro, enterprise
-  role: string; // owner, admin, member
-  memberCount: number;
-}
-
 // 用户信息类型
 export interface User {
   id: string;
@@ -18,8 +9,7 @@ export interface User {
   email: string;
   emailVerified: boolean;
   image?: string | null;
-  currentTeamId?: string | null;
-  teams?: Team[];
+  type: string; // 用户类型: free, basic, pro, enterprise
   createdAt: Date;
   updatedAt: Date;
 }
@@ -31,14 +21,12 @@ interface UserState {
   session: Session | null;
   isLoading: boolean;
   isAuthenticated: boolean;
-  currentTeam: Team | null;
 
   // 操作
   setUser: (user: User | null) => void;
   setSession: (session: Session | null) => void;
   setLoading: (isLoading: boolean) => void;
-  setCurrentTeam: (teamId: string | null) => void;
-  updateTeams: (teams: Team[]) => void;
+  updateUser: (user: Partial<User>) => void;
   clearUser: () => void;
 }
 
@@ -51,21 +39,13 @@ export const useUserStore = create<UserState>()(
       session: null,
       isLoading: true,
       isAuthenticated: false,
-      currentTeam: null,
 
       // 设置用户信息
       setUser: (user) =>
         set(
-          (state) => {
-            const currentTeam = user?.currentTeamId && user?.teams
-              ? user.teams.find(t => t.id === user.currentTeamId) || null
-              : null;
-
-            return {
-              user,
-              isAuthenticated: !!user,
-              currentTeam,
-            };
+          {
+            user,
+            isAuthenticated: !!user,
           },
           false,
           "setUser"
@@ -83,6 +63,7 @@ export const useUserStore = create<UserState>()(
                 email: session.user.email,
                 emailVerified: session.user.emailVerified,
                 image: session.user.image,
+                type: (session.user as any).type || 'free',
                 createdAt: session.user.createdAt,
                 updatedAt: session.user.updatedAt,
               }
@@ -103,46 +84,21 @@ export const useUserStore = create<UserState>()(
           "setLoading"
         ),
 
-      // 设置当前团队
-      setCurrentTeam: (teamId) =>
-        set(
-          (state) => {
-            const currentTeam = teamId && state.user?.teams
-              ? state.user.teams.find(t => t.id === teamId) || null
-              : null;
-
-            return {
-              user: state.user ? {
-                ...state.user,
-                currentTeamId: teamId,
-              } : null,
-              currentTeam,
-            };
-          },
-          false,
-          "setCurrentTeam"
-        ),
-
-      // 更新团队列表
-      updateTeams: (teams) =>
+      // 更新用户信息
+      updateUser: (userData) =>
         set(
           (state) => {
             if (!state.user) return {};
 
-            const currentTeam = state.user?.currentTeamId
-              ? teams.find(t => t.id === state.user?.currentTeamId) || null
-              : null;
-
             return {
               user: {
                 ...state.user,
-                teams,
+                ...userData,
               },
-              currentTeam,
             };
           },
           false,
-          "updateTeams"
+          "updateUser"
         ),
 
       // 清除用户信息
@@ -152,7 +108,6 @@ export const useUserStore = create<UserState>()(
             user: null,
             session: null,
             isAuthenticated: false,
-            currentTeam: null,
           },
           false,
           "clearUser"

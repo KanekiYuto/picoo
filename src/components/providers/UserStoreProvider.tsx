@@ -10,7 +10,7 @@ export function UserStoreProvider({
 }) {
   const { setLoading, setUser } = useUserStore();
 
-  // 获取用户完整信息（包括团队）
+  // 获取用户完整信息
   useEffect(() => {
     const fetchUserProfile = async () => {
       setLoading(true);
@@ -37,13 +37,33 @@ export function UserStoreProvider({
           email: data.email,
           emailVerified: data.emailVerified || false,
           image: data.image,
-          currentTeamId: data.currentTeamId || null,
-          teams: data.teams || [],
+          type: data.type,
           createdAt: data.createdAt ? new Date(data.createdAt) : new Date(),
           updatedAt: data.updatedAt ? new Date(data.updatedAt) : new Date(),
         };
 
         setUser(user);
+
+        // 获取用户信息成功后，根据用户类型请求刷新每日积分
+        if (user.type === 'free') {
+          try {
+            const creditResponse = await fetch("/api/credit/daily-check", {
+              method: "POST",
+            });
+
+            if (creditResponse.ok) {
+              const creditData = await creditResponse.json();
+              if (creditData.issued) {
+                console.log("Daily credit issued successfully");
+              } else {
+                console.log("Daily credit already issued today");
+              }
+            }
+          } catch (error) {
+            console.error("Failed to check daily credit:", error);
+            // 不影响用户信息的加载，静默失败
+          }
+        }
       } catch (error) {
         console.error("Failed to fetch user profile:", error);
         setUser(null);

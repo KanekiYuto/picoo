@@ -5,18 +5,18 @@ import { motion, AnimatePresence } from "framer-motion";
 import { X } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
+import type { User } from "@/stores/userStore";
 
-interface CreateTeamModalProps {
+interface EditProfileModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSuccess?: (team: any) => void;
+  user: User;
+  onSuccess?: (user: User) => void;
 }
 
-export function CreateTeamModal({ isOpen, onClose, onSuccess }: CreateTeamModalProps) {
-  const t = useTranslations("common.team.createModal");
-  const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
+export function EditProfileModal({ isOpen, onClose, user, onSuccess }: EditProfileModalProps) {
+  const t = useTranslations("settings.profile.editModal");
+  const [name, setName] = useState(user.name);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -26,37 +26,33 @@ export function CreateTeamModal({ isOpen, onClose, onSuccess }: CreateTeamModalP
     setLoading(true);
 
     try {
-      const response = await fetch("/api/team/create", {
-        method: "POST",
+      // 更新用户信息
+      const response = await fetch("/api/user/update", {
+        method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
           name: name.trim(),
-          description: description.trim() || undefined,
         }),
       });
 
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || "Failed to create team");
+        throw new Error(data.error || "Failed to update profile");
       }
 
-      console.log("Team created:", data);
-
-      // 重置表单
-      setName("");
-      setDescription("");
+      console.log("Profile updated:", data);
 
       // 调用成功回调
-      onSuccess?.(data);
+      onSuccess?.(data.user);
 
       // 关闭模态框
       onClose();
     } catch (err) {
-      console.error("Failed to create team:", err);
-      setError(err instanceof Error ? err.message : "Failed to create team");
+      console.error("Failed to update profile:", err);
+      setError(err instanceof Error ? err.message : "Failed to update profile");
     } finally {
       setLoading(false);
     }
@@ -64,8 +60,7 @@ export function CreateTeamModal({ isOpen, onClose, onSuccess }: CreateTeamModalP
 
   const handleClose = () => {
     if (!loading) {
-      setName("");
-      setDescription("");
+      setName(user.name);
       setError("");
       onClose();
     }
@@ -112,7 +107,7 @@ export function CreateTeamModal({ isOpen, onClose, onSuccess }: CreateTeamModalP
                   <button
                     onClick={handleClose}
                     disabled={loading}
-                    className="flex items-center justify-center h-9 w-9 rounded-full bg-sidebar-bg/80 backdrop-blur-sm border border-border text-muted hover:bg-sidebar-hover hover:text-foreground transition-all disabled:opacity-50"
+                    className="flex items-center justify-center h-9 w-9 rounded-full bg-sidebar-bg/80 backdrop-blur-sm border border-border text-muted hover:bg-sidebar-hover hover:text-foreground transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                     aria-label="Close"
                   >
                     <X className="h-4.5 w-4.5" />
@@ -146,14 +141,14 @@ export function CreateTeamModal({ isOpen, onClose, onSuccess }: CreateTeamModalP
                   )}
                 </AnimatePresence>
 
-                {/* 团队名称 */}
+                {/* 用户名 */}
                 <div className="space-y-2.5">
-                  <label htmlFor="team-name" className="flex items-center gap-2 text-sm font-semibold text-foreground">
+                  <label htmlFor="user-name" className="flex items-center gap-2 text-sm font-semibold text-foreground">
                     {t("nameLabel")}
                     <span className="text-red-500">*</span>
                   </label>
                   <Input
-                    id="team-name"
+                    id="user-name"
                     type="text"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
@@ -177,53 +172,20 @@ export function CreateTeamModal({ isOpen, onClose, onSuccess }: CreateTeamModalP
                   </div>
                 </div>
 
-                {/* 团队描述 */}
-                <div className="space-y-2.5">
-                  <label htmlFor="team-description" className="flex items-center gap-2 text-sm font-semibold text-foreground">
-                    {t("descriptionLabel")}
-                    <span className="text-xs font-normal text-muted-foreground">
-                      ({t("optional")})
-                    </span>
-                  </label>
-                  <Textarea
-                    id="team-description"
-                    value={description}
-                    onChange={(e) => setDescription(e.target.value)}
-                    placeholder={t("descriptionPlaceholder")}
-                    rows={3}
-                    maxLength={200}
-                    disabled={loading}
-                    className="resize-none"
-                  />
-                  <div className="flex justify-between items-center">
-                    <p className="text-xs text-muted-foreground">
-                      {description.length}/200 {t("characters")}
-                    </p>
-                    <div className="h-1 w-20 bg-sidebar-bg rounded-full overflow-hidden">
-                      <motion.div
-                        className="h-full bg-gradient-to-r from-primary/60 to-primary"
-                        initial={{ width: 0 }}
-                        animate={{ width: `${(description.length / 200) * 100}%` }}
-                        transition={{ duration: 0.2 }}
-                      />
-                    </div>
-                  </div>
-                </div>
-
                 {/* 按钮组 */}
                 <div className="flex gap-3 pt-3">
                   <button
                     type="button"
                     onClick={handleClose}
                     disabled={loading}
-                    className="flex-1 px-5 py-3.5 bg-sidebar-bg hover:bg-sidebar-hover border border-border text-foreground text-sm font-semibold rounded-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="flex-1 px-5 py-3.5 bg-sidebar-bg hover:bg-sidebar-hover border border-border text-foreground text-sm font-semibold rounded-xl transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {t("cancel")}
                   </button>
                   <button
                     type="submit"
                     disabled={loading || !name.trim()}
-                    className="flex-1 px-5 py-3.5 bg-gradient-to-r from-primary to-primary-hover text-white text-sm font-semibold rounded-xl transition-all hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0"
+                    className="flex-1 px-5 py-3.5 bg-gradient-to-r from-primary to-primary-hover text-white text-sm font-semibold rounded-xl transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {loading ? (
                       <span className="flex items-center justify-center gap-2">
@@ -236,10 +198,10 @@ export function CreateTeamModal({ isOpen, onClose, onSuccess }: CreateTeamModalP
                             borderTopColor: 'white',
                           }}
                         />
-                        {t("creating")}
+                        {t("saving")}
                       </span>
                     ) : (
-                      t("create")
+                      t("save")
                     )}
                   </button>
                 </div>

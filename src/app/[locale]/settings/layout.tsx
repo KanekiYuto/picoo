@@ -4,8 +4,9 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { User, Users, Home, CreditCard, Receipt, X } from "lucide-react";
-import { SettingsNavProvider } from "@/components/settings/SettingsNavContext";
+import { User, Users, Home, CreditCard, Receipt, X, Coins, BarChart3 } from "lucide-react";
+import { SettingsNavProvider } from "./_components/SettingsNavContext";
+import { useTranslations } from "next-intl";
 
 interface NavItem {
   label: string;
@@ -25,27 +26,27 @@ export default function SettingsLayout({
 }) {
   const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const t = useTranslations("settings.layout");
 
   const locale = pathname.split("/")[1] ?? "";
   const basePath = locale ? `/${locale}` : "";
   const navSectionsUi: NavSection[] = [
     {
-      title: "My Info",
-      items: [{ label: "Profile", href: `${basePath}/settings/profile`, icon: User }],
+      title: t("nav.myInfo"),
+      items: [{ label: t("nav.profile"), href: `${basePath}/settings/profile`, icon: User }],
     },
     {
-      title: "Team Info",
-      items: [{ label: "Overview", href: `${basePath}/settings/team`, icon: Home }],
-    },
-    {
-      title: "Members",
-      items: [{ label: "Team", href: `${basePath}/settings/members`, icon: Users }],
-    },
-    {
-      title: "Billing",
+      title: t("nav.credits"),
       items: [
-        { label: "Subscription plan", href: `${basePath}/settings/billing`, icon: CreditCard },
-        { label: "Billing details", href: `${basePath}/settings/billing/details`, icon: Receipt },
+        { label: t("nav.creditsBalance"), href: `${basePath}/settings/credits`, icon: Coins },
+        { label: t("nav.usage"), href: `${basePath}/settings/usage`, icon: BarChart3 },
+      ],
+    },
+    {
+      title: t("nav.billing"),
+      items: [
+        { label: t("nav.subscriptionPlan"), href: `${basePath}/settings/billing`, icon: CreditCard },
+        { label: t("nav.billingDetails"), href: `${basePath}/settings/billing/details`, icon: Receipt },
       ],
     },
   ];
@@ -88,17 +89,17 @@ export default function SettingsLayout({
         <div className="h-full overflow-y-auto custom-scrollbar p-5 lg:p-6">
           {/* 移动端关闭按钮 */}
           <div className="flex items-center justify-between mb-5 lg:hidden">
-            <div className="text-sm font-medium text-muted">Settings</div>
+            <div className="text-sm font-medium text-muted">{t("title")}</div>
             <button
               onClick={closeMobileMenu}
               className="flex items-center justify-center h-8 w-8 rounded-lg text-foreground hover:bg-sidebar-hover transition-colors"
-              aria-label="Close menu"
+              aria-label={t("closeMenu")}
             >
               <X className="h-5 w-5" />
             </button>
           </div>
 
-          <div className="hidden lg:block text-sm font-medium text-muted mb-6">Settings</div>
+          <div className="hidden lg:block text-sm font-medium text-muted mb-6">{t("title")}</div>
 
           <nav className="space-y-6">
             {navSectionsUi.map((section) => (

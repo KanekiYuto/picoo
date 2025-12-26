@@ -2,10 +2,10 @@
 
 import { Menu } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { UserProfile } from "@/components/settings/UserProfile";
-import { BillingInfo } from "@/components/settings/BillingInfo";
-import { TeamList } from "@/components/settings/TeamList";
-import { useSettingsNav } from "@/components/settings/SettingsNavContext";
+import { UserProfile } from "../_components/UserProfile";
+import { BillingInfo } from "../_components/BillingInfo";
+import { ProfileSkeleton } from "../_components/ProfileSkeleton";
+import { useSettingsNav } from "../_components/SettingsNavContext";
 import { useUserStore } from "@/stores/userStore";
 
 export default function ProfilePage() {
@@ -13,14 +13,8 @@ export default function ProfilePage() {
   const { openMenu } = useSettingsNav();
   const { user, isLoading } = useUserStore();
 
-  const organizations = user?.teams || [];
-
   if (isLoading) {
-    return (
-      <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="text-muted">Loading...</div>
-      </div>
-    );
+    return <ProfileSkeleton />;
   }
 
   if (!user) {
@@ -64,12 +58,6 @@ export default function ProfilePage() {
       <div className="space-y-3">
         <h2 className="text-sm font-medium text-muted">{t("sections.billing")}</h2>
         <BillingInfo />
-      </div>
-
-      {/* 我的团队部分 */}
-      <div className="space-y-3">
-        <h2 className="text-sm font-medium text-muted">{t("sections.teams")}</h2>
-        <TeamList organizations={organizations} />
       </div>
     </div>
   );

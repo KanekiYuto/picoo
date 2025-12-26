@@ -1,10 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
-import { db } from "@/lib/db";
-import { fileResource } from "@/lib/db/schema";
 import { uploadToR2 } from "@/lib/storage/r2";
 import { FILE_LIMITS, formatFileSize, validateFile } from "@/lib/storage/validation";
-import { nanoid } from "nanoid";
 
 export const runtime = "nodejs";
 
@@ -56,23 +53,9 @@ export async function POST(request: NextRequest) {
       prefix,
     });
 
-    const fileResourceId = nanoid();
-    await db.insert(fileResource).values({
-      id: fileResourceId,
-      userId: session.user.id,
-      key: uploadResult.key,
-      url: uploadResult.url,
-      size: uploadResult.size,
-      fileType: validation.fileType,
-      fileName: file.name,
-      contentType: file.type,
-      prefix,
-    });
-
     return NextResponse.json({
       success: true,
       data: {
-        id: fileResourceId,
         key: uploadResult.key,
         url: uploadResult.url,
         size: uploadResult.size,

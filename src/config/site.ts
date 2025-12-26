@@ -44,7 +44,6 @@ export const siteConfig = {
   links: {
     product: [
       { label: "登录", href: "/login" },
-      { label: "团队", href: "/teams" },
     ],
     tools: [
       { label: "AI 图像", href: "/tools/image" },
@@ -70,7 +69,6 @@ export const siteConfig = {
       { label: "技术支持", href: "/support" },
       { label: "商务合作", href: "/business" },
       { label: "个人演示", href: "/demo/individual" },
-      { label: "团队演示", href: "/demo/team" },
     ],
     legal: [
       { label: "隐私政策", href: "/legal/privacy" },

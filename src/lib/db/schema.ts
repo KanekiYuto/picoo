@@ -1,4 +1,4 @@
-import { pgTable, text, timestamp, boolean, integer, uuid } from 'drizzle-orm/pg-core';
+import { pgTable, text, timestamp, boolean, integer, uuid, index } from 'drizzle-orm/pg-core';
 
 // 用户表
 export const user = pgTable('user', {
@@ -7,65 +7,187 @@ export const user = pgTable('user', {
   email: text('email').notNull().unique(),
   emailVerified: boolean('email_verified').notNull().default(false),
   image: text('image'),
-  currentTeamId: uuid('current_team_id'), // 当前选中的团队ID
-  country: text('country'), // 国家代码，如 CN, US
-  ipAddress: text('ip_address'), // 注册时的 IP 地址
-  utmSource: text('utm_source'), // UTM 来源
-  utmMedium: text('utm_medium'), // UTM 媒介
-  utmCampaign: text('utm_campaign'), // UTM 活动
-  utmTerm: text('utm_term'), // UTM 关键词
-  utmContent: text('utm_content'), // UTM 内容
-  createdAt: timestamp('created_at').notNull().defaultNow(),
-  updatedAt: timestamp('updated_at').notNull().defaultNow(),
-});
-
-// 团队表
-export const team = pgTable('team', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  name: text('name').notNull(),
-  description: text('description'),
-  image: text('image'),
+  // 用户类型: free(免费), basic(基础版), pro(专业版), enterprise(企业版)
   type: text('type').notNull().default('free'),
-  memberCount: integer('member_count').notNull().default(0),
-  ownerId: text('owner_id')
-    .notNull()
-    .references(() => user.id),
   createdAt: timestamp('created_at').notNull().defaultNow(),
   updatedAt: timestamp('updated_at').notNull().defaultNow(),
-});
+}, (table) => ({
+  // 邮箱登录查询
+  emailIdx: index('user_email_idx').on(table.email),
+  // 用户创建时间查询
+  createdAtIdx: index('user_created_at_idx').on(table.createdAt),
+  // 用户类型查询
+  typeIdx: index('user_type_idx').on(table.type),
+}));
 
-// 团队成员表
-export const teamMember = pgTable('team_member', {
+// 积分信息表
+export const credit = pgTable('credit', {
+  // UUID 主键,由数据库自动生成
   id: uuid('id').primaryKey().defaultRandom(),
-  teamId: uuid('team_id')
-    .notNull()
-    .references(() => team.id, { onDelete: 'cascade' }),
+  // 用户ID
   userId: text('user_id')
     .notNull()
     .references(() => user.id, { onDelete: 'cascade' }),
-  role: text('role').notNull().default('member'), // owner, admin, member
-  joinedAt: timestamp('joined_at').notNull().defaultNow(),
+  // 关联的交易ID (可选,免费配额时为空)
+  transactionId: uuid('transaction_id').references(() => transaction.id, { onDelete: 'cascade' }),
+  // 配额类型: daily_free(免费配额-每日), monthly_basic(月度订阅-基础版), monthly_pro(月度订阅-专业版), yearly_basic(年度订阅-基础版), yearly_pro(年度订阅-专业版), quota_pack(配额包)
+  type: text('type').notNull(),
+  // 配额数量 (默认为 0)
+  amount: integer('amount').notNull().default(0),
+  // 已消耗配额数量
+  consumed: integer('consumed').notNull().default(0),
+  // 下发时间
+  issuedAt: timestamp('issued_at').notNull(),
+  // 过期时间 (null 表示永不过期)
+  expiresAt: timestamp('expires_at'),
+  // 创建时间
   createdAt: timestamp('created_at').notNull().defaultNow(),
+  // 更新时间
   updatedAt: timestamp('updated_at').notNull().defaultNow(),
-});
+}, (table) => ({
+  // 查询用户配额
+  userIdIdx: index('credit_user_id_idx').on(table.userId),
+  // 有效配额查询（未过期或永不过期）
+  userIdExpiresAtIdx: index('credit_user_id_expires_at_idx').on(table.userId, table.expiresAt),
+  // 用户配额类型复合查询
+  userIdTypeIdx: index('credit_user_id_type_idx').on(table.userId, table.type),
+  // 配额类型过滤
+  typeIdx: index('credit_type_idx').on(table.type),
+  // 交易ID查询
+  transactionIdIdx: index('credit_transaction_id_idx').on(table.transactionId),
+}));
 
-// 文件资源表
-export const fileResource = pgTable('file_resource', {
+
+// 积分交易记录表
+export const creditTransaction = pgTable('credit_transaction', {
+  // UUID 主键,由数据库自动生成
   id: uuid('id').primaryKey().defaultRandom(),
+  // 用户ID
   userId: text('user_id')
     .notNull()
     .references(() => user.id, { onDelete: 'cascade' }),
-  teamId: uuid('team_id').references(() => team.id, { onDelete: 'set null' }),
-  key: text('key').notNull().unique(),
-  url: text('url').notNull(),
-  fileName: text('file_name').notNull(),
-  contentType: text('content_type'),
-  fileType: text('file_type'),
-  size: integer('size').notNull(),
-  prefix: text('prefix'),
+  // 关联的配额ID
+  creditId: uuid('credit_id')
+    .notNull()
+    .references(() => credit.id, { onDelete: 'cascade' }),
+  // 交易类型: consume(消费), refund(退款)
+  type: text('type').notNull(),
+  // 变更数量 (正数为增加,负数为减少)
+  amount: integer('amount').notNull(),
+  // 交易前余额
+  balanceBefore: integer('balance_before').notNull(),
+  // 交易后余额
+  balanceAfter: integer('balance_after').notNull(),
+  // 关联的交易ID (用于退款时关联原始消费交易)
+  relatedTransactionId: uuid('related_transaction_id'),
+  // 备注说明
+  note: text('note'),
+  // 创建时间
   createdAt: timestamp('created_at').notNull().defaultNow(),
+}, (table) => ({
+  // 用户配额交易查询
+  userIdIdx: index('credit_transaction_user_id_idx').on(table.userId),
+  // 用户时间范围查询（倒序）
+  userIdCreatedAtIdx: index('credit_transaction_user_id_created_at_idx').on(table.userId, table.createdAt.desc()),
+  // 用户交易类型查询
+  userIdTypeIdx: index('credit_transaction_user_id_type_idx').on(table.userId, table.type),
+  // 配额ID查询
+  creditIdIdx: index('credit_transaction_credit_id_idx').on(table.creditId),
+  // 配额交易类型过滤
+  typeIdx: index('credit_transaction_type_idx').on(table.type),
+  // 关联交易查询（用于追踪退款）
+  relatedTransactionIdIdx: index('credit_transaction_related_transaction_id_idx').on(table.relatedTransactionId),
+}));
+
+// 交易记录表
+export const transaction = pgTable('transaction', {
+  // UUID 主键,由数据库自动生成
+  id: uuid('id').primaryKey().defaultRandom(),
+  // 用户ID
+  userId: text('user_id')
+    .notNull()
+    .references(() => user.id, { onDelete: 'cascade' }),
+  // 关联的订阅ID (可选,一次性支付时为空)
+  subscriptionId: uuid('subscription_id').references(() => subscription.id, { onDelete: 'cascade' }),
+  // 支付平台的交易ID
+  paymentTransactionId: text('payment_transaction_id').notNull().unique(),
+  // 交易类型: subscription_payment(订阅支付), one_time_payment(一次性支付), refund(退款)
+  type: text('type').notNull(),
+  // 交易金额(分/美分)
+  amount: integer('amount').notNull(),
+  // 货币类型: USD, CNY 等
+  currency: text('currency').notNull().default('USD'),
+  // 创建时间
+  createdAt: timestamp('created_at').notNull().defaultNow(),
+}, (table) => ({
+  // 用户交易查询
+  userIdIdx: index('transaction_user_id_idx').on(table.userId),
+  // 用户时间范围查询（倒序）
+  userIdCreatedAtIdx: index('transaction_user_id_created_at_idx').on(table.userId, table.createdAt.desc()),
+  // 用户交易类型查询
+  userIdTypeIdx: index('transaction_user_id_type_idx').on(table.userId, table.type),
+  // 订阅ID查询
+  subscriptionIdIdx: index('transaction_subscription_id_idx').on(table.subscriptionId),
+  // 支付平台交易ID快速查询（已设为 unique，自动创建索引）
+  // 交易类型过滤
+  typeIdx: index('transaction_type_idx').on(table.type),
+}));
+
+// 订阅信息表
+export const subscription = pgTable('subscription', {
+  // UUID 主键,由数据库自动生成
+  id: uuid('id').primaryKey().defaultRandom(),
+  // 用户ID
+  userId: text('user_id')
+    .notNull()
+    .references(() => user.id, { onDelete: 'cascade' }),
+  // 支付平台: creem, stripe, paypal 等
+  paymentPlatform: text('payment_platform').notNull(),
+  // 支付平台的订阅ID
+  paymentSubscriptionId: text('payment_subscription_id').notNull().unique(),
+  // 支付平台的客户ID
+  paymentCustomerId: text('payment_customer_id'),
+  // 订阅计划类型: monthly_basic, monthly_pro, yearly_basic, yearly_pro
+  planType: text('plan_type').notNull(),
+  // 下次计划类型: 用于计划升级/降级,在下次续费时生效
+  nextPlanType: text('next_plan_type'),
+  // 订阅状态: active(活跃), canceled(已取消), expired(已过期), pending(待支付)
+  status: text('status').notNull().default('pending'),
+  // 订阅金额(分/美分)
+  amount: integer('amount').notNull(),
+  // 货币类型: USD, CNY 等
+  currency: text('currency').notNull().default('USD'),
+  // 订阅开始时间
+  startedAt: timestamp('started_at'),
+  // 订阅结束时间
+  expiresAt: timestamp('expires_at'),
+  // 下次续费时间
+  nextBillingAt: timestamp('next_billing_at'),
+  // 取消时间
+  canceledAt: timestamp('canceled_at'),
+  // 创建时间
+  createdAt: timestamp('created_at').notNull().defaultNow(),
+  // 更新时间
   updatedAt: timestamp('updated_at').notNull().defaultNow(),
-});
+}, (table) => ({
+  // 用户订阅查询
+  userIdIdx: index('subscription_user_id_idx').on(table.userId),
+  // 用户订阅状态查询
+  userIdStatusIdx: index('subscription_user_id_status_idx').on(table.userId, table.status),
+  // 用户计划类型查询
+  userIdPlanTypeIdx: index('subscription_user_id_plan_type_idx').on(table.userId, table.planType),
+  // 支付平台订阅ID快速查询（已设为 unique，自动创建索引）
+  // 支付平台客户ID查询
+  paymentCustomerIdIdx: index('subscription_payment_customer_id_idx').on(table.paymentCustomerId),
+  // 续费时间扫描（活跃订阅的续费提醒）
+  nextBillingAtIdx: index('subscription_next_billing_at_idx').on(table.nextBillingAt),
+  // 状态和续费时间复合查询
+  statusNextBillingAtIdx: index('subscription_status_next_billing_at_idx').on(table.status, table.nextBillingAt),
+  // 订阅状态过滤
+  statusIdx: index('subscription_status_idx').on(table.status),
+  // 过期时间查询（用于清理过期订阅）
+  expiresAtIdx: index('subscription_expires_at_idx').on(table.expiresAt),
+}));
 
 // 重新导出 better-auth 表
 export * from './auth-schema';

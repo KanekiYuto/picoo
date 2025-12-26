@@ -1,1 +1,0 @@
-ALTER TABLE "team" ADD COLUMN "member_count" integer DEFAULT 0 NOT NULL;
