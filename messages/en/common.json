@@ -4,8 +4,6 @@
     "close": "Close"
   },
   "userMenu": {
-    "viewProfile": "View profile",
-    "editProfile": "Edit",
     "points": "Points",
     "pointsDetails": "View points details",
     "upgrade": "Upgrade",
@@ -16,5 +14,11 @@
     "terms": "Terms",
     "privacy": "Privacy",
     "blog": "Blog"
+  },
+  "plans": {
+    "free": "Free",
+    "basic": "Basic",
+    "plus": "Plus",
+    "pro": "Professional"
   }
 }

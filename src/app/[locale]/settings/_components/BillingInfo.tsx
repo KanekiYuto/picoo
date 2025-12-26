@@ -4,43 +4,18 @@ import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { useUserStore } from "@/stores/userStore";
 import { usePathname } from "next/navigation";
+import { getPlanInfo } from "@/lib/utils/plan";
 
 export function BillingInfo() {
   const t = useTranslations("settings.profile.billing");
+  const tPlans = useTranslations("common.plans");
   const { user } = useUserStore();
   const pathname = usePathname();
   const locale = pathname.split("/")[1] ?? "";
 
   if (!user) return null;
 
-  // 根据用户类型获取套餐名称和样式
-  const getPlanInfo = (type: string) => {
-    const planMap: Record<string, { name: string; colorClass: string; bgClass: string }> = {
-      free: {
-        name: t("plans.free"),
-        colorClass: "text-gray-600",
-        bgClass: "bg-gray-100",
-      },
-      basic: {
-        name: t("plans.basic"),
-        colorClass: "text-green-600",
-        bgClass: "bg-green-50",
-      },
-      plus: {
-        name: t("plans.plus"),
-        colorClass: "text-blue-600",
-        bgClass: "bg-blue-50",
-      },
-      pro: {
-        name: t("plans.pro"),
-        colorClass: "text-pink-600",
-        bgClass: "bg-pink-50",
-      },
-    };
-    return planMap[type] || planMap.free;
-  };
-
-  const planInfo = getPlanInfo(user.type);
+  const planInfo = getPlanInfo(user.type, (key) => tPlans(key));
   const pricingPath = locale ? `/${locale}/pricing` : "/pricing";
 
   return (

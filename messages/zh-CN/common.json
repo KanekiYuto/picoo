@@ -4,8 +4,6 @@
     "close": "关闭"
   },
   "userMenu": {
-    "viewProfile": "查看个人资料",
-    "editProfile": "编辑",
     "points": "剩余积分",
     "pointsDetails": "查看积分明细",
     "upgrade": "升级",
@@ -16,5 +14,11 @@
     "terms": "条款",
     "privacy": "隐私",
     "blog": "博客"
+  },
+  "plans": {
+    "free": "免费",
+    "basic": "基础",
+    "plus": "进阶",
+    "pro": "专业"
   }
 }

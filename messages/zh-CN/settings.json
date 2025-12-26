@@ -24,31 +24,82 @@
     },
     "billing": {
       "currentPlan": "当前订阅计划",
-      "plans": {
-        "free": "免费",
-        "basic": "基础",
-        "plus": "进阶",
-        "pro": "专业"
-      },
       "upgradePlan": "升级套餐"
     },
     "editModal": {
       "title": "编辑个人资料",
-      "subtitle": "更新您的个人信息和头像",
-      "avatarLabel": "头像",
-      "uploadAvatar": "上传头像",
-      "avatarHint": "支持 JPG、PNG、WEBP 格式，最大 5MB",
+      "subtitle": "更新您的个人信息",
       "nameLabel": "用户名",
       "namePlaceholder": "输入用户名",
-      "emailLabel": "邮箱",
-      "emailPlaceholder": "输入邮箱地址",
-      "emailHint": "邮箱地址不可修改",
       "characters": "字符",
       "cancel": "取消",
       "save": "保存",
-      "saving": "保存中...",
-      "invalidImageType": "不支持的图片格式",
-      "imageTooLarge": "图片大小不能超过 5MB"
+      "saving": "保存中..."
+    }
+  },
+  "credits": {
+    "title": "积分管理",
+    "description": "查看和管理您的积分余额",
+    "openMenu": "打开设置菜单",
+    "overview": {
+      "currentBalance": "当前积分",
+      "availableCredits": "可用积分",
+      "currentPlan": "当前套餐",
+      "todayUsage": "今日消耗",
+      "creditsUsed": "积分已使用"
+    },
+    "details": {
+      "title": "积分详情",
+      "noCredits": "暂无积分记录",
+      "noMatchingCredits": "没有符合条件的积分记录",
+      "active": "有效",
+      "expiringSoon": "即将过期",
+      "filter": {
+        "all": "全部",
+        "active": "有效",
+        "expired": "已过期"
+      },
+      "types": {
+        "daily_free": "每日免费积分",
+        "monthly_basic": "基础版月度积分",
+        "monthly_pro": "专业版月度积分",
+        "yearly_basic": "基础版年度积分",
+        "yearly_pro": "专业版年度积分",
+        "quota_pack": "积分包"
+      },
+      "consumed": "已消耗",
+      "remaining": "剩余"
+    }
+  },
+  "usage": {
+    "title": "用量明细",
+    "description": "查看您的积分使用记录和消费明细",
+    "openMenu": "打开设置菜单",
+    "stats": {
+      "totalConsumed": "总消耗",
+      "recordCount": "记录数",
+      "avgPerRecord": "平均每次"
+    },
+    "filter": {
+      "all": "全部",
+      "consume": "消费",
+      "refund": "退款"
+    },
+    "table": {
+      "title": "使用记录",
+      "noRecords": "暂无使用记录",
+      "noMatchingRecords": "没有符合条件的记录",
+      "columns": {
+        "time": "时间",
+        "type": "类型",
+        "description": "说明",
+        "amount": "变动",
+        "balance": "余额"
+      },
+      "types": {
+        "consume": "消费",
+        "refund": "退款"
+      }
     }
   }
 }

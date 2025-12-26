@@ -8,7 +8,8 @@ import {
   Settings,
   CreditCard,
   ChevronRight,
-  Info
+  Info,
+  Gem
 } from "lucide-react";
 import { signOut } from "@/lib/auth-client";
 import Link from "next/link";
@@ -72,66 +73,41 @@ export function UserButton() {
               transition={{ duration: 0.2 }}
               className="absolute right-0 top-12 z-50 w-80 rounded-2xl bg-card border border-border shadow-2xl overflow-hidden"
             >
-              {/* 用户信息区域 */}
-              <div className="p-4 border-b border-border bg-sidebar-bg/50">
-                <div className="flex items-start justify-between gap-3 mb-3">
-                  <div className="flex items-center gap-3 flex-1 min-w-0">
-                    <div className="h-12 w-12 rounded-full overflow-hidden bg-gradient-to-br from-primary to-primary-hover flex-shrink-0 ring-2 ring-border">
-                      {user.image ? (
-                        <img
-                          src={user.image}
-                          alt={user.name || "User"}
-                          className="h-full w-full object-cover"
-                        />
-                      ) : (
-                        <div className="h-full w-full flex items-center justify-center text-white font-bold">
-                          {user.name?.charAt(0).toUpperCase()}
-                        </div>
-                      )}
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="font-semibold text-foreground truncate text-sm">
-                        {user.name}
-                      </p>
-                      <p className="text-xs text-muted truncate">
-                        {user.email}
-                      </p>
-                    </div>
+              {/* 用户信息区域 - 可点击跳转 */}
+              <Link
+                href="/settings/profile"
+                onClick={closeMenu}
+                className="block p-4 border-b border-border bg-sidebar-bg/50 hover:bg-sidebar-hover transition-colors cursor-pointer"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="h-12 w-12 rounded-full overflow-hidden bg-gradient-to-br from-primary to-primary-hover flex-shrink-0 ring-2 ring-border">
+                    {user.image ? (
+                      <img
+                        src={user.image}
+                        alt={user.name || "User"}
+                        className="h-full w-full object-cover"
+                      />
+                    ) : (
+                      <div className="h-full w-full flex items-center justify-center text-white font-bold">
+                        {user.name?.charAt(0).toUpperCase()}
+                      </div>
+                    )}
                   </div>
-                  <Link
-                    href="/settings/profile"
-                    onClick={closeMenu}
-                    className="text-xs text-primary hover:text-primary-hover font-medium whitespace-nowrap"
-                  >
-                    {t("viewProfile")}
-                  </Link>
+                  <div className="flex-1 min-w-0">
+                    <p className="font-semibold text-foreground truncate text-sm">
+                      {user.name}
+                    </p>
+                    <p className="text-xs text-muted truncate">
+                      {user.email}
+                    </p>
+                  </div>
                 </div>
-
-                {/* 编辑按钮 */}
-                <div className="flex gap-2">
-                  <Link
-                    href="/settings/profile"
-                    onClick={closeMenu}
-                    className="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-sidebar-hover hover:bg-sidebar-active border border-border rounded-lg text-xs font-medium text-foreground transition-colors"
-                  >
-                    <Settings className="h-3.5 w-3.5" />
-                    {t("editProfile")}
-                  </Link>
-                </div>
-              </div>
+              </Link>
 
               {/* 积分和升级 */}
               <div className="p-3 border-b border-border">
                 <div className="flex items-center gap-1.5 mb-3">
-                  <svg className="h-4 w-4" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                    <path
-                      stroke="currentColor"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="1.5"
-                      d="M8.71 9.005a.734.734 0 0 0 .295-.295l2.35-4.327a.734.734 0 0 1 1.29 0l2.35 4.327c.068.125.17.227.295.295l4.327 2.35a.734.734 0 0 1 0 1.29l-4.327 2.35a.735.735 0 0 0-.295.295l-2.35 4.327a.734.734 0 0 1-1.29 0l-2.35-4.327a.734.734 0 0 0-.294-.295l-4.327-2.35a.734.734 0 0 1 0-1.29l4.327-2.35Z"
-                    />
-                  </svg>
+                  <Gem className="h-4 w-4 text-foreground" />
                   <span className="text-base font-semibold text-foreground">
                     {userPoints}
                   </span>

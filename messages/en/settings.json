@@ -24,31 +24,82 @@
     },
     "billing": {
       "currentPlan": "Current subscription plan",
-      "plans": {
-        "free": "Free",
-        "basic": "Basic",
-        "plus": "Plus",
-        "pro": "Professional"
-      },
       "upgradePlan": "Upgrade plan"
     },
     "editModal": {
       "title": "Edit Profile",
-      "subtitle": "Update your personal information and avatar",
-      "avatarLabel": "Avatar",
-      "uploadAvatar": "Upload avatar",
-      "avatarHint": "JPG, PNG, WEBP formats supported, max 5MB",
+      "subtitle": "Update your personal information",
       "nameLabel": "Name",
       "namePlaceholder": "Enter your name",
-      "emailLabel": "Email",
-      "emailPlaceholder": "Enter your email address",
-      "emailHint": "Email address cannot be changed",
       "characters": "characters",
       "cancel": "Cancel",
       "save": "Save",
-      "saving": "Saving...",
-      "invalidImageType": "Unsupported image format",
-      "imageTooLarge": "Image size cannot exceed 5MB"
+      "saving": "Saving..."
+    }
+  },
+  "credits": {
+    "title": "Credits Management",
+    "description": "View and manage your credit balance",
+    "openMenu": "Open settings menu",
+    "overview": {
+      "currentBalance": "Current Balance",
+      "availableCredits": "Available Credits",
+      "currentPlan": "Current Plan",
+      "todayUsage": "Today's Usage",
+      "creditsUsed": "Credits Used"
+    },
+    "details": {
+      "title": "Credit Details",
+      "noCredits": "No credits available",
+      "noMatchingCredits": "No credits match the filter",
+      "active": "Active",
+      "expiringSoon": "Expiring Soon",
+      "filter": {
+        "all": "All",
+        "active": "Active",
+        "expired": "Expired"
+      },
+      "types": {
+        "daily_free": "Daily Free Credits",
+        "monthly_basic": "Basic Monthly Credits",
+        "monthly_pro": "Pro Monthly Credits",
+        "yearly_basic": "Basic Yearly Credits",
+        "yearly_pro": "Pro Yearly Credits",
+        "quota_pack": "Credit Pack"
+      },
+      "consumed": "Consumed",
+      "remaining": "Remaining"
+    }
+  },
+  "usage": {
+    "title": "Usage Details",
+    "description": "View your credit usage history and consumption details",
+    "openMenu": "Open settings menu",
+    "stats": {
+      "totalConsumed": "Total Consumed",
+      "recordCount": "Records",
+      "avgPerRecord": "Avg Per Use"
+    },
+    "filter": {
+      "all": "All",
+      "consume": "Consume",
+      "refund": "Refund"
+    },
+    "table": {
+      "title": "Usage History",
+      "noRecords": "No usage records yet",
+      "noMatchingRecords": "No records match the filter",
+      "columns": {
+        "time": "Time",
+        "type": "Type",
+        "description": "Description",
+        "amount": "Change",
+        "balance": "Balance"
+      },
+      "types": {
+        "consume": "Consume",
+        "refund": "Refund"
+      }
     }
   }
 }

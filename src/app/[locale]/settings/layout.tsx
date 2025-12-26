@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { User, Users, Home, CreditCard, Receipt, X, Coins, BarChart3 } from "lucide-react";
+import { User, CreditCard, Receipt, X, Gem, BarChart3 } from "lucide-react";
 import { SettingsNavProvider } from "./_components/SettingsNavContext";
 import { useTranslations } from "next-intl";
 
@@ -38,7 +38,7 @@ export default function SettingsLayout({
     {
       title: t("nav.credits"),
       items: [
-        { label: t("nav.creditsBalance"), href: `${basePath}/settings/credits`, icon: Coins },
+        { label: t("nav.creditsBalance"), href: `${basePath}/settings/credits`, icon: Gem },
         { label: t("nav.usage"), href: `${basePath}/settings/usage`, icon: BarChart3 },
       ],
     },
