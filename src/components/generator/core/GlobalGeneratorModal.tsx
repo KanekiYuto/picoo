@@ -5,10 +5,10 @@ import { motion, AnimatePresence } from "framer-motion";
 import { X } from "lucide-react";
 import { useGeneratorStore } from "@/stores/generatorStore";
 import { GlobalGenerator } from "./GlobalGenerator";
-import { UploadPanel } from "./UploadPanel";
-import { SettingsPanel, type GeneratorSettings } from "./settings-panel";
-import { ModeSelectorPanel, ModeSelectorButton, type GeneratorMode } from "./ModeSelector";
-import { ImageUploadButton } from "./ImageUploadButton";
+import { UploadPanel } from "../panels/upload/UploadPanel";
+import { SettingsPanel, type GeneratorSettings } from "../panels/settings";
+import { ModeSelectorPanel, ModeSelectorButton, type GeneratorMode } from "../panels/mode";
+import { ImageUploadButton } from "../buttons/ImageUploadButton";
 
 /**
  * 全局生成器模态框
@@ -173,11 +173,9 @@ export function GlobalGeneratorModal() {
                   transition={{ duration: 0.3 }}
                 >
                   <ModeSelectorPanel
-                    isOpen={activePanel === "mode"}
                     value={mode}
                     onChange={setMode}
                     onClose={() => setActivePanel(null)}
-                    uploadImages={uploadImages}
                   />
                 </motion.div>
               )}
@@ -233,11 +231,10 @@ export function GlobalGeneratorModal() {
                   onOpenSettingsPanel={() => setActivePanel("settings")}
                   onOpenModePanel={() => setActivePanel("mode")}
                   onOpenMobileImagePanel={() => setActivePanel("mobile-images")}
-                  previewUrl={previewUrl}
                   uploadImages={uploadImages}
                   onRemoveImage={handleRemoveImage}
                   settings={settings}
-                  onSettingsChange={setSettings}
+                  mode={mode}
                 />
               </div>
             </motion.div>

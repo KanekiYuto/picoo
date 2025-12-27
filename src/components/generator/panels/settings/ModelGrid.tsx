@@ -27,8 +27,8 @@ export function ModelGrid({
 
         return (
           <div key={model.id} className="relative flex flex-col items-center justify-center gap-1">
-            <HoverCard openDelay={200} closeDelay={80}>
-              <HoverCardTrigger>
+            <HoverCard openDelay={1000} closeDelay={80}>
+              <HoverCardTrigger asChild>
                 <button
                   type="button"
                   aria-pressed={isSelected}
@@ -52,11 +52,11 @@ export function ModelGrid({
                     )}
                   >
                     {IconComponent ? (
-                      <IconComponent className="h-6 w-6" />
+                      <IconComponent className="h-8 w-8" />
                     ) : (
                       <span
                         className={cn(
-                          "text-base font-semibold transition-colors",
+                          "text-lg font-semibold transition-colors",
                           isSelected ? "text-white" : "text-muted/80"
                         )}
                       >

@@ -3,14 +3,13 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { useTranslations } from "next-intl";
-import { Plus } from "lucide-react";
+import { ImageOff } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { ModelDisplay } from "./settings-panel/ModelDisplay";
-import type { GeneratorSettings } from "./settings-panel/types";
-import { MODELS } from "./settings-panel/models";
-import { getModelById } from "./settings-panel/utils";
-import { ImageUploadButton } from "./ImageUploadButton";
-import { ModeSelectorButton, type GeneratorMode } from "./ModeSelector";
+import { ModelDisplay } from "../panels/settings/ModelDisplay";
+import type { GeneratorSettings } from "../panels/settings";
+import { MODELS, getModelById } from "../panels/settings";
+import { ImageUploadButton } from "../buttons/ImageUploadButton";
+import { ModeSelectorButton } from "../buttons";
 
 interface GlobalGeneratorProps {
   className?: string;
@@ -24,6 +23,7 @@ interface GlobalGeneratorProps {
   onRemoveImage?: (index: number) => void;
   settings?: GeneratorSettings;
   onSettingsChange?: (settings: GeneratorSettings) => void;
+  mode?: "prompt" | "upscale" | "edit" | "remove-watermark" | "change-background" | "ai-face-swap";
 }
 
 export function GlobalGenerator({
@@ -33,16 +33,35 @@ export function GlobalGenerator({
   onOpenSettingsPanel,
   onOpenModePanel,
   onOpenMobileImagePanel,
-  previewUrl = "",
   uploadImages = [],
   onRemoveImage,
   settings,
-  onSettingsChange
+  mode = "prompt"
 }: GlobalGeneratorProps) {
   const t = useTranslations("generator");
   const [prompt, setPrompt] = useState("");
-  const [mode, setMode] = useState<GeneratorMode>("prompt");
-  const MAX_UPLOAD_COUNT = 4;
+
+  // 根据模式获取最大上传数量
+  const getMaxUploadCount = () => {
+    switch (mode) {
+      case "prompt":
+        return 0; // 文本生成不需要上传图片
+      case "upscale":
+        return 1; // 放大支持上传一张
+      case "edit":
+        return 4; // 编辑最多四张
+      case "remove-watermark":
+        return 1; // 去水印一张
+      case "change-background":
+        return 2; // 换背景两张
+      case "ai-face-swap":
+        return 2; // 换脸两张
+      default:
+        return 0;
+    }
+  };
+
+  const MAX_UPLOAD_COUNT = getMaxUploadCount();
 
   // 处理生成
   const handleCreate = () => {
@@ -56,13 +75,22 @@ export function GlobalGenerator({
       <div className="flex flex-col md:flex-row gap-3 md:gap-4">
         {/* 桌面端图片上传区域 - 左侧 */}
         <div className="hidden justify-end md:flex flex-col gap-3">
-          <ImageUploadButton
-            size="lg"
-            uploadImages={uploadImages}
-            maxUploadCount={MAX_UPLOAD_COUNT}
-            onClick={onOpenUploadPanel}
-            onRemoveImage={onRemoveImage}
-          />
+          {mode === "prompt" ? (
+            <div className="flex h-24 w-24 items-center justify-center rounded-xl border-2 border-dashed border-border/35 bg-sidebar-hover/15">
+              <div className="flex flex-col items-center gap-1">
+                <ImageOff className="h-6 w-6 text-muted/45" />
+                <span className="text-[10px] font-medium text-muted/45">{t("noImageRequired")}</span>
+              </div>
+            </div>
+          ) : (
+            <ImageUploadButton
+              size="lg"
+              uploadImages={uploadImages}
+              maxUploadCount={MAX_UPLOAD_COUNT}
+              onClick={onOpenUploadPanel}
+              onRemoveImage={onRemoveImage}
+            />
+          )}
           {/* 模式切换按钮 */}
           <ModeSelectorButton value={mode} onClick={onOpenModePanel || (() => {})} />
         </div>

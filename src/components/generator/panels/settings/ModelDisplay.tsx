@@ -1,12 +1,11 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import type { AspectRatio, GeneratorSettings, ModelOption } from "./types";
-import { BUTTON_TRANSITION_CLASSES, FOCUS_RING_CLASSES } from "./constants";
+import type { GeneratorSettings, ModelOption } from "./types";
 
 interface ModelDisplayProps {
   model: ModelOption | undefined;
-  aspectRatio: AspectRatio;
+  aspectRatio: string;
   variations: 1 | 2 | 3 | 4;
   visibility?: "public" | "private";
   compact?: boolean;
@@ -41,8 +40,8 @@ export function ModelDisplay({
           "flex items-center gap-1 md:gap-1.5 px-2 md:px-3 py-2 rounded-lg",
           "text-xs md:text-sm text-white whitespace-nowrap",
           "hover:bg-sidebar-hover",
-          BUTTON_TRANSITION_CLASSES,
-          FOCUS_RING_CLASSES
+          "transition-colors duration-200",
+          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
         )}
       >
         <span className="font-medium">{modelName}</span>
@@ -65,24 +64,5 @@ export function ModelDisplay({
         {aspectRatio} • {variationLabel}
       </div>
     </div>
-  );
-}
-
-/**
- * 从GeneratorSettings创建ModelDisplay组件
- */
-export function createModelDisplay(
-  model: ModelOption | undefined,
-  settings: GeneratorSettings,
-  options?: Omit<ModelDisplayProps, "model" | "aspectRatio" | "variations" | "visibility">
-) {
-  return (
-    <ModelDisplay
-      model={model}
-      aspectRatio={settings.aspectRatio}
-      variations={settings.variations}
-      visibility={settings.visibility}
-      {...options}
-    />
   );
 }

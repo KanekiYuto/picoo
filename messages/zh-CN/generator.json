@@ -5,6 +5,7 @@
   "model": "模型",
   "aspectRatio": "比例",
   "version": "版本",
+  "noImageRequired": "无需图片",
   "uploadPanel": {
     "title": "添加图片",
     "clickToUpload": "点击上传",
@@ -18,16 +19,18 @@
     "clickToAdd": "点击添加"
   },
   "modes": {
-    "prompt": "Prompt",
+    "prompt": "文本生成",
     "promptDesc": "使用图片元素",
-    "upscale": "Upscale",
+    "upscale": "放大",
     "upscaleDesc": "放大你的图片",
-    "edit": "Edit",
+    "edit": "编辑",
     "editDesc": "使用参考图片编辑",
-    "style": "Style",
-    "styleDesc": "使用图片风格",
-    "personalize": "Personalize",
-    "personalizeDesc": "创建自定义引用"
+    "removeWatermark": "去水印",
+    "removeWatermarkDesc": "移除图片中的水印",
+    "changeBackground": "换背景",
+    "changeBackgroundDesc": "更换图片背景",
+    "aiFaceSwap": "AI换脸",
+    "aiFaceSwapDesc": "使用AI进行换脸处理"
   },
   "settingsPanel": {
     "title": "设置",

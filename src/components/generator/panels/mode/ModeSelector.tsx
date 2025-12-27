@@ -1,29 +1,28 @@
 "use client";
 
-import { Type, Maximize, Pencil, Palette, AtSign, X } from "lucide-react";
+import { Type, Maximize, Pencil, Wand2, Layers, Sparkles, X } from "lucide-react";
 import { motion } from "framer-motion";
 import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
 
-export type GeneratorMode = "prompt" | "upscale" | "edit" | "style" | "personalize";
+export type GeneratorMode = "prompt" | "upscale" | "edit" | "remove-watermark" | "change-background" | "ai-face-swap";
 
 interface ModeSelectorPanelProps {
-  isOpen: boolean;
   value: GeneratorMode;
   onChange: (mode: GeneratorMode) => void;
   onClose: () => void;
-  uploadImages?: string[];
 }
 
 const MODE_OPTIONS: { id: GeneratorMode; icon: React.ElementType; labelKey: string; descKey: string }[] = [
   { id: "prompt", icon: Type, labelKey: "prompt", descKey: "promptDesc" },
   { id: "upscale", icon: Maximize, labelKey: "upscale", descKey: "upscaleDesc" },
   { id: "edit", icon: Pencil, labelKey: "edit", descKey: "editDesc" },
-  { id: "style", icon: Palette, labelKey: "style", descKey: "styleDesc" },
-  { id: "personalize", icon: AtSign, labelKey: "personalize", descKey: "personalizeDesc" },
+  { id: "remove-watermark", icon: Wand2, labelKey: "removeWatermark", descKey: "removeWatermarkDesc" },
+  { id: "change-background", icon: Layers, labelKey: "changeBackground", descKey: "changeBackgroundDesc" },
+  { id: "ai-face-swap", icon: Sparkles, labelKey: "aiFaceSwap", descKey: "aiFaceSwapDesc" },
 ];
 
-export function ModeSelectorPanel({ isOpen, value, onChange, onClose, uploadImages = [] }: ModeSelectorPanelProps) {
+export function ModeSelectorPanel({ value, onChange, onClose }: ModeSelectorPanelProps) {
   const t = useTranslations("generator.modes");
 
   return (

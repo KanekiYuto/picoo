@@ -150,31 +150,24 @@ export function SettingsPanel({ onClose, settings, onSettingsChange }: SettingsP
               <SectionCard title={t("moreOptions")}>
                 <div className="space-y-3">
                   <p className="text-sm font-medium text-foreground">{t("variations")}</p>
-                  <div className="relative flex gap-1 rounded-full bg-sidebar-active p-1">
+                  <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
                     {VARIATION_OPTIONS.map((num) => (
-                      <motion.button
+                      <button
                         key={num}
                         type="button"
                         aria-pressed={currentSettings.variations === num}
                         onClick={() => commitSettings({ ...currentSettings, variations: num })}
                         className={cn(
-                          "relative flex flex-1 items-center justify-center rounded-full py-1.5 text-sm font-semibold",
+                          "h-10 rounded-lg text-sm font-medium sm:h-11",
                           BUTTON_TRANSITION_CLASSES,
                           FOCUS_RING_CLASSES,
                           currentSettings.variations === num
-                            ? "text-white"
-                            : "text-white/60 hover:text-white/90"
+                            ? "bg-sidebar-active text-white"
+                            : "bg-sidebar-hover text-muted hover:text-foreground"
                         )}
                       >
-                        {currentSettings.variations === num && (
-                          <motion.div
-                            layoutId="variations-bg"
-                            className="absolute inset-0 rounded-full bg-input-tab-active"
-                            transition={{ type: "spring", duration: 0.5, bounce: 0.2 }}
-                          />
-                        )}
-                        <span className="relative z-10">{num}</span>
-                      </motion.button>
+                        {num}
+                      </button>
                     ))}
                   </div>
                 </div>

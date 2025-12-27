@@ -5,6 +5,7 @@
   "model": "Model",
   "aspectRatio": "Aspect Ratio",
   "version": "Version",
+  "noImageRequired": "No image required",
   "uploadPanel": {
     "title": "Add image",
     "clickToUpload": "Click to upload",
@@ -24,10 +25,12 @@
     "upscaleDesc": "Upscale your assets",
     "edit": "Edit",
     "editDesc": "Edit using reference image",
-    "style": "Style",
-    "styleDesc": "Use the style of an image",
-    "personalize": "Personalize",
-    "personalizeDesc": "Create Custom Image References"
+    "removeWatermark": "Remove Watermark",
+    "removeWatermarkDesc": "Remove watermarks from images",
+    "changeBackground": "Change Background",
+    "changeBackgroundDesc": "Change image background",
+    "aiFaceSwap": "AI Face Swap",
+    "aiFaceSwapDesc": "Swap faces with AI"
   },
   "settingsPanel": {
     "title": "Settings",
