@@ -19,12 +19,12 @@ export const creditConfig = {
   userTypes: {
     free: 'free',
     basic: 'basic',
+    plus: 'plus',
     pro: 'pro',
-    enterprise: 'enterprise',
   },
 } as const;
 
-export type UserType = 'free' | 'basic' | 'pro' | 'enterprise';
+export type UserType = 'free' | 'basic' | 'plus' | 'pro';
 
 /**
  * 获取每日免费积分数量

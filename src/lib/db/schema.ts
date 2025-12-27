@@ -1,4 +1,4 @@
-import { pgTable, text, timestamp, boolean, integer, uuid, index } from 'drizzle-orm/pg-core';
+import { pgTable, text, timestamp, boolean, integer, uuid, index, jsonb } from 'drizzle-orm/pg-core';
 
 // 用户表
 export const user = pgTable('user', {
@@ -226,6 +226,79 @@ export const asset = pgTable('asset', {
   userIdTypeIdx: index('asset_user_id_type_idx').on(table.userId, table.type),
   // 素材类型过滤
   typeIdx: index('asset_type_idx').on(table.type),
+}));
+
+// 媒体生成任务表
+export const mediaGenerationTask = pgTable('media_generation_task', {
+  // UUID 主键,由数据库自动生成
+  id: uuid('id').primaryKey().defaultRandom(),
+  // 任务ID (UUID格式,用于前端查询和 webhook 回调)
+  taskId: uuid('task_id').notNull().unique(),
+  // 分享ID (短ID,用于分享链接)
+  shareId: text('share_id').notNull().unique(),
+  // 用户ID
+  userId: text('user_id')
+    .notNull()
+    .references(() => user.id, { onDelete: 'cascade' }),
+  // 任务类型: text_to_image(文生图), image_to_image(图生图)
+  taskType: text('task_type').notNull(),
+  // 服务商: fal, wavespeed, replicate 等
+  provider: text('provider').notNull(),
+  // 服务商平台的请求ID (可选)
+  providerRequestId: text('provider_request_id'),
+  // 使用的模型: nano_banana_pro, flux_schnell, flux_dev 等
+  model: text('model').notNull(),
+  // 任务状态: pending(排队中), processing(生成中), completed(已完成), failed(失败), canceled(已取消)
+  status: text('status').notNull().default('pending'),
+  // 进度百分比 (0-100)
+  progress: integer('progress').notNull().default(0),
+  // 生成参数 (JSON 格式存储: prompt、negativePrompt、aspectRatio、numImages、seed、steps、guidanceScale 等)
+  parameters: jsonb('parameters').notNull(),
+  // 生成结果 (JSONB 格式存储媒体文件信息数组: [{url, filename, type, size}])
+  results: jsonb('results'),
+  // 消费的配额交易记录ID
+  consumeTransactionId: uuid('consume_transaction_id')
+    .notNull()
+    .references(() => creditTransaction.id, { onDelete: 'cascade' }),
+  // 退款的配额交易记录ID (可选)
+  refundTransactionId: uuid('refund_transaction_id').references(() => creditTransaction.id, { onDelete: 'set null' }),
+  // 错误信息 (JSONB 格式存储错误详情: {message, code, stack, details})
+  errorMessage: jsonb('error_message'),
+  // 任务开始时间
+  startedAt: timestamp('started_at').notNull(),
+  // 任务完成时间
+  completedAt: timestamp('completed_at'),
+  // 生成耗时 (毫秒)
+  durationMs: integer('duration_ms'),
+  // 创建时间
+  createdAt: timestamp('created_at').notNull().defaultNow(),
+  // 更新时间
+  updatedAt: timestamp('updated_at').notNull().defaultNow(),
+  // 删除时间 (软删除标记)
+  deletedAt: timestamp('deleted_at'),
+  // 是否私有 (私有任务不对外展示)
+  isPrivate: boolean('is_private').notNull().default(false),
+  // 是否包含 NSFW 内容
+  isNsfw: boolean('is_nsfw').notNull().default(false),
+  // NSFW 内容审核详情 (JSON 格式: {harassment, hate, sexual, sexual/minors, violence})
+  nsfwDetails: jsonb('nsfw_details'),
+}, (table) => ({
+  // 用户任务查询、状态过滤
+  userIdIdx: index('media_generation_task_user_id_idx').on(table.userId),
+  userIdStatusIdx: index('media_generation_task_user_id_status_idx').on(table.userId, table.status),
+  // 任务状态过滤、处理中任务扫描
+  statusIdx: index('media_generation_task_status_idx').on(table.status),
+  // 公开分享任务查询 (用于 sitemap 生成)
+  isPrivateDeletedAtIdx: index('media_generation_task_is_private_deleted_at_idx').on(table.isPrivate, table.deletedAt),
+  isNsfwDeletedAtIdx: index('media_generation_task_is_nsfw_deleted_at_idx').on(table.isNsfw, table.deletedAt),
+  // 软删除逻辑查询
+  deletedAtIdx: index('media_generation_task_deleted_at_idx').on(table.deletedAt),
+  // 创建时间范围查询、分页
+  createdAtIdx: index('media_generation_task_created_at_idx').on(table.createdAt),
+  // 任务类型统计
+  taskTypeIdx: index('media_generation_task_task_type_idx').on(table.taskType),
+  // webhook 回调查询
+  providerRequestIdIdx: index('media_generation_task_provider_request_id_idx').on(table.providerRequestId),
 }));
 
 // 重新导出 better-auth 表
