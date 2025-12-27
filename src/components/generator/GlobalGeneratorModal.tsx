@@ -73,7 +73,6 @@ export function GlobalGeneratorModal() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            onClick={closeGeneratorModal}
             className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm"
           />
 
@@ -130,7 +129,7 @@ export function GlobalGeneratorModal() {
               {activePanel === null && (
                 <button
                   onClick={closeGeneratorModal}
-                  className="absolute -top-12 right-0 z-10 flex h-10 w-10 items-center justify-center rounded-full bg-card/80 text-muted transition-colors backdrop-blur-sm hover:bg-card hover:text-foreground"
+                  className="absolute -top-12 right-0 z-10 flex h-10 w-10 items-center justify-center rounded-full bg-card/80 text-muted transition-colors backdrop-blur-sm hover:bg-card hover:text-foreground cursor-pointer"
                   aria-label="关闭"
                 >
                   <X className="h-5 w-5" />

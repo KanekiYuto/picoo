@@ -4,16 +4,14 @@ import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 import {
   Home,
-  LayoutDashboard,
-  FileText,
-  Users,
-  BarChart,
+  Image as ImageIcon,
   Settings,
   HelpCircle,
   MoreHorizontal,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useLocale } from "next-intl";
 import { useEffect } from "react";
 
 interface NavItem {
@@ -24,11 +22,8 @@ interface NavItem {
 
 const navItems: NavItem[] = [
   { icon: Home, label: "首页", href: "/" },
-  { icon: LayoutDashboard, label: "应用", href: "/dashboard" },
-  { icon: FileText, label: "媒体", href: "/media" },
-  { icon: Users, label: "视频", href: "/video" },
-  { icon: BarChart, label: "编辑", href: "/edit" },
-  { icon: Settings, label: "对口型", href: "/lipsync" },
+  { icon: ImageIcon, label: "素材", href: "/assets" },
+  { icon: Settings, label: "设置", href: "/settings/profile" },
 ];
 
 const bottomItems: NavItem[] = [
@@ -43,6 +38,23 @@ interface MobileSidebarProps {
 
 export function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
   const pathname = usePathname();
+  const locale = useLocale();
+
+  // 判断是否激活的辅助函数（处理国际化路由）
+  const isActiveRoute = (href: string) => {
+    // 移除当前 locale 前缀来比较路径
+    const localePrefix = `/${locale}`;
+    const pathWithoutLocale = pathname.startsWith(localePrefix)
+      ? pathname.slice(localePrefix.length)
+      : pathname;
+    const normalizedPath = pathWithoutLocale || '/';
+
+    if (href === '/') {
+      return normalizedPath === '/';
+    }
+
+    return normalizedPath.startsWith(href);
+  };
 
   // 禁止背景滚动
   useEffect(() => {
@@ -99,7 +111,7 @@ export function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
               <div className="flex flex-col gap-2">
                 {navItems.map((item, index) => {
                   const Icon = item.icon;
-                  const isActive = pathname === item.href;
+                  const isActive = isActiveRoute(item.href);
                   return (
                     <motion.div
                       key={item.label}
@@ -145,7 +157,7 @@ export function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
               <div className="mt-auto flex flex-col gap-2 border-t border-border pt-6">
                 {bottomItems.map((item, index) => {
                   const Icon = item.icon;
-                  const isActive = pathname === item.href;
+                  const isActive = isActiveRoute(item.href);
                   return (
                     <motion.div
                       key={item.label}

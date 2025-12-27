@@ -1,0 +1,26 @@
+{
+  "title": "My Assets",
+  "filters": {
+    "all": "All",
+    "image": "Images",
+    "video": "Videos"
+  },
+  "types": {
+    "image": "Image",
+    "video": "Video"
+  },
+  "empty": {
+    "title": "No Assets",
+    "description": "You haven't uploaded any assets yet"
+  },
+  "detail": {
+    "type": "Type",
+    "size": "File Size",
+    "mimeType": "MIME Type",
+    "uploadDate": "Upload Date",
+    "tags": "Tags",
+    "noDescription": "No description",
+    "viewOriginal": "View Original",
+    "download": "Download"
+  }
+}

@@ -189,5 +189,44 @@ export const subscription = pgTable('subscription', {
   expiresAtIdx: index('subscription_expires_at_idx').on(table.expiresAt),
 }));
 
+// 素材表
+export const asset = pgTable('asset', {
+  // UUID 主键,由数据库自动生成
+  id: uuid('id').primaryKey().defaultRandom(),
+  // 用户ID
+  userId: text('user_id')
+    .notNull()
+    .references(() => user.id, { onDelete: 'cascade' }),
+  // 文件名
+  filename: text('filename').notNull(),
+  // 原始文件名
+  originalFilename: text('original_filename').notNull(),
+  // 文件URL
+  url: text('url').notNull(),
+  // 文件类型: image(图片), video(视频), audio(音频), document(文档), other(其他)
+  type: text('type').notNull(),
+  // MIME类型: image/png, video/mp4 等
+  mimeType: text('mime_type').notNull(),
+  // 文件大小(字节)
+  size: integer('size').notNull(),
+  // 标签(用于分类和搜索)
+  tags: text('tags').array(),
+  // 描述
+  description: text('description'),
+  // 创建时间
+  createdAt: timestamp('created_at').notNull().defaultNow(),
+  // 更新时间
+  updatedAt: timestamp('updated_at').notNull().defaultNow(),
+}, (table) => ({
+  // 用户素材查询
+  userIdIdx: index('asset_user_id_idx').on(table.userId),
+  // 用户时间范围查询（倒序）
+  userIdCreatedAtIdx: index('asset_user_id_created_at_idx').on(table.userId, table.createdAt.desc()),
+  // 用户素材类型查询
+  userIdTypeIdx: index('asset_user_id_type_idx').on(table.userId, table.type),
+  // 素材类型过滤
+  typeIdx: index('asset_type_idx').on(table.type),
+}));
+
 // 重新导出 better-auth 表
 export * from './auth-schema';

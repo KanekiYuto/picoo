@@ -5,16 +5,14 @@ import { cn } from "@/lib/utils";
 import { siteConfig } from "@/config/site";
 import {
   Home,
-  LayoutDashboard,
-  FileText,
-  Users,
-  BarChart,
+  Image as ImageIcon,
   Settings,
   HelpCircle,
   MoreHorizontal,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useLocale } from "next-intl";
 import Image from "next/image";
 
 interface NavItem {
@@ -25,11 +23,8 @@ interface NavItem {
 
 const navItems: NavItem[] = [
   { icon: Home, label: "首页", href: "/" },
-  { icon: LayoutDashboard, label: "应用", href: "/dashboard" },
-  { icon: FileText, label: "媒体", href: "/media" },
-  { icon: Users, label: "视频", href: "/video" },
-  { icon: BarChart, label: "编辑", href: "/edit" },
-  { icon: Settings, label: "对口型", href: "/lipsync" },
+  { icon: ImageIcon, label: "素材", href: "/assets" },
+  { icon: Settings, label: "设置", href: "/settings/profile" },
 ];
 
 const bottomItems: NavItem[] = [
@@ -43,6 +38,23 @@ interface SidebarProps {
 
 export function Sidebar({ className }: SidebarProps) {
   const pathname = usePathname();
+  const locale = useLocale();
+
+  // 判断是否激活的辅助函数（处理国际化路由）
+  const isActiveRoute = (href: string) => {
+    // 移除当前 locale 前缀来比较路径
+    const localePrefix = `/${locale}`;
+    const pathWithoutLocale = pathname.startsWith(localePrefix)
+      ? pathname.slice(localePrefix.length)
+      : pathname;
+    const normalizedPath = pathWithoutLocale || '/';
+
+    if (href === '/') {
+      return normalizedPath === '/';
+    }
+
+    return normalizedPath.startsWith(href);
+  };
 
   return (
     <aside
@@ -70,7 +82,7 @@ export function Sidebar({ className }: SidebarProps) {
         <div className="flex flex-col gap-1 px-2">
           {navItems.map((item) => {
             const Icon = item.icon;
-            const isActive = pathname === item.href;
+            const isActive = isActiveRoute(item.href);
             return (
               <Link
                 key={item.label}
@@ -102,7 +114,7 @@ export function Sidebar({ className }: SidebarProps) {
         <div className="mt-auto flex flex-col gap-1 border-t border-border px-2 pt-4">
           {bottomItems.map((item) => {
             const Icon = item.icon;
-            const isActive = pathname === item.href;
+            const isActive = isActiveRoute(item.href);
             return (
               <Link
                 key={item.label}
