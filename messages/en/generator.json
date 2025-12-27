@@ -18,7 +18,7 @@
   "settingsPanel": {
     "title": "Settings",
     "selectModel": "Select model",
-    "imageSize": "Image size",
+    "aspectRatio": "Aspect Ratio",
     "reset": "Reset",
     "variations": "Variations",
     "moreOptions": "More options",

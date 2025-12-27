@@ -23,6 +23,7 @@ export function ModelGrid({
       {models.map((model) => {
         const IconComponent = model.icon as ComponentType<{ className?: string }> | undefined;
         const isSelected = selectedModel === model.id;
+        const isLocked = Boolean(model.locked);
 
         return (
           <div key={model.id} className="relative flex flex-col items-center justify-center gap-1">
@@ -31,14 +32,17 @@ export function ModelGrid({
                 <button
                   type="button"
                   aria-pressed={isSelected}
+                  disabled={isLocked}
                   onClick={() => onSelect(model.id)}
                   className={cn(
-                    "relative flex h-[80px] w-full shrink-0 cursor-pointer items-center justify-center rounded-2xl border transition-colors",
+                    "relative flex h-[80px] w-full shrink-0 items-center justify-center rounded-2xl border transition-colors",
                     "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60 focus-visible:ring-offset-2 focus-visible:ring-offset-background",
                     isSelected
                       ? "border-white/80 bg-sidebar-active"
-                      : "border-border/60 bg-[var(--color-generator-panel-card-bg)] hover:border-border/80 hover:bg-sidebar-hover/60",
-                    model.locked && "opacity-80"
+                      : "border-border/60 bg-[var(--color-generator-panel-card-bg)]",
+                    isLocked
+                      ? "cursor-not-allowed opacity-60"
+                      : "cursor-pointer hover:border-border/80 hover:bg-sidebar-hover/60"
                   )}
                 >
                   <div
@@ -61,7 +65,7 @@ export function ModelGrid({
                     )}
                   </div>
 
-                  {model.locked && (
+                  {isLocked && (
                     <span className="absolute right-1 top-1 flex h-4 w-4 items-center justify-center rounded bg-black/40 p-0 text-white/80 backdrop-blur-[6px]">
                       <Lock className="h-3 w-3" />
                     </span>
@@ -95,7 +99,7 @@ export function ModelGrid({
               title={model.name}
               className={cn(
                 "w-full whitespace-normal break-words text-center text-[11px] font-medium leading-snug",
-                isSelected ? "text-white" : "text-muted/80"
+                isLocked ? "text-muted/50" : isSelected ? "text-white" : "text-muted/80"
               )}
             >
               {model.name}

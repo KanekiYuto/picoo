@@ -17,7 +17,7 @@ export function SectionCard({
   return (
     <div
       className={cn(
-        "rounded-2xl border border-border/60 bg-sidebar-hover/40 p-4 shadow-sm sm:p-5",
+        "rounded-2xl border border-border/60 bg-[var(--color-generator-panel-card-bg)] p-4 shadow-sm sm:p-5",
         className
       )}
     >

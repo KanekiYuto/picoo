@@ -18,7 +18,7 @@
   "settingsPanel": {
     "title": "设置",
     "selectModel": "选择模型",
-    "imageSize": "图片尺寸",
+    "aspectRatio": "横纵比",
     "reset": "重置",
     "variations": "生成数量",
     "moreOptions": "更多选项",

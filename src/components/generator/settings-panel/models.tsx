@@ -129,10 +129,12 @@ export const AliIcon: ComponentType<{ className?: string }> = ({ className }) =>
 );
 
 export const DEFAULT_ASPECT_RATIO_OPTIONS: readonly AspectRatioOption[] = [
-  { title: "Square", portrait: "1:1" },
-  { title: "Standard", portrait: "2:3", landscape: "3:2" },
-  { title: "Classic", portrait: "3:4", landscape: "4:3" },
-  { title: "Story", portrait: "9:16", landscape: "16:9" },
+  { portrait: "1:1" },
+  { portrait: "21:9" },
+  { portrait: "4:5", landscape: "5:4" },
+  { portrait: "2:3", landscape: "3:2" },
+  { portrait: "3:4", landscape: "4:3" },
+  { portrait: "9:16", landscape: "16:9" },
 ];
 
 export const MODELS: ModelOption[] = [
@@ -142,6 +144,14 @@ export const MODELS: ModelOption[] = [
     icon: GoogleMonoIcon,
     features: ["fast", "simple"],
     descriptionKey: "nano-banana",
+    aspectRatioOptions: DEFAULT_ASPECT_RATIO_OPTIONS,
+  },
+  {
+    id: "nano-banana-pro",
+    name: "Nano Banana Pro",
+    icon: GoogleMonoIcon,
+    features: ["fast", "simple"],
+    descriptionKey: "nano-banana-pro",
     aspectRatioOptions: DEFAULT_ASPECT_RATIO_OPTIONS,
   },
   {

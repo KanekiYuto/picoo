@@ -12,7 +12,7 @@ export function RatioControls({
   value: AspectRatio;
   onChange: (next: AspectRatio) => void;
 }) {
-  const maxSize = 96;
+  const maxSize = 160;
 
   const parseRatio = (ratio: AspectRatio) => {
     const [w, h] = ratio.split(":").map((n) => Number(n));
@@ -40,23 +40,23 @@ export function RatioControls({
         : currentOption.portrait
       : null;
 
-  const pairPreviewSize = pairedRatio ? (() => {
-    const p = parseRatio(pairedRatio);
-    return getPreviewSize(p.width, p.height);
-  })() : null;
+  const paired = pairedRatio ? parseRatio(pairedRatio) : null;
+  const pairPreviewSize = paired ? getPreviewSize(paired.width, paired.height) : null;
 
   return (
-    <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-      <div className="relative mx-auto flex h-28 w-28 flex-shrink-0 items-center justify-center sm:mx-0 sm:h-24 sm:w-24">
+    <div className="flex flex-col gap-4 sm:flex-row sm:items-stretch sm:gap-6">
+      <div className="relative mx-auto flex h-48 w-full sm:h-auto sm:w-2/5 flex-shrink-0 items-center justify-center">
         {pairPreviewSize && pairedRatio && (
           <button
             type="button"
             onClick={() => onChange(pairedRatio)}
-            className="absolute flex items-center justify-center rounded-lg border-2 border-dashed bg-transparent text-muted transition-opacity hover:opacity-80"
+            className={cn(
+              "absolute flex items-center justify-center rounded-lg border-2 border-dashed border-white/30 bg-transparent text-muted transition-opacity hover:opacity-80",
+              "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+            )}
             style={{
               width: `${pairPreviewSize.width}px`,
               height: `${pairPreviewSize.height}px`,
-              borderColor: "rgba(255, 255, 255, 0.35)",
             }}
           >
             <span className="text-[11px] font-medium">{pairedRatio}</span>
@@ -64,19 +64,18 @@ export function RatioControls({
         )}
 
         <div
-          className="relative z-10 flex items-center justify-center rounded-lg border-2 bg-transparent"
+          className="relative z-10 flex items-center justify-center rounded-lg border-2 border-white bg-transparent"
           style={{
             width: `${currentPreviewSize.width}px`,
             height: `${currentPreviewSize.height}px`,
-            borderColor: "rgba(255, 255, 255, 0.55)",
           }}
         >
           <span className="text-xs font-semibold text-white/80">{value}</span>
         </div>
       </div>
 
-      <div className="flex w-full flex-col gap-2">
-        <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+      <div className="flex w-full sm:w-3/5 flex-col gap-2">
+        <div className="grid grid-cols-3 gap-3 sm:grid-cols-4">
           {options.map((opt) => {
             const hasPair = Boolean(opt.landscape && opt.landscape !== opt.portrait);
             const isActive = value === opt.portrait || value === opt.landscape;
@@ -86,6 +85,7 @@ export function RatioControls({
               <button
                 key={`${opt.portrait}:${opt.landscape ?? ""}`}
                 type="button"
+                aria-pressed={isActive}
                 onClick={() => {
                   if (!hasPair) return onChange(opt.portrait);
                   onChange(value === opt.portrait ? (opt.landscape as AspectRatio) : opt.portrait);
@@ -99,15 +99,38 @@ export function RatioControls({
                     : "border-border/60 bg-[var(--color-generator-panel-card-bg)] text-muted/80 hover:text-foreground hover:bg-sidebar-hover/60 hover:border-border/80"
                 )}
               >
-                <div className="text-xs font-semibold leading-tight sm:text-[13px]">{opt.title}</div>
-                <div className="mt-0.5 text-xs leading-tight opacity-90 sm:text-[13px]">{label}</div>
+                {/* 显示比例的形状预览 */}
+                <div className="flex items-center justify-center w-full">
+                  {(() => {
+                    // 解析比例 (portrait 或 portrait/landscape)
+                    const getRatio = (ratioStr: string) => {
+                      const [w, h] = ratioStr.split(":").map(Number);
+                      return w / h;
+                    };
+
+                    const ratio = label.includes("/")
+                      ? getRatio(label.split("/")[0]) // 用 portrait 比例
+                      : getRatio(label);
+
+                    const baseHeight = 48; // 固定高度
+                    const width = Math.round(baseHeight * ratio);
+
+                    return (
+                      <div
+                        className="rounded-sm bg-white/60"
+                        style={{
+                          width: `${width}px`,
+                          height: `${baseHeight}px`,
+                        }}
+                      />
+                    );
+                  })()}
+                </div>
+                <div className="mt-2 text-xs leading-tight opacity-90 sm:text-[13px]">{label}</div>
               </button>
             );
           })}
         </div>
-        {pairedRatio && (
-          <p className="text-[11px] text-muted/80">点击预览虚线框可切换：{pairedRatio}</p>
-        )}
       </div>
     </div>
   );

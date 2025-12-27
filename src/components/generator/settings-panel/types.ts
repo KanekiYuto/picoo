@@ -1,7 +1,6 @@
 export type AspectRatio = `${number}:${number}`;
 
 export type AspectRatioOption = {
-  title: string;
   portrait: AspectRatio;
   landscape?: AspectRatio;
 };
