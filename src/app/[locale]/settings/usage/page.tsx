@@ -31,8 +31,11 @@ export default function UsagePage() {
   // 获取用量记录
   useEffect(() => {
     const fetchUsage = async () => {
+      setIsLoading(true);
+      // 设置最小显示时间为 300ms，避免闪烁
+      const minLoadingTime = new Promise((resolve) => setTimeout(resolve, 300));
+
       try {
-        setIsLoading(true);
         const response = await fetch('/api/credit/usage');
 
         if (!response.ok) {
@@ -45,6 +48,7 @@ export default function UsagePage() {
         console.error('Failed to fetch usage:', error);
         setRecords([]);
       } finally {
+        await minLoadingTime;
         setIsLoading(false);
       }
     };
@@ -65,7 +69,7 @@ export default function UsagePage() {
     .filter((r) => r.type === 'consume')
     .reduce((sum, r) => sum + Math.abs(r.amount), 0);
 
-  if (userLoading || isLoading) {
+  if (userLoading) {
     return <UsageSkeleton />;
   }
 
@@ -75,6 +79,10 @@ export default function UsagePage() {
         <div className="text-muted">未登录</div>
       </div>
     );
+  }
+
+  if (isLoading) {
+    return <UsageSkeleton />;
   }
 
   return (

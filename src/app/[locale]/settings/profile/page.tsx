@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useRef, useState } from "react";
 import { Menu } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { UserProfile } from "../_components/UserProfile";
@@ -11,9 +12,31 @@ import { useUserStore } from "@/stores/userStore";
 export default function ProfilePage() {
   const t = useTranslations("settings.profile");
   const { openMenu } = useSettingsNav();
-  const { user, isLoading } = useUserStore();
+  const { user, isLoading: userLoading } = useUserStore();
 
-  if (isLoading) {
+  const loadingStartTimeRef = useRef<number | null>(userLoading ? Date.now() : null);
+  const [isMinLoadingTimeElapsed, setIsMinLoadingTimeElapsed] = useState(!userLoading);
+
+  useEffect(() => {
+    if (userLoading) {
+      loadingStartTimeRef.current = Date.now();
+      setIsMinLoadingTimeElapsed(false);
+      return;
+    }
+
+    const startedAt = loadingStartTimeRef.current;
+    if (!startedAt) {
+      setIsMinLoadingTimeElapsed(true);
+      return;
+    }
+
+    const elapsedTime = Date.now() - startedAt;
+    const remainingTime = Math.max(0, 300 - elapsedTime);
+    const timeoutId = setTimeout(() => setIsMinLoadingTimeElapsed(true), remainingTime);
+    return () => clearTimeout(timeoutId);
+  }, [userLoading]);
+
+  if (userLoading || !isMinLoadingTimeElapsed) {
     return <ProfileSkeleton />;
   }
 

@@ -33,8 +33,11 @@ export default function CreditsPage() {
   // 获取积分信息
   useEffect(() => {
     const fetchCredits = async () => {
+      setIsLoading(true);
+      // 设置最小显示时间为 300ms，避免闪烁
+      const minLoadingTime = new Promise((resolve) => setTimeout(resolve, 300));
+
       try {
-        setIsLoading(true);
         const response = await fetch('/api/credit/balance');
 
         if (!response.ok) {
@@ -48,6 +51,7 @@ export default function CreditsPage() {
         // 发生错误时设置为空数组
         setCredits([]);
       } finally {
+        await minLoadingTime;
         setIsLoading(false);
       }
     };
@@ -72,7 +76,7 @@ export default function CreditsPage() {
     return true;
   });
 
-  if (userLoading || isLoading) {
+  if (userLoading) {
     return <CreditsSkeleton />;
   }
 
@@ -82,6 +86,10 @@ export default function CreditsPage() {
         <div className="text-muted">未登录</div>
       </div>
     );
+  }
+
+  if (isLoading) {
+    return <CreditsSkeleton />;
   }
 
   return (
