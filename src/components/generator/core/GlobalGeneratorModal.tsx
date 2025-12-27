@@ -8,6 +8,7 @@ import { GlobalGenerator } from "./GlobalGenerator";
 import { UploadPanel } from "../panels/upload/UploadPanel";
 import { SettingsPanel, type GeneratorSettings } from "../panels/settings";
 import { ModeSelectorPanel, ModeSelectorButton, type GeneratorMode } from "../panels/mode";
+import { ResultPanel } from "../panels/result/ResultPanel";
 import { ImageUploadButton } from "../buttons/ImageUploadButton";
 
 /**
@@ -26,6 +27,11 @@ export function GlobalGeneratorModal() {
     variations: 1,
     visibility: "public",
   });
+
+  // 结果面板状态
+  const [resultImageUrl, setResultImageUrl] = useState<string>("");
+  const [isResultLoading, setIsResultLoading] = useState(false);
+  const [resultError, setResultError] = useState<string>("");
 
   const handleImageSelect = async (file: File) => {
     setSelectedImage(file);
@@ -80,70 +86,150 @@ export function GlobalGeneratorModal() {
     }
   };
 
-  const handleGenerate = (prompt: string) => {
+  const handleGenerate = async (prompt: string) => {
     console.log("Generating with prompt:", prompt);
-    console.log("Image:", selectedImage);
+    console.log("Mode:", mode);
     console.log("Settings:", settings);
-    // TODO: 实现生成逻辑
-    closeGeneratorModal();
+
+    // 开始加载
+    setIsResultLoading(true);
+    setResultError("");
+    setResultImageUrl("");
+
+    try {
+      // TODO: 根据 mode 调用相应的生成 API
+      // 这里是示例逻辑
+      const response = await fetch("/api/generate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          prompt,
+          mode,
+          settings,
+          images: uploadImages,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Generation failed");
+      }
+
+      const result = await response.json();
+      setResultImageUrl(result.imageUrl);
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : "生成失败，请重试";
+      setResultError(errorMessage);
+      console.error("Generation error:", error);
+    } finally {
+      setIsResultLoading(false);
+    }
+  };
+
+  const handleResultRegenerate = () => {
+    // TODO: 重新生成逻辑
+    setIsResultLoading(true);
+    setResultError("");
+    setResultImageUrl("");
+  };
+
+  const handleResultDownload = () => {
+    if (resultImageUrl) {
+      const a = document.createElement("a");
+      a.href = resultImageUrl;
+      a.download = "generated-image.png";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    }
   };
 
   return (
     <AnimatePresence>
       {isGeneratorModalOpen && (
-        <>
-          {/* 背景遮罩 */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm"
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.3 }}
+          style={{ position: 'fixed', inset: 0, zIndex: 9999 }}
+        >
+          {/* 结果面板 - 全屏背景 */}
+          <ResultPanel
+            imageUrl={resultImageUrl}
+            isLoading={isResultLoading}
+            error={resultError}
+            onRegenerate={handleResultRegenerate}
+            onDownload={handleResultDownload}
+            onClose={closeGeneratorModal}
           />
 
+          {/* 关闭按钮 - activePanel 为 null 时显示 */}
+          {activePanel === null && (
+            <motion.button
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              onClick={closeGeneratorModal}
+              className="fixed top-4 right-4 flex h-10 w-10 items-center justify-center rounded-full bg-card/80 text-muted transition-colors backdrop-blur-sm hover:bg-card hover:text-foreground cursor-pointer"
+              style={{ zIndex: 60 }}
+              aria-label="关闭"
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <X className="h-5 w-5" />
+            </motion.button>
+          )}
+
           {/* 模态框内容 */}
-          <div className="fixed inset-0 z-50 flex flex-col items-center justify-between gap-4 p-4 pointer-events-none">
-            {/* 上方面板区域 - 自适应高度 */}
-            <div className="w-full max-w-7xl flex-1 min-h-0 overflow-y-auto pointer-events-auto flex flex-col gap-4">
-              <AnimatePresence mode="wait">
-              {activePanel === "settings" && (
-                <motion.div
-                  key="settings"
-                  initial={{ opacity: 0, y: -20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -20 }}
-                  transition={{ duration: 0.3 }}
-                  className="w-full h-full"
-                >
-                  <div className="bg-card border border-border rounded-2xl shadow-2xl overflow-hidden h-full flex flex-col">
-                    <SettingsPanel
-                      onClose={() => setActivePanel(null)}
-                      settings={settings}
-                      onSettingsChange={setSettings}
-                    />
-                  </div>
-                </motion.div>
-              )}
-              {activePanel === "upload" && (
-                <motion.div
-                  key="upload"
-                  initial={{ opacity: 0, y: -20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -20 }}
-                  transition={{ duration: 0.3 }}
-                  className="w-full h-full"
-                >
-                  <div className="bg-card border border-border rounded-2xl shadow-2xl overflow-hidden h-full flex flex-col">
-                    <UploadPanel
-                      isOpen={true}
-                      onClose={() => setActivePanel(null)}
-                      onImageSelect={handleImageSelect}
-                      onRecentAssetSelect={handleRecentAssetSelect}
-                    />
-                  </div>
-                </motion.div>
-              )}
-              </AnimatePresence>
-            </div>
+          <div className="fixed inset-0 flex flex-col items-center justify-end gap-4 p-4 pointer-events-none" style={{ zIndex: 50 }}>
+            {/* 上方面板区域 - 仅在settings或upload时显示 */}
+            {(activePanel === "settings" || activePanel === "upload") && (
+              <div className="w-full max-w-7xl flex-1 min-h-0 overflow-y-auto pointer-events-auto flex flex-col gap-4 lg:flex-row">
+                {/* 左侧：上方面板 */}
+                <div className="flex-1 min-h-0 overflow-y-auto flex flex-col gap-4">
+                  <AnimatePresence mode="wait">
+                    {activePanel === "settings" && (
+                      <motion.div
+                        key="settings"
+                        initial={{ opacity: 0, y: -20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -20 }}
+                        transition={{ duration: 0.3 }}
+                        className="w-full h-full"
+                      >
+                        <div className="bg-card border border-border rounded-2xl shadow-2xl overflow-hidden h-full flex flex-col">
+                          <SettingsPanel
+                            onClose={() => setActivePanel(null)}
+                            settings={settings}
+                            onSettingsChange={setSettings}
+                          />
+                        </div>
+                      </motion.div>
+                    )}
+                    {activePanel === "upload" && (
+                      <motion.div
+                        key="upload"
+                        initial={{ opacity: 0, y: -20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -20 }}
+                        transition={{ duration: 0.3 }}
+                        className="w-full h-full"
+                      >
+                        <div className="bg-card border border-border rounded-2xl shadow-2xl overflow-hidden h-full flex flex-col">
+                          <UploadPanel
+                            isOpen={true}
+                            onClose={() => setActivePanel(null)}
+                            onImageSelect={handleImageSelect}
+                            onRecentAssetSelect={handleRecentAssetSelect}
+                          />
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              </div>
+            )}
 
             {/* 底部区域 - 模式面板在上，生成器在下 */}
             <motion.div
@@ -152,17 +238,6 @@ export function GlobalGeneratorModal() {
               exit={{ opacity: 0, y: 100 }}
               className="w-full max-w-7xl pointer-events-auto flex-shrink-0 flex flex-col gap-4"
             >
-              {/* 关闭按钮 */}
-              {activePanel === null && (
-                <button
-                  onClick={closeGeneratorModal}
-                  className="absolute -top-12 right-0 z-10 flex h-10 w-10 items-center justify-center rounded-full bg-card/80 text-muted transition-colors backdrop-blur-sm hover:bg-card hover:text-foreground cursor-pointer"
-                  aria-label="关闭"
-                >
-                  <X className="h-5 w-5" />
-                </button>
-              )}
-
               {/* 模式选择面板 - 显示在生成器上方 */}
               {activePanel === "mode" && (
                 <motion.div
@@ -239,7 +314,7 @@ export function GlobalGeneratorModal() {
               </div>
             </motion.div>
           </div>
-        </>
+        </motion.div>
       )}
     </AnimatePresence>
   );

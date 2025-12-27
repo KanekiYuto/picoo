@@ -32,6 +32,12 @@
     "aiFaceSwap": "AI Face Swap",
     "aiFaceSwapDesc": "Swap faces with AI"
   },
+  "resultPanel": {
+    "error": "Generation failed",
+    "download": "Download",
+    "regenerate": "Regenerate",
+    "close": "Close"
+  },
   "settingsPanel": {
     "title": "Settings",
     "selectModel": "Select model",

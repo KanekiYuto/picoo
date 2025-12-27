@@ -6,6 +6,7 @@ export { GlobalGenerator } from "./core/GlobalGenerator";
 export { SettingsPanel } from "./panels/settings";
 export { UploadPanel } from "./panels/upload";
 export { ModeSelectorPanel, ModeSelectorButton } from "./panels/mode";
+export { ResultPanel } from "./panels/result";
 
 // Buttons
 export { ImageUploadButton } from "./buttons/ImageUploadButton";

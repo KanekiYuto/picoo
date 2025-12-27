@@ -32,6 +32,12 @@
     "aiFaceSwap": "AI换脸",
     "aiFaceSwapDesc": "使用AI进行换脸处理"
   },
+  "resultPanel": {
+    "error": "生成失败",
+    "download": "下载",
+    "regenerate": "重新生成",
+    "close": "关闭"
+  },
   "settingsPanel": {
     "title": "设置",
     "selectModel": "选择模型",
