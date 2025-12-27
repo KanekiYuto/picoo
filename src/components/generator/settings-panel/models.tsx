@@ -1,20 +1,7 @@
 "use client";
 
 import type { ComponentType } from "react";
-import type { AspectRatioOption } from "./types";
-
-export interface ModelOption {
-  id: string;
-  name: string;
-  icon?: ComponentType<{ className?: string }>;
-  glyph?: string;
-  locked?: boolean;
-  tag?: string;
-  availability?: string;
-  features?: string[];
-  descriptionKey?: string;
-  aspectRatioOptions?: readonly AspectRatioOption[];
-}
+import type { AspectRatioOption, ModelOption } from "./types";
 
 export const GoogleMonoIcon: ComponentType<{ className?: string }> = ({ className }) => (
   <svg

@@ -5,6 +5,10 @@ import { motion } from "framer-motion";
 import { useTranslations } from "next-intl";
 import { Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { ModelDisplay } from "./settings-panel/ModelDisplay";
+import type { GeneratorSettings } from "./settings-panel/types";
+import { MODELS } from "./settings-panel/models";
+import { getModelById } from "./settings-panel/utils";
 
 interface GlobalGeneratorProps {
   className?: string;
@@ -12,6 +16,8 @@ interface GlobalGeneratorProps {
   onOpenUploadPanel?: () => void;
   onOpenSettingsPanel?: () => void;
   previewUrl?: string;
+  settings?: GeneratorSettings;
+  onSettingsChange?: (settings: GeneratorSettings) => void;
 }
 
 export function GlobalGenerator({
@@ -19,7 +25,9 @@ export function GlobalGenerator({
   onGenerate,
   onOpenUploadPanel,
   onOpenSettingsPanel,
-  previewUrl = ""
+  previewUrl = "",
+  settings,
+  onSettingsChange
 }: GlobalGeneratorProps) {
   const t = useTranslations("generator");
   const [prompt, setPrompt] = useState("");
@@ -98,21 +106,15 @@ export function GlobalGenerator({
               </button>
 
               {/* 模型信息按钮 */}
-              <motion.button
-                onClick={onOpenSettingsPanel}
-                className={cn(
-                  "flex items-center gap-1 md:gap-1.5 px-2 md:px-3 py-2 rounded-lg",
-                  "text-xs md:text-sm text-white whitespace-nowrap",
-                  "hover:bg-sidebar-hover",
-                  "transition-all duration-300 cursor-pointer"
-                )}
-              >
-                <span className="font-medium">ImagineArt 1.5</span>
-                <span>/</span>
-                <span>1:1</span>
-                <span>/</span>
-                <span>4v</span>
-              </motion.button>
+              {settings && (
+                <ModelDisplay
+                  model={getModelById(settings.model, MODELS)}
+                  aspectRatio={settings.aspectRatio}
+                  variations={settings.variations}
+                  compact={true}
+                  onClick={onOpenSettingsPanel}
+                />
+              )}
             </div>
 
             {/* 右侧：创建按钮 */}

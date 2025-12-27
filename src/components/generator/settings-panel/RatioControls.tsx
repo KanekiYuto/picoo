@@ -2,6 +2,8 @@
 
 import { cn } from "@/lib/utils";
 import type { AspectRatio, AspectRatioOption } from "./types";
+import { parseRatio, getPreviewSize, findPairedRatio } from "./utils";
+import { MAX_PREVIEW_SIZE, FOCUS_RING_CLASSES, BUTTON_TRANSITION_CLASSES } from "./constants";
 
 export function RatioControls({
   options,
@@ -12,47 +14,26 @@ export function RatioControls({
   value: AspectRatio;
   onChange: (next: AspectRatio) => void;
 }) {
-  const maxSize = 160;
-
-  const parseRatio = (ratio: AspectRatio) => {
-    const [w, h] = ratio.split(":").map((n) => Number(n));
-    if (!Number.isFinite(w) || !Number.isFinite(h) || w <= 0 || h <= 0) {
-      return { width: 1, height: 1 };
-    }
-    return { width: w, height: h };
-  };
-
-  const getPreviewSize = (width: number, height: number) => {
-    const r = width / height;
-    if (r > 1) return { width: maxSize, height: maxSize / r };
-    if (r < 1) return { width: maxSize * r, height: maxSize };
-    return { width: maxSize, height: maxSize };
-  };
 
   const current = parseRatio(value);
-  const currentPreviewSize = getPreviewSize(current.width, current.height);
+  const currentPreviewSize = getPreviewSize(current.width, current.height, MAX_PREVIEW_SIZE);
 
   const currentOption = options.find((opt) => opt.portrait === value || opt.landscape === value);
-  const pairedRatio =
-    currentOption && currentOption.landscape && currentOption.landscape !== currentOption.portrait
-      ? currentOption.portrait === value
-        ? currentOption.landscape
-        : currentOption.portrait
-      : null;
+  const pairedRatio = currentOption ? findPairedRatio(value, currentOption) : null;
 
   const paired = pairedRatio ? parseRatio(pairedRatio) : null;
-  const pairPreviewSize = paired ? getPreviewSize(paired.width, paired.height) : null;
+  const pairPreviewSize = paired ? getPreviewSize(paired.width, paired.height, MAX_PREVIEW_SIZE) : null;
 
   return (
     <div className="flex flex-col gap-4 sm:flex-row sm:items-stretch sm:gap-6">
-      <div className="relative mx-auto flex h-48 w-full sm:h-auto sm:w-2/5 flex-shrink-0 items-center justify-center">
+      <div className="relative flex h-48 items-center justify-center sm:h-auto" style={{ flex: "3 1 0%" }}>
         {pairPreviewSize && pairedRatio && (
           <button
             type="button"
             onClick={() => onChange(pairedRatio)}
             className={cn(
               "absolute flex items-center justify-center rounded-lg border-2 border-dashed border-white/30 bg-transparent text-muted transition-opacity hover:opacity-80",
-              "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+              FOCUS_RING_CLASSES
             )}
             style={{
               width: `${pairPreviewSize.width}px`,
@@ -74,7 +55,7 @@ export function RatioControls({
         </div>
       </div>
 
-      <div className="flex w-full sm:w-3/5 flex-col gap-2">
+      <div className="flex flex-col gap-2" style={{ flex: "7 1 0%" }}>
         <div className="grid grid-cols-3 gap-3 sm:grid-cols-4">
           {options.map((opt) => {
             const hasPair = Boolean(opt.landscape && opt.landscape !== opt.portrait);
@@ -91,9 +72,9 @@ export function RatioControls({
                   onChange(value === opt.portrait ? (opt.landscape as AspectRatio) : opt.portrait);
                 }}
                 className={cn(
-                  "cursor-pointer rounded-xl border px-3 py-2 text-center transition-colors",
-                  "flex flex-col items-center justify-start",
-                  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60 focus-visible:ring-offset-2 focus-visible:ring-offset-background",
+                  "cursor-pointer rounded-xl border px-3 py-2 text-center flex flex-col items-center justify-start",
+                  BUTTON_TRANSITION_CLASSES,
+                  FOCUS_RING_CLASSES,
                   isActive
                     ? "border-white/80 bg-sidebar-active text-white"
                     : "border-border/60 bg-[var(--color-generator-panel-card-bg)] text-muted/80 hover:text-foreground hover:bg-sidebar-hover/60 hover:border-border/80"

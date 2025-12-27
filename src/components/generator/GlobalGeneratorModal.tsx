@@ -142,6 +142,8 @@ export function GlobalGeneratorModal() {
                   onOpenUploadPanel={() => setActivePanel("upload")}
                   onOpenSettingsPanel={() => setActivePanel("settings")}
                   previewUrl={previewUrl}
+                  settings={settings}
+                  onSettingsChange={setSettings}
                 />
               </div>
             </motion.div>
