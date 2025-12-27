@@ -13,7 +13,21 @@
     "uploads": "Uploads",
     "personalized": "Personalized",
     "recentUploads": "Recent Uploads",
-    "personalize": "Personalize"
+    "personalize": "Personalize",
+    "noRecentUploads": "No recent uploads yet",
+    "clickToAdd": "Click to add"
+  },
+  "modes": {
+    "prompt": "Prompt",
+    "promptDesc": "Use the elements of an image",
+    "upscale": "Upscale",
+    "upscaleDesc": "Upscale your assets",
+    "edit": "Edit",
+    "editDesc": "Edit using reference image",
+    "style": "Style",
+    "styleDesc": "Use the style of an image",
+    "personalize": "Personalize",
+    "personalizeDesc": "Create Custom Image References"
   },
   "settingsPanel": {
     "title": "Settings",

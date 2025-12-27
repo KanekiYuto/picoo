@@ -5,7 +5,7 @@ import { Lock } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
-import type { ModelOption } from "./models";
+import type { ModelOption } from "./types";
 
 export function ModelGrid({
   models,
@@ -77,7 +77,7 @@ export function ModelGrid({
                 {model.tag && <div className="mt-0.5 text-white/70">{model.tag}</div>}
                 {model.features && model.features.length > 0 && (
                   <div className="mt-2 flex flex-wrap gap-1">
-                    {model.features.map((feature) => (
+                    {model.features.map((feature: string) => (
                       <span
                         key={feature}
                         className="rounded-md bg-white/5 px-1.5 py-0.5 text-[10px] font-medium text-white/80"

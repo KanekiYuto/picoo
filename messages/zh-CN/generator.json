@@ -13,7 +13,21 @@
     "uploads": "上传记录",
     "personalized": "个性化",
     "recentUploads": "最近上传",
-    "personalize": "个性化"
+    "personalize": "个性化",
+    "noRecentUploads": "暂无上传记录",
+    "clickToAdd": "点击添加"
+  },
+  "modes": {
+    "prompt": "Prompt",
+    "promptDesc": "使用图片元素",
+    "upscale": "Upscale",
+    "upscaleDesc": "放大你的图片",
+    "edit": "Edit",
+    "editDesc": "使用参考图片编辑",
+    "style": "Style",
+    "styleDesc": "使用图片风格",
+    "personalize": "Personalize",
+    "personalizeDesc": "创建自定义引用"
   },
   "settingsPanel": {
     "title": "设置",
