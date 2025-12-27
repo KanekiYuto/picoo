@@ -4,6 +4,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X } from "lucide-react";
 import { useGeneratorStore } from "@/stores/generatorStore";
+import { downloadImage } from "@/lib/image-utils";
 import { GlobalGenerator } from "./GlobalGenerator";
 import { UploadPanel } from "../panels/upload/UploadPanel";
 import { SettingsPanel, type GeneratorSettings } from "../panels/settings";
@@ -17,8 +18,6 @@ import { ImageUploadButton } from "../buttons/ImageUploadButton";
 export function GlobalGeneratorModal() {
   const { isGeneratorModalOpen, closeGeneratorModal } = useGeneratorStore();
   const [activePanel, setActivePanel] = useState<"upload" | "settings" | "mode" | "mobile-images" | null>(null);
-  const [selectedImage, setSelectedImage] = useState<File | null>(null);
-  const [previewUrl, setPreviewUrl] = useState<string>("");
   const [uploadImages, setUploadImages] = useState<string[]>([]);
   const [mode, setMode] = useState<GeneratorMode>("prompt");
   const [settings, setSettings] = useState<GeneratorSettings>({
@@ -29,15 +28,15 @@ export function GlobalGeneratorModal() {
   });
 
   // 结果面板状态
-  const [resultImageUrl, setResultImageUrl] = useState<string>("");
+  const [resultImages, setResultImages] = useState<string[]>([
+    "https://picoo.online/beta/assets/BI9mouqxOz9pNdgwDUHs7peZepkoIYXh/aa43dc68-2f51-4a39-8666-d2f9c750e2d6-1766837621647.jpg",
+    "https://picoo.online/beta/assets/BI9mouqxOz9pNdgwDUHs7peZepkoIYXh/aa43dc68-2f51-4a39-8666-d2f9c750e2d6-1766837621647.jpg"
+  ]);
   const [isResultLoading, setIsResultLoading] = useState(false);
   const [resultError, setResultError] = useState<string>("");
 
   const handleImageSelect = async (file: File) => {
-    setSelectedImage(file);
-
     const localUrl = URL.createObjectURL(file);
-    setPreviewUrl(localUrl);
     setUploadImages((prev) => [...prev, localUrl]);
 
     try {
@@ -58,7 +57,6 @@ export function GlobalGeneratorModal() {
       }
 
       const uploadedUrl = result.data.url;
-      setPreviewUrl(uploadedUrl);
       // 替换最后一张图片的URL为真实URL
       setUploadImages((prev) => {
         const newImages = [...prev];
@@ -73,17 +71,11 @@ export function GlobalGeneratorModal() {
   };
 
   const handleRecentAssetSelect = (url: string) => {
-    setPreviewUrl(url);
     setUploadImages((prev) => [...prev, url]);
   };
 
   const handleRemoveImage = (index: number) => {
     setUploadImages((prev) => prev.filter((_, i) => i !== index));
-    // 如果删除的是最后一张图片，清空预览
-    if (index === uploadImages.length - 1) {
-      setPreviewUrl("");
-      setSelectedImage(null);
-    }
   };
 
   const handleGenerate = async (prompt: string) => {
@@ -94,7 +86,7 @@ export function GlobalGeneratorModal() {
     // 开始加载
     setIsResultLoading(true);
     setResultError("");
-    setResultImageUrl("");
+    setResultImages([]);
 
     try {
       // TODO: 根据 mode 调用相应的生成 API
@@ -115,7 +107,9 @@ export function GlobalGeneratorModal() {
       }
 
       const result = await response.json();
-      setResultImageUrl(result.imageUrl);
+      // 支持单个图片或多个图片
+      const images = Array.isArray(result.imageUrl) ? result.imageUrl : [result.imageUrl];
+      setResultImages(images);
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : "生成失败，请重试";
       setResultError(errorMessage);
@@ -129,17 +123,14 @@ export function GlobalGeneratorModal() {
     // TODO: 重新生成逻辑
     setIsResultLoading(true);
     setResultError("");
-    setResultImageUrl("");
+    setResultImages([]);
   };
 
-  const handleResultDownload = () => {
-    if (resultImageUrl) {
-      const a = document.createElement("a");
-      a.href = resultImageUrl;
-      a.download = "generated-image.png";
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
+  const handleResultDownload = async (imageUrl: string) => {
+    try {
+      await downloadImage(imageUrl);
+    } catch (error) {
+      console.error("Download failed:", error);
     }
   };
 
@@ -155,12 +146,11 @@ export function GlobalGeneratorModal() {
         >
           {/* 结果面板 - 全屏背景 */}
           <ResultPanel
-            imageUrl={resultImageUrl}
+            images={resultImages}
             isLoading={isResultLoading}
             error={resultError}
             onRegenerate={handleResultRegenerate}
             onDownload={handleResultDownload}
-            onClose={closeGeneratorModal}
           />
 
           {/* 关闭按钮 - activePanel 为 null 时显示 */}
