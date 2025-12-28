@@ -1,16 +1,18 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X } from "lucide-react";
 import { useGeneratorStore } from "@/stores/generatorStore";
 import { downloadImage } from "@/lib/image-utils";
+import { handleAIGenerate } from "@/lib/ai-generator-handler";
 import { GlobalGenerator } from "./GlobalGenerator";
 import { UploadPanel } from "../panels/upload/UploadPanel";
 import { SettingsPanel, type GeneratorSettings } from "../panels/settings";
 import { ModeSelectorPanel, ModeSelectorButton, type GeneratorMode } from "../panels/mode";
 import { ResultPanel } from "../panels/result/ResultPanel";
 import { ImageUploadButton } from "../buttons/ImageUploadButton";
+import { MODE_CONFIGS } from "../config";
 
 /**
  * 全局生成器模态框
@@ -19,18 +21,59 @@ export function GlobalGeneratorModal() {
   const { isGeneratorModalOpen, closeGeneratorModal } = useGeneratorStore();
   const [activePanel, setActivePanel] = useState<"upload" | "settings" | "mode" | "mobile-images" | null>(null);
   const [uploadImages, setUploadImages] = useState<string[]>([]);
-  const [mode, setMode] = useState<GeneratorMode>("prompt");
-  const [settings, setSettings] = useState<GeneratorSettings>({
-    model: "nano-banana",
-    aspectRatio: "1:1",
-    variations: 1,
-    visibility: "public",
-  });
+  const [mode, setMode] = useState<GeneratorMode>("text-to-image");
+
+  // 根据 mode 获取默认设置
+  const getDefaultSettings = (currentMode: GeneratorMode): GeneratorSettings => {
+    const modeConfig = MODE_CONFIGS[currentMode];
+    const defaults = modeConfig?.defaultSettings || {};
+    return {
+      model: defaults.model || "nano-banana-pro",
+      aspectRatio: (defaults.aspectRatio || "1:1") as `${number}:${number}`,
+      variations: defaults.variations || 1,
+      visibility: "public",
+    };
+  };
+
+  // 智能切换模式：如果当前模型在新模式下可用则保留，否则使用新模式的默认模型
+  const handleModeChange = (newMode: GeneratorMode) => {
+    setMode(newMode);
+
+    const newModeConfig = MODE_CONFIGS[newMode];
+    const newModeModels = newModeConfig?.models;
+
+    // 如果新模式支持当前模型，保留当前设置
+    if (newModeModels && settings.model && newModeModels[settings.model]) {
+      const currentModelInNewMode = newModeModels[settings.model];
+
+      // 检查当前的aspectRatio是否被新模式的模型支持
+      const aspectRatioOptions = currentModelInNewMode.aspectRatioOptions || [];
+      const isAspectRatioSupported = aspectRatioOptions.some(
+        option => option.portrait === settings.aspectRatio || option.landscape === settings.aspectRatio
+      );
+
+      if (!isAspectRatioSupported) {
+        // 如果aspectRatio不支持，使用新模式的默认aspectRatio
+        const defaultSettings = getDefaultSettings(newMode);
+        setSettings({
+          ...settings,
+          aspectRatio: defaultSettings.aspectRatio,
+        });
+      }
+      // 否则保留当前设置
+      return;
+    }
+
+    // 如果新模式不支持当前模型，使用新模式的默认设置
+    setSettings(getDefaultSettings(newMode));
+  };
+
+  const [settings, setSettings] = useState<GeneratorSettings>(() => getDefaultSettings("text-to-image"));
 
   // 结果面板状态
   const [resultImages, setResultImages] = useState<string[]>([
-    "https://picoo.online/beta/assets/BI9mouqxOz9pNdgwDUHs7peZepkoIYXh/aa43dc68-2f51-4a39-8666-d2f9c750e2d6-1766837621647.jpg",
-    "https://picoo.online/beta/assets/BI9mouqxOz9pNdgwDUHs7peZepkoIYXh/aa43dc68-2f51-4a39-8666-d2f9c750e2d6-1766837621647.jpg"
+    "https://picoo.online/beta/text-to-image/z-image/804092d2-c10e-4f13-ba38-d75af1e1a9d3-1766902201717.jpeg",
+    "https://picoo.online/beta/text-to-image/z-image/804092d2-c10e-4f13-ba38-d75af1e1a9d3-1766902201717.jpeg",
   ]);
   const [isResultLoading, setIsResultLoading] = useState(false);
   const [resultError, setResultError] = useState<string>("");
@@ -78,44 +121,16 @@ export function GlobalGeneratorModal() {
     setUploadImages((prev) => prev.filter((_, i) => i !== index));
   };
 
-  const handleGenerate = async (prompt: string) => {
-    console.log("Generating with prompt:", prompt);
-    console.log("Mode:", mode);
-    console.log("Settings:", settings);
-
-    // 开始加载
-    setIsResultLoading(true);
-    setResultError("");
-    setResultImages([]);
-
+  const handleGenerate = async (prompt: string, modeParam: string, settingsParam: GeneratorSettings, imagesParam: string[]) => {
     try {
-      // TODO: 根据 mode 调用相应的生成 API
-      // 这里是示例逻辑
-      const response = await fetch("/api/generate", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          prompt,
-          mode,
-          settings,
-          images: uploadImages,
-        }),
+      await handleAIGenerate({
+        prompt,
+        mode: modeParam as GeneratorMode,
+        settings: settingsParam,
+        images: imagesParam,
       });
-
-      if (!response.ok) {
-        throw new Error("Generation failed");
-      }
-
-      const result = await response.json();
-      // 支持单个图片或多个图片
-      const images = Array.isArray(result.imageUrl) ? result.imageUrl : [result.imageUrl];
-      setResultImages(images);
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : "生成失败，请重试";
-      setResultError(errorMessage);
-      console.error("Generation error:", error);
-    } finally {
-      setIsResultLoading(false);
+      console.error("Generate failed:", error);
     }
   };
 
@@ -191,6 +206,7 @@ export function GlobalGeneratorModal() {
                             onClose={() => setActivePanel(null)}
                             settings={settings}
                             onSettingsChange={setSettings}
+                            mode={mode}
                           />
                         </div>
                       </motion.div>
@@ -237,7 +253,7 @@ export function GlobalGeneratorModal() {
                 >
                   <ModeSelectorPanel
                     value={mode}
-                    onChange={setMode}
+                    onChange={handleModeChange}
                     onClose={() => setActivePanel(null)}
                   />
                 </motion.div>

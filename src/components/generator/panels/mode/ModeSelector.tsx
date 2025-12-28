@@ -1,26 +1,16 @@
 "use client";
 
-import { Type, Maximize, Pencil, Wand2, Layers, Sparkles, X } from "lucide-react";
+import { X } from "lucide-react";
 import { motion } from "framer-motion";
 import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
-
-export type GeneratorMode = "prompt" | "upscale" | "edit" | "remove-watermark" | "change-background" | "ai-face-swap";
+import { MODE_OPTIONS, type GeneratorMode } from "../../config";
 
 interface ModeSelectorPanelProps {
   value: GeneratorMode;
   onChange: (mode: GeneratorMode) => void;
   onClose: () => void;
 }
-
-const MODE_OPTIONS: { id: GeneratorMode; icon: React.ElementType; labelKey: string; descKey: string }[] = [
-  { id: "prompt", icon: Type, labelKey: "prompt", descKey: "promptDesc" },
-  { id: "upscale", icon: Maximize, labelKey: "upscale", descKey: "upscaleDesc" },
-  { id: "edit", icon: Pencil, labelKey: "edit", descKey: "editDesc" },
-  { id: "remove-watermark", icon: Wand2, labelKey: "removeWatermark", descKey: "removeWatermarkDesc" },
-  { id: "change-background", icon: Layers, labelKey: "changeBackground", descKey: "changeBackgroundDesc" },
-  { id: "ai-face-swap", icon: Sparkles, labelKey: "aiFaceSwap", descKey: "aiFaceSwapDesc" },
-];
 
 export function ModeSelectorPanel({ value, onChange, onClose }: ModeSelectorPanelProps) {
   const t = useTranslations("generator.modes");

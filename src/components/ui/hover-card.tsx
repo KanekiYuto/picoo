@@ -177,7 +177,7 @@ export function HoverCardContent({
       onPointerEnter={scheduleOpen}
       onPointerLeave={scheduleClose}
       className={cn(
-        "z-50 w-auto min-w-[240px] max-w-[420px] rounded-xl border border-border bg-card p-3 text-sm text-white shadow-md",
+        "z-[10000] w-auto min-w-[240px] max-w-[420px] rounded-xl border border-border bg-card p-3 text-sm text-white shadow-md",
         "animate-in fade-in-0 zoom-in-95",
         className
       )}

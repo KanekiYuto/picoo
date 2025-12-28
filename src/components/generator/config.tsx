@@ -1,8 +1,13 @@
 "use client";
 
-import type { ComponentType } from "react";
-import type { AspectRatioOption, ModelOption } from "./types";
+import { Type, Maximize, Pencil, Wand2 } from "lucide-react";
+import type { ComponentType, ReactElement } from "react";
+import type { AspectRatio, AspectRatioOption, ModelOption, GeneratorSettings } from "./panels/settings/types";
+import { AspectRatioField, VariationsField, VisibilityField } from "./panels/settings/fields";
 
+export type GeneratorMode = "text-to-image" | "upscale" | "edit-image" | "remove-watermark";
+
+// 模型 Icon 组件
 export const GoogleMonoIcon: ComponentType<{ className?: string }> = ({ className }) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -115,6 +120,7 @@ export const AliIcon: ComponentType<{ className?: string }> = ({ className }) =>
   </svg>
 );
 
+// 默认纵横比选项
 export const DEFAULT_ASPECT_RATIO_OPTIONS: readonly AspectRatioOption[] = [
   { portrait: "1:1" },
   { portrait: "21:9" },
@@ -124,53 +130,291 @@ export const DEFAULT_ASPECT_RATIO_OPTIONS: readonly AspectRatioOption[] = [
   { portrait: "9:16", landscape: "16:9" },
 ];
 
-export const MODELS: ModelOption[] = [
-  {
-    id: "nano-banana",
-    name: "Nano Banana",
-    icon: GoogleMonoIcon,
-    features: ["fast", "simple"],
-    descriptionKey: "nano-banana",
-    aspectRatioOptions: DEFAULT_ASPECT_RATIO_OPTIONS,
+// 模型配置接口
+export interface ModelInfo {
+  name: string;
+  icon: React.ComponentType<{ className?: string }>;
+  apiRoute: string;
+  features?: string[];
+  descriptionKey?: string;
+  aspectRatioOptions?: readonly AspectRatioOption[];
+}
+
+// 默认设置接口
+export interface DefaultSettings {
+  model?: string;
+  aspectRatio?: AspectRatio;
+  variations?: 1 | 2 | 3 | 4;
+}
+
+// 表单字段渲染函数类型
+export type FormFieldRenderer = (props: {
+  settings: GeneratorSettings;
+  onChange: (settings: GeneratorSettings) => void;
+  aspectRatioOptions: readonly AspectRatioOption[];
+  canReset: boolean;
+  onReset: () => void;
+}) => ReactElement;
+
+// ModelDisplay 显示字段类型
+export type DisplayField = "model" | "aspectRatio" | "variations";
+
+// 模式配置接口
+export interface ModeConfig {
+  id: GeneratorMode;
+  icon: React.ElementType;
+  labelKey: string;
+  descKey: string;
+  models?: Record<string, ModelInfo>; // 支持的模型及其信息
+  apiRoute?: string; // 固定 API 路由（不依赖模型）
+  defaultSettings?: DefaultSettings; // 默认设置
+  renderFormFields?: FormFieldRenderer; // 渲染表单字段
+  displayFields: DisplayField[]; // ModelDisplay 中显示的字段
+}
+
+// 模式配置
+export const MODE_CONFIGS: Record<GeneratorMode, ModeConfig> = {
+  "text-to-image": {
+    id: "text-to-image",
+    icon: Type,
+    labelKey: "prompt",
+    descKey: "promptDesc",
+    displayFields: ["model", "aspectRatio", "variations"],
+    models: {
+      "nano-banana-pro": {
+        name: "Nano Banana Pro",
+        icon: GoogleMonoIcon,
+        apiRoute: "wavespeed/nano-banana-pro/text-to-image",
+        features: ["fast", "simple"],
+        descriptionKey: "nano-banana-pro",
+        aspectRatioOptions: DEFAULT_ASPECT_RATIO_OPTIONS,
+      },
+      "seedream-v4-5": {
+        name: "Seedream v4.5",
+        icon: ByteDanceIcon,
+        apiRoute: "wavespeed/seedream-v4.5/text-to-image",
+        features: ["artistic", "creative"],
+        descriptionKey: "seedream-v4-5",
+        aspectRatioOptions: DEFAULT_ASPECT_RATIO_OPTIONS,
+      },
+      "chatgpt-1-5": {
+        name: "ChatGPT 1.5",
+        icon: GptMonoIcon,
+        apiRoute: "fal/gpt-image-1.5/text-to-image",
+        features: ["versatile", "stable"],
+        descriptionKey: "chatgpt-1-5",
+        aspectRatioOptions: DEFAULT_ASPECT_RATIO_OPTIONS,
+      },
+      "flux-2-pro": {
+        name: "Flux 2 Pro",
+        icon: FluxIcon,
+        apiRoute: "wavespeed/flux-2-pro/text-to-image",
+        features: ["professional", "highQuality"],
+        descriptionKey: "flux-2-pro",
+        aspectRatioOptions: DEFAULT_ASPECT_RATIO_OPTIONS,
+      },
+      "z-image-turbo": {
+        name: "Z Image Turbo",
+        icon: AliIcon,
+        apiRoute: "wavespeed/z-image/turbo",
+        features: ["realtime", "ultraFast"],
+        descriptionKey: "z-image-turbo",
+        aspectRatioOptions: DEFAULT_ASPECT_RATIO_OPTIONS,
+      },
+    },
+    defaultSettings: {
+      model: "nano-banana-pro",
+      aspectRatio: "1:1",
+      variations: 1,
+    },
+    renderFormFields: ({ settings, onChange, aspectRatioOptions, canReset, onReset }) => (
+      <>
+        <div className="shrink-0">
+          <AspectRatioField
+            value={settings.aspectRatio}
+            options={aspectRatioOptions}
+            onChange={(aspectRatio) => onChange({ ...settings, aspectRatio })}
+            canReset={canReset}
+            onReset={onReset}
+          />
+        </div>
+        <div>
+          <VariationsField
+            value={settings.variations}
+            onChange={(variations) => onChange({ ...settings, variations })}
+          />
+        </div>
+        <div>
+          <VisibilityField
+            value={settings.visibility}
+            onChange={(visibility) => onChange({ ...settings, visibility })}
+          />
+        </div>
+      </>
+    ),
   },
-  {
-    id: "nano-banana-pro",
-    name: "Nano Banana Pro",
-    icon: GoogleMonoIcon,
-    features: ["fast", "simple"],
-    descriptionKey: "nano-banana-pro",
-    aspectRatioOptions: DEFAULT_ASPECT_RATIO_OPTIONS,
+  "upscale": {
+    id: "upscale",
+    icon: Maximize,
+    labelKey: "upscale",
+    descKey: "upscaleDesc",
+    apiRoute: "wavespeed/image-upscaler",
+    displayFields: ["model", "variations"],
+    models: {
+      "upscale": {
+        name: "Upscale",
+        icon: AliIcon,
+        apiRoute: "wavespeed/image-upscaler",
+        features: ["fast", "highQuality"],
+        descriptionKey: "upscale",
+        aspectRatioOptions: DEFAULT_ASPECT_RATIO_OPTIONS,
+      },
+    },
+    defaultSettings: {
+      model: "upscale",
+      aspectRatio: "1:1",
+      variations: 1,
+    },
+    renderFormFields: ({ settings, onChange }) => (
+      <>
+        <div>
+          <VariationsField
+            value={settings.variations}
+            onChange={(variations) => onChange({ ...settings, variations })}
+          />
+        </div>
+      </>
+    ),
   },
-  {
-    id: "seedream-v4-5",
-    name: "Seedream v4.5",
-    icon: ByteDanceIcon,
-    features: ["artistic", "creative"],
-    descriptionKey: "seedream-v4-5",
-    aspectRatioOptions: DEFAULT_ASPECT_RATIO_OPTIONS,
+  "edit-image": {
+    id: "edit-image",
+    icon: Pencil,
+    labelKey: "edit",
+    descKey: "editDesc",
+    displayFields: ["model", "aspectRatio", "variations"],
+    models: {
+      "nano-banana-pro": {
+        name: "Nano Banana Pro",
+        icon: GoogleMonoIcon,
+        apiRoute: "wavespeed/nano-banana-pro/image-to-image",
+        features: ["fast", "simple"],
+        descriptionKey: "nano-banana-pro",
+        aspectRatioOptions: DEFAULT_ASPECT_RATIO_OPTIONS,
+      },
+      "seedream-v4-5": {
+        name: "Seedream v4.5",
+        icon: ByteDanceIcon,
+        apiRoute: "wavespeed/seedream-v4.5/image-to-image",
+        features: ["artistic", "creative"],
+        descriptionKey: "seedream-v4-5",
+        aspectRatioOptions: DEFAULT_ASPECT_RATIO_OPTIONS,
+      },
+      "chatgpt-1-5": {
+        name: "ChatGPT 1.5",
+        icon: GptMonoIcon,
+        apiRoute: "fal/gpt-image-1.5/image-to-image",
+        features: ["versatile", "stable"],
+        descriptionKey: "chatgpt-1-5",
+        aspectRatioOptions: DEFAULT_ASPECT_RATIO_OPTIONS,
+      },
+      "flux-2-pro": {
+        name: "Flux 2 Pro",
+        icon: FluxIcon,
+        apiRoute: "wavespeed/flux-2-pro/image-to-image",
+        features: ["professional", "highQuality"],
+        descriptionKey: "flux-2-pro",
+        aspectRatioOptions: DEFAULT_ASPECT_RATIO_OPTIONS,
+      },
+    },
+    defaultSettings: {
+      model: "nano-banana-pro",
+      aspectRatio: "1:1",
+      variations: 1,
+    },
+    renderFormFields: ({ settings, onChange, aspectRatioOptions, canReset, onReset }) => (
+      <>
+        <div className="shrink-0">
+          <AspectRatioField
+            value={settings.aspectRatio}
+            options={aspectRatioOptions}
+            onChange={(aspectRatio) => onChange({ ...settings, aspectRatio })}
+            canReset={canReset}
+            onReset={onReset}
+          />
+        </div>
+        <div>
+          <VariationsField
+            value={settings.variations}
+            onChange={(variations) => onChange({ ...settings, variations })}
+          />
+        </div>
+        <div>
+          <VisibilityField
+            value={settings.visibility}
+            onChange={(visibility) => onChange({ ...settings, visibility })}
+          />
+        </div>
+      </>
+    ),
   },
-  {
-    id: "chatgpt-1-5",
-    name: "ChatGPT 1.5",
-    icon: GptMonoIcon,
-    features: ["versatile", "stable"],
-    descriptionKey: "chatgpt-1-5",
-    aspectRatioOptions: DEFAULT_ASPECT_RATIO_OPTIONS,
+  "remove-watermark": {
+    id: "remove-watermark",
+    icon: Wand2,
+    labelKey: "removeWatermark",
+    descKey: "removeWatermarkDesc",
+    apiRoute: "wavespeed/image-watermark-remover",
+    displayFields: ["model", "variations"],
+    models: {
+      "remove-watermark": {
+        name: "Remove Watermark",
+        icon: AliIcon,
+        apiRoute: "wavespeed/image-watermark-remover",
+        features: ["fast", "simple"],
+        descriptionKey: "remove-watermark",
+        aspectRatioOptions: DEFAULT_ASPECT_RATIO_OPTIONS,
+      },
+    },
+    defaultSettings: {
+      model: "remove-watermark",
+      aspectRatio: "1:1",
+      variations: 1,
+    },
+    renderFormFields: ({ settings, onChange }) => (
+      <>
+        <div>
+          <VariationsField
+            value={settings.variations}
+            onChange={(variations) => onChange({ ...settings, variations })}
+          />
+        </div>
+      </>
+    ),
   },
-  {
-    id: "flux-2-pro",
-    name: "Flux 2 Pro",
-    icon: FluxIcon,
-    features: ["professional", "highQuality"],
-    descriptionKey: "flux-2-pro",
-    aspectRatioOptions: DEFAULT_ASPECT_RATIO_OPTIONS,
-  },
-  {
-    id: "z-image-turbo",
-    name: "Z Image Turbo",
-    icon: AliIcon,
-    features: ["realtime", "ultraFast"],
-    descriptionKey: "z-image-turbo",
-    aspectRatioOptions: DEFAULT_ASPECT_RATIO_OPTIONS,
-  },
-];
+};
+
+// 导出模式选项数组（用于 UI 渲染）
+export const MODE_OPTIONS = Object.values(MODE_CONFIGS);
+
+// 从 MODE_CONFIGS 中提取所有模型，生成统一的 MODELS 数组
+export const MODELS: ModelOption[] = (() => {
+  const modelMap = new Map<string, ModelOption>();
+
+  Object.values(MODE_CONFIGS).forEach((modeConfig) => {
+    if (modeConfig.models) {
+      Object.entries(modeConfig.models).forEach(([id, modelInfo]) => {
+        if (!modelMap.has(id)) {
+          modelMap.set(id, {
+            id,
+            name: modelInfo.name,
+            icon: modelInfo.icon,
+            features: modelInfo.features,
+            descriptionKey: modelInfo.descriptionKey,
+            aspectRatioOptions: modelInfo.aspectRatioOptions,
+          });
+        }
+      });
+    }
+  });
+
+  return Array.from(modelMap.values());
+})();

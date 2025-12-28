@@ -1,7 +1,8 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import type { GeneratorSettings, ModelOption } from "./types";
+import type { ModelOption } from "./types";
+import { MODE_CONFIGS, type GeneratorMode } from "../../config";
 
 interface ModelDisplayProps {
   model: ModelOption | undefined;
@@ -9,13 +10,13 @@ interface ModelDisplayProps {
   variations: 1 | 2 | 3 | 4;
   visibility?: "public" | "private";
   compact?: boolean;
-  t?: (key: string) => string;
   onClick?: () => void;
+  mode?: GeneratorMode;
 }
 
 /**
  * 模型信息展示组件
- * 显示当前选择的模型、比例和变体数
+ * 根据 MODE_CONFIGS 中的 displayFields 动态显示内容
  */
 export function ModelDisplay({
   model,
@@ -23,13 +24,34 @@ export function ModelDisplay({
   variations,
   visibility,
   compact = false,
-  t,
   onClick,
+  mode = "text-to-image",
 }: ModelDisplayProps) {
-  if (!model) return null;
+  const modeConfig = MODE_CONFIGS[mode];
+  const displayFields = modeConfig?.displayFields || [];
 
-  const modelName = model.name;
-  const variationLabel = `${variations}v`;
+  // 构建显示内容
+  const displayParts: string[] = [];
+
+  displayFields.forEach((field) => {
+    switch (field) {
+      case "model":
+        if (model?.name) {
+          displayParts.push(model.name);
+        }
+        break;
+      case "aspectRatio":
+        displayParts.push(aspectRatio);
+        break;
+      case "variations":
+        displayParts.push(`${variations}v`);
+        break;
+    }
+  });
+
+  if (displayParts.length === 0) {
+    return null;
+  }
 
   if (compact) {
     // 紧凑模式：用于GlobalGenerator的模型信息按钮
@@ -44,11 +66,12 @@ export function ModelDisplay({
           "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
         )}
       >
-        <span className="font-medium">{modelName}</span>
-        <span>/</span>
-        <span>{aspectRatio}</span>
-        <span>/</span>
-        <span>{variationLabel}</span>
+        {displayParts.map((part, index) => (
+          <span key={index} className={cn(index === 0 && model?.name ? "font-medium" : "")}>
+            {part}
+            {index < displayParts.length - 1 && <span className="ml-1">/</span>}
+          </span>
+        ))}
       </button>
     );
   }
@@ -56,12 +79,14 @@ export function ModelDisplay({
   // 完整模式：显示所有信息
   return (
     <div className="space-y-2">
-      <div className="flex items-center justify-between">
-        <span className="text-sm font-medium text-foreground">{modelName}</span>
-        {visibility && <span className="text-xs text-muted">{visibility}</span>}
-      </div>
+      {model?.name && (
+        <div className="flex items-center justify-between">
+          <span className="text-sm font-medium text-foreground">{model.name}</span>
+          {visibility && <span className="text-xs text-muted">{visibility}</span>}
+        </div>
+      )}
       <div className="text-xs text-muted">
-        {aspectRatio} • {variationLabel}
+        {displayParts.filter(part => part !== model?.name).join(" • ")}
       </div>
     </div>
   );

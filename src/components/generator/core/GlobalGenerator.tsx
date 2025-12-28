@@ -1,19 +1,20 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { motion } from "framer-motion";
 import { useTranslations } from "next-intl";
 import { ImageOff } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ModelDisplay } from "../panels/settings/ModelDisplay";
 import type { GeneratorSettings } from "../panels/settings";
-import { MODELS, getModelById } from "../panels/settings";
 import { ImageUploadButton } from "../buttons/ImageUploadButton";
 import { ModeSelectorButton } from "../buttons";
+import { MODE_CONFIGS, type GeneratorMode } from "../config";
+import type { ModelOption } from "../panels/settings/types";
 
 interface GlobalGeneratorProps {
   className?: string;
-  onGenerate?: (prompt: string, image?: File) => void;
+  onGenerate?: (prompt: string, mode: string, settings: GeneratorSettings, images: string[]) => void;
   onOpenUploadPanel?: () => void;
   onOpenSettingsPanel?: () => void;
   onOpenModePanel?: () => void;
@@ -21,9 +22,9 @@ interface GlobalGeneratorProps {
   previewUrl?: string;
   uploadImages?: string[];
   onRemoveImage?: (index: number) => void;
-  settings?: GeneratorSettings;
+  settings: GeneratorSettings;
   onSettingsChange?: (settings: GeneratorSettings) => void;
-  mode?: "prompt" | "upscale" | "edit" | "remove-watermark" | "change-background" | "ai-face-swap";
+  mode?: GeneratorMode;
 }
 
 export function GlobalGenerator({
@@ -36,26 +37,44 @@ export function GlobalGenerator({
   uploadImages = [],
   onRemoveImage,
   settings,
-  mode = "prompt"
+  mode = "text-to-image"
 }: GlobalGeneratorProps) {
   const t = useTranslations("generator");
   const [prompt, setPrompt] = useState("");
 
+  // 从 MODE_CONFIGS 获取当前模型信息
+  const currentModel = useMemo<ModelOption | undefined>(() => {
+    const modeConfig = MODE_CONFIGS[mode];
+    if (!modeConfig?.models || !settings.model) {
+      return undefined;
+    }
+
+    const modelInfo = modeConfig.models[settings.model];
+    if (!modelInfo) {
+      return undefined;
+    }
+
+    return {
+      id: settings.model,
+      name: modelInfo.name,
+      icon: modelInfo.icon,
+      features: modelInfo.features,
+      descriptionKey: modelInfo.descriptionKey,
+      aspectRatioOptions: modelInfo.aspectRatioOptions,
+    };
+  }, [mode, settings.model]);
+
   // 根据模式获取最大上传数量
   const getMaxUploadCount = () => {
     switch (mode) {
-      case "prompt":
+      case "text-to-image":
         return 0; // 文本生成不需要上传图片
       case "upscale":
         return 1; // 放大支持上传一张
-      case "edit":
+      case "edit-image":
         return 4; // 编辑最多四张
       case "remove-watermark":
         return 1; // 去水印一张
-      case "change-background":
-        return 2; // 换背景两张
-      case "ai-face-swap":
-        return 2; // 换脸两张
       default:
         return 0;
     }
@@ -66,7 +85,7 @@ export function GlobalGenerator({
   // 处理生成
   const handleCreate = () => {
     if (prompt.trim()) {
-      onGenerate?.(prompt);
+      onGenerate?.(prompt, mode, settings, uploadImages);
     }
   };
 
@@ -75,7 +94,7 @@ export function GlobalGenerator({
       <div className="flex flex-col md:flex-row gap-3 md:gap-4">
         {/* 桌面端图片上传区域 - 左侧 */}
         <div className="hidden justify-end md:flex flex-col gap-3">
-          {mode === "prompt" ? (
+          {mode === "text-to-image" ? (
             <div className="flex h-24 w-24 items-center justify-center rounded-xl border-2 border-dashed border-border/35 bg-sidebar-hover/15">
               <div className="flex flex-col items-center gap-1">
                 <ImageOff className="h-6 w-6 text-muted/45" />
@@ -126,13 +145,14 @@ export function GlobalGenerator({
               />
 
               {/* 模型信息按钮 */}
-              {settings && (
+              {settings && mode && (
                 <ModelDisplay
-                  model={getModelById(settings.model, MODELS)}
+                  model={currentModel}
                   aspectRatio={settings.aspectRatio}
                   variations={settings.variations}
                   compact={true}
                   onClick={onOpenSettingsPanel}
+                  mode={mode}
                 />
               )}
             </div>

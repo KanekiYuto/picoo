@@ -1,7 +1,7 @@
 export { SettingsPanel } from "./SettingsPanel";
 export { ModelDisplay } from "./ModelDisplay";
 export type { GeneratorSettings } from "./types";
-export { MODELS } from "./models";
+export { MODELS } from "../../config";
 export { getModelById } from "./utils";
 
 // Internal components (for internal use within settings panel)
