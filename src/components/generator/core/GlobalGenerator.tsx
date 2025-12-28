@@ -150,6 +150,7 @@ export function GlobalGenerator({
                   model={currentModel}
                   aspectRatio={settings.aspectRatio}
                   variations={settings.variations}
+                  resolution={settings.resolution}
                   compact={true}
                   onClick={onOpenSettingsPanel}
                   mode={mode}

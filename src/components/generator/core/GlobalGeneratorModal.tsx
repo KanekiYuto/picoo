@@ -32,6 +32,8 @@ export function GlobalGeneratorModal() {
       aspectRatio: (defaults.aspectRatio || "1:1") as `${number}:${number}`,
       variations: defaults.variations || 1,
       visibility: "public",
+      resolution: defaults.resolution,
+      format: defaults.format,
     };
   };
 
@@ -41,6 +43,7 @@ export function GlobalGeneratorModal() {
 
     const newModeConfig = MODE_CONFIGS[newMode];
     const newModeModels = newModeConfig?.models;
+    const defaultSettings = getDefaultSettings(newMode);
 
     // 如果新模式支持当前模型，保留当前设置
     if (newModeModels && settings.model && newModeModels[settings.model]) {
@@ -52,20 +55,17 @@ export function GlobalGeneratorModal() {
         option => option.portrait === settings.aspectRatio || option.landscape === settings.aspectRatio
       );
 
-      if (!isAspectRatioSupported) {
-        // 如果aspectRatio不支持，使用新模式的默认aspectRatio
-        const defaultSettings = getDefaultSettings(newMode);
-        setSettings({
-          ...settings,
-          aspectRatio: defaultSettings.aspectRatio,
-        });
-      }
-      // 否则保留当前设置
+      setSettings({
+        ...settings,
+        aspectRatio: isAspectRatioSupported ? settings.aspectRatio : defaultSettings.aspectRatio,
+        resolution: defaultSettings.resolution,
+        format: defaultSettings.format,
+      });
       return;
     }
 
     // 如果新模式不支持当前模型，使用新模式的默认设置
-    setSettings(getDefaultSettings(newMode));
+    setSettings(defaultSettings);
   };
 
   const [settings, setSettings] = useState<GeneratorSettings>(() => getDefaultSettings("text-to-image"));

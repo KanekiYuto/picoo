@@ -3,7 +3,7 @@
 import { Type, Maximize, Pencil, Wand2 } from "lucide-react";
 import type { ComponentType, ReactElement } from "react";
 import type { AspectRatio, AspectRatioOption, ModelOption, GeneratorSettings } from "./panels/settings/types";
-import { AspectRatioField, VariationsField, VisibilityField } from "./panels/settings/fields";
+import { AspectRatioField, VariationsField, VisibilityField, SelectField } from "./panels/settings/fields";
 
 export type GeneratorMode = "text-to-image" | "upscale" | "edit-image" | "remove-watermark";
 
@@ -145,6 +145,8 @@ export interface DefaultSettings {
   model?: string;
   aspectRatio?: AspectRatio;
   variations?: 1 | 2 | 3 | 4;
+  resolution?: string;
+  format?: string;
 }
 
 // 表单字段渲染函数类型
@@ -157,7 +159,7 @@ export type FormFieldRenderer = (props: {
 }) => ReactElement;
 
 // ModelDisplay 显示字段类型
-export type DisplayField = "model" | "aspectRatio" | "variations";
+export type DisplayField = "model" | "aspectRatio" | "variations" | "resolution";
 
 // 模式配置接口
 export interface ModeConfig {
@@ -259,7 +261,7 @@ export const MODE_CONFIGS: Record<GeneratorMode, ModeConfig> = {
     labelKey: "upscale",
     descKey: "upscaleDesc",
     apiRoute: "wavespeed/image-upscaler",
-    displayFields: ["model", "variations"],
+    displayFields: ["model", "resolution"],
     models: {
       "upscale": {
         name: "Upscale",
@@ -274,13 +276,33 @@ export const MODE_CONFIGS: Record<GeneratorMode, ModeConfig> = {
       model: "upscale",
       aspectRatio: "1:1",
       variations: 1,
+      resolution: "2k",
+      format: "jpeg",
     },
     renderFormFields: ({ settings, onChange }) => (
       <>
         <div>
-          <VariationsField
-            value={settings.variations}
-            onChange={(variations) => onChange({ ...settings, variations })}
+          <SelectField
+            title="分辨率"
+            value={settings.resolution || "2k"}
+            options={[
+              { value: "2k", label: "2K" },
+              { value: "4k", label: "4K" },
+              { value: "8k", label: "8K" },
+            ]}
+            onChange={(resolution) => onChange({ ...settings, resolution })}
+          />
+        </div>
+        <div>
+          <SelectField
+            title="图片格式"
+            value={settings.format || "jpeg"}
+            options={[
+              { value: "jpeg", label: "JPEG" },
+              { value: "png", label: "PNG" },
+              { value: "webp", label: "WEBP" },
+            ]}
+            onChange={(format) => onChange({ ...settings, format })}
           />
         </div>
       </>
@@ -378,13 +400,20 @@ export const MODE_CONFIGS: Record<GeneratorMode, ModeConfig> = {
       model: "remove-watermark",
       aspectRatio: "1:1",
       variations: 1,
+      format: "jpeg",
     },
     renderFormFields: ({ settings, onChange }) => (
       <>
         <div>
-          <VariationsField
-            value={settings.variations}
-            onChange={(variations) => onChange({ ...settings, variations })}
+          <SelectField
+            title="图片格式"
+            value={settings.format || "jpeg"}
+            options={[
+              { value: "jpeg", label: "JPEG" },
+              { value: "png", label: "PNG" },
+              { value: "webp", label: "WEBP" },
+            ]}
+            onChange={(format) => onChange({ ...settings, format })}
           />
         </div>
       </>

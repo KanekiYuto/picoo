@@ -25,4 +25,6 @@ export interface GeneratorSettings {
   aspectRatio: AspectRatio;
   variations: 1 | 2 | 3 | 4;
   visibility: "public" | "private";
+  resolution?: string;
+  format?: string;
 }

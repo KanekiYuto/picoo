@@ -9,6 +9,7 @@ interface ModelDisplayProps {
   aspectRatio: string;
   variations: 1 | 2 | 3 | 4;
   visibility?: "public" | "private";
+  resolution?: string;
   compact?: boolean;
   onClick?: () => void;
   mode?: GeneratorMode;
@@ -23,6 +24,7 @@ export function ModelDisplay({
   aspectRatio,
   variations,
   visibility,
+  resolution,
   compact = false,
   onClick,
   mode = "text-to-image",
@@ -45,6 +47,11 @@ export function ModelDisplay({
         break;
       case "variations":
         displayParts.push(`${variations}v`);
+        break;
+      case "resolution":
+        if (resolution) {
+          displayParts.push(resolution.toUpperCase());
+        }
         break;
     }
   });

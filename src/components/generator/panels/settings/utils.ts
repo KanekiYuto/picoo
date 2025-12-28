@@ -87,7 +87,9 @@ export function areSettingsEqual(
     a.model === b.model &&
     a.aspectRatio === b.aspectRatio &&
     a.variations === b.variations &&
-    a.visibility === b.visibility
+    a.visibility === b.visibility &&
+    a.resolution === b.resolution &&
+    a.format === b.format
   );
 }
 
@@ -122,5 +124,7 @@ export function normalizeSettings(
     aspectRatio,
     variations,
     visibility,
+    resolution: settings?.resolution,
+    format: settings?.format,
   };
 }
