@@ -161,11 +161,9 @@ export function GlobalGeneratorModal() {
               exit={{ opacity: 0 }}
               transition={{ duration: 0.2 }}
               onClick={closeGeneratorModal}
-              className="fixed top-4 right-4 flex h-10 w-10 items-center justify-center rounded-full bg-card/80 text-muted transition-colors backdrop-blur-sm hover:bg-card hover:text-foreground cursor-pointer"
+              className="fixed top-4 right-4 flex h-12.5 w-12.5 items-center justify-center rounded-lg bg-card/80 text-foreground transition-colors backdrop-blur-sm border border-border shadow-lg hover:bg-sidebar-hover cursor-pointer"
               style={{ zIndex: 60 }}
               aria-label="关闭"
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.95 }}
             >
               <X className="h-5 w-5" />
             </motion.button>

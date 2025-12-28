@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
-import { Download, RefreshCw, ZoomIn, ZoomOut, X, RotateCcw } from "lucide-react";
+import { Download, RefreshCw, Grid3x3 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
 import { loadImageAsBlob } from "@/lib/image-utils";
@@ -38,11 +38,65 @@ export function ResultPanel({
   const containerRef = useRef<HTMLDivElement | null>(null);
   const stageRef = useRef<Konva.Stage | null>(null);
   const layerRef = useRef<Konva.Layer | null>(null);
+  const selectionBoxRef = useRef<Konva.Rect | null>(null);
+  const selectionStartRef = useRef<{ x: number; y: number } | null>(null);
+  const groupRef = useRef<Konva.Group | null>(null);
   const [selectedImage, setSelectedImage] = useState<Konva.Image | null>(null);
+  const [selectedImages, setSelectedImages] = useState<Konva.Image[]>([]);
   const [imagesData, setImagesData] = useState<Map<Konva.Image, ImageData>>(new Map());
   const [isStageReady, setIsStageReady] = useState(false);
+  const [toolbarPos, setToolbarPos] = useState<{ x: number; y: number } | null>(null);
+  const [globalZoom, setGlobalZoom] = useState(100);
 
   const isEmpty = !images || images.length === 0;
+
+  // ==================== 辅助函数 ====================
+  // 计算工具栏位置
+  const calculateToolbarPosition = (rect: { x: number; y: number }) => {
+    if (!containerRef.current) return null;
+    const containerRect = containerRef.current.getBoundingClientRect();
+    const toolbarHeight = 56;
+    const spacing = 12;
+    return {
+      x: rect.x - containerRect.left,
+      y: rect.y - containerRect.top - toolbarHeight - spacing,
+    };
+  };
+
+  // 更新工具栏位置
+  const updateToolbarPosition = () => {
+    if (!stageRef.current || !containerRef.current) return;
+
+    let targetNode: Konva.Node | null = null;
+    const transformer = (stageRef.current as any)?.transformer;
+
+    // 优先使用 Group
+    if (groupRef.current && selectedImages.length > 1) {
+      targetNode = groupRef.current;
+    }
+    // 多个图片被选中但还没有 Group
+    else if (selectedImages.length > 1 && transformer?.nodes().length > 0) {
+      const pos = calculateToolbarPosition(transformer.getClientRect());
+      setToolbarPos(pos);
+      return;
+    }
+    // 单个图片被选中
+    else if (selectedImage) {
+      targetNode = selectedImage;
+    }
+
+    if (targetNode) {
+      const pos = calculateToolbarPosition(targetNode.getClientRect());
+      setToolbarPos(pos);
+    } else {
+      setToolbarPos(null);
+    }
+  };
+
+  // 监听选中状态变化，更新工具栏位置
+  useEffect(() => {
+    updateToolbarPosition();
+  }, [selectedImage, selectedImages, groupRef.current]);
 
   // ==================== 舞台初始化 ====================
   useEffect(() => {
@@ -144,17 +198,17 @@ export function ResultPanel({
     };
   }, [images, isStageReady]);
 
-  // ==================== 工具函数 ====================
+  // ==================== Konva 初始化函数 ====================
   function createTransformer(layer: Konva.Layer) {
     const transformer = new Konva.Transformer({
       enabledAnchors: ["top-left", "top-right", "bottom-left", "bottom-right"],
-      anchorSize: 16,
-      anchorCornerRadius: 8,
-      borderStroke: "rgb(59, 130, 246)",
-      borderStrokeWidth: 2,
-      anchorFill: "rgb(59, 130, 246)",
-      anchorStroke: "white",
-      anchorStrokeWidth: 2,
+      anchorSize: 10,
+      anchorCornerRadius: 10,
+      borderStroke: "#4b5cc4",
+      borderStrokeWidth: 3,
+      anchorFill: "#ffffff",
+      anchorStroke: "#4b5cc4",
+      anchorStrokeWidth: 3,
       rotateEnabled: false,
     });
     layer.add(transformer);
@@ -164,12 +218,123 @@ export function ResultPanel({
   }
 
   function setupStageEvents(stage: Konva.Stage, transformer: Konva.Transformer, layer: Konva.Layer) {
+    // Transformer 变换事件
+    transformer.on("transformend", () => {
+      updateToolbarPosition();
+    });
+
+    transformer.on("transform", () => {
+      updateToolbarPosition();
+    });
+
+    // 点击空白区域只取消选择，不解散 Group
     stage.on("click", (e) => {
       if (e.target === stage) {
         setSelectedImage(null);
+        setSelectedImages([]);
         transformer.nodes([]);
         layer.draw();
       }
+    });
+
+    // 框选逻辑
+    stage.on("mousedown", (e) => {
+      // 仅在点击空白区域时开始框选
+      if (e.target !== stage) return;
+
+      const pointer = stage.getPointerPosition();
+      if (!pointer) return;
+
+      selectionStartRef.current = { x: pointer.x, y: pointer.y };
+
+      // 创建选择框
+      if (!selectionBoxRef.current) {
+        const selectionBox = new Konva.Rect({
+          x: pointer.x,
+          y: pointer.y,
+          width: 0,
+          height: 0,
+          fill: "rgba(75, 92, 196, 0.1)",
+          stroke: "#4b5cc4",
+          strokeWidth: 2,
+          name: "selection-box",
+        });
+        layer.add(selectionBox);
+        selectionBoxRef.current = selectionBox;
+      }
+    });
+
+    stage.on("mousemove", (e) => {
+      if (!selectionStartRef.current || !selectionBoxRef.current) return;
+
+      const pointer = stage.getPointerPosition();
+      if (!pointer) return;
+
+      const startX = selectionStartRef.current.x;
+      const startY = selectionStartRef.current.y;
+      const currentX = pointer.x;
+      const currentY = pointer.y;
+
+      // 更新选择框大小
+      selectionBoxRef.current.setAttrs({
+        x: Math.min(startX, currentX),
+        y: Math.min(startY, currentY),
+        width: Math.abs(currentX - startX),
+        height: Math.abs(currentY - startY),
+      });
+
+      layer.draw();
+    });
+
+    stage.on("mouseup", () => {
+      if (!selectionBoxRef.current || !selectionStartRef.current) return;
+
+      const selectionBox = selectionBoxRef.current;
+      const boxX = selectionBox.x();
+      const boxY = selectionBox.y();
+      const boxWidth = selectionBox.width();
+      const boxHeight = selectionBox.height();
+
+      // 检测框内的图片
+      const selectedList: Konva.Image[] = [];
+
+      layer.children.forEach((child) => {
+        if (!(child instanceof Konva.Image) || child.name().startsWith("selection")) return;
+
+        const imageX = child.x();
+        const imageY = child.y();
+        const imageWidth = child.width() * child.scaleX();
+        const imageHeight = child.height() * child.scaleY();
+
+        // 检查图片是否在框选区域内
+        if (
+          imageX >= boxX &&
+          imageY >= boxY &&
+          imageX + imageWidth <= boxX + boxWidth &&
+          imageY + imageHeight <= boxY + boxHeight
+        ) {
+          selectedList.push(child);
+        }
+      });
+
+      // 移除选择框
+      selectionBoxRef.current.destroy();
+      selectionBoxRef.current = null;
+      selectionStartRef.current = null;
+
+      // 框选完成后，直接选中图片，不创建 Group
+      if (selectedList.length > 0) {
+        transformer.nodes(selectedList);
+        transformer.moveToTop();
+        setSelectedImages(selectedList);
+        setSelectedImage(null);
+        updateToolbarPosition();
+      } else {
+        setSelectedImages([]);
+        transformer.nodes([]);
+      }
+
+      layer.draw();
     });
   }
 
@@ -206,19 +371,40 @@ export function ResultPanel({
   function setupImageEvents(konvaImage: Konva.Image, layer: Konva.Layer) {
     // 点击选中
     konvaImage.on("click", () => {
-      const transformer = (stageRef.current as any)?.transformer;
-      if (transformer) {
-        transformer.nodes([konvaImage]);
-        // 确保 Transformer 在最顶层
-        transformer.moveToTop();
+      // 如果点击的图片在 Group 中，则选中整个 Group
+      if (konvaImage.parent && konvaImage.parent.name() === "images-group") {
+        const transformer = (stageRef.current as any)?.transformer;
+        if (transformer) {
+          transformer.nodes([konvaImage.parent]);
+          transformer.moveToTop();
+        }
+      } else {
+        const transformer = (stageRef.current as any)?.transformer;
+        if (transformer) {
+          transformer.nodes([konvaImage]);
+          transformer.moveToTop();
+        }
       }
       setSelectedImage(konvaImage);
+      setSelectedImages([konvaImage]);
       layer.draw();
+      updateToolbarPosition();
     });
 
     // 拖动结束时限制边界
     konvaImage.on("dragend", () => {
-      constrainImagePosition(konvaImage, layer);
+      // 如果图片在 Group 中，约束 Group
+      if (konvaImage.parent && konvaImage.parent.name() === "images-group") {
+        constrainGroupPosition(konvaImage.parent as Konva.Group, layer);
+      } else {
+        constrainImagePosition(konvaImage, layer);
+      }
+      updateToolbarPosition();
+    });
+
+    // 拖动时更新工具栏位置
+    konvaImage.on("dragmove", () => {
+      updateToolbarPosition();
     });
   }
 
@@ -242,42 +428,205 @@ export function ResultPanel({
     layer.draw();
   }
 
+  function constrainGroupPosition(group: Konva.Group, layer: Konva.Layer) {
+    const stage = stageRef.current!;
+
+    // 计算 Group 的总体边界
+    const groupBounds = group.getClientRect();
+    const groupX = group.x();
+    const groupY = group.y();
+    const groupWidth = groupBounds.width;
+    const groupHeight = groupBounds.height;
+
+    let x = groupX;
+    let y = groupY;
+
+    // 限制水平边界
+    if (x < 0) x = 0;
+    if (x + groupWidth > stage.width()) x = stage.width() - groupWidth;
+
+    // 限制垂直边界
+    if (y < 0) y = 0;
+    if (y + groupHeight > stage.height()) y = stage.height() - groupHeight;
+
+    group.position({ x, y });
+    layer.draw();
+  }
+
   // ==================== 事件处理器 ====================
-  const handleZoomIn = () => {
-    if (!selectedImage || !layerRef.current) return;
-    const scale = selectedImage.scaleX()! * 1.2;
-    selectedImage.scale({ x: scale, y: scale });
-    layerRef.current.draw();
-  };
-
-  const handleZoomOut = () => {
-    if (!selectedImage || !layerRef.current) return;
-    const scale = Math.max(selectedImage.scaleX()! * 0.8, 0.1);
-    selectedImage.scale({ x: scale, y: scale });
-    layerRef.current.draw();
-  };
-
-  const handleResetPosition = () => {
-    if (!selectedImage || !layerRef.current) return;
-    selectedImage.position({ x: 100, y: 100 });
-    selectedImage.scale({ x: 0.25, y: 0.25 });
-    selectedImage.rotation(0);
-    layerRef.current.draw();
-  };
-
-  const handleDeleteImage = () => {
-    if (!selectedImage || !layerRef.current) return;
-    selectedImage.destroy();
-    setSelectedImage(null);
-    layerRef.current.draw();
-  };
-
   const handleDownloadSelected = () => {
     if (!selectedImage) return;
     const imageData = imagesData.get(selectedImage);
     if (imageData?.imageUrl) {
       onDownload?.(imageData.imageUrl);
     }
+  };
+
+  const handleAutoLayout = () => {
+    if (!layerRef.current || !stageRef.current || selectedImages.length === 0) return;
+
+    const layer = layerRef.current;
+    const transformer = (stageRef.current as any)?.transformer;
+
+    // 如果 Group 不存在，创建 Group
+    if (!groupRef.current) {
+      // 计算组的初始位置（最左上的图片）
+      let minX = Infinity;
+      let minY = Infinity;
+      selectedImages.forEach((img) => {
+        minX = Math.min(minX, img.x());
+        minY = Math.min(minY, img.y());
+      });
+
+      // 创建新的 Group
+      const group = new Konva.Group({
+        name: "images-group",
+        draggable: true,
+        x: minX,
+        y: minY,
+      });
+
+      // 将选中的图片转移到 Group 中
+      selectedImages.forEach((img) => {
+        const originalX = img.x();
+        const originalY = img.y();
+
+        img.remove();
+        img.draggable(false);
+
+        // 相对于 Group 重新定位
+        img.position({
+          x: originalX - minX,
+          y: originalY - minY,
+        });
+
+        group.add(img);
+      });
+
+      // 添加 Group 到 layer
+      layer.add(group);
+
+      // 为 Group 设置 Transformer
+      if (transformer) {
+        transformer.nodes([group]);
+        transformer.moveToTop();
+      }
+
+      // 为 Group 添加拖动事件
+      group.on("dragend", () => {
+        constrainGroupPosition(group, layer);
+        updateToolbarPosition();
+      });
+
+      group.on("dragmove", () => {
+        updateToolbarPosition();
+      });
+
+      groupRef.current = group;
+    }
+
+    const group = groupRef.current;
+
+    // 计算最优的行列数（尽量接近正方形）
+    const groupChildren = group.children.filter((child) => child instanceof Konva.Image) as Konva.Image[];
+    if (groupChildren.length === 0) return;
+
+    const count = groupChildren.length;
+    const cols = Math.ceil(Math.sqrt(count));
+    const rows = Math.ceil(count / cols);
+
+    // 定义间距
+    const padding = 20;
+    const spacing = 20;
+
+    const firstImg = groupChildren[0];
+    const imgWidth = firstImg.width() * firstImg.scaleX();
+    const imgHeight = firstImg.height() * firstImg.scaleY();
+
+    // 计算 Group 的总宽高
+    const totalWidth = cols * (imgWidth + spacing) - spacing + padding * 2;
+    const totalHeight = rows * (imgHeight + spacing) - spacing + padding * 2;
+
+    // 添加背景矩形（如果还没有）
+    let bgRect = group.children.find((child) => child.name() === "bg-rect") as Konva.Rect | undefined;
+    if (!bgRect) {
+      bgRect = new Konva.Rect({
+        name: "bg-rect",
+        x: 0,
+        y: 0,
+        width: totalWidth,
+        height: totalHeight,
+        fill: "#262626",
+        stroke: "#4b5cc4",
+        strokeWidth: 2,
+        cornerRadius: 8,
+      });
+      // 将背景插入到最前面
+      group.add(bgRect);
+      bgRect.moveToBottom();
+    } else {
+      bgRect.setAttrs({
+        x: 0,
+        y: 0,
+        width: totalWidth,
+        height: totalHeight,
+      });
+    }
+
+    // 重新排列每个图片
+    groupChildren.forEach((img, index) => {
+      const row = Math.floor(index / cols);
+      const col = index % cols;
+
+      const x = padding + col * (imgWidth + spacing);
+      const y = padding + row * (imgHeight + spacing);
+
+      img.position({ x, y });
+
+      // 为 Group 内的图片添加点击事件，显示选中边框
+      img.off("click"); // 先移除旧事件
+      img.on("click", (e) => {
+        e.cancelBubble = true; // 阻止事件冒泡到 Group
+        setSelectedImage(img);
+        setSelectedImages([img]);
+
+        // 使用 Transformer 仅显示选中边框，不显示缩放锚点
+        if (transformer) {
+          transformer.nodes([img]);
+          transformer.enabledAnchors([]);
+          transformer.rotateEnabled(false);
+          transformer.moveToTop();
+        }
+        updateToolbarPosition();
+      });
+    });
+
+    // 取消 Transformer 选中
+    if (transformer) {
+      transformer.nodes([]);
+    }
+
+    layer.draw();
+    updateToolbarPosition();
+  };
+
+  // 全局缩放
+  const handleGlobalZoomIn = () => {
+    if (!stageRef.current) return;
+    const newZoom = Math.min(globalZoom + 10, 200);
+    setGlobalZoom(newZoom);
+    const scale = newZoom / 100;
+    stageRef.current.scale({ x: scale, y: scale });
+    stageRef.current.batchDraw();
+  };
+
+  const handleGlobalZoomOut = () => {
+    if (!stageRef.current) return;
+    const newZoom = Math.max(globalZoom - 10, 10);
+    setGlobalZoom(newZoom);
+    const scale = newZoom / 100;
+    stageRef.current.scale({ x: scale, y: scale });
+    stageRef.current.batchDraw();
   };
 
   // ==================== 渲染 ====================
@@ -290,6 +639,25 @@ export function ResultPanel({
       className="fixed inset-0 bg-background"
       style={{ zIndex: 0 }}
     >
+      {/* 全局缩放控制 */}
+      {!isEmpty && !isLoading && !error && (
+        <div className="fixed top-4 right-20 z-30 flex items-center gap-2 bg-card/80 backdrop-blur-sm rounded-lg shadow-lg border border-border p-2">
+          <button
+            onClick={handleGlobalZoomOut}
+            className="w-8 h-8 flex items-center justify-center rounded hover:bg-sidebar-hover"
+          >
+            <span className="text-lg font-medium">-</span>
+          </button>
+          <span className="text-sm font-medium min-w-[3rem] text-center">{globalZoom}%</span>
+          <button
+            onClick={handleGlobalZoomIn}
+            className="w-8 h-8 flex items-center justify-center rounded hover:bg-sidebar-hover"
+          >
+            <span className="text-lg font-medium">+</span>
+          </button>
+        </div>
+      )}
+
       {/* 画板区域 */}
       <div className="w-full h-full flex items-center justify-center relative overflow-hidden">
         {isLoading && (
@@ -326,31 +694,46 @@ export function ResultPanel({
             <p className="text-sm text-muted">生成结果会显示在这里</p>
           </div>
         )}
-      </div>
 
-      {/* 工具栏 */}
-      {selectedImage && !isEmpty && !isLoading && !error && (
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: 10 }}
-          transition={{ duration: 0.2 }}
-          className="fixed top-8 left-1/2 transform -translate-x-1/2 flex gap-2 bg-card rounded-lg shadow-lg border border-border p-3 z-20"
-        >
-          <ToolbarButton onClick={handleZoomIn} icon={ZoomIn} title="放大" />
-          <ToolbarButton onClick={handleZoomOut} icon={ZoomOut} title="缩小" />
-          <div className="h-6 w-px bg-border" />
-          <ToolbarButton onClick={handleResetPosition} icon={RotateCcw} title="重置位置" />
-          <ToolbarButton onClick={handleDeleteImage} icon={X} title="删除" />
-        </motion.div>
-      )}
+        {/* 框选工具栏 - 显示自动布局 */}
+        {selectedImages.length > 1 && toolbarPos && !isEmpty && !isLoading && !error && (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 10 }}
+            transition={{ duration: 0.2 }}
+            className="absolute flex gap-1 bg-card/80 backdrop-blur-sm rounded-lg shadow-lg border border-border p-2 z-20"
+            style={{
+              left: `${toolbarPos.x}px`,
+              top: `${toolbarPos.y}px`,
+            }}
+          >
+            <ToolbarButton onClick={handleAutoLayout} icon={Grid3x3} title="自动布局" />
+          </motion.div>
+        )}
+
+        {/* 单个图片工具栏 */}
+        {selectedImage && selectedImages.length === 1 && toolbarPos && !isEmpty && !isLoading && !error && (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 10 }}
+            transition={{ duration: 0.2 }}
+            className="absolute flex gap-1 bg-card/80 backdrop-blur-sm rounded-lg shadow-lg border border-border p-2 z-20"
+            style={{
+              left: `${toolbarPos.x}px`,
+              top: `${toolbarPos.y}px`,
+            }}
+          >
+            <ToolbarButton onClick={handleDownloadSelected} icon={Download} title="下载" />
+          </motion.div>
+        )}
+      </div>
 
       {/* 底部按钮 */}
       {selectedImage && !isEmpty && !isLoading && !error && (
         <div className="fixed bottom-8 left-1/2 transform -translate-x-1/2 flex gap-3 z-10">
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
+          <button
             onClick={handleDownloadSelected}
             className={cn(
               "flex items-center justify-center gap-2 px-4 py-3 rounded-lg",
@@ -360,11 +743,9 @@ export function ResultPanel({
           >
             <Download className="h-4 w-4" />
             {t("download")}
-          </motion.button>
+          </button>
 
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
+          <button
             onClick={onRegenerate}
             className={cn(
               "flex items-center justify-center gap-2 px-4 py-3 rounded-lg",
@@ -374,7 +755,7 @@ export function ResultPanel({
           >
             <RefreshCw className="h-4 w-4" />
             {t("regenerate")}
-          </motion.button>
+          </button>
         </div>
       )}
     </motion.div>
@@ -390,18 +771,17 @@ interface ToolbarButtonProps {
 
 function ToolbarButton({ onClick, icon: Icon, title }: ToolbarButtonProps) {
   return (
-    <motion.button
-      whileHover={{ scale: 1.1 }}
-      whileTap={{ scale: 0.95 }}
+    <button
       onClick={onClick}
       className={cn(
-        "flex items-center justify-center gap-2 px-3 py-2 rounded-md",
-        "text-foreground transition-colors",
+        "flex items-center justify-center gap-2 px-2.5 py-2 rounded-md",
+        "text-foreground text-sm transition-colors",
         "hover:bg-sidebar-hover"
       )}
       title={title}
     >
       <Icon className="h-4 w-4" />
-    </motion.button>
+      <span>{title}</span>
+    </button>
   );
 }
