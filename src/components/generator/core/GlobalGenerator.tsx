@@ -82,9 +82,18 @@ export function GlobalGenerator({
 
   const MAX_UPLOAD_COUNT = getMaxUploadCount();
 
+  // 判断当前模式是否需要提示词
+  const requiresPrompt = () => {
+    return mode === "text-to-image" || mode === "edit-image";
+  };
+
   // 处理生成
   const handleCreate = () => {
-    if (prompt.trim()) {
+    if (requiresPrompt()) {
+      if (prompt.trim()) {
+        onGenerate?.(prompt, mode, settings, uploadImages);
+      }
+    } else {
       onGenerate?.(prompt, mode, settings, uploadImages);
     }
   };
@@ -124,8 +133,12 @@ export function GlobalGenerator({
             <textarea
               value={prompt}
               onChange={(e) => setPrompt(e.target.value)}
-              placeholder={t("placeholder")}
-              className="max-h-40 min-h-10 w-full resize-none !border-0 bg-transparent text-sm md:text-base text-foreground placeholder:text-muted focus:outline-none !ring-0 custom-scrollbar overflow-hidden"
+              placeholder={requiresPrompt() ? t("placeholder") : "无需提示词"}
+              disabled={!requiresPrompt()}
+              className={cn(
+                "max-h-40 min-h-10 w-full resize-none !border-0 bg-transparent text-sm md:text-base text-foreground placeholder:text-muted focus:outline-none !ring-0 custom-scrollbar overflow-hidden",
+                !requiresPrompt() && "cursor-not-allowed opacity-50"
+              )}
               style={{ fieldSizing: 'content' } as React.CSSProperties}
             />
           </div>
@@ -151,6 +164,7 @@ export function GlobalGenerator({
                   aspectRatio={settings.aspectRatio}
                   variations={settings.variations}
                   resolution={settings.resolution}
+                  format={settings.format}
                   compact={true}
                   onClick={onOpenSettingsPanel}
                   mode={mode}
@@ -161,7 +175,7 @@ export function GlobalGenerator({
             {/* 右侧：创建按钮 */}
             <motion.button
               onClick={handleCreate}
-              disabled={!prompt.trim()}
+              disabled={requiresPrompt() && !prompt.trim()}
               className={cn(
                 "px-4 md:px-8 py-2.5 md:py-3 rounded-xl",
                 "bg-gradient-primary",

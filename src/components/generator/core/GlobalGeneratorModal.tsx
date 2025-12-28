@@ -10,7 +10,7 @@ import { GlobalGenerator } from "./GlobalGenerator";
 import { UploadPanel } from "../panels/upload/UploadPanel";
 import { SettingsPanel, type GeneratorSettings } from "../panels/settings";
 import { ModeSelectorPanel, ModeSelectorButton, type GeneratorMode } from "../panels/mode";
-import { ResultPanel } from "../panels/result/ResultPanel";
+import { ResultPanel, type ImageItem } from "../panels/result/ResultPanel";
 import { ImageUploadButton } from "../buttons/ImageUploadButton";
 import { MODE_CONFIGS } from "../config";
 
@@ -71,12 +71,7 @@ export function GlobalGeneratorModal() {
   const [settings, setSettings] = useState<GeneratorSettings>(() => getDefaultSettings("text-to-image"));
 
   // 结果面板状态
-  const [resultImages, setResultImages] = useState<string[]>([
-    "https://picoo.online/beta/text-to-image/z-image/804092d2-c10e-4f13-ba38-d75af1e1a9d3-1766902201717.jpeg",
-    "https://picoo.online/beta/text-to-image/z-image/804092d2-c10e-4f13-ba38-d75af1e1a9d3-1766902201717.jpeg",
-  ]);
-  const [isResultLoading, setIsResultLoading] = useState(false);
-  const [resultError, setResultError] = useState<string>("");
+  const [resultImages, setResultImages] = useState<ImageItem[]>([]);
 
   const handleImageSelect = async (file: File) => {
     const localUrl = URL.createObjectURL(file);
@@ -122,23 +117,62 @@ export function GlobalGeneratorModal() {
   };
 
   const handleGenerate = async (prompt: string, modeParam: string, settingsParam: GeneratorSettings, imagesParam: string[]) => {
+    // 创建唯一ID
+    const taskId = `task-${Date.now()}`;
+
+    // 添加加载占位符
+    setResultImages((prev) => [...prev, { type: 'loading', id: taskId }]);
+
     try {
-      await handleAIGenerate({
+      const result = await handleAIGenerate({
         prompt,
         mode: modeParam as GeneratorMode,
         settings: settingsParam,
         images: imagesParam,
       });
+
+      // 从返回结果中提取图片 URL
+      if (result?.data?.results && Array.isArray(result.data.results)) {
+        const imageUrls = result.data.results
+          .filter((item: any) => item.type === "image" && item.url)
+          .map((item: any) => item.url);
+
+        // 替换加载占位符为成功图片
+        setResultImages((prev) =>
+          prev.map((item) =>
+            item.id === taskId
+              ? { type: 'success', id: taskId, url: imageUrls[0] || '' }
+              : item
+          )
+        );
+
+        // 如果有多张图片，添加其他图片
+        if (imageUrls.length > 1) {
+          const additionalImages = imageUrls.slice(1).map((url: string, index: number) => ({
+            type: 'success' as const,
+            id: `${taskId}-${index + 1}`,
+            url,
+          }));
+          setResultImages((prev) => [...prev, ...additionalImages]);
+        }
+      } else {
+        throw new Error("Invalid response format");
+      }
     } catch (error) {
       console.error("Generate failed:", error);
+      // 替换加载占位符为错误状态
+      setResultImages((prev) =>
+        prev.map((item) =>
+          item.id === taskId
+            ? { type: 'error', id: taskId, error: error instanceof Error ? error.message : "生成失败" }
+            : item
+        )
+      );
     }
   };
 
   const handleResultRegenerate = () => {
     // TODO: 重新生成逻辑
-    setIsResultLoading(true);
-    setResultError("");
-    setResultImages([]);
   };
 
   const handleResultDownload = async (imageUrl: string) => {
@@ -162,8 +196,6 @@ export function GlobalGeneratorModal() {
           {/* 结果面板 - 全屏背景 */}
           <ResultPanel
             images={resultImages}
-            isLoading={isResultLoading}
-            error={resultError}
             onRegenerate={handleResultRegenerate}
             onDownload={handleResultDownload}
           />

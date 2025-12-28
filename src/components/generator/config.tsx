@@ -159,12 +159,12 @@ export type FormFieldRenderer = (props: {
 }) => ReactElement;
 
 // ModelDisplay 显示字段类型
-export type DisplayField = "model" | "aspectRatio" | "variations" | "resolution";
+export type DisplayField = "model" | "aspectRatio" | "variations" | "resolution" | "format";
 
 // 模式配置接口
 export interface ModeConfig {
   id: GeneratorMode;
-  icon: React.ElementType;
+  icon: React.ComponentType<{ className?: string }>;
   labelKey: string;
   descKey: string;
   models?: Record<string, ModelInfo>; // 支持的模型及其信息
@@ -261,7 +261,7 @@ export const MODE_CONFIGS: Record<GeneratorMode, ModeConfig> = {
     labelKey: "upscale",
     descKey: "upscaleDesc",
     apiRoute: "wavespeed/image-upscaler",
-    displayFields: ["model", "resolution"],
+    displayFields: ["model", "resolution", "format"],
     models: {
       "upscale": {
         name: "Upscale",
@@ -385,7 +385,7 @@ export const MODE_CONFIGS: Record<GeneratorMode, ModeConfig> = {
     labelKey: "removeWatermark",
     descKey: "removeWatermarkDesc",
     apiRoute: "wavespeed/image-watermark-remover",
-    displayFields: ["model", "variations"],
+    displayFields: ["model", "format"],
     models: {
       "remove-watermark": {
         name: "Remove Watermark",
@@ -398,8 +398,6 @@ export const MODE_CONFIGS: Record<GeneratorMode, ModeConfig> = {
     },
     defaultSettings: {
       model: "remove-watermark",
-      aspectRatio: "1:1",
-      variations: 1,
       format: "jpeg",
     },
     renderFormFields: ({ settings, onChange }) => (

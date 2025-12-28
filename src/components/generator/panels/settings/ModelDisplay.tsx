@@ -10,6 +10,7 @@ interface ModelDisplayProps {
   variations: 1 | 2 | 3 | 4;
   visibility?: "public" | "private";
   resolution?: string;
+  format?: string;
   compact?: boolean;
   onClick?: () => void;
   mode?: GeneratorMode;
@@ -25,6 +26,7 @@ export function ModelDisplay({
   variations,
   visibility,
   resolution,
+  format,
   compact = false,
   onClick,
   mode = "text-to-image",
@@ -51,6 +53,11 @@ export function ModelDisplay({
       case "resolution":
         if (resolution) {
           displayParts.push(resolution.toUpperCase());
+        }
+        break;
+      case "format":
+        if (format) {
+          displayParts.push(format.toUpperCase());
         }
         break;
     }

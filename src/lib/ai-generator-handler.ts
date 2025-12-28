@@ -46,7 +46,7 @@ async function handleTextToImage(params: { prompt: string; settings: GeneratorSe
     body: JSON.stringify({
       prompt,
       aspect_ratio: settings.aspectRatio,
-      output_format: "jpeg",
+      output_format: settings.format || "jpeg",
       resolution: "1k",
     }),
   });
@@ -70,7 +70,9 @@ async function handleUpscale(params: { images: string[]; settings: GeneratorSett
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
-      image_url: images[0],
+      image: images[0],
+      target_resolution: settings.resolution || "2k",
+      output_format: settings.format || "jpeg",
     }),
   });
 
@@ -97,7 +99,7 @@ async function handleEditImage(params: { prompt: string; images: string[]; setti
       prompt,
       image_url: images[0],
       aspect_ratio: settings.aspectRatio,
-      output_format: "jpeg",
+      output_format: settings.format || "jpeg",
       resolution: "1k",
     }),
   });
@@ -121,7 +123,8 @@ async function handleRemoveWatermark(params: { images: string[]; settings: Gener
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
-      image_url: images[0],
+      image: images[0],
+      output_format: settings.format,
     }),
   });
 
