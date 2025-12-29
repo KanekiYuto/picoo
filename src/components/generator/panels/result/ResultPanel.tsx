@@ -1,24 +1,31 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Download, RefreshCw } from "lucide-react";
 import { useTranslations } from "next-intl";
-import Konva from "konva";
+import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { useKonvaStage } from "./hooks/useKonvaStage";
 import { SelectionToolbar, ImageToolbar, ErrorToolbar } from "./components/Toolbar";
-import { constrainGroupPosition } from "./utils/konvaHelpers";
+import { LAYOUT_CONSTANTS, ZOOM_CONSTANTS } from "./utils/konvaHelpers";
 
 export type ImageItem =
-  | { type: 'loading'; id: string }
-  | { type: 'success'; id: string; url: string }
-  | { type: 'error'; id: string; error: string };
+  | { type: 'loading'; id: string; position?: { x: number; y: number } }
+  | { type: 'uploading'; id: string; localUrl: string; position?: { x: number; y: number } }
+  | { type: 'success'; id: string; url: string; position?: { x: number; y: number } }
+  | { type: 'error'; id: string; error: string; position?: { x: number; y: number } };
 
 export interface ResultPanelProps {
   images?: ImageItem[];
   onRegenerate?: () => void;
   onDownload?: (imageUrl: string) => void;
+  onUpscale?: (imageUrl: string) => void;
+  onImagePositionChange?: (id: string, position: { x: number; y: number }) => void;
+  onDeleteError?: (id: string) => void;
+  onPasteImageStart?: (id: string, localUrl: string) => void;
+  onPasteImageComplete?: (id: string, url: string) => void;
+  onPasteImageError?: (id: string, error: string) => void;
 }
 
 /**
@@ -29,6 +36,12 @@ export function ResultPanel({
   images,
   onRegenerate,
   onDownload,
+  onUpscale,
+  onImagePositionChange,
+  onDeleteError,
+  onPasteImageStart,
+  onPasteImageComplete,
+  onPasteImageError,
 }: ResultPanelProps) {
   const t = useTranslations("generator.resultPanel");
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -37,17 +50,190 @@ export function ResultPanel({
   const {
     stageRef,
     layerRef,
-    groupRef,
     selectedImage,
     selectedImages,
     selectedErrorNode,
     imagesData,
     toolbarPos,
+    setSelectedImage,
+    setSelectedImages,
     setSelectedErrorNode,
     updateToolbarPosition,
-  } = useKonvaStage(containerRef, images);
+    clearAllSelections,
+  } = useKonvaStage(containerRef, images, onImagePositionChange);
 
   const isEmpty = !images || images.length === 0;
+
+  // 禁止右键菜单
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    const handleContextMenu = (e: MouseEvent) => {
+      e.preventDefault();
+    };
+
+    container.addEventListener('contextmenu', handleContextMenu);
+    return () => container.removeEventListener('contextmenu', handleContextMenu);
+  }, []);
+
+  // 复制选中图片到剪贴板
+  const handleCopyImage = async () => {
+    if (!selectedImage) {
+      toast.error('请先选择图片');
+      return;
+    }
+
+    const imageData = imagesData.get(selectedImage);
+    if (!imageData?.url) {
+      toast.error('图片数据不存在');
+      return;
+    }
+
+    try {
+      // 检查剪贴板 API 是否可用
+      if (!navigator.clipboard) {
+        toast.error('浏览器不支持剪贴板功能');
+        return;
+      }
+
+      // 从 blob URL 获取 blob
+      const response = await fetch(imageData.url);
+      if (!response.ok) {
+        throw new Error('Failed to fetch image');
+      }
+
+      const blob = await response.blob();
+
+      // 如果是 JPEG 或其他不支持的格式，转换为 PNG
+      let finalBlob = blob;
+      if (blob.type !== 'image/png') {
+        // 创建 Image 元素
+        const img = new Image();
+        const imageUrl = URL.createObjectURL(blob);
+
+        await new Promise((resolve, reject) => {
+          img.onload = resolve;
+          img.onerror = reject;
+          img.src = imageUrl;
+        });
+
+        // 创建 Canvas 并绘制图片
+        const canvas = document.createElement('canvas');
+        canvas.width = img.width;
+        canvas.height = img.height;
+        const ctx = canvas.getContext('2d');
+
+        if (!ctx) {
+          throw new Error('Failed to get canvas context');
+        }
+
+        ctx.drawImage(img, 0, 0);
+        URL.revokeObjectURL(imageUrl);
+
+        // 转换为 PNG blob
+        finalBlob = await new Promise<Blob>((resolve, reject) => {
+          canvas.toBlob((blob) => {
+            if (blob) {
+              resolve(blob);
+            } else {
+              reject(new Error('Failed to convert to PNG'));
+            }
+          }, 'image/png');
+        });
+      }
+
+      // 写入剪贴板
+      await navigator.clipboard.write([
+        new ClipboardItem({
+          'image/png': finalBlob
+        })
+      ]);
+
+      toast.success('图片已复制到剪贴板');
+    } catch (error) {
+      console.error('Failed to copy image:', error);
+      toast.error('复制失败: ' + (error instanceof Error ? error.message : '未知错误'));
+    }
+  };
+
+  // 键盘事件监听
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Ctrl+C 或 Cmd+C
+      if ((e.ctrlKey || e.metaKey) && e.key === 'c' && selectedImage) {
+        e.preventDefault();
+        handleCopyImage();
+      }
+    };
+
+    const handlePaste = async (e: ClipboardEvent) => {
+      if (!onPasteImageStart || !onPasteImageComplete || !onPasteImageError) return;
+
+      const items = e.clipboardData?.items;
+      if (!items) return;
+
+      // 查找图片项
+      for (let i = 0; i < items.length; i++) {
+        const item = items[i];
+        if (item.type.startsWith('image/')) {
+          e.preventDefault();
+
+          const file = item.getAsFile();
+          if (!file) continue;
+
+          const pasteId = `paste-${Date.now()}`;
+          const localUrl = URL.createObjectURL(file);
+
+          try {
+            // 先显示本地图片预览（uploading 状态）
+            onPasteImageStart(pasteId, localUrl);
+            toast.loading('上传图片中...');
+
+            // 上传图片
+            const formData = new FormData();
+            formData.append('file', file);
+
+            const response = await fetch('/api/asset/upload', {
+              method: 'POST',
+              body: formData,
+            });
+
+            const result = await response.json() as
+              | { success: true; data: { url: string } }
+              | { success: false; error?: string };
+
+            toast.dismiss();
+
+            if (!result.success) {
+              throw new Error(result.error || 'Upload failed');
+            }
+
+            // 上传成功，更新为真实 URL
+            URL.revokeObjectURL(localUrl);
+            onPasteImageComplete(pasteId, result.data.url);
+            toast.success('图片已粘贴');
+          } catch (error) {
+            toast.dismiss();
+            console.error('Paste image failed:', error);
+            URL.revokeObjectURL(localUrl);
+            const errorMsg = error instanceof Error ? error.message : '未知错误';
+            onPasteImageError(pasteId, errorMsg);
+            toast.error('粘贴失败: ' + errorMsg);
+          }
+
+          break;
+        }
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    window.addEventListener('paste', handlePaste);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('paste', handlePaste);
+    };
+  }, [selectedImage, imagesData, onPasteImageStart, onPasteImageComplete, onPasteImageError]);
 
   // 下载选中图片
   const handleDownloadSelected = () => {
@@ -58,161 +244,127 @@ export function ResultPanel({
     }
   };
 
-  // 删除错误节点
-  const handleDeleteError = () => {
-    if (!selectedErrorNode || !layerRef.current) return;
-    selectedErrorNode.destroy();
-    setSelectedErrorNode(null);
-    layerRef.current.draw();
+  // 放大选中图片
+  const handleUpscaleSelected = () => {
+    if (!selectedImage) return;
+    const imageData = imagesData.get(selectedImage);
+    if (imageData?.imageUrl) {
+      onUpscale?.(imageData.imageUrl);
+    }
   };
 
-  // 自动布局
-  const handleAutoLayout = () => {
+  // 删除错误节点
+  const handleDeleteError = () => {
+    if (!selectedErrorNode) return;
+    const nodeId = selectedErrorNode.name().replace('item-', '');
+    onDeleteError?.(nodeId);
+    setSelectedErrorNode(null);
+  };
+
+  // 整理图片
+  const handleArrange = () => {
     if (!layerRef.current || !stageRef.current || selectedImages.length === 0) return;
 
     const layer = layerRef.current;
-    const transformer = (stageRef.current as any)?.transformer;
 
-    // 如果 Group 不存在，创建 Group
-    if (!groupRef.current) {
-      let minX = Infinity;
-      let minY = Infinity;
-      selectedImages.forEach((img) => {
-        minX = Math.min(minX, img.x());
-        minY = Math.min(minY, img.y());
-      });
-
-      const group = new Konva.Group({
-        name: "images-group",
-        draggable: true,
-        x: minX,
-        y: minY,
-      });
-
-      selectedImages.forEach((img) => {
-        const originalX = img.x();
-        const originalY = img.y();
-
-        img.remove();
-        img.draggable(false);
-
-        img.position({
-          x: originalX - minX,
-          y: originalY - minY,
-        });
-
-        group.add(img);
-      });
-
-      layer.add(group);
-
-      if (transformer) {
-        transformer.nodes([group]);
-        transformer.moveToTop();
-      }
-
-      group.on("dragend", () => {
-        if (stageRef.current) {
-          constrainGroupPosition(group, stageRef.current, layer);
-        }
-        updateToolbarPosition();
-      });
-
-      group.on("dragmove", updateToolbarPosition);
-
-      groupRef.current = group;
-    }
-
-    const group = groupRef.current;
-    const groupChildren = group.children.filter((child) => child instanceof Konva.Image) as Konva.Image[];
-    if (groupChildren.length === 0) return;
-
-    const count = groupChildren.length;
+    const count = selectedImages.length;
     const cols = Math.ceil(Math.sqrt(count));
     const rows = Math.ceil(count / cols);
 
-    const padding = 20;
-    const spacing = 20;
-
-    const firstImg = groupChildren[0];
+    const firstImg = selectedImages[0];
     const imgWidth = firstImg.width() * firstImg.scaleX();
     const imgHeight = firstImg.height() * firstImg.scaleY();
 
-    const totalWidth = cols * (imgWidth + spacing) - spacing + padding * 2;
-    const totalHeight = rows * (imgHeight + spacing) - spacing + padding * 2;
+    // 计算起始位置（所有选中图片的左上角）
+    let minX = Infinity;
+    let minY = Infinity;
+    selectedImages.forEach((img) => {
+      minX = Math.min(minX, img.x());
+      minY = Math.min(minY, img.y());
+    });
 
-    let bgRect = group.children.find((child) => child.name() === "bg-rect") as Konva.Rect | undefined;
-    if (!bgRect) {
-      bgRect = new Konva.Rect({
-        name: "bg-rect",
-        x: 0,
-        y: 0,
-        width: totalWidth,
-        height: totalHeight,
-        fill: "#262626",
-        stroke: "#4b5cc4",
-        strokeWidth: 2,
-        cornerRadius: 8,
-      });
-      group.add(bgRect);
-      bgRect.moveToBottom();
-    } else {
-      bgRect.setAttrs({
-        x: 0,
-        y: 0,
-        width: totalWidth,
-        height: totalHeight,
-      });
-    }
-
-    groupChildren.forEach((img, index) => {
+    // 重新排列图片
+    selectedImages.forEach((img, index) => {
       const row = Math.floor(index / cols);
       const col = index % cols;
 
-      const x = padding + col * (imgWidth + spacing);
-      const y = padding + row * (imgHeight + spacing);
+      const x = minX + col * (imgWidth + LAYOUT_CONSTANTS.gridSpacing);
+      const y = minY + row * (imgHeight + LAYOUT_CONSTANTS.gridSpacing);
 
       img.position({ x, y });
 
-      img.off("click");
-      img.on("click", (e) => {
-        e.cancelBubble = true;
-
-        if (transformer) {
-          transformer.nodes([img]);
-          transformer.enabledAnchors([]);
-          transformer.rotateEnabled(false);
-          transformer.moveToTop();
-        }
-        updateToolbarPosition();
-      });
+      // 更新位置到状态
+      const nodeId = img.name().replace('item-', '');
+      onImagePositionChange?.(nodeId, { x, y });
     });
 
-    if (transformer) {
-      transformer.nodes([]);
-    }
-
+    clearAllSelections();
     layer.draw();
-    updateToolbarPosition();
   };
 
   // 全局缩放
   const handleGlobalZoomIn = () => {
     if (!stageRef.current) return;
-    const newZoom = Math.min(globalZoom + 10, 200);
+
+    clearAllSelections();
+
+    const stage = stageRef.current;
+    const oldScale = stage.scaleX();
+    const newZoom = Math.min(globalZoom + ZOOM_CONSTANTS.step, ZOOM_CONSTANTS.max);
+    const newScale = newZoom / 100;
+
+    // 以舞台中心为缩放原点
+    const centerX = stage.width() / 2;
+    const centerY = stage.height() / 2;
+
+    // 计算缩放前后中心点对应的世界坐标
+    const mousePointTo = {
+      x: centerX / oldScale - stage.x() / oldScale,
+      y: centerY / oldScale - stage.y() / oldScale,
+    };
+
+    // 计算新的位置以保持中心点不变
+    const newPos = {
+      x: centerX - mousePointTo.x * newScale,
+      y: centerY - mousePointTo.y * newScale,
+    };
+
+    stage.scale({ x: newScale, y: newScale });
+    stage.position(newPos);
     setGlobalZoom(newZoom);
-    const scale = newZoom / 100;
-    stageRef.current.scale({ x: scale, y: scale });
-    stageRef.current.batchDraw();
+    stage.batchDraw();
   };
 
   const handleGlobalZoomOut = () => {
     if (!stageRef.current) return;
-    const newZoom = Math.max(globalZoom - 10, 10);
+
+    clearAllSelections();
+
+    const stage = stageRef.current;
+    const oldScale = stage.scaleX();
+    const newZoom = Math.max(globalZoom - ZOOM_CONSTANTS.step, ZOOM_CONSTANTS.min);
+    const newScale = newZoom / 100;
+
+    // 以舞台中心为缩放原点
+    const centerX = stage.width() / 2;
+    const centerY = stage.height() / 2;
+
+    // 计算缩放前后中心点对应的世界坐标
+    const mousePointTo = {
+      x: centerX / oldScale - stage.x() / oldScale,
+      y: centerY / oldScale - stage.y() / oldScale,
+    };
+
+    // 计算新的位置以保持中心点不变
+    const newPos = {
+      x: centerX - mousePointTo.x * newScale,
+      y: centerY - mousePointTo.y * newScale,
+    };
+
+    stage.scale({ x: newScale, y: newScale });
+    stage.position(newPos);
     setGlobalZoom(newZoom);
-    const scale = newZoom / 100;
-    stageRef.current.scale({ x: scale, y: scale });
-    stageRef.current.batchDraw();
+    stage.batchDraw();
   };
 
   return (
@@ -260,14 +412,18 @@ export function ResultPanel({
           </div>
         )}
 
-        {/* 框选工具栏 - 显示自动布局 */}
+        {/* 框选工具栏 - 显示整理 */}
         {selectedImages.length > 1 && toolbarPos && !isEmpty && (
-          <SelectionToolbar position={toolbarPos} onAutoLayout={handleAutoLayout} />
+          <SelectionToolbar position={toolbarPos} onArrange={handleArrange} />
         )}
 
         {/* 单个图片工具栏 */}
         {selectedImage && selectedImages.length === 1 && toolbarPos && !isEmpty && (
-          <ImageToolbar position={toolbarPos} onDownload={handleDownloadSelected} />
+          <ImageToolbar
+            position={toolbarPos}
+            onDownload={handleDownloadSelected}
+            onUpscale={handleUpscaleSelected}
+          />
         )}
 
         {/* 错误节点工具栏 */}

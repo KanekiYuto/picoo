@@ -9,6 +9,7 @@ export function createLoadingPlaceholder(index: number) {
     x: 100 + index * 50,
     y: 100 + index * 50,
     name: `loading-${index}`,
+    draggable: true,
   });
 
   // 背景矩形

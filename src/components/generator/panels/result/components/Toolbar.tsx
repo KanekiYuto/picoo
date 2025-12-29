@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Download, Grid3x3, Trash2 } from "lucide-react";
+import { Download, Grid3x3, Trash2, Maximize } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface ToolbarButtonProps {
@@ -29,10 +29,10 @@ function ToolbarButton({ onClick, icon: Icon, title }: ToolbarButtonProps) {
 
 interface SelectionToolbarProps {
   position: { x: number; y: number };
-  onAutoLayout: () => void;
+  onArrange: () => void;
 }
 
-export function SelectionToolbar({ position, onAutoLayout }: SelectionToolbarProps) {
+export function SelectionToolbar({ position, onArrange }: SelectionToolbarProps) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 10 }}
@@ -45,7 +45,7 @@ export function SelectionToolbar({ position, onAutoLayout }: SelectionToolbarPro
         top: `${position.y}px`,
       }}
     >
-      <ToolbarButton onClick={onAutoLayout} icon={Grid3x3} title="自动布局" />
+      <ToolbarButton onClick={onArrange} icon={Grid3x3} title="整理" />
     </motion.div>
   );
 }
@@ -53,9 +53,10 @@ export function SelectionToolbar({ position, onAutoLayout }: SelectionToolbarPro
 interface ImageToolbarProps {
   position: { x: number; y: number };
   onDownload: () => void;
+  onUpscale: () => void;
 }
 
-export function ImageToolbar({ position, onDownload }: ImageToolbarProps) {
+export function ImageToolbar({ position, onDownload, onUpscale }: ImageToolbarProps) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 10 }}
@@ -69,6 +70,7 @@ export function ImageToolbar({ position, onDownload }: ImageToolbarProps) {
       }}
     >
       <ToolbarButton onClick={onDownload} icon={Download} title="下载" />
+      <ToolbarButton onClick={onUpscale} icon={Maximize} title="图像放大" />
     </motion.div>
   );
 }

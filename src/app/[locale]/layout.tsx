@@ -8,6 +8,7 @@ import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, setRequestLocale } from 'next-intl/server';
 import { routing } from '../../../i18n/routing';
 import { rtlLocales } from '../../../i18n/config';
+import { Toaster } from "sonner";
 import "../globals.css";
 
 const geistSans = Geist({
@@ -58,6 +59,7 @@ export default async function LocaleLayout({
             </UserStoreProvider>
           </UserProvider>
         </NextIntlClientProvider>
+        <Toaster position="top-center" richColors />
       </body>
     </html>
   );

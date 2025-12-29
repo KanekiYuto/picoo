@@ -56,6 +56,51 @@ export function ImageUploadButton({
     );
   }
 
+  // 单图模式（maxUploadCount = 1）- 显示单个固定大小的上传框
+  if (maxUploadCount === 1) {
+    const hasImage = uploadImages.length > 0;
+    const imageUrl = uploadImages[0];
+
+    return (
+      <div className={cn("flex items-end gap-2", className)}>
+        {hasImage ? (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            onClick={() => onImageClick?.(imageUrl, 0)}
+            className="relative w-24 h-24 rounded-xl overflow-hidden border-2 border-card group cursor-pointer"
+          >
+            <img
+              src={imageUrl}
+              alt="Uploaded"
+              className="w-full h-full object-cover"
+            />
+            {/* 删除按钮 */}
+            <div
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                onRemoveImage?.(0);
+              }}
+              className="absolute top-1.5 left-1.5 w-5 h-5 rounded-full bg-black/70 hover:bg-black flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
+            >
+              <X className="w-3 h-3 text-white" />
+            </div>
+          </motion.div>
+        ) : (
+          <motion.button
+            onClick={onClick}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="flex items-center justify-center flex-shrink-0 cursor-pointer w-24 h-24 rounded-xl border-2 border-dashed border-border bg-sidebar-hover hover:bg-sidebar-active transition-all duration-300"
+          >
+            <Plus className="h-7 w-7 text-muted" />
+          </motion.button>
+        )}
+      </div>
+    );
+  }
+
   // 大尺寸 - 真正的堆叠卡片设计（从左往右堆叠，露出25%）
   const cardSize = 96; // 24 * 4 = 96px (w-24)
   const exposedWidth = Math.round(cardSize * 0.25); // 露出25%，约24px

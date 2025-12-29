@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X } from "lucide-react";
 import { useGeneratorStore } from "@/stores/generatorStore";
@@ -14,6 +14,19 @@ import { ResultPanel, type ImageItem } from "../panels/result/ResultPanel";
 import { ImageUploadButton } from "../buttons/ImageUploadButton";
 import { MODE_CONFIGS } from "../config";
 
+// AI 生成结果类型定义
+interface AIResultItem {
+  type: 'image' | 'text';
+  url?: string;
+  content?: string;
+}
+
+interface AIGenerateResult {
+  data?: {
+    results?: AIResultItem[];
+  };
+}
+
 /**
  * 全局生成器模态框
  */
@@ -23,6 +36,19 @@ export function GlobalGeneratorModal() {
   const [uploadImages, setUploadImages] = useState<string[]>([]);
   const [selectedImageUrl, setSelectedImageUrl] = useState<string | undefined>(undefined);
   const [mode, setMode] = useState<GeneratorMode>("text-to-image");
+
+  // 跟踪 blob URLs 以便清理
+  const blobUrlsRef = useRef<Set<string>>(new Set());
+
+  // 清理所有 blob URLs
+  useEffect(() => {
+    return () => {
+      blobUrlsRef.current.forEach((url) => {
+        URL.revokeObjectURL(url);
+      });
+      blobUrlsRef.current.clear();
+    };
+  }, []);
 
   // 根据 mode 获取默认设置
   const getDefaultSettings = (currentMode: GeneratorMode): GeneratorSettings => {
@@ -76,6 +102,7 @@ export function GlobalGeneratorModal() {
 
   const handleImageSelect = async (file: File) => {
     const localUrl = URL.createObjectURL(file);
+    blobUrlsRef.current.add(localUrl);
     setUploadImages((prev) => [...prev, localUrl]);
 
     try {
@@ -99,13 +126,26 @@ export function GlobalGeneratorModal() {
       // 替换最后一张图片的URL为真实URL
       setUploadImages((prev) => {
         const newImages = [...prev];
+        const oldUrl = newImages[newImages.length - 1];
+        // 撤销 blob URL
+        if (blobUrlsRef.current.has(oldUrl)) {
+          URL.revokeObjectURL(oldUrl);
+          blobUrlsRef.current.delete(oldUrl);
+        }
         newImages[newImages.length - 1] = uploadedUrl;
         return newImages;
       });
     } catch (error) {
       console.error("Upload image failed:", error);
-      // 移除失败的图片
-      setUploadImages((prev) => prev.slice(0, -1));
+      // 移除失败的图片并清理 blob URL
+      setUploadImages((prev) => {
+        const oldUrl = prev[prev.length - 1];
+        if (blobUrlsRef.current.has(oldUrl)) {
+          URL.revokeObjectURL(oldUrl);
+          blobUrlsRef.current.delete(oldUrl);
+        }
+        return prev.slice(0, -1);
+      });
     }
   };
 
@@ -114,7 +154,15 @@ export function GlobalGeneratorModal() {
   };
 
   const handleRemoveImage = (index: number) => {
-    setUploadImages((prev) => prev.filter((_, i) => i !== index));
+    setUploadImages((prev) => {
+      const url = prev[index];
+      // 清理 blob URL
+      if (blobUrlsRef.current.has(url)) {
+        URL.revokeObjectURL(url);
+        blobUrlsRef.current.delete(url);
+      }
+      return prev.filter((_, i) => i !== index);
+    });
   };
 
   const handleImageClick = (imageUrl: string, index: number) => {
@@ -135,13 +183,15 @@ export function GlobalGeneratorModal() {
         mode: modeParam as GeneratorMode,
         settings: settingsParam,
         images: imagesParam,
-      });
+      }) as AIGenerateResult;
 
-      // 从返回结果中提取图片 URL
+      // 从返回结果中提取图片 URL，带类型守卫
       if (result?.data?.results && Array.isArray(result.data.results)) {
         const imageUrls = result.data.results
-          .filter((item: any) => item.type === "image" && item.url)
-          .map((item: any) => item.url);
+          .filter((item): item is AIResultItem & { url: string } =>
+            item.type === "image" && typeof item.url === 'string'
+          )
+          .map((item) => item.url);
 
         // 替换加载占位符为成功图片
         setResultImages((prev) =>
@@ -154,7 +204,7 @@ export function GlobalGeneratorModal() {
 
         // 如果有多张图片，添加其他图片
         if (imageUrls.length > 1) {
-          const additionalImages = imageUrls.slice(1).map((url: string, index: number) => ({
+          const additionalImages = imageUrls.slice(1).map((url, index) => ({
             type: 'success' as const,
             id: `${taskId}-${index + 1}`,
             url,
@@ -189,6 +239,66 @@ export function GlobalGeneratorModal() {
     }
   };
 
+  const handleResultUpscale = async (imageUrl: string) => {
+    // 切换到图像放大模式
+    handleModeChange("upscale");
+
+    // 将图片添加到上传列表
+    setUploadImages([imageUrl]);
+
+    // 打开设置面板以便用户调整参数
+    setActivePanel("settings");
+  };
+
+  const handleImagePositionChange = (id: string, position: { x: number; y: number }) => {
+    setResultImages((prev) =>
+      prev.map((item) =>
+        item.id === id ? { ...item, position } : item
+      )
+    );
+  };
+
+  const handleDeleteError = (id: string) => {
+    setResultImages((prev) => prev.filter((item) => item.id !== id));
+  };
+
+  const handlePasteImageStart = (id: string, localUrl: string) => {
+    blobUrlsRef.current.add(localUrl);
+    setResultImages((prev) => [...prev, { type: 'uploading', id, localUrl }]);
+  };
+
+  const handlePasteImageComplete = (id: string, url: string) => {
+    setResultImages((prev) =>
+      prev.map((item) => {
+        if (item.id === id && item.type === 'uploading') {
+          // 清理 blob URL
+          if (blobUrlsRef.current.has(item.localUrl)) {
+            URL.revokeObjectURL(item.localUrl);
+            blobUrlsRef.current.delete(item.localUrl);
+          }
+          return { type: 'success', id, url };
+        }
+        return item;
+      })
+    );
+  };
+
+  const handlePasteImageError = (id: string, error: string) => {
+    setResultImages((prev) =>
+      prev.map((item) => {
+        if (item.id === id && item.type === 'uploading') {
+          // 清理 blob URL
+          if (blobUrlsRef.current.has(item.localUrl)) {
+            URL.revokeObjectURL(item.localUrl);
+            blobUrlsRef.current.delete(item.localUrl);
+          }
+          return { type: 'error', id, error };
+        }
+        return item;
+      })
+    );
+  };
+
   return (
     <AnimatePresence>
       {isGeneratorModalOpen && (
@@ -204,6 +314,12 @@ export function GlobalGeneratorModal() {
             images={resultImages}
             onRegenerate={handleResultRegenerate}
             onDownload={handleResultDownload}
+            onUpscale={handleResultUpscale}
+            onImagePositionChange={handleImagePositionChange}
+            onDeleteError={handleDeleteError}
+            onPasteImageStart={handlePasteImageStart}
+            onPasteImageComplete={handlePasteImageComplete}
+            onPasteImageError={handlePasteImageError}
           />
 
           {/* 关闭按钮 - activePanel 为 null 时显示 */}
