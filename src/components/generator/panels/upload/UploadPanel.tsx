@@ -19,15 +19,23 @@ interface UploadPanelProps {
   onClose: () => void;
   onImageSelect: (file: File) => void;
   onRecentAssetSelect?: (url: string) => void;
+  initialImageUrl?: string;
 }
 
-export function UploadPanel({ isOpen, onClose, onImageSelect, onRecentAssetSelect }: UploadPanelProps) {
+export function UploadPanel({ isOpen, onClose, onImageSelect, onRecentAssetSelect, initialImageUrl }: UploadPanelProps) {
   const t = useTranslations("generator.uploadPanel");
   const [isDragging, setIsDragging] = useState(false);
   const [recentAssets, setRecentAssets] = useState<Asset[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [selectedImage, setSelectedImage] = useState<string | null>(initialImageUrl || null);
   const MIN_LOADING_TIME = 600; // 最小显示时间（毫秒）
+
+  // 当 initialImageUrl 变化时更新 selectedImage
+  useEffect(() => {
+    if (initialImageUrl) {
+      setSelectedImage(initialImageUrl);
+    }
+  }, [initialImageUrl]);
 
   // 加载最近上传的素材
   useEffect(() => {
@@ -122,7 +130,7 @@ export function UploadPanel({ isOpen, onClose, onImageSelect, onRecentAssetSelec
         </h2>
         <motion.button
           onClick={onClose}
-          className="flex h-8 w-8 items-center justify-center rounded-full text-muted transition-colors hover:bg-sidebar-hover hover:text-foreground"
+          className="flex h-8 w-8 items-center justify-center rounded-full text-muted transition-colors hover:bg-sidebar-hover hover:text-foreground cursor-pointer"
           aria-label="关闭"
         >
           <X className="h-4 w-4 md:h-5 md:w-5" />
@@ -140,47 +148,69 @@ export function UploadPanel({ isOpen, onClose, onImageSelect, onRecentAssetSelec
             onChange={handleFileSelect}
             className="hidden"
           />
-          <label
-            htmlFor="file-upload-panel"
-            onDragOver={handleDragOver}
-            onDragLeave={handleDragLeave}
-            onDrop={handleDrop}
-            className={cn(
-              "flex flex-col items-center justify-center gap-4",
-              "w-full py-8 md:py-12 px-4 md:px-6 rounded-2xl cursor-pointer",
-              "border-2 border-dashed transition-all duration-300",
-              isDragging
-                ? "border-primary bg-primary/10"
-                : "border-border hover:border-primary/50"
-            )}
-          >
-            {/* 上传图标圆形背景 */}
-            <div className="flex items-center justify-center w-16 h-16 md:w-20 md:h-20 rounded-full bg-sidebar-hover border border-border">
-              <Upload className="h-8 w-8 md:h-10 md:w-10 text-foreground" />
+          {selectedImage ? (
+            /* 图片预览区域 */
+            <div className="relative w-full rounded-2xl overflow-hidden bg-black/40 backdrop-blur-sm">
+              <div className="flex items-center justify-center p-8 min-h-[300px]">
+                <img
+                  src={selectedImage}
+                  alt="Selected"
+                  className="max-w-full max-h-[400px] object-contain rounded-lg"
+                />
+              </div>
+              {/* 删除按钮 */}
+              <button
+                onClick={() => setSelectedImage(null)}
+                className="absolute top-4 right-4 flex h-10 w-10 items-center justify-center rounded-lg bg-black/60 hover:bg-black/80 text-white transition-colors backdrop-blur-sm cursor-pointer"
+                aria-label="清除图片"
+              >
+                <X className="h-5 w-5" />
+              </button>
             </div>
+          ) : (
+            /* 上传提示区域 */
+            <label
+              htmlFor="file-upload-panel"
+              onDragOver={handleDragOver}
+              onDragLeave={handleDragLeave}
+              onDrop={handleDrop}
+              className={cn(
+                "flex flex-col items-center justify-center gap-4",
+                "w-full py-8 md:py-12 px-4 md:px-6 rounded-2xl cursor-pointer",
+                "border-2 border-dashed transition-all duration-300",
+                isDragging
+                  ? "border-primary bg-primary/10"
+                  : "border-border hover:border-primary/50"
+              )}
+            >
+              {/* 上传图标圆形背景 */}
+              <div className="flex items-center justify-center w-16 h-16 md:w-20 md:h-20 rounded-full bg-sidebar-hover border border-border">
+                <Upload className="h-8 w-8 md:h-10 md:w-10 text-foreground" />
+              </div>
 
-            {/* 主要文字 */}
-            <p className="text-base md:text-lg font-semibold text-foreground text-center">
-              {t("dragAndDrop")}
-            </p>
+              {/* 主要文字 */}
+              <p className="text-base md:text-lg font-semibold text-foreground text-center">
+                {t("dragAndDrop")}
+              </p>
 
-            {/* 辅助说明 */}
-            <p className="text-sm text-muted text-center max-w-xs">
-              {t("clickToUpload")} • {t("fileTypes")}
-            </p>
+              {/* 辅助说明 */}
+              <p className="text-sm text-muted text-center max-w-xs">
+                {t("clickToUpload")} • {t("fileTypes")}
+              </p>
 
-            {/* 文件格式标签 */}
-            <div className="flex gap-2 flex-wrap justify-center mt-2">
-              {["JPG", "PNG", "WebP", "GIF"].map((format) => (
-                <span
-                  key={format}
-                  className="px-2.5 py-1 rounded-lg text-xs font-medium bg-sidebar-hover border border-border text-muted hover:border-primary/50 transition-colors"
-                >
-                  {format}
-                </span>
-              ))}
-            </div>
-          </label>
+              {/* 文件格式标签 */}
+              <div className="flex gap-2 flex-wrap justify-center mt-2">
+                {["JPG", "PNG", "WebP", "GIF"].map((format) => (
+                  <span
+                    key={format}
+                    className="px-2.5 py-1 rounded-lg text-xs font-medium bg-sidebar-hover border border-border text-muted hover:border-primary/50 transition-colors"
+                  >
+                    {format}
+                  </span>
+                ))}
+              </div>
+            </label>
+          )}
         </div>
 
         {/* 最近上传 */}

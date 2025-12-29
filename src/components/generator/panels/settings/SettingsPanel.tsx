@@ -116,7 +116,7 @@ export function SettingsPanel({ onClose, settings, onSettingsChange, mode = "tex
           type="button"
           onClick={onClose}
           className={cn(
-            "flex h-9 w-9 items-center justify-center rounded-full text-muted transition-colors hover:bg-sidebar-hover hover:text-foreground",
+            "flex h-9 w-9 items-center justify-center rounded-full text-muted transition-colors hover:bg-sidebar-hover hover:text-foreground cursor-pointer",
             FOCUS_RING_CLASSES
           )}
           aria-label="关闭"

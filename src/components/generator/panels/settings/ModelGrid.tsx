@@ -28,7 +28,7 @@ export function ModelGrid({
         return (
           <div key={model.id} className="relative flex flex-col items-center justify-center gap-1">
             <HoverCard openDelay={1000} closeDelay={80}>
-              <HoverCardTrigger asChild>
+              <HoverCardTrigger>
                 <button
                   type="button"
                   aria-pressed={isSelected}

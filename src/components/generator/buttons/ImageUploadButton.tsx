@@ -9,6 +9,7 @@ interface ImageUploadButtonProps {
   uploadImages?: string[];
   maxUploadCount?: number;
   onRemoveImage?: (index: number) => void;
+  onImageClick?: (imageUrl: string, index: number) => void;
   size?: "sm" | "md" | "lg";
   className?: string;
 }
@@ -18,6 +19,7 @@ export function ImageUploadButton({
   uploadImages = [],
   maxUploadCount = 5,
   onRemoveImage,
+  onImageClick,
   size = "md",
   className,
 }: ImageUploadButtonProps) {
@@ -77,6 +79,7 @@ export function ImageUploadButton({
               exit={{ opacity: 0, scale: 0.9 }}
               transition={{ delay: idx * 0.05 }}
               whileHover={{ y: -Math.round(cardSize * 0.25) }}
+              onClick={() => onImageClick?.(imageUrl, idx)}
               className="absolute w-24 h-24 rounded-xl overflow-hidden border-2 border-card group cursor-pointer"
               style={{
                 left: idx * exposedWidth,

@@ -21,6 +21,7 @@ export function GlobalGeneratorModal() {
   const { isGeneratorModalOpen, closeGeneratorModal } = useGeneratorStore();
   const [activePanel, setActivePanel] = useState<"upload" | "settings" | "mode" | "mobile-images" | null>(null);
   const [uploadImages, setUploadImages] = useState<string[]>([]);
+  const [selectedImageUrl, setSelectedImageUrl] = useState<string | undefined>(undefined);
   const [mode, setMode] = useState<GeneratorMode>("text-to-image");
 
   // 根据 mode 获取默认设置
@@ -114,6 +115,11 @@ export function GlobalGeneratorModal() {
 
   const handleRemoveImage = (index: number) => {
     setUploadImages((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  const handleImageClick = (imageUrl: string, index: number) => {
+    setSelectedImageUrl(imageUrl);
+    setActivePanel("upload");
   };
 
   const handleGenerate = async (prompt: string, modeParam: string, settingsParam: GeneratorSettings, imagesParam: string[]) => {
@@ -255,9 +261,13 @@ export function GlobalGeneratorModal() {
                         <div className="bg-card border border-border rounded-2xl shadow-2xl overflow-hidden h-full flex flex-col">
                           <UploadPanel
                             isOpen={true}
-                            onClose={() => setActivePanel(null)}
+                            onClose={() => {
+                              setActivePanel(null);
+                              setSelectedImageUrl(undefined);
+                            }}
                             onImageSelect={handleImageSelect}
                             onRecentAssetSelect={handleRecentAssetSelect}
+                            initialImageUrl={selectedImageUrl}
                           />
                         </div>
                       </motion.div>
@@ -319,8 +329,12 @@ export function GlobalGeneratorModal() {
                           size="lg"
                           uploadImages={uploadImages}
                           maxUploadCount={4}
-                          onClick={() => setActivePanel("upload")}
+                          onClick={() => {
+                            setSelectedImageUrl(undefined);
+                            setActivePanel("upload");
+                          }}
                           onRemoveImage={handleRemoveImage}
+                          onImageClick={handleImageClick}
                         />
                       </div>
 
@@ -338,12 +352,16 @@ export function GlobalGeneratorModal() {
               <div className="bg-card border border-border rounded-2xl shadow-2xl p-4">
                 <GlobalGenerator
                   onGenerate={handleGenerate}
-                  onOpenUploadPanel={() => setActivePanel("upload")}
+                  onOpenUploadPanel={() => {
+                    setSelectedImageUrl(undefined);
+                    setActivePanel("upload");
+                  }}
                   onOpenSettingsPanel={() => setActivePanel("settings")}
                   onOpenModePanel={() => setActivePanel("mode")}
                   onOpenMobileImagePanel={() => setActivePanel("mobile-images")}
                   uploadImages={uploadImages}
                   onRemoveImage={handleRemoveImage}
+                  onImageClick={handleImageClick}
                   settings={settings}
                   mode={mode}
                 />

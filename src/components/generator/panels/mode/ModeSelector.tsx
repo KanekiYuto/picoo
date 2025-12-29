@@ -6,6 +6,8 @@ import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
 import { MODE_OPTIONS, type GeneratorMode } from "../../config";
 
+export type { GeneratorMode };
+
 interface ModeSelectorPanelProps {
   value: GeneratorMode;
   onChange: (mode: GeneratorMode) => void;
@@ -24,7 +26,7 @@ export function ModeSelectorPanel({ value, onChange, onClose }: ModeSelectorPane
         </h2>
         <motion.button
           onClick={onClose}
-          className="flex h-8 w-8 items-center justify-center rounded-full text-muted transition-colors hover:bg-sidebar-hover hover:text-foreground"
+          className="flex h-8 w-8 items-center justify-center rounded-full text-muted transition-colors hover:bg-sidebar-hover hover:text-foreground cursor-pointer"
           aria-label="关闭"
         >
           <X className="h-4 w-4 md:h-5 md:w-5" />

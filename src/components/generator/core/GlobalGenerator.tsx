@@ -22,6 +22,7 @@ interface GlobalGeneratorProps {
   previewUrl?: string;
   uploadImages?: string[];
   onRemoveImage?: (index: number) => void;
+  onImageClick?: (imageUrl: string, index: number) => void;
   settings: GeneratorSettings;
   onSettingsChange?: (settings: GeneratorSettings) => void;
   mode?: GeneratorMode;
@@ -36,6 +37,7 @@ export function GlobalGenerator({
   onOpenMobileImagePanel,
   uploadImages = [],
   onRemoveImage,
+  onImageClick,
   settings,
   mode = "text-to-image"
 }: GlobalGeneratorProps) {
@@ -117,6 +119,7 @@ export function GlobalGenerator({
               maxUploadCount={MAX_UPLOAD_COUNT}
               onClick={onOpenUploadPanel}
               onRemoveImage={onRemoveImage}
+              onImageClick={onImageClick}
             />
           )}
           {/* 模式切换按钮 */}
@@ -155,6 +158,7 @@ export function GlobalGenerator({
                 maxUploadCount={MAX_UPLOAD_COUNT}
                 onClick={uploadImages.length > 0 ? onOpenMobileImagePanel : onOpenUploadPanel}
                 onRemoveImage={onRemoveImage}
+                onImageClick={onImageClick}
               />
 
               {/* 模型信息按钮 */}
