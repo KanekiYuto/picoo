@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { Menu, TrendingDown, Calendar, FileText, InboxIcon } from "lucide-react";
+import { Menu, TrendingDown, Calendar, FileText, InboxIcon, ChevronLeft, ChevronRight } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useSettingsNav } from "../_components/SettingsNavContext";
 import { useUserStore } from "@/stores/userStore";
@@ -42,28 +42,54 @@ export default function UsagePage() {
   const { openMenu } = useSettingsNav();
   const { user, isLoading: userLoading } = useUserStore();
   const [records, setRecords] = useState<UsageRecord[]>([]);
+  const [stats, setStats] = useState({ totalConsumed: 0, totalRecords: 0, avgPerRecord: 0 });
   const [isLoading, setIsLoading] = useState(true);
   const [filter, setFilter] = useState<'all' | 'consume' | 'refund'>('all');
+  const [page, setPage] = useState(1);
+  const [pageSize] = useState(20);
+  const [totalPages, setTotalPages] = useState(1);
 
-  // 获取用量记录
+  // 获取统计数据
   useEffect(() => {
-    const fetchUsage = async () => {
+    const fetchStats = async () => {
+      try {
+        const response = await fetch('/api/credit/usage/stats');
+        if (!response.ok) throw new Error('Failed to fetch stats');
+        const data = await response.json();
+        setStats(data);
+      } catch (error) {
+        console.error('Failed to fetch stats:', error);
+      }
+    };
+
+    if (user) {
+      fetchStats();
+    }
+  }, [user]);
+
+  // 获取分页记录
+  useEffect(() => {
+    const fetchRecords = async () => {
       setIsLoading(true);
-      // 设置最小显示时间为 300ms，避免闪烁
       const minLoadingTime = new Promise((resolve) => setTimeout(resolve, 300));
 
       try {
-        const response = await fetch('/api/credit/usage');
+        const params = new URLSearchParams({
+          page: page.toString(),
+          pageSize: pageSize.toString(),
+          type: filter,
+        });
+        const response = await fetch(`/api/credit/usage/records?${params}`);
 
-        if (!response.ok) {
-          throw new Error('Failed to fetch usage');
-        }
+        if (!response.ok) throw new Error('Failed to fetch records');
 
         const data = await response.json();
         setRecords(data.records || []);
+        setTotalPages(data.totalPages || 1);
       } catch (error) {
-        console.error('Failed to fetch usage:', error);
+        console.error('Failed to fetch records:', error);
         setRecords([]);
+        setTotalPages(1);
       } finally {
         await minLoadingTime;
         setIsLoading(false);
@@ -71,24 +97,15 @@ export default function UsagePage() {
     };
 
     if (user) {
-      fetchUsage();
+      fetchRecords();
     }
-  }, [user]);
+  }, [user, page, pageSize, filter]);
 
-  // 筛选记录
-  const filteredRecords = records.filter((record) => {
-    if (filter === 'all') return true;
-    return record.type === filter;
-  });
-
-  // 计算总消耗
-  const totalConsumed = records
-    .filter((r) => r.type === 'consume')
-    .reduce((sum, r) => sum + Math.abs(r.amount), 0);
-
-  if (userLoading) {
-    return <UsageSkeleton />;
-  }
+  // 筛选条件改变时重置页码
+  const handleFilterChange = (newFilter: 'all' | 'consume' | 'refund') => {
+    setFilter(newFilter);
+    setPage(1);
+  };
 
   if (!user) {
     return (
@@ -134,7 +151,7 @@ export default function UsagePage() {
               <span>{t("stats.totalConsumed")}</span>
             </div>
           </div>
-          <div className="text-3xl font-bold text-foreground">{totalConsumed.toLocaleString()}</div>
+          <div className="text-3xl font-bold text-foreground">{stats.totalConsumed.toLocaleString()}</div>
         </div>
 
         <div className="bg-sidebar-bg border border-border rounded-2xl p-5">
@@ -144,7 +161,7 @@ export default function UsagePage() {
               <span>{t("stats.recordCount")}</span>
             </div>
           </div>
-          <div className="text-3xl font-bold text-foreground">{filteredRecords.length}</div>
+          <div className="text-3xl font-bold text-foreground">{stats.totalRecords}</div>
         </div>
 
         <div className="bg-sidebar-bg border border-border rounded-2xl p-5">
@@ -155,7 +172,7 @@ export default function UsagePage() {
             </div>
           </div>
           <div className="text-3xl font-bold text-foreground">
-            {records.length > 0 ? Math.round(totalConsumed / records.filter(r => r.type === 'consume').length || 0) : 0}
+            {stats.avgPerRecord}
           </div>
         </div>
       </div>
@@ -168,7 +185,7 @@ export default function UsagePage() {
           {/* 筛选按钮 */}
           <div className="relative flex gap-1 bg-sidebar-bg border border-border rounded-lg p-1">
             <motion.button
-              onClick={() => setFilter('all')}
+              onClick={() => handleFilterChange('all')}
               className={`relative px-3 py-1.5 text-xs font-medium rounded transition-colors cursor-pointer ${
                 filter === 'all'
                   ? 'text-foreground'
@@ -187,7 +204,7 @@ export default function UsagePage() {
               </span>
             </motion.button>
             <motion.button
-              onClick={() => setFilter('consume')}
+              onClick={() => handleFilterChange('consume')}
               className={`relative px-3 py-1.5 text-xs font-medium rounded transition-colors cursor-pointer ${
                 filter === 'consume'
                   ? 'text-foreground'
@@ -206,7 +223,7 @@ export default function UsagePage() {
               </span>
             </motion.button>
             <motion.button
-              onClick={() => setFilter('refund')}
+              onClick={() => handleFilterChange('refund')}
               className={`relative px-3 py-1.5 text-xs font-medium rounded transition-colors cursor-pointer ${
                 filter === 'refund'
                   ? 'text-foreground'
@@ -227,67 +244,94 @@ export default function UsagePage() {
           </div>
         </div>
 
-        {filteredRecords.length === 0 ? (
+        {records.length === 0 ? (
           <Empty className="border border-border rounded-2xl bg-sidebar-bg">
             <EmptyHeader>
               <EmptyMedia variant="icon" className="bg-sidebar-hover text-muted-foreground">
                 <InboxIcon className="h-6 w-6" />
               </EmptyMedia>
               <EmptyTitle className="text-foreground">
-                {records.length === 0 ? t("table.noRecords") : t("table.noMatchingRecords")}
+                {t("table.noRecords")}
               </EmptyTitle>
             </EmptyHeader>
           </Empty>
         ) : (
-          <div className="border border-border rounded-2xl overflow-hidden">
-            <Table>
-              <TableHeader className="bg-sidebar-hover/50">
-                <TableRow className="hover:bg-transparent border-border">
-                  <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                    {t("table.columns.time")}
-                  </TableHead>
-                  <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                    {t("table.columns.type")}
-                  </TableHead>
-                  <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                    {t("table.columns.description")}
-                  </TableHead>
-                  <TableHead className="text-right text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                    {t("table.columns.amount")}
-                  </TableHead>
-                  <TableHead className="text-right text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                    {t("table.columns.balance")}
-                  </TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {filteredRecords.map((record) => (
-                  <TableRow key={record.id} className="hover:bg-sidebar-hover/30 border-border">
-                    <TableCell className="text-sm text-foreground">
-                      {new Date(record.createdAt).toLocaleString()}
-                    </TableCell>
-                    <TableCell>
-                      <Badge variant={record.type === 'consume' ? 'error' : 'success'}>
-                        {t(`table.types.${record.type}`)}
-                      </Badge>
-                    </TableCell>
-                    <TableCell className="text-sm text-muted-foreground">
-                      {record.note || '-'}
-                    </TableCell>
-                    <TableCell className="text-right text-sm">
-                      <span className={`font-semibold ${
-                        record.amount > 0 ? 'text-green-600' : 'text-red-600'
-                      }`}>
-                        {record.amount > 0 ? '+' : ''}{record.amount}
-                      </span>
-                    </TableCell>
-                    <TableCell className="text-right text-sm text-muted-foreground">
-                      {record.balanceAfter.toLocaleString()}
-                    </TableCell>
+          <div className="space-y-3">
+            <div className="border border-border rounded-2xl overflow-hidden">
+              <Table>
+                <TableHeader className="bg-sidebar-hover/50">
+                  <TableRow className="hover:bg-transparent border-border">
+                    <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                      {t("table.columns.time")}
+                    </TableHead>
+                    <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                      {t("table.columns.type")}
+                    </TableHead>
+                    <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                      {t("table.columns.description")}
+                    </TableHead>
+                    <TableHead className="text-right text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                      {t("table.columns.amount")}
+                    </TableHead>
+                    <TableHead className="text-right text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                      {t("table.columns.balance")}
+                    </TableHead>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+                </TableHeader>
+                <TableBody>
+                  {records.map((record) => (
+                    <TableRow key={record.id} className="hover:bg-sidebar-hover/30 border-border">
+                      <TableCell className="text-sm text-foreground">
+                        {new Date(record.createdAt).toLocaleString()}
+                      </TableCell>
+                      <TableCell>
+                        <Badge variant={record.type === 'consume' ? 'error' : 'success'}>
+                          {t(`table.types.${record.type}`)}
+                        </Badge>
+                      </TableCell>
+                      <TableCell className="text-sm text-muted-foreground">
+                        {record.note || '-'}
+                      </TableCell>
+                      <TableCell className="text-right text-sm">
+                        <span className={`font-semibold ${
+                          record.amount > 0 ? 'text-green-600' : 'text-red-600'
+                        }`}>
+                          {record.amount > 0 ? '+' : ''}{record.amount}
+                        </span>
+                      </TableCell>
+                      <TableCell className="text-right text-sm text-muted-foreground">
+                        {record.balanceAfter.toLocaleString()}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+
+            {/* 分页控件 */}
+            <div className="flex items-center justify-between">
+              <div className="text-xs text-muted-foreground">
+                {t("pagination.pageInfo", { current: page, total: totalPages })}
+              </div>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => setPage(Math.max(1, page - 1))}
+                  disabled={page <= 1}
+                  className="flex items-center gap-1 px-3 py-2 rounded-lg border border-border hover:bg-sidebar-hover disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                >
+                  <ChevronLeft className="h-4 w-4" />
+                  <span className="text-xs font-medium">{t("pagination.previous")}</span>
+                </button>
+                <button
+                  onClick={() => setPage(Math.min(totalPages, page + 1))}
+                  disabled={page >= totalPages}
+                  className="flex items-center gap-1 px-3 py-2 rounded-lg border border-border hover:bg-sidebar-hover disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                >
+                  <span className="text-xs font-medium">{t("pagination.next")}</span>
+                  <ChevronRight className="h-4 w-4" />
+                </button>
+              </div>
+            </div>
           </div>
         )}
       </div>

@@ -101,6 +101,11 @@
         "consume": "Consume",
         "refund": "Refund"
       }
+    },
+    "pagination": {
+      "pageInfo": "Page {current} / {total}",
+      "previous": "Previous",
+      "next": "Next"
     }
   }
 }
