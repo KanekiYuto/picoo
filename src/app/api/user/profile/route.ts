@@ -1,6 +1,9 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
+import { db } from "@/lib/db";
+import { user } from "@/lib/db/schema";
+import { eq } from "drizzle-orm";
 
 export async function GET() {
   try {
@@ -15,15 +18,29 @@ export async function GET() {
       );
     }
 
+    // 从数据库查询最新用户信息
+    const [userData] = await db
+      .select()
+      .from(user)
+      .where(eq(user.id, session.user.id))
+      .limit(1);
+
+    if (!userData) {
+      return NextResponse.json(
+        { error: "用户不存在" },
+        { status: 404 }
+      );
+    }
+
     return NextResponse.json({
-      id: session.user.id,
-      name: session.user.name,
-      email: session.user.email,
-      emailVerified: session.user.emailVerified,
-      image: session.user.image,
-      type: (session.user as any).type || 'free',
-      createdAt: session.user.createdAt,
-      updatedAt: session.user.updatedAt,
+      id: userData.id,
+      name: userData.name,
+      email: userData.email,
+      emailVerified: userData.emailVerified,
+      image: userData.image,
+      type: userData.type,
+      createdAt: userData.createdAt,
+      updatedAt: userData.updatedAt,
     });
   } catch (error) {
     console.error("Failed to fetch user profile:", error);
@@ -33,3 +50,4 @@ export async function GET() {
     );
   }
 }
+

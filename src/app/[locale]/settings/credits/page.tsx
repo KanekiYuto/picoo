@@ -28,7 +28,12 @@ export default function CreditsPage() {
   const { user, isLoading: userLoading } = useUserStore();
   const [credits, setCredits] = useState<CreditInfo[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [filter, setFilter] = useState<'all' | 'active' | 'expired'>('all');
+  const [filter, setFilter] = useState<'all' | 'active' | 'expired'>('active');
+  const [balanceData, setBalanceData] = useState<{
+    totalRemaining: number;
+    totalConsumed: number;
+    activeCreditsCount: number;
+  } | null>(null);
 
   // 获取积分信息
   useEffect(() => {
@@ -46,6 +51,7 @@ export default function CreditsPage() {
 
         const data = await response.json();
         setCredits(data.credits || []);
+        setBalanceData(data.summary);
       } catch (error) {
         console.error('Failed to fetch credits:', error);
         // 发生错误时设置为空数组
@@ -60,9 +66,6 @@ export default function CreditsPage() {
       fetchCredits();
     }
   }, [user]);
-
-  // 计算总积分
-  const totalCredits = credits.reduce((sum, credit) => sum + credit.remaining, 0);
 
   // 获取套餐信息
   const planInfo = user ? getPlanInfo(user.type, (key) => tPlans(key)) : null;
@@ -125,7 +128,7 @@ export default function CreditsPage() {
               <span>{t("overview.currentBalance")}</span>
             </div>
           </div>
-          <div className="text-3xl font-bold text-foreground">{totalCredits}</div>
+          <div className="text-3xl font-bold text-foreground">{balanceData?.totalRemaining || 0}</div>
           <div className="mt-2 text-xs text-muted-foreground">
             {t("overview.availableCredits")}
           </div>
@@ -148,16 +151,16 @@ export default function CreditsPage() {
           )}
         </div>
 
-        {/* 今日消耗 */}
+        {/* 总消耗 */}
         <div className="bg-sidebar-bg border border-border rounded-2xl p-5">
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2 text-sm text-muted">
               <Calendar className="h-4 w-4" />
-              <span>{t("overview.todayUsage")}</span>
+              <span>总消耗</span>
             </div>
           </div>
           <div className="text-3xl font-bold text-foreground">
-            {credits[0]?.consumed || 0}
+            {balanceData?.totalConsumed || 0}
           </div>
           <div className="mt-2 text-xs text-muted-foreground">
             {t("overview.creditsUsed")}
@@ -241,7 +244,9 @@ export default function CreditsPage() {
             {filteredCredits.map((credit) => {
               const percentage = credit.amount > 0 ? (credit.remaining / credit.amount) * 100 : 0;
               const usageRate = 100 - percentage; // 使用率
-              const isExpiringSoon = credit.expiresAt && new Date(credit.expiresAt).getTime() - Date.now() < 7 * 24 * 60 * 60 * 1000;
+              const expiresTime = credit.expiresAt ? new Date(credit.expiresAt).getTime() : null;
+              const isExpiringSoon = expiresTime && expiresTime > Date.now() && expiresTime - Date.now() < 7 * 24 * 60 * 60 * 1000;
+              const isExpired = expiresTime && expiresTime <= Date.now();
 
               // 根据使用率确定进度条颜色
               let progressColor = '';
@@ -264,11 +269,13 @@ export default function CreditsPage() {
                       {t(`details.types.${credit.type}`)}
                     </h3>
                     <span className={`px-3 py-1 text-xs font-medium rounded ${
-                      isExpiringSoon
+                      isExpired
+                        ? 'bg-red-950/80 text-red-400'
+                        : isExpiringSoon
                         ? 'bg-yellow-950/80 text-yellow-400'
                         : 'bg-green-950/80 text-green-400'
                     }`}>
-                      {isExpiringSoon ? t("details.expiringSoon") : t("details.active")}
+                      {isExpired ? t("details.expired") : isExpiringSoon ? t("details.expiringSoon") : t("details.active")}
                     </span>
                   </div>
 

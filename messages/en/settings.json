@@ -54,6 +54,7 @@
       "noMatchingCredits": "No credits match the filter",
       "active": "Active",
       "expiringSoon": "Expiring Soon",
+      "expired": "Expired",
       "filter": {
         "all": "All",
         "active": "Active",

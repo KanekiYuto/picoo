@@ -28,25 +28,23 @@ export default function SettingsLayout({
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const t = useTranslations("settings.layout");
 
-  const locale = pathname.split("/")[1] ?? "";
-  const basePath = locale ? `/${locale}` : "";
   const navSectionsUi: NavSection[] = [
     {
       title: t("nav.myInfo"),
-      items: [{ label: t("nav.profile"), href: `${basePath}/settings/profile`, icon: User }],
+      items: [{ label: t("nav.profile"), href: "./profile", icon: User }],
     },
     {
       title: t("nav.credits"),
       items: [
-        { label: t("nav.creditsBalance"), href: `${basePath}/settings/credits`, icon: Gem },
-        { label: t("nav.usage"), href: `${basePath}/settings/usage`, icon: BarChart3 },
+        { label: t("nav.creditsBalance"), href: "./credits", icon: Gem },
+        { label: t("nav.usage"), href: "./usage", icon: BarChart3 },
       ],
     },
     {
       title: t("nav.billing"),
       items: [
-        { label: t("nav.subscriptionPlan"), href: `${basePath}/settings/billing`, icon: CreditCard },
-        { label: t("nav.billingDetails"), href: `${basePath}/settings/billing/details`, icon: Receipt },
+        { label: t("nav.subscriptionPlan"), href: "./billing", icon: CreditCard },
+        { label: t("nav.billingDetails"), href: "./billing/details", icon: Receipt },
       ],
     },
   ];
@@ -108,7 +106,8 @@ export default function SettingsLayout({
                 <ul className="space-y-1">
                   {section.items.map((item) => {
                     const Icon = item.icon;
-                    const isActive = pathname === item.href || pathname.startsWith(`${item.href}/`);
+                    const hrefPath = item.href.replace('./', '');
+                    const isActive = pathname.endsWith(`/${hrefPath}`) || pathname.includes(`/${hrefPath}/`);
                     return (
                       <li key={item.href}>
                         <Link

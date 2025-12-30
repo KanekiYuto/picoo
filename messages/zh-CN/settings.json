@@ -54,6 +54,7 @@
       "noMatchingCredits": "没有符合条件的积分记录",
       "active": "有效",
       "expiringSoon": "即将过期",
+      "expired": "已过期",
       "filter": {
         "all": "全部",
         "active": "有效",
