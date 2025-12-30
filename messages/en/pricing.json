@@ -67,13 +67,13 @@
       "name": "Free",
       "ctaText": "Start for Free",
       "features": [
-        "{credits} credits per month",
-        "Up to {images} images per month",
-        "Basic AI models",
-        "Content visibility: Public",
-        "{concurrent} concurrent image generation",
-        "Community support",
-        "Team {seats} seats",
+        "{credits} [[Credits]]/month",
+        "Up to {images} [[Images]]/month",
+        "Basic [[AI models]]",
+        "Content visibility: [[Public]]",
+        "{concurrent} [[Concurrent]] image generation",
+        "Community [[Support]]",
+        "Team {seats} [[Seats]]",
         "Video generation"
       ]
     },
@@ -81,46 +81,46 @@
       "name": "Basic",
       "ctaText": "Get Started",
       "features": [
-        "{credits} credits per month",
-        "Up to {images} images per month",
-        "Up to {videos} videos per month",
-        "Most AI models",
-        "Content visibility: Private",
-        "{imageConcurrent} concurrent image generations",
-        "{videoConcurrent} concurrent video generations",
-        "Official {support} customer support",
-        "Team {seats} seats"
+        "{credits} [[Credits]]/month",
+        "Up to {images} [[Images]]/month",
+        "Up to {videos} [[Videos]]/month",
+        "Most [[AI models]]",
+        "Content visibility: [[Private]]",
+        "{imageConcurrent} [[Concurrent]] image generations",
+        "{videoConcurrent} [[Concurrent]] video generations",
+        "Official {support} [[Customer Support]]",
+        "Team {seats} [[Seats]]"
       ]
     },
     "plus": {
       "name": "Plus",
       "ctaText": "Get Started",
       "features": [
-        "{credits} credits per month",
-        "Up to {images} images per month",
-        "Up to {videos} videos per month",
-        "Most AI models",
-        "Content visibility: Private",
-        "{imageConcurrent} concurrent image generations",
-        "{videoConcurrent} concurrent video generations",
-        "Official {support} customer support",
-        "Team {seats} seats"
+        "{credits} [[Credits]]/month",
+        "Up to {images} [[Images]]/month",
+        "Up to {videos} [[Videos]]/month",
+        "Most [[AI models]]",
+        "Content visibility: [[Private]]",
+        "{imageConcurrent} [[Concurrent]] image generations",
+        "{videoConcurrent} [[Concurrent]] video generations",
+        "Official {support} [[Customer Support]]",
+        "Team {seats} [[Seats]]"
       ]
     },
     "pro": {
       "name": "Professional",
       "ctaText": "Get Started",
       "features": [
-        "{credits} credits per month",
-        "Up to {images} images per month",
-        "Up to {videos} videos per month",
-        "All AI models",
-        "Content visibility: Private",
-        "{imageConcurrent} concurrent image generations",
-        "{videoConcurrent} concurrent video generations",
-        "One-on-one {support} dedicated priority support",
-        "Priority queue processing",
-        "Team {seats} seats"
+        "{credits} [[Credits]]/month",
+        "Up to {images} [[Images]]/month",
+        "Up to {videos} [[Videos]]/month",
+        "All [[AI models]]",
+        "Content visibility: [[Private]]",
+        "{imageConcurrent} [[Concurrent]] image generations",
+        "{videoConcurrent} [[Concurrent]] video generations",
+        "One-on-one {support} [[Priority Support]]",
+        "[[Priority Queue]] processing",
+        "Team {seats} [[Seats]]"
       ]
     }
   }
