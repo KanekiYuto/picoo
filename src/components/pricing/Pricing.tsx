@@ -41,27 +41,27 @@ export function Pricing({
       <div className="container mx-auto px-4">
         {/* 标题部分 */}
         <div className="text-center mb-12">
-          <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
+          <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
             {t("header.title")}
           </h1>
-          <p className="text-gray-400 text-lg max-w-2xl mx-auto">
+          <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
             {t("header.description")}
           </p>
         </div>
 
         {/* 计费周期切换器 */}
         <div className="flex justify-center mb-16">
-          <div className="relative inline-flex gap-2 rounded-full bg-card p-1">
+          <div className="relative inline-flex gap-2 rounded-lg bg-muted/20 p-1">
             {billingCycles.map((cycle) => (
               <motion.button
                 key={cycle.id}
                 onClick={() => setBillingCycle(cycle.id)}
                 className={`
-                  relative px-8 py-2.5 rounded-full font-medium text-sm
+                  relative px-8 py-2.5 rounded-md font-medium text-sm
                   transition-colors cursor-pointer overflow-visible
                   ${billingCycle === cycle.id
-                    ? "text-gray-900"
-                    : "text-gray-400 hover:text-gray-300"
+                    ? "text-foreground"
+                    : "text-muted-foreground hover:text-foreground"
                   }
                 `}
               >
@@ -72,11 +72,11 @@ export function Pricing({
                   </span>
                 )}
 
-                {/* 白色背景滑块 - 使用 Framer Motion layoutId 实现平滑动画 */}
+                {/* 背景滑块 - 使用 Framer Motion layoutId 实现平滑动画 */}
                 {billingCycle === cycle.id && (
                   <motion.div
                     layoutId="billing-cycle-tab"
-                    className="absolute inset-0 rounded-full bg-white shadow-lg z-0"
+                    className="absolute inset-0 rounded-md bg-card shadow-lg z-0"
                     transition={{ type: "spring", duration: 0.5, bounce: 0.2 }}
                   />
                 )}
@@ -88,7 +88,7 @@ export function Pricing({
         </div>
 
         {/* 定价卡片网格 */}
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mb-12 bg-muted/15 p-4 md:p-6 lg:p-8 rounded-2xl">
           {pricingPlans.map((plan) => (
             <PricingCard
               key={plan.id}
@@ -103,7 +103,7 @@ export function Pricing({
 
         {/* 底部说明 */}
         <div className="text-center">
-          <p className="text-gray-400 text-sm">
+          <p className="text-muted-foreground text-sm">
             {t("footer.guarantee")}
           </p>
         </div>

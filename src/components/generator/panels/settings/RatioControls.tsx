@@ -32,26 +32,24 @@ export function RatioControls({
             type="button"
             onClick={() => onChange(pairedRatio)}
             className={cn(
-              "absolute flex items-center justify-center rounded-lg border-2 border-dashed border-white/30 bg-transparent text-muted transition-opacity hover:opacity-80",
+              "absolute flex items-center justify-center rounded-lg border-2 border-dashed border-foreground/30 bg-transparent text-muted-foreground transition-opacity hover:opacity-80",
               FOCUS_RING_CLASSES
             )}
             style={{
               width: `${pairPreviewSize.width}px`,
               height: `${pairPreviewSize.height}px`,
             }}
-          >
-            <span className="text-[11px] font-medium">{pairedRatio}</span>
-          </button>
+          />
         )}
 
         <div
-          className="relative z-10 flex items-center justify-center rounded-lg border-2 border-white bg-transparent"
+          className="relative z-10 flex items-center justify-center rounded-lg border-2 border-foreground bg-transparent"
           style={{
             width: `${currentPreviewSize.width}px`,
             height: `${currentPreviewSize.height}px`,
           }}
         >
-          <span className="text-xs font-semibold text-white/80">{value}</span>
+          <span className="text-xs font-semibold text-foreground/80">{value}</span>
         </div>
       </div>
 
@@ -76,8 +74,8 @@ export function RatioControls({
                   BUTTON_TRANSITION_CLASSES,
                   FOCUS_RING_CLASSES,
                   isActive
-                    ? "border-white/80 bg-sidebar-active text-white"
-                    : "border-border/60 bg-[var(--color-generator-panel-card-bg)] text-muted/80 hover:text-foreground hover:bg-sidebar-hover/60 hover:border-border/80"
+                    ? "border-muted/20 bg-muted/20 text-foreground"
+                    : "border-border/60 bg-[var(--color-generator-panel-card-bg)] text-muted-foreground/80 hover:text-foreground hover:bg-sidebar-hover/60 hover:border-border/80"
                 )}
               >
                 {/* 显示比例的形状预览 */}
@@ -98,7 +96,7 @@ export function RatioControls({
 
                     return (
                       <div
-                        className="rounded-sm bg-white/60"
+                        className="rounded-sm bg-foreground/60"
                         style={{
                           width: `${width}px`,
                           height: `${baseHeight}px`,

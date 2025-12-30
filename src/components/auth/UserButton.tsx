@@ -77,7 +77,7 @@ export function UserButton() {
               <Link
                 href="/settings/profile"
                 onClick={closeMenu}
-                className="block p-4 border-b border-border bg-sidebar-bg/50 hover:bg-sidebar-hover transition-colors cursor-pointer"
+                className="block p-4 border-b border-border bg-secondary hover:bg-secondary/80 transition-colors cursor-pointer"
               >
                 <div className="flex items-center gap-3">
                   <div className="h-12 w-12 rounded-full overflow-hidden bg-gradient-to-br from-primary to-primary-hover flex-shrink-0 ring-2 ring-border">
@@ -97,7 +97,7 @@ export function UserButton() {
                     <p className="font-semibold text-foreground truncate text-sm">
                       {user.name}
                     </p>
-                    <p className="text-xs text-muted truncate">
+                    <p className="text-xs text-muted-foreground truncate">
                       {user.email}
                     </p>
                   </div>
@@ -111,7 +111,7 @@ export function UserButton() {
                   <span className="text-base font-semibold text-foreground">
                     {userPoints}
                   </span>
-                  <span className="text-xs text-muted">
+                  <span className="text-xs text-muted-foreground">
                     {t("points")}
                   </span>
                   <button
@@ -170,8 +170,8 @@ export function UserButton() {
               </div>
 
               {/* 底部链接 */}
-              <div className="p-3 border-t border-border bg-sidebar-bg/30">
-                <div className="flex items-center justify-center gap-4 text-xs text-muted">
+              <div className="p-3 border-t border-border bg-secondary/50">
+                <div className="flex items-center justify-center gap-4 text-xs text-muted-foreground">
                   <Link href="/terms" onClick={closeMenu} className="hover:text-foreground transition-colors">
                     {t("terms")}
                   </Link>

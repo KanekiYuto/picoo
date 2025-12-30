@@ -83,7 +83,7 @@ export function ModelDisplay({
           onClick={onClick}
           className={cn(
             "flex items-center justify-center w-10 h-10 rounded-xl",
-            "bg-sidebar-active text-white",
+            "bg-sidebar-active text-foreground",
             "hover:bg-sidebar-hover",
             "transition-colors duration-200",
             "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary",
@@ -101,7 +101,7 @@ export function ModelDisplay({
         onClick={onClick}
         className={cn(
           "flex items-center gap-1 md:gap-1.5 px-2 md:px-3 py-2 rounded-lg",
-          "text-xs md:text-sm text-white",
+          "text-xs md:text-sm text-foreground",
           "hover:bg-sidebar-hover",
           "transition-colors duration-200",
           "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary",
@@ -122,10 +122,10 @@ export function ModelDisplay({
       {model?.name && (
         <div className="flex items-center justify-between">
           <span className="text-sm font-medium text-foreground">{model.name}</span>
-          {visibility && <span className="text-xs text-muted">{visibility}</span>}
+          {visibility && <span className="text-xs text-muted-foreground">{visibility}</span>}
         </div>
       )}
-      <div className="text-xs text-muted">
+      <div className="text-xs text-muted-foreground">
         {displayParts.filter(part => part !== model?.name).join(" • ")}
       </div>
     </div>

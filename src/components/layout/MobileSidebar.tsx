@@ -90,7 +90,7 @@ export function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
             onClick={onClose}
-            className="fixed inset-x-0 top-16 bottom-0 z-40 bg-black/60 backdrop-blur-sm lg:hidden"
+            className="fixed inset-x-0 top-16 bottom-0 z-40 bg-background/60 backdrop-blur-sm lg:hidden"
           />
 
           {/* 从 Header 下方滑出的全屏面板 */}
@@ -134,8 +134,8 @@ export function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
                           className={cn(
                             "flex items-center gap-4 rounded-xl px-5 py-4 transition-colors",
                             isActive
-                              ? "bg-sidebar-active text-white"
-                              : "text-muted hover:bg-sidebar-hover hover:text-white"
+                              ? "bg-sidebar-active text-primary-foreground"
+                              : "text-muted-foreground hover:bg-secondary hover:text-foreground"
                           )}
                         >
                           <Icon className="h-6 w-6" />
@@ -180,8 +180,8 @@ export function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
                           className={cn(
                             "flex items-center gap-4 rounded-xl px-5 py-4 transition-colors",
                             isActive
-                              ? "bg-sidebar-active text-white"
-                              : "text-muted hover:bg-sidebar-hover hover:text-white"
+                              ? "bg-sidebar-active text-primary-foreground"
+                              : "text-muted-foreground hover:bg-secondary hover:text-foreground"
                           )}
                         >
                           <Icon className="h-6 w-6" />

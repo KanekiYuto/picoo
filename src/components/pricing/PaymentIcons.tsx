@@ -34,8 +34,8 @@ export function PaymentIcons() {
     <div className="text-center">
       {/* 安全提示文字 */}
       <div className="flex items-center justify-center gap-2 mb-6">
-        <Shield className="w-5 h-5 text-gray-400" />
-        <p className="text-gray-400 text-sm">{t("securePayment")}</p>
+        <Shield className="w-5 h-5 text-muted-foreground" />
+        <p className="text-muted-foreground text-sm">{t("securePayment")}</p>
       </div>
 
       {/* 支付方式图标 */}
@@ -44,7 +44,7 @@ export function PaymentIcons() {
           {paymentMethods.map((method) => (
             <Tooltip key={method.id}>
               <TooltipTrigger asChild>
-                <div className="w-24 h-[72px] rounded-lg overflow-hidden border border-white/10 cursor-pointer hover:border-white/20 transition-colors">
+                <div className="w-24 h-[72px] rounded-lg overflow-hidden border border-border cursor-pointer hover:border-border/80 transition-colors">
                   <Image
                     src={method.image}
                     alt={method.name}
@@ -65,7 +65,7 @@ export function PaymentIcons() {
 
       {/* 没有找到支付方式提示 */}
       <div className="mt-6">
-        <p className="text-gray-400 text-sm">
+        <p className="text-muted-foreground text-sm">
           {t("noPaymentMethod")}
           <a
             href={`mailto:${siteConfig.contact.email}?subject=${encodeURIComponent(t("emailSubject"))}`}

@@ -4,6 +4,7 @@ import { AppLayout } from "@/components/layout";
 import { siteConfig } from "@/config/site";
 import { UserProvider } from "@/components/providers/UserProvider";
 import { UserStoreProvider } from "@/components/providers/UserStoreProvider";
+import { ThemeProvider } from "@/components/providers/ThemeProvider";
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, setRequestLocale } from 'next-intl/server';
 import { routing } from '../../../i18n/routing';
@@ -52,14 +53,16 @@ export default async function LocaleLayout({
   return (
     <html lang={locale} dir={dir} suppressHydrationWarning>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background text-foreground`}>
-        <NextIntlClientProvider locale={locale} messages={messages}>
-          <UserProvider>
-            <UserStoreProvider>
-              <AppLayout>{children}</AppLayout>
-            </UserStoreProvider>
-          </UserProvider>
-        </NextIntlClientProvider>
-        <Toaster position="top-center" richColors />
+        <ThemeProvider>
+          <NextIntlClientProvider locale={locale} messages={messages}>
+            <UserProvider>
+              <UserStoreProvider>
+                <AppLayout>{children}</AppLayout>
+              </UserStoreProvider>
+            </UserProvider>
+          </NextIntlClientProvider>
+          <Toaster position="top-center" richColors />
+        </ThemeProvider>
       </body>
     </html>
   );

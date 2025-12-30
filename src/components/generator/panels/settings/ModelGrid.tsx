@@ -38,8 +38,8 @@ export function ModelGrid({
                     "relative flex h-[80px] w-full shrink-0 items-center justify-center rounded-2xl border transition-colors",
                     "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60 focus-visible:ring-offset-2 focus-visible:ring-offset-background",
                     isSelected
-                      ? "border-white/80 bg-sidebar-active"
-                      : "border-border/60 bg-[var(--color-generator-panel-card-bg)]",
+                      ? "border-muted/20 bg-muted/20"
+                      : "border-border/60 bg-muted/10",
                     isLocked
                       ? "cursor-not-allowed opacity-60"
                       : "cursor-pointer hover:border-border/80 hover:bg-sidebar-hover/60"
@@ -48,7 +48,7 @@ export function ModelGrid({
                   <div
                     className={cn(
                       "[&_svg]:transition-colors",
-                      isSelected ? "[&_svg]:text-white" : "[&_svg]:text-muted/80"
+                      isSelected ? "[&_svg]:text-foreground" : "[&_svg]:text-muted-foreground/80"
                     )}
                   >
                     {IconComponent ? (
@@ -57,7 +57,7 @@ export function ModelGrid({
                       <span
                         className={cn(
                           "text-lg font-semibold transition-colors",
-                          isSelected ? "text-white" : "text-muted/80"
+                          isSelected ? "text-foreground" : "text-muted-foreground/80"
                         )}
                       >
                         {model.glyph}
@@ -66,21 +66,21 @@ export function ModelGrid({
                   </div>
 
                   {isLocked && (
-                    <span className="absolute right-1 top-1 flex h-4 w-4 items-center justify-center rounded bg-black/40 p-0 text-white/80 backdrop-blur-[6px]">
+                    <span className="absolute right-1 top-1 flex h-4 w-4 items-center justify-center rounded bg-destructive/60 p-0 text-foreground backdrop-blur-[6px]">
                       <Lock className="h-3 w-3" />
                     </span>
                   )}
                 </button>
               </HoverCardTrigger>
               <HoverCardContent className="text-xs">
-                <div className="text-sm font-semibold text-white">{model.name}</div>
-                {model.tag && <div className="mt-0.5 text-white/70">{model.tag}</div>}
+                <div className="text-sm font-semibold text-foreground">{model.name}</div>
+                {model.tag && <div className="mt-0.5 text-muted-foreground/80">{model.tag}</div>}
                 {model.features && model.features.length > 0 && (
                   <div className="mt-2 flex flex-wrap gap-1">
                     {model.features.map((feature: string) => (
                       <span
                         key={feature}
-                        className="rounded-md bg-white/5 px-1.5 py-0.5 text-[10px] font-medium text-white/80"
+                        className="rounded-md bg-foreground/10 px-1.5 py-0.5 text-[10px] font-medium text-foreground/70"
                       >
                         {t(`features.${feature}`)}
                       </span>
@@ -88,7 +88,7 @@ export function ModelGrid({
                   </div>
                 )}
                 {model.descriptionKey && (
-                  <div className="mt-2 leading-relaxed text-white/70">
+                  <div className="mt-2 leading-relaxed text-muted-foreground/80">
                     {t(`modelDescriptions.${model.descriptionKey}`)}
                   </div>
                 )}
@@ -99,7 +99,7 @@ export function ModelGrid({
               title={model.name}
               className={cn(
                 "w-full whitespace-normal break-words text-center text-[11px] font-medium leading-snug",
-                isLocked ? "text-muted/50" : isSelected ? "text-white" : "text-muted/80"
+                isLocked ? "text-muted-foreground/40" : isSelected ? "text-foreground" : "text-muted-foreground/80"
               )}
             >
               {model.name}

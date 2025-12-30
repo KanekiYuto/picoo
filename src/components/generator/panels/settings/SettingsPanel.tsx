@@ -1,11 +1,13 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { useForm } from "react-hook-form";
 import { motion } from "framer-motion";
 import { X } from "lucide-react";
 import { useTranslations } from "next-intl";
 
 import { cn } from "@/lib/utils";
+import { Form } from "@/components/ui/form";
 import { MODELS, MODE_CONFIGS, type GeneratorMode } from "../../config";
 import { ModelGrid } from "./ModelGrid";
 import type { AspectRatio, GeneratorSettings, ModelOption } from "./types";
@@ -77,20 +79,31 @@ export function SettingsPanel({ onClose, settings, onSettingsChange, mode = "tex
   const defaultAspectRatio = useMemo(() => getDefaultAspectRatio(aspectRatioOptions), [aspectRatioOptions]);
   const canReset = currentSettings.aspectRatio !== defaultAspectRatio;
 
-  const commitSettings = (next: GeneratorSettings) => {
-    if (areSettingsEqual(next, currentSettings)) return;
+  // 使用 react-hook-form
+  const form = useForm<GeneratorSettings>({
+    defaultValues: currentSettings,
+    values: currentSettings,
+  });
 
-    if (isExternallyControlled) {
+  useEffect(() => {
+    const subscription = form.watch((values) => {
+      const next = values as GeneratorSettings;
+      if (areSettingsEqual(next, currentSettings)) return;
+
+      if (isExternallyControlled) {
+        onSettingsChange?.(next);
+        return;
+      }
+
+      setLocalSettings(next);
       onSettingsChange?.(next);
-      return;
-    }
+    });
 
-    setLocalSettings(next);
-    onSettingsChange?.(next);
-  };
+    return () => subscription.unsubscribe();
+  }, [form, currentSettings, isExternallyControlled, onSettingsChange]);
 
   const handleReset = () => {
-    commitSettings({ ...currentSettings, aspectRatio: defaultAspectRatio });
+    form.setValue("aspectRatio", defaultAspectRatio);
   };
 
   const handleSelectModel = (modelId: string) => {
@@ -102,22 +115,19 @@ export function SettingsPanel({ onClose, settings, onSettingsChange, mode = "tex
       ? currentSettings.aspectRatio
       : getDefaultAspectRatio(options);
 
-    commitSettings({
-      ...currentSettings,
-      model: model?.id ?? modelId,
-      aspectRatio: nextAspectRatio,
-    });
+    form.setValue("model", model?.id ?? modelId);
+    form.setValue("aspectRatio", nextAspectRatio);
   };
 
   return (
-    <div className="flex h-full flex-col">
+    <div className="flex h-full flex-col bg-card">
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border px-4 py-3 text-center sm:flex-nowrap sm:px-6 sm:py-4 sm:text-left">
         <h2 className="text-base font-semibold text-foreground sm:text-lg">{t("title")}</h2>
         <motion.button
           type="button"
           onClick={onClose}
           className={cn(
-            "flex h-9 w-9 items-center justify-center rounded-full text-muted transition-colors hover:bg-sidebar-hover hover:text-foreground cursor-pointer",
+            "flex h-9 w-9 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-sidebar-hover hover:text-foreground cursor-pointer",
             FOCUS_RING_CLASSES
           )}
           aria-label="关闭"
@@ -137,15 +147,21 @@ export function SettingsPanel({ onClose, settings, onSettingsChange, mode = "tex
             </div>
           </div>
 
-          <div className="flex flex-col gap-4 border-t border-border px-4 py-4 lg:min-h-0 lg:overflow-y-auto lg:border-t-0 lg:border-l lg:custom-scrollbar lg:px-4">
-            {selectedModelConfig?.renderFormFields?.({
-              settings: currentSettings,
-              onChange: commitSettings,
-              aspectRatioOptions,
-              canReset,
-              onReset: handleReset,
-            })}
-          </div>
+          <Form {...form}>
+            <div className="flex flex-col gap-4 border-t border-border px-4 py-4 lg:min-h-0 lg:overflow-y-auto lg:border-t-0 lg:border-l lg:custom-scrollbar lg:px-4">
+              {selectedModelConfig?.renderFormFields?.({
+                settings: currentSettings,
+                onChange: (next) => {
+                  Object.entries(next).forEach(([key, value]) => {
+                    form.setValue(key as keyof GeneratorSettings, value);
+                  });
+                },
+                aspectRatioOptions,
+                canReset,
+                onReset: handleReset,
+              })}
+            </div>
+          </Form>
         </div>
       </div>
     </div>

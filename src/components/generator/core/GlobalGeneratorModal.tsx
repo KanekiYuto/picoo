@@ -346,7 +346,7 @@ export function GlobalGeneratorModal() {
               exit={{ opacity: 0 }}
               transition={{ duration: 0.2 }}
               onClick={closeGeneratorModal}
-              className="fixed top-4 right-4 flex h-12.5 w-12.5 items-center justify-center rounded-lg bg-card/80 text-foreground transition-colors backdrop-blur-sm border border-border shadow-lg hover:bg-sidebar-hover cursor-pointer"
+              className="fixed top-4 right-4 flex h-12.5 w-12.5 items-center justify-center rounded-lg bg-card/80 text-foreground transition-colors backdrop-blur-sm border border-border hover:bg-sidebar-hover cursor-pointer"
               style={{ zIndex: 60 }}
               aria-label="关闭"
             >
@@ -371,7 +371,7 @@ export function GlobalGeneratorModal() {
                         transition={{ duration: 0.3 }}
                         className="w-full h-full"
                       >
-                        <div className="bg-card border border-border rounded-2xl shadow-2xl overflow-hidden h-full flex flex-col">
+                        <div className="bg-card border border-border rounded-2xl overflow-hidden h-full flex flex-col">
                           <SettingsPanel
                             onClose={() => setActivePanel(null)}
                             settings={settings}
@@ -390,7 +390,7 @@ export function GlobalGeneratorModal() {
                         transition={{ duration: 0.3 }}
                         className="w-full h-full"
                       >
-                        <div className="bg-card border border-border rounded-2xl shadow-2xl overflow-hidden h-full flex flex-col">
+                        <div className="bg-card border border-border rounded-2xl overflow-hidden h-full flex flex-col">
                           <UploadPanel
                             isOpen={true}
                             onClose={() => {
@@ -443,12 +443,12 @@ export function GlobalGeneratorModal() {
                   transition={{ duration: 0.3 }}
                   className="w-full"
                 >
-                  <div className="bg-card border border-border rounded-2xl shadow-2xl p-4 md:p-6">
+                  <div className="bg-card border border-border rounded-2xl p-4 md:p-6">
                     <div className="flex items-center justify-between mb-6">
                       <h2 className="text-lg font-semibold text-foreground">图片管理</h2>
                       <button
                         onClick={() => setActivePanel(null)}
-                        className="flex h-8 w-8 items-center justify-center rounded-full text-muted transition-colors hover:bg-sidebar-hover hover:text-foreground cursor-pointer"
+                        className="flex h-8 w-8 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-sidebar-hover hover:text-foreground cursor-pointer"
                       >
                         <X className="h-5 w-5" />
                       </button>
@@ -475,16 +475,16 @@ export function GlobalGeneratorModal() {
               )}
 
               {/* 生成器 */}
-              <div className="bg-card border border-border rounded-2xl shadow-2xl p-4">
+              <div className="bg-card border border-border rounded-2xl p-4">
                 <GlobalGenerator
                   onGenerate={handleGenerate}
                   onOpenUploadPanel={() => {
                     setSelectedImageUrl(undefined);
-                    setActivePanel("upload");
+                    setActivePanel(activePanel === "upload" ? null : "upload");
                   }}
-                  onOpenSettingsPanel={() => setActivePanel("settings")}
-                  onOpenModePanel={() => setActivePanel("mode")}
-                  onOpenMobileImagePanel={() => setActivePanel("mobile-images")}
+                  onOpenSettingsPanel={() => setActivePanel(activePanel === "settings" ? null : "settings")}
+                  onOpenModePanel={() => setActivePanel(activePanel === "mode" ? null : "mode")}
+                  onOpenMobileImagePanel={() => setActivePanel(activePanel === "mobile-images" ? null : "mobile-images")}
                   uploadImages={uploadImages}
                   onRemoveImage={handleRemoveImage}
                   onImageClick={handleImageClick}

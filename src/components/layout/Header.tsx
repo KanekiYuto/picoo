@@ -3,10 +3,11 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
-import { Bell, MessageSquare, Users, Menu, X } from "lucide-react";
+import { Bell, MessageSquare, Users, Menu, X, Moon, Sun } from "lucide-react";
 import { UserButton } from "@/components/auth/UserButton";
 import { LoginModal } from "@/components/auth/LoginModal";
 import { useUserStore } from "@/stores/userStore";
+import { useThemeStore } from "@/stores/themeStore";
 import { LanguageSwitcher } from "./LanguageSwitcher";
 
 interface HeaderProps {
@@ -17,13 +18,14 @@ interface HeaderProps {
 
 export function Header({ className, onMenuClick, isMobileMenuOpen }: HeaderProps) {
   const { user, isLoading } = useUserStore();
+  const { theme, toggleTheme } = useThemeStore();
   const [showLoginModal, setShowLoginModal] = useState(false);
 
   return (
     <>
       <header
         className={cn(
-          "sticky top-0 z-50 bg-header-bg border-b border-border h-16 flex-shrink-0 shadow-sm",
+          "sticky top-0 z-50 bg-header-bg border-b border-border h-16 flex-shrink-0",
           className
         )}
       >
@@ -34,7 +36,7 @@ export function Header({ className, onMenuClick, isMobileMenuOpen }: HeaderProps
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={onMenuClick}
-              className="flex h-10 w-10 items-center justify-center rounded-lg text-muted transition-colors hover:bg-sidebar-hover hover:text-foreground"
+              className="flex h-10 w-10 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
               aria-label={isMobileMenuOpen ? "关闭菜单" : "打开菜单"}
             >
               {isMobileMenuOpen ? (
@@ -52,7 +54,7 @@ export function Header({ className, onMenuClick, isMobileMenuOpen }: HeaderProps
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="flex h-10 w-10 items-center justify-center rounded-lg text-muted transition-colors hover:bg-sidebar-hover hover:text-foreground"
+                className="flex h-10 w-10 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
                 aria-label="邀请成员"
               >
                 <Users className="h-5 w-5" />
@@ -61,12 +63,27 @@ export function Header({ className, onMenuClick, isMobileMenuOpen }: HeaderProps
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="flex h-10 w-10 items-center justify-center rounded-lg text-muted transition-colors hover:bg-sidebar-hover hover:text-foreground"
+                className="flex h-10 w-10 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
                 aria-label="消息"
               >
                 <MessageSquare className="h-5 w-5" />
               </motion.button>
             </div>
+
+            {/* 主题切换按钮 */}
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={toggleTheme}
+              className="flex h-10 w-10 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
+              aria-label="切换主题"
+            >
+              {theme === 'light' ? (
+                <Moon className="h-5 w-5" />
+              ) : (
+                <Sun className="h-5 w-5" />
+              )}
+            </motion.button>
 
             {/* 语言切换按钮 */}
             <LanguageSwitcher />
@@ -75,7 +92,7 @@ export function Header({ className, onMenuClick, isMobileMenuOpen }: HeaderProps
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="relative flex h-10 w-10 items-center justify-center rounded-lg text-muted transition-colors hover:bg-sidebar-hover hover:text-foreground"
+              className="relative flex h-10 w-10 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
               aria-label="通知"
             >
               <Bell className="h-5 w-5" />
@@ -91,7 +108,7 @@ export function Header({ className, onMenuClick, isMobileMenuOpen }: HeaderProps
             <div className="ml-2">
               {isLoading ? (
                 // 加载骨架屏
-                <div className="h-10 w-10 rounded-full bg-muted animate-pulse ring-2 ring-border" />
+                <div className="h-10 w-10 rounded-full bg-secondary animate-pulse ring-2 ring-border" />
               ) : user ? (
                 // 已登录显示用户按钮
                 <UserButton />

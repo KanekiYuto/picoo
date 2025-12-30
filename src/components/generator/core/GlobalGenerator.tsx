@@ -126,8 +126,8 @@ export function GlobalGenerator({
           {mode === "text-to-image" ? (
             <div className="flex h-24 w-24 items-center justify-center rounded-xl border-2 border-dashed border-border/35 bg-sidebar-hover/15">
               <div className="flex flex-col items-center gap-1">
-                <ImageOff className="h-6 w-6 text-muted/45" />
-                <span className="text-[10px] font-medium text-muted/45">{t("noImageRequired")}</span>
+                <ImageOff className="h-6 w-6 text-muted-foreground/45" />
+                <span className="text-[10px] font-medium text-muted-foreground/45">{t("noImageRequired")}</span>
               </div>
             </div>
           ) : (
@@ -157,7 +157,7 @@ export function GlobalGenerator({
               placeholder={requiresPrompt() ? t("placeholder") : "无需提示词"}
               disabled={!requiresPrompt()}
               className={cn(
-                "max-h-40 min-h-10 w-full resize-none !border-0 bg-transparent text-sm md:text-base text-foreground placeholder:text-muted focus:outline-none !ring-0 custom-scrollbar overflow-hidden",
+                "max-h-40 min-h-10 w-full resize-none !border-0 bg-transparent text-sm md:text-base text-foreground placeholder:text-muted-foreground focus:outline-none !ring-0 custom-scrollbar overflow-hidden",
                 !requiresPrompt() && "cursor-not-allowed opacity-50"
               )}
               style={{ fieldSizing: 'content' } as React.CSSProperties}

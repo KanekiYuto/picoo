@@ -23,7 +23,7 @@ export function HeroSection() {
       </motion.div>
       <motion.p
         variants={fadeInUp}
-        className="mt-4 md:mt-6 max-w-2xl text-base md:text-lg lg:text-base xl:text-lg text-muted"
+        className="mt-4 md:mt-6 max-w-2xl text-base md:text-lg lg:text-base xl:text-lg text-muted-foreground"
       >
         {t("description")}
       </motion.p>

@@ -58,7 +58,7 @@ export function Footer({ className }: FooterProps) {
       whileInView="animate"
       viewport={{ once: true }}
       className={cn(
-        "border-t border-border bg-footer-bg",
+        "border-t border-border bg-background",
         className
       )}
     >
@@ -70,7 +70,7 @@ export function Footer({ className }: FooterProps) {
         >
           {Object.values(footerLinks).map((section) => (
             <div key={section.title}>
-              <div className="font-medium text-muted text-xs md:text-sm mb-3 md:mb-4">
+              <div className="font-medium text-muted-foreground text-xs md:text-sm mb-3 md:mb-4">
                 {section.title}
               </div>
               <ul className="space-y-2 md:space-y-3">
@@ -94,7 +94,7 @@ export function Footer({ className }: FooterProps) {
           variants={fadeInUp}
           className="relative overflow-hidden py-8 md:py-12 lg:py-16 xl:py-20"
         >
-          <div className="text-[4rem] sm:text-[6rem] md:text-[10rem] lg:text-[14rem] xl:text-[18rem] font-bold text-white/5 leading-none tracking-tighter text-center select-none">
+          <div className="text-[4rem] sm:text-[6rem] md:text-[10rem] lg:text-[14rem] xl:text-[18rem] font-bold text-foreground/5 leading-none tracking-tighter text-center select-none">
             {siteConfig.name}
           </div>
         </motion.div>
@@ -104,7 +104,7 @@ export function Footer({ className }: FooterProps) {
           variants={fadeInUp}
           className="flex flex-col md:flex-row items-center justify-between gap-4 md:gap-6 pt-6 md:pt-8 border-t border-border"
         >
-          <p className="text-xs md:text-sm text-muted text-center md:text-left">
+          <p className="text-xs md:text-sm text-muted-foreground text-center md:text-left">
             © {siteConfig.copyright.year} {siteConfig.fullName}. {siteConfig.copyright.text}
           </p>
 
@@ -118,7 +118,7 @@ export function Footer({ className }: FooterProps) {
                   href={social.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-muted transition-colors hover:text-primary"
+                  className="text-muted-foreground transition-colors hover:text-primary"
                   aria-label={social.label}
                 >
                   <Icon className="h-4 w-4 md:h-5 md:w-5" />

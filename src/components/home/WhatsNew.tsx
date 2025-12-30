@@ -105,13 +105,13 @@ export function WhatsNew() {
   return (
     <div className="relative w-full">
       {/* Header */}
-      <div className="mb-4 md:mb-6 text-lg md:text-xl font-semibold text-white px-4 md:px-24 lg:px-36">{t("title")}</div>
+      <div className="mb-4 md:mb-6 text-lg md:text-2xl lg:text-3xl font-semibold text-foreground px-4 md:px-24 lg:px-36">{t("title")}</div>
 
       {/* Navigation Buttons */}
       {canScrollLeft && (
         <button
           onClick={() => scroll("left")}
-          className="absolute left-2 md:left-20 lg:left-32 top-1/2 z-10 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-black/60 backdrop-blur-sm text-white transition-all hover:bg-black/80 cursor-pointer"
+          className="absolute left-2 md:left-20 lg:left-32 top-1/2 z-10 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-secondary/80 backdrop-blur-sm text-foreground transition-all hover:bg-secondary cursor-pointer"
           aria-label={t("scrollLeft")}
         >
           <ChevronLeft className="h-6 w-6" />
@@ -120,7 +120,7 @@ export function WhatsNew() {
       {canScrollRight && (
         <button
           onClick={() => scroll("right")}
-          className="absolute right-2 md:right-20 lg:right-32 top-1/2 z-10 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-black/60 backdrop-blur-sm text-white transition-all hover:bg-black/80 cursor-pointer"
+          className="absolute right-2 md:right-20 lg:right-32 top-1/2 z-10 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-secondary/80 backdrop-blur-sm text-foreground transition-all hover:bg-secondary cursor-pointer"
           aria-label={t("scrollRight")}
         >
           <ChevronRight className="h-6 w-6" />
@@ -138,10 +138,10 @@ export function WhatsNew() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.05, duration: 0.4 }}
-            className="group relative min-w-[200px] sm:min-w-[220px] md:min-w-[240px] cursor-pointer"
+            className="group relative min-w-[200px] sm:min-w-[240px] md:min-w-[280px] lg:min-w-[300px] cursor-pointer"
           >
             {/* Background with image */}
-            <div className="relative h-[120px] sm:h-[130px] md:h-[140px] w-full overflow-hidden rounded-xl border border-border">
+            <div className="relative h-[120px] sm:h-[140px] md:h-[160px] lg:h-[180px] w-full overflow-hidden rounded-xl border border-border">
               {/* Image */}
               <img
                 src={item.image}
@@ -150,15 +150,15 @@ export function WhatsNew() {
               />
 
               {/* Gradient Overlay */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
 
               {/* Hover overlay */}
               <div className="absolute inset-0 bg-white/0 transition-all duration-300 group-hover:bg-white/5" />
             </div>
 
             {/* Title below image */}
-            <div className="mt-1.5 md:mt-2">
-              <div className="text-xs sm:text-sm font-semibold text-white leading-tight line-clamp-2">
+            <div className="mt-2 md:mt-3">
+              <div className="text-sm md:text-base lg:text-lg font-semibold text-foreground leading-tight line-clamp-2">
                 {item.title}
               </div>
             </div>

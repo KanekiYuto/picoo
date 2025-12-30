@@ -4,6 +4,7 @@ import { Type, Maximize, Pencil, Wand2 } from "lucide-react";
 import type { ComponentType, ReactElement } from "react";
 import type { AspectRatio, AspectRatioOption, ModelOption, GeneratorSettings, FormFieldRenderer } from "./panels/settings/types";
 import { AspectRatioField, VariationsField, VisibilityField, SelectField } from "./panels/settings/fields";
+import { FormField } from "@/components/ui/form";
 
 export type GeneratorMode = "text-to-image" | "upscale" | "edit-image" | "remove-watermark";
 
@@ -134,25 +135,23 @@ export const DEFAULT_ASPECT_RATIO_OPTIONS: readonly AspectRatioOption[] = [
 const defaultTextToImageFormFields: FormFieldRenderer = ({ settings, onChange, aspectRatioOptions, canReset, onReset }) => (
   <>
     <div className="shrink-0">
-      <AspectRatioField
-        value={settings.aspectRatio}
-        options={aspectRatioOptions}
-        onChange={(aspectRatio) => onChange({ ...settings, aspectRatio })}
-        canReset={canReset}
-        onReset={onReset}
-      />
+      <FormField name="aspectRatio" render={({ field }) => (
+        <AspectRatioField
+          options={aspectRatioOptions}
+          canReset={canReset}
+          onReset={onReset}
+        />
+      )} />
     </div>
     <div>
-      <VariationsField
-        value={settings.variations}
-        onChange={(variations) => onChange({ ...settings, variations })}
-      />
+      <FormField name="variations" render={({ field }) => (
+        <VariationsField />
+      )} />
     </div>
     <div>
-      <VisibilityField
-        value={settings.visibility}
-        onChange={(visibility) => onChange({ ...settings, visibility })}
-      />
+      <FormField name="visibility" render={({ field }) => (
+        <VisibilityField />
+      )} />
     </div>
   </>
 );
@@ -161,25 +160,23 @@ const defaultTextToImageFormFields: FormFieldRenderer = ({ settings, onChange, a
 const defaultImageToImageFormFields: FormFieldRenderer = ({ settings, onChange, aspectRatioOptions, canReset, onReset }) => (
   <>
     <div className="shrink-0">
-      <AspectRatioField
-        value={settings.aspectRatio}
-        options={aspectRatioOptions}
-        onChange={(aspectRatio) => onChange({ ...settings, aspectRatio })}
-        canReset={canReset}
-        onReset={onReset}
-      />
+      <FormField name="aspectRatio" render={({ field }) => (
+        <AspectRatioField
+          options={aspectRatioOptions}
+          canReset={canReset}
+          onReset={onReset}
+        />
+      )} />
     </div>
     <div>
-      <VariationsField
-        value={settings.variations}
-        onChange={(variations) => onChange({ ...settings, variations })}
-      />
+      <FormField name="variations" render={({ field }) => (
+        <VariationsField />
+      )} />
     </div>
     <div>
-      <VisibilityField
-        value={settings.visibility}
-        onChange={(visibility) => onChange({ ...settings, visibility })}
-      />
+      <FormField name="visibility" render={({ field }) => (
+        <VisibilityField />
+      )} />
     </div>
   </>
 );
@@ -188,28 +185,28 @@ const defaultImageToImageFormFields: FormFieldRenderer = ({ settings, onChange, 
 const upscaleFormFields: FormFieldRenderer = ({ settings, onChange }) => (
   <>
     <div>
-      <SelectField
-        title="分辨率"
-        value={settings.resolution || "2k"}
-        options={[
-          { value: "2k", label: "2K" },
-          { value: "4k", label: "4K" },
-          { value: "8k", label: "8K" },
-        ]}
-        onChange={(resolution) => onChange({ ...settings, resolution })}
-      />
+      <FormField name="resolution" render={({ field }) => (
+        <SelectField
+          title="分辨率"
+          options={[
+            { value: "2k", label: "2K" },
+            { value: "4k", label: "4K" },
+            { value: "8k", label: "8K" },
+          ]}
+        />
+      )} />
     </div>
     <div>
-      <SelectField
-        title="图片格式"
-        value={settings.format || "jpeg"}
-        options={[
-          { value: "jpeg", label: "JPEG" },
-          { value: "png", label: "PNG" },
-          { value: "webp", label: "WEBP" },
-        ]}
-        onChange={(format) => onChange({ ...settings, format })}
-      />
+      <FormField name="format" render={({ field }) => (
+        <SelectField
+          title="图片格式"
+          options={[
+            { value: "jpeg", label: "JPEG" },
+            { value: "png", label: "PNG" },
+            { value: "webp", label: "WEBP" },
+          ]}
+        />
+      )} />
     </div>
   </>
 );
@@ -218,16 +215,16 @@ const upscaleFormFields: FormFieldRenderer = ({ settings, onChange }) => (
 const removeWatermarkFormFields: FormFieldRenderer = ({ settings, onChange }) => (
   <>
     <div>
-      <SelectField
-        title="图片格式"
-        value={settings.format || "jpeg"}
-        options={[
-          { value: "jpeg", label: "JPEG" },
-          { value: "png", label: "PNG" },
-          { value: "webp", label: "WEBP" },
-        ]}
-        onChange={(format) => onChange({ ...settings, format })}
-      />
+      <FormField name="format" render={({ field }) => (
+        <SelectField
+          title="图片格式"
+          options={[
+            { value: "jpeg", label: "JPEG" },
+            { value: "png", label: "PNG" },
+            { value: "webp", label: "WEBP" },
+          ]}
+        />
+      )} />
     </div>
   </>
 );

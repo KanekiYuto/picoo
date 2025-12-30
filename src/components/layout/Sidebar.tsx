@@ -65,7 +65,7 @@ export function Sidebar({ className }: SidebarProps) {
     >
       {/* Logo */}
       <Link href="/" className="flex h-16 items-center justify-center border-b border-border">
-        <div className="relative h-10 w-10 overflow-hidden rounded-lg bg-white/5">
+        <div className="relative h-10 w-10 overflow-hidden rounded-lg bg-foreground/5">
           <Image
             src={siteConfig.logo}
             alt={`${siteConfig.name} Logo`}
@@ -95,15 +95,15 @@ export function Sidebar({ className }: SidebarProps) {
                   className={cn(
                     "flex h-12 w-12 items-center justify-center rounded-xl transition-colors relative",
                     isActive
-                      ? "bg-sidebar-active text-white before:absolute before:left-0 before:top-1/2 before:-translate-y-1/2 before:h-8 before:w-1 before:rounded-r before:bg-primary"
-                      : "text-muted hover:bg-sidebar-hover hover:text-white"
+                      ? "bg-sidebar-active text-foreground before:absolute before:left-0 before:top-1/2 before:-translate-y-1/2 before:h-8 before:w-1 before:rounded-r before:bg-primary"
+                      : "text-muted-foreground hover:bg-secondary hover:text-foreground"
                   )}
                 >
                   <Icon className="h-5 w-5" />
                 </motion.div>
                 <span className={cn(
                   "text-[10px] transition-colors",
-                  isActive ? "text-white font-medium" : "text-muted"
+                  isActive ? "text-foreground font-medium" : "text-muted-foreground"
                 )}>{item.label}</span>
               </Link>
             );
@@ -127,15 +127,15 @@ export function Sidebar({ className }: SidebarProps) {
                   className={cn(
                     "flex h-12 w-12 items-center justify-center rounded-xl transition-colors relative",
                     isActive
-                      ? "bg-sidebar-active text-white before:absolute before:left-0 before:top-1/2 before:-translate-y-1/2 before:h-8 before:w-1 before:rounded-r before:bg-primary"
-                      : "text-muted hover:bg-sidebar-hover hover:text-white"
+                      ? "bg-sidebar-active text-foreground before:absolute before:left-0 before:top-1/2 before:-translate-y-1/2 before:h-8 before:w-1 before:rounded-r before:bg-primary"
+                      : "text-muted-foreground hover:bg-secondary hover:text-foreground"
                   )}
                 >
                   <Icon className="h-5 w-5" />
                 </motion.div>
                 <span className={cn(
                   "text-[10px] transition-colors",
-                  isActive ? "text-white font-medium" : "text-muted"
+                  isActive ? "text-foreground font-medium" : "text-muted-foreground"
                 )}>{item.label}</span>
               </Link>
             );

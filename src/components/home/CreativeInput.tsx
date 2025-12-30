@@ -54,26 +54,26 @@ export function CreativeInput() {
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
           placeholder={t("placeholder")}
-          className="max-h-40 min-h-6 w-full resize-none md:resize-y !border-0 bg-transparent text-sm md:text-base text-foreground placeholder:text-muted focus:outline-none !ring-0 custom-scrollbar"
+          className="max-h-40 min-h-6 w-full resize-none md:resize-y !border-0 bg-transparent text-sm md:text-base text-foreground placeholder:text-muted-foreground focus:outline-none !ring-0 custom-scrollbar"
           style={{ fieldSizing: 'content' } as React.CSSProperties}
         />
         <div className="mt-3 md:mt-4 flex items-center justify-between gap-2">
           <div className="flex items-center gap-2">
             {/* Media Type Tabs */}
-            <div className="relative flex gap-1 rounded-full bg-sidebar-active p-1">
+            <div className="relative flex gap-1 rounded-lg bg-muted/10 p-1">
               <motion.button
                 onClick={() => setSelectedType("image")}
                 className={cn(
-                  "relative flex items-center gap-1.5 rounded-full px-3 py-2 text-xs font-medium transition-colors cursor-pointer",
+                  "relative flex items-center gap-1.5 rounded-md px-3 py-2 text-xs font-medium transition-colors cursor-pointer",
                   selectedType === "image"
-                    ? "text-white"
-                    : "text-white/60 hover:text-white/90"
+                    ? "text-foreground"
+                    : "text-muted-foreground hover:text-foreground"
                 )}
               >
                 {selectedType === "image" && (
                   <motion.div
                     layoutId="active-tab"
-                    className="absolute inset-0 rounded-full bg-input-tab-active"
+                    className="absolute inset-0 rounded-md bg-muted/15"
                     transition={{ type: "spring", duration: 0.5, bounce: 0.2 }}
                   />
                 )}
@@ -83,16 +83,16 @@ export function CreativeInput() {
               <motion.button
                 onClick={() => setSelectedType("video")}
                 className={cn(
-                  "relative flex items-center gap-1.5 rounded-full px-3 py-2 text-xs font-medium transition-colors cursor-pointer",
+                  "relative flex items-center gap-1.5 rounded-md px-3 py-2 text-xs font-medium transition-colors cursor-pointer",
                   selectedType === "video"
-                    ? "text-white"
-                    : "text-white/60 hover:text-white/90"
+                    ? "text-foreground"
+                    : "text-muted-foreground hover:text-foreground"
                 )}
               >
                 {selectedType === "video" && (
                   <motion.div
                     layoutId="active-tab"
-                    className="absolute inset-0 rounded-full bg-input-tab-active"
+                    className="absolute inset-0 rounded-md bg-muted/15"
                     transition={{ type: "spring", duration: 0.5, bounce: 0.2 }}
                   />
                 )}
@@ -104,9 +104,8 @@ export function CreativeInput() {
             {/* 随机提示词按钮 */}
             <motion.button
               onClick={handleRandomPrompt}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95, rotate: 180 }}
-              className="flex h-10 w-10 items-center justify-center rounded-full bg-sidebar-active text-white/60 transition-colors hover:bg-input-tab-active hover:text-white cursor-pointer"
+              whileTap={{ scale: 0.9, rotate: -10 }}
+              className="flex h-10 w-10 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground cursor-pointer"
               aria-label={t("randomPrompt")}
             >
               <Dices className="h-4 w-4" />
@@ -114,7 +113,8 @@ export function CreativeInput() {
           </div>
           <motion.button
             onClick={handleSubmit}
-            className="rounded-full bg-primary px-4 py-2 font-medium text-white transition-colors hover:bg-primary-hover cursor-pointer"
+            whileTap={{ scale: 0.95 }}
+            className="rounded-lg bg-primary px-4 py-2 font-medium text-white transition-colors hover:bg-primary-hover cursor-pointer"
           >
             ↑
           </motion.button>

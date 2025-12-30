@@ -18,7 +18,7 @@ export function ModeSelectorPanel({ value, onChange, onClose }: ModeSelectorPane
   const t = useTranslations("generator.modes");
 
   return (
-    <div className="w-full rounded-2xl bg-card border border-border shadow-2xl">
+    <div className="w-full rounded-2xl bg-card border border-border">
       {/* 头部 - 标题和关闭按钮 */}
       <div className="flex items-center justify-between border-b border-border px-4 md:px-6 py-3 md:py-4 flex-shrink-0">
         <h2 className="text-base md:text-lg font-semibold text-foreground">
@@ -26,7 +26,7 @@ export function ModeSelectorPanel({ value, onChange, onClose }: ModeSelectorPane
         </h2>
         <motion.button
           onClick={onClose}
-          className="flex h-8 w-8 items-center justify-center rounded-full text-muted transition-colors hover:bg-sidebar-hover hover:text-foreground cursor-pointer"
+          className="flex h-8 w-8 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-sidebar-hover hover:text-foreground cursor-pointer"
           aria-label="关闭"
         >
           <X className="h-4 w-4 md:h-5 md:w-5" />
@@ -53,15 +53,15 @@ export function ModeSelectorPanel({ value, onChange, onClose }: ModeSelectorPane
                 className={cn(
                   "flex flex-col items-start gap-2 p-3 md:p-4 rounded-xl border transition-all cursor-pointer",
                   isSelected
-                    ? "border-white/80 bg-sidebar-active text-white"
-                    : "border-border/60 bg-[var(--color-generator-panel-card-bg)] hover:border-border/80 text-foreground"
+                    ? "border-muted/20 bg-muted/20 text-foreground"
+                    : "border-border/60 bg-muted/10 hover:border-border/80 text-foreground"
                 )}
               >
                 <div className="flex items-center gap-2">
                   <Icon className="w-4 h-4 md:w-5 md:h-5" />
                   <span className="text-sm md:text-base font-semibold">{t(mode.labelKey)}</span>
                 </div>
-                <span className="text-xs text-muted">{t(mode.descKey)}</span>
+                <span className="text-xs text-muted-foreground">{t(mode.descKey)}</span>
               </motion.button>
             );
           })}
@@ -90,7 +90,7 @@ export function ModeSelectorButton({ value, onClick, className, iconOnly = false
       whileHover={{ scale: 1.02 }}
       whileTap={{ scale: 0.98 }}
       className={cn(
-        "flex items-center justify-center gap-2 rounded-lg bg-sidebar-active text-white text-sm font-medium transition-all duration-200",
+        "flex items-center justify-center gap-2 rounded-lg bg-sidebar-active text-foreground text-sm font-medium transition-all duration-200",
         iconOnly
           ? "w-10 h-10 rounded-xl"
           : "px-3 py-2 whitespace-nowrap",

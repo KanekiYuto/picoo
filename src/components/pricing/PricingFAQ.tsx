@@ -16,19 +16,19 @@ function FAQItemComponent({ item, isOpen, onToggle }: {
   onToggle: () => void;
 }) {
   return (
-    <div className="border-b border-white/10">
+    <div className="border-b border-border">
       <button
         onClick={onToggle}
         className="w-full flex items-center justify-between py-4 sm:py-6 text-left group"
       >
-        <span className="text-sm sm:text-base lg:text-lg text-white font-medium pr-3 sm:pr-8 group-hover:text-primary transition-colors">
+        <span className="text-sm sm:text-base lg:text-lg text-foreground font-medium pr-3 sm:pr-8 group-hover:text-primary transition-colors">
           {item.question}
         </span>
-        <div className="flex-shrink-0 w-6 h-6 sm:w-8 sm:h-8 rounded-full border border-white/20 flex items-center justify-center group-hover:border-primary transition-colors">
+        <div className="flex-shrink-0 w-6 h-6 sm:w-8 sm:h-8 rounded-full border border-border flex items-center justify-center group-hover:border-primary transition-colors">
           {isOpen ? (
-            <Minus className="w-3 h-3 sm:w-4 sm:h-4 text-white" />
+            <Minus className="w-3 h-3 sm:w-4 sm:h-4 text-foreground" />
           ) : (
-            <Plus className="w-3 h-3 sm:w-4 sm:h-4 text-white" />
+            <Plus className="w-3 h-3 sm:w-4 sm:h-4 text-foreground" />
           )}
         </div>
       </button>
@@ -43,7 +43,7 @@ function FAQItemComponent({ item, isOpen, onToggle }: {
             className="overflow-hidden"
           >
             <div className="pb-4 sm:pb-6 pr-6 sm:pr-12">
-              <p className="text-xs sm:text-sm lg:text-base text-gray-400 leading-relaxed">
+              <p className="text-xs sm:text-sm lg:text-base text-muted-foreground leading-relaxed">
                 {item.answer}
               </p>
             </div>
@@ -77,7 +77,7 @@ export function PricingFAQ() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-16">
           {/* 左侧标题 */}
           <div className="lg:col-span-4 mb-2 lg:mb-0">
-            <h2 className="text-2xl sm:text-3xl lg:text-5xl font-bold text-white leading-tight">
+            <h2 className="text-2xl sm:text-3xl lg:text-5xl font-bold text-foreground leading-tight">
               {t("title")}
             </h2>
           </div>

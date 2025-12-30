@@ -122,7 +122,7 @@ export function UploadPanel({ isOpen, onClose, onImageSelect, onRecentAssetSelec
   };
 
   return (
-    <div className="h-full flex flex-col">
+    <div className="h-full flex flex-col bg-card">
       {/* 头部 */}
       <div className="flex items-center justify-between border-b border-border px-4 md:px-6 py-3 md:py-4 flex-shrink-0">
         <h2 className="text-base md:text-lg font-semibold text-foreground">
@@ -130,7 +130,7 @@ export function UploadPanel({ isOpen, onClose, onImageSelect, onRecentAssetSelec
         </h2>
         <motion.button
           onClick={onClose}
-          className="flex h-8 w-8 items-center justify-center rounded-full text-muted transition-colors hover:bg-sidebar-hover hover:text-foreground cursor-pointer"
+          className="flex h-8 w-8 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-sidebar-hover hover:text-foreground cursor-pointer"
           aria-label="关闭"
         >
           <X className="h-4 w-4 md:h-5 md:w-5" />
@@ -150,7 +150,7 @@ export function UploadPanel({ isOpen, onClose, onImageSelect, onRecentAssetSelec
           />
           {selectedImage ? (
             /* 图片预览区域 */
-            <div className="relative w-full rounded-2xl overflow-hidden bg-black/40 backdrop-blur-sm">
+            <div className="relative w-full rounded-2xl overflow-hidden bg-muted/30 backdrop-blur-sm">
               <div className="flex items-center justify-center p-8 min-h-[300px]">
                 <img
                   src={selectedImage}
@@ -194,7 +194,7 @@ export function UploadPanel({ isOpen, onClose, onImageSelect, onRecentAssetSelec
               </p>
 
               {/* 辅助说明 */}
-              <p className="text-sm text-muted text-center max-w-xs">
+              <p className="text-sm text-muted-foreground text-center max-w-xs">
                 {t("clickToUpload")} • {t("fileTypes")}
               </p>
 
@@ -203,7 +203,7 @@ export function UploadPanel({ isOpen, onClose, onImageSelect, onRecentAssetSelec
                 {["JPG", "PNG", "WebP", "GIF"].map((format) => (
                   <span
                     key={format}
-                    className="px-2.5 py-1 rounded-lg text-xs font-medium bg-sidebar-hover border border-border text-muted hover:border-primary/50 transition-colors"
+                    className="px-2.5 py-1 rounded-lg text-xs font-medium bg-sidebar-hover border border-border text-muted-foreground hover:border-primary/50 transition-colors"
                   >
                     {format}
                   </span>
@@ -239,8 +239,8 @@ export function UploadPanel({ isOpen, onClose, onImageSelect, onRecentAssetSelec
                     className={cn(
                       "aspect-square rounded-lg border transition-colors relative group cursor-pointer",
                       isSelected
-                        ? "border-primary bg-primary/10"
-                        : "border-border hover:border-primary/50"
+                        ? "border-muted/20 bg-muted/10"
+                        : "border-border"
                     )}
                   >
                     <div className="w-full h-full overflow-hidden rounded-lg">
@@ -252,7 +252,7 @@ export function UploadPanel({ isOpen, onClose, onImageSelect, onRecentAssetSelec
                     </div>
                     <div className={cn(
                       "absolute inset-0 transition-colors",
-                      isSelected ? "bg-black/40" : "bg-black/0 group-hover:bg-black/40"
+                      isSelected ? "bg-black/60" : "bg-black/0 group-hover:bg-black/60"
                     )} />
                     {/* Hover 提示 */}
                     <div className={cn(
@@ -274,9 +274,9 @@ export function UploadPanel({ isOpen, onClose, onImageSelect, onRecentAssetSelec
             <div className="flex items-center justify-center">
               <div className="text-center w-full py-12 md:py-16 px-6 md:px-8 rounded-lg border border-border bg-sidebar-hover/30">
                 <div className="flex items-center justify-center w-12 h-12 mx-auto mb-4 rounded-lg bg-sidebar-hover border border-border">
-                  <ImageOff className="w-6 h-6 text-muted" />
+                  <ImageOff className="w-6 h-6 text-muted-foreground" />
                 </div>
-                <p className="text-sm text-muted">{t("noRecentUploads")}</p>
+                <p className="text-sm text-muted-foreground">{t("noRecentUploads")}</p>
               </div>
             </div>
           )}

@@ -373,12 +373,12 @@ export function ResultPanel({
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.3 }}
-      className="fixed inset-0 bg-background"
+      className="fixed inset-0 bg-secondary-background"
       style={{ zIndex: 0 }}
     >
       {/* 全局缩放控制 */}
       {!isEmpty && (
-        <div className="fixed top-4 right-20 z-30 flex items-center gap-2 bg-card/80 backdrop-blur-sm rounded-lg shadow-lg border border-border p-2">
+        <div className="fixed top-4 right-20 z-30 flex items-center gap-2 bg-card/80 backdrop-blur-sm rounded-lg border border-border p-2">
           <button
             onClick={handleGlobalZoomOut}
             className="w-8 h-8 flex items-center justify-center rounded hover:bg-sidebar-hover"
@@ -405,9 +405,9 @@ export function ResultPanel({
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
             <div className="flex flex-col items-center gap-3 text-center">
               <div className="flex h-12 w-12 items-center justify-center rounded-full bg-muted/10">
-                <span className="text-2xl text-muted">📷</span>
+                <span className="text-2xl text-muted-foreground">📷</span>
               </div>
-              <p className="text-sm text-muted">生成结果会显示在这里</p>
+              <p className="text-sm text-muted-foreground">生成结果会显示在这里</p>
             </div>
           </div>
         )}
@@ -439,7 +439,7 @@ export function ResultPanel({
             onClick={handleDownloadSelected}
             className={cn(
               "flex items-center justify-center gap-2 px-4 py-3 rounded-lg",
-              "bg-primary text-white text-sm font-medium transition-all",
+              "bg-primary text-foreground text-sm font-medium transition-all",
               "hover:bg-primary/90"
             )}
           >
