@@ -5,14 +5,9 @@ import { PaymentIcons } from "@/components/pricing/PaymentIcons";
 import { PricingFAQ } from "@/components/pricing/PricingFAQ";
 
 export default function PricingPage() {
-  const handleSelectPlan = (planId: string) => {
-    console.log("Selected plan:", planId);
-    // TODO: 实现订阅逻辑
-  };
-
   return (
     <div className="min-h-screen">
-      <Pricing onSelectPlan={handleSelectPlan} />
+      <Pricing />
 
       {/* 支付方式图标 */}
       <div className="py-8">

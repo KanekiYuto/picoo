@@ -2,6 +2,8 @@
 
 import { Check, X, HelpCircle } from "lucide-react";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { CreemCheckout } from "@creem_io/nextjs";
 import { PricingPlan, BillingCycle, PricingFeature } from "./types";
 
@@ -12,8 +14,6 @@ interface PricingCardProps {
   billingCycle: BillingCycle;
   /** 年付节省百分比（0-100，如 20 表示节省 20%） */
   savePercent?: number;
-  /** 点击CTA回调 */
-  onSelect?: (planId: string) => void;
   /** 是否为当前方案 */
   isCurrent?: boolean;
   /** 用户信息 */
@@ -72,26 +72,12 @@ function parseFeatureText(text: string) {
 /**
  * 价格显示组件
  */
-function PriceSection({ plan, billingCycle, price, originalPrice }: {
-  plan: PricingPlan;
+function PriceSection({ billingCycle, price, originalPrice }: {
   billingCycle: BillingCycle;
   price: number;
   originalPrice: number;
 }) {
-  const isEnterprise = plan.id === "enterprise";
-
-  if (isEnterprise) {
-    return (
-      <div className="mb-6">
-        <div className="text-xl md:text-2xl lg:text-3xl font-bold text-white mb-2">
-          让我们聊聊
-        </div>
-        <div className="text-xs md:text-sm lg:text-base text-white/70">
-          {plan.description}
-        </div>
-      </div>
-    );
-  }
+  const t = useTranslations("pricing.card");
 
   return (
     <div className="mb-6">
@@ -105,7 +91,7 @@ function PriceSection({ plan, billingCycle, price, originalPrice }: {
           ${Math.round(price)}
         </span>
         <span className="text-xs md:text-sm lg:text-lg text-white/70">
-          /{billingCycle === "yearly" ? "yearly" : "monthly"}
+          /{t(`billingCycle.${billingCycle}`)}
         </span>
       </div>
     </div>
@@ -120,30 +106,30 @@ function CTAButton({
   user,
   isCurrent,
   isLoading,
-  onFreeClick,
   onPaymentClick,
 }: {
   plan: PricingPlan;
   user?: { id: string; email: string; name?: string } | null;
   isCurrent: boolean;
   isLoading: boolean;
-  onFreeClick: () => void;
   onPaymentClick: () => void;
 }) {
+  const router = useRouter();
+  const t = useTranslations("pricing.card");
   const baseClassName = "w-full py-3 px-6 rounded-lg font-semibold mb-8 transition-all duration-200";
 
   if (plan.id === "free") {
     return (
       <button
-        onClick={onFreeClick}
+        onClick={() => !isCurrent && router.push("/")}
         disabled={isCurrent}
         className={`${baseClassName} text-xs md:text-sm lg:text-base ${
           isCurrent
             ? "bg-white/20 text-white cursor-not-allowed"
-            : "bg-white text-black hover:bg-white/90"
+            : "bg-white text-black hover:bg-white/90 cursor-pointer"
         }`}
       >
-        {isCurrent ? "当前方案" : plan.ctaText}
+        {isCurrent ? t("currentPlan") : plan.ctaText}
       </button>
     );
   }
@@ -151,7 +137,7 @@ function CTAButton({
   if (!user) {
     return (
       <button disabled className={`${baseClassName} text-xs md:text-sm lg:text-base bg-white/20 text-white cursor-not-allowed`}>
-        请先登录
+        {t("loginRequired")}
       </button>
     );
   }
@@ -159,7 +145,7 @@ function CTAButton({
   if (isCurrent) {
     return (
       <button disabled className={`${baseClassName} bg-white/20 text-white cursor-not-allowed`}>
-        当前方案
+        {t("currentPlan")}
       </button>
     );
   }
@@ -167,7 +153,7 @@ function CTAButton({
   if (!plan.creemPayProductId) {
     return (
       <button disabled className={`${baseClassName} bg-white/20 text-white cursor-not-allowed`}>
-        配置中
+        {t("configuring")}
       </button>
     );
   }
@@ -185,10 +171,10 @@ function CTAButton({
         className={`${baseClassName} ${
           isLoading
             ? "bg-white/20 text-white cursor-not-allowed opacity-70"
-            : "bg-white text-black hover:bg-white/90"
+            : "bg-white text-black hover:bg-white/90 cursor-pointer"
         }`}
       >
-        {isLoading ? "处理中..." : plan.ctaText}
+        {isLoading ? t("processing") : plan.ctaText}
       </button>
     </CreemCheckout>
   );
@@ -235,7 +221,6 @@ function CardContent({
   user,
   isCurrent,
   isLoading,
-  onFreeClick,
   onPaymentClick,
 }: {
   plan: PricingPlan;
@@ -245,7 +230,6 @@ function CardContent({
   user?: { id: string; email: string; name?: string } | null;
   isCurrent: boolean;
   isLoading: boolean;
-  onFreeClick: () => void;
   onPaymentClick: () => void;
 }) {
   return (
@@ -256,7 +240,7 @@ function CardContent({
       </h3>
 
       {/* 价格 */}
-      <PriceSection plan={plan} billingCycle={billingCycle} price={price} originalPrice={originalPrice} />
+      <PriceSection billingCycle={billingCycle} price={price} originalPrice={originalPrice} />
 
       {/* CTA 按钮 */}
       <CTAButton
@@ -264,7 +248,6 @@ function CardContent({
         user={user}
         isCurrent={isCurrent}
         isLoading={isLoading}
-        onFreeClick={onFreeClick}
         onPaymentClick={onPaymentClick}
       />
 
@@ -285,10 +268,10 @@ export function PricingCard({
   plan,
   billingCycle,
   savePercent = 0,
-  onSelect,
   isCurrent = false,
   user,
 }: PricingCardProps) {
+  const t = useTranslations("pricing.card");
   const [isLoading, setIsLoading] = useState(false);
 
   // 计算折扣比例
@@ -301,12 +284,6 @@ export function PricingCard({
     setIsLoading(true);
   };
 
-  const handleFreeClick = () => {
-    if (onSelect && !isCurrent && plan.id !== "free") {
-      onSelect(plan.id);
-    }
-  };
-
   const cardInnerContent = (
     <div className={`rounded-xl overflow-hidden bg-[#0F0F0F] ${plan.colorClass} flex flex-col flex-1`}>
       <CardContent
@@ -317,7 +294,6 @@ export function PricingCard({
         user={user}
         isCurrent={isCurrent}
         isLoading={isLoading}
-        onFreeClick={handleFreeClick}
         onPaymentClick={handlePaymentClick}
       />
     </div>
@@ -330,7 +306,17 @@ export function PricingCard({
           {/* 推荐标签 */}
           <span className="text-white text-xs md:text-sm lg:text-base font-semibold px-4 py-3 rounded-full flex items-center justify-center w-full gap-1">
             {POPULAR_BADGE_ICON}
-            MOST POPULAR
+            {t("mostPopular")}
+          </span>
+
+          {cardInnerContent}
+        </div>
+      ) : plan.isSpecialOffer ? (
+        <div className={`relative h-full rounded-2xl p-[3px] flex flex-col ${plan.outerColor}`}>
+          {/* 最具性价比标签 */}
+          <span className="text-white text-xs md:text-sm lg:text-base font-semibold px-4 py-3 rounded-full flex items-center justify-center w-full gap-1">
+            {POPULAR_BADGE_ICON}
+            {t("bestValue")}
           </span>
 
           {cardInnerContent}

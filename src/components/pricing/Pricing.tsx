@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { motion } from "framer-motion";
 import { PricingCard } from "./PricingCard";
 import { createPricingPlans, createBillingCycles } from "./data";
@@ -9,10 +9,6 @@ import { useTranslations } from "next-intl";
 import { useUserStore } from "@/stores/userStore";
 
 interface PricingProps {
-  /** 当前用户方案ID */
-  currentPlanId?: string;
-  /** 选择方案回调 */
-  onSelectPlan?: (planId: string) => void;
   /** 自定义类名 */
   className?: string;
 }
@@ -22,20 +18,53 @@ interface PricingProps {
  * 展示所有定价方案，支持月付/季付/年付切换
  */
 export function Pricing({
-  currentPlanId,
-  onSelectPlan,
   className = "",
 }: PricingProps) {
   const t = useTranslations("pricing");
-  const [billingCycle, setBillingCycle] = useState<BillingCycle>("yearly");
+  const [billingCycle, setBillingCycle] = useState<BillingCycle>("monthly");
+  const [currentSubscriptionPlanType, setCurrentSubscriptionPlanType] = useState<string | null>(null);
 
   // 从 store 获取用户信息和登录状态
   const user = useUserStore((state) => state.user);
   const isAuthenticated = useUserStore((state) => state.isAuthenticated);
 
+  // 获取当前订阅信息
+  useEffect(() => {
+    if (!isAuthenticated || !user) {
+      setCurrentSubscriptionPlanType(null);
+      return;
+    }
+
+    const fetchCurrentSubscription = async () => {
+      try {
+        const response = await fetch('/api/subscription/current');
+        const result = await response.json();
+
+        if (result.success && result.data?.planType) {
+          setCurrentSubscriptionPlanType(result.data.planType);
+        } else {
+          setCurrentSubscriptionPlanType(null);
+        }
+      } catch (error) {
+        console.error('Failed to fetch current subscription:', error);
+        setCurrentSubscriptionPlanType(null);
+      }
+    };
+
+    fetchCurrentSubscription();
+  }, [isAuthenticated, user]);
+
   // 使用 useMemo 缓存国际化数据
   const billingCycles = useMemo(() => createBillingCycles(t), [t]);
   const pricingPlans = useMemo(() => createPricingPlans(t, billingCycle as 'monthly' | 'yearly'), [t, billingCycle]);
+
+  // 检查指定计划是否为当前订阅（需要同时匹配 billingCycle 和计划 ID）
+  const isCurrentPlan = (planId: string): boolean => {
+    if (!currentSubscriptionPlanType) return false;
+    // 比较完整的订阅类型，确保计费周期和计划 ID 都匹配
+    const expectedPlanType = `${billingCycle}_${planId}`;
+    return currentSubscriptionPlanType === expectedPlanType;
+  };
 
   // 获取当前计费周期的折扣百分比
   const currentCycle = billingCycles.find((c) => c.id === billingCycle);
@@ -102,8 +131,7 @@ export function Pricing({
               plan={plan}
               billingCycle={billingCycle}
               savePercent={savePercent}
-              onSelect={onSelectPlan}
-              isCurrent={currentPlanId === plan.id}
+              isCurrent={isCurrentPlan(plan.id)}
               user={user}
             />
           ))}

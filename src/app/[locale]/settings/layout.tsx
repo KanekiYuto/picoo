@@ -80,7 +80,7 @@ export default function SettingsLayout({
       {/* 侧边栏 */}
       <aside
         className={cn(
-          "fixed left-0 top-16 bottom-0 z-50 w-[min(20rem,85vw)] border-r border-border bg-sidebar-bg transition-transform lg:static lg:translate-x-0 lg:w-64",
+          "fixed left-0 top-16 bottom-0 z-50 w-[min(20rem,85vw)] border-r border-border bg-background transition-transform lg:static lg:translate-x-0 lg:w-64",
           mobileMenuOpen ? "translate-x-0" : "-translate-x-full"
         )}
       >

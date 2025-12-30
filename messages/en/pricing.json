@@ -55,12 +55,24 @@
     "description": "Flexible pricing plans to meet the needs of individuals and businesses"
   },
   "billingCycle": {
-    "monthly": "Monthly",
-    "yearly": "Yearly",
+    "monthly": "monthly",
+    "yearly": "yearly",
     "save": "SAVE"
   },
   "footer": {
     "guarantee": "All plans include a 3-day money-back guarantee · Cancel anytime"
+  },
+  "card": {
+    "currentPlan": "Current Plan",
+    "loginRequired": "Please Log In",
+    "configuring": "Configuring",
+    "processing": "Processing...",
+    "mostPopular": "MOST POPULAR",
+    "bestValue": "BEST VALUE",
+    "billingCycle": {
+      "monthly": "monthly",
+      "yearly": "yearly"
+    }
   },
   "plans": {
     "free": {

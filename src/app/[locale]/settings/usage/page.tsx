@@ -2,11 +2,28 @@
 
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { Menu, TrendingDown, Calendar, FileText } from "lucide-react";
+import { Menu, TrendingDown, Calendar, FileText, InboxIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useSettingsNav } from "../_components/SettingsNavContext";
 import { useUserStore } from "@/stores/userStore";
 import { UsageSkeleton } from "./UsageSkeleton";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import {
+  Empty,
+  EmptyContent,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from "@/components/ui/empty";
+import { Badge } from "@/components/ui/badge";
 
 // 用量记录类型
 interface UsageRecord {
@@ -211,66 +228,66 @@ export default function UsagePage() {
         </div>
 
         {filteredRecords.length === 0 ? (
-          <div className="bg-sidebar-bg border border-border rounded-2xl p-6 text-center text-muted-foreground">
-            {records.length === 0 ? t("table.noRecords") : t("table.noMatchingRecords")}
-          </div>
+          <Empty className="border border-border rounded-2xl bg-sidebar-bg">
+            <EmptyHeader>
+              <EmptyMedia variant="icon" className="bg-sidebar-hover text-muted-foreground">
+                <InboxIcon className="h-6 w-6" />
+              </EmptyMedia>
+              <EmptyTitle className="text-foreground">
+                {records.length === 0 ? t("table.noRecords") : t("table.noMatchingRecords")}
+              </EmptyTitle>
+            </EmptyHeader>
+          </Empty>
         ) : (
-          <div className="bg-sidebar-bg border border-border rounded-2xl overflow-hidden">
-            {/* 表格 */}
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead className="bg-sidebar-hover/50">
-                  <tr>
-                    <th className="px-5 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                      {t("table.columns.time")}
-                    </th>
-                    <th className="px-5 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                      {t("table.columns.type")}
-                    </th>
-                    <th className="px-5 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                      {t("table.columns.description")}
-                    </th>
-                    <th className="px-5 py-3 text-right text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                      {t("table.columns.amount")}
-                    </th>
-                    <th className="px-5 py-3 text-right text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                      {t("table.columns.balance")}
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-border">
-                  {filteredRecords.map((record) => (
-                    <tr key={record.id} className="hover:bg-sidebar-hover/30 transition-colors">
-                      <td className="px-5 py-4 whitespace-nowrap text-sm text-foreground">
-                        {new Date(record.createdAt).toLocaleString()}
-                      </td>
-                      <td className="px-5 py-4 whitespace-nowrap">
-                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded text-xs font-medium ${
-                          record.type === 'consume'
-                            ? 'bg-red-950/80 text-red-400'
-                            : 'bg-green-950/80 text-green-400'
-                        }`}>
-                          {t(`table.types.${record.type}`)}
-                        </span>
-                      </td>
-                      <td className="px-5 py-4 text-sm text-muted-foreground">
-                        {record.note || '-'}
-                      </td>
-                      <td className="px-5 py-4 whitespace-nowrap text-right text-sm">
-                        <span className={`font-semibold ${
-                          record.amount > 0 ? 'text-green-600' : 'text-red-600'
-                        }`}>
-                          {record.amount > 0 ? '+' : ''}{record.amount}
-                        </span>
-                      </td>
-                      <td className="px-5 py-4 whitespace-nowrap text-right text-sm text-muted-foreground">
-                        {record.balanceAfter.toLocaleString()}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+          <div className="border border-border rounded-2xl overflow-hidden">
+            <Table>
+              <TableHeader className="bg-sidebar-hover/50">
+                <TableRow className="hover:bg-transparent border-border">
+                  <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                    {t("table.columns.time")}
+                  </TableHead>
+                  <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                    {t("table.columns.type")}
+                  </TableHead>
+                  <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                    {t("table.columns.description")}
+                  </TableHead>
+                  <TableHead className="text-right text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                    {t("table.columns.amount")}
+                  </TableHead>
+                  <TableHead className="text-right text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                    {t("table.columns.balance")}
+                  </TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {filteredRecords.map((record) => (
+                  <TableRow key={record.id} className="hover:bg-sidebar-hover/30 border-border">
+                    <TableCell className="text-sm text-foreground">
+                      {new Date(record.createdAt).toLocaleString()}
+                    </TableCell>
+                    <TableCell>
+                      <Badge variant={record.type === 'consume' ? 'error' : 'success'}>
+                        {t(`table.types.${record.type}`)}
+                      </Badge>
+                    </TableCell>
+                    <TableCell className="text-sm text-muted-foreground">
+                      {record.note || '-'}
+                    </TableCell>
+                    <TableCell className="text-right text-sm">
+                      <span className={`font-semibold ${
+                        record.amount > 0 ? 'text-green-600' : 'text-red-600'
+                      }`}>
+                        {record.amount > 0 ? '+' : ''}{record.amount}
+                      </span>
+                    </TableCell>
+                    <TableCell className="text-right text-sm text-muted-foreground">
+                      {record.balanceAfter.toLocaleString()}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
           </div>
         )}
       </div>

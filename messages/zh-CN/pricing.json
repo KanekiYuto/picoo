@@ -55,12 +55,24 @@
     "description": "灵活的定价方案，满足个人和企业的需求"
   },
   "billingCycle": {
-    "monthly": "Monthly",
-    "yearly": "Yearly",
-    "save": "SAVE"
+    "monthly": "月付",
+    "yearly": "年付",
+    "save": "节省"
   },
   "footer": {
     "guarantee": "所有计划均包含 3 天退款保证 · 随时取消订阅"
+  },
+  "card": {
+    "currentPlan": "当前方案",
+    "loginRequired": "请先登录",
+    "configuring": "配置中",
+    "processing": "处理中...",
+    "mostPopular": "最受欢迎",
+    "bestValue": "最具性价比",
+    "billingCycle": {
+      "monthly": "月付",
+      "yearly": "年付"
+    }
   },
   "plans": {
     "free": {
