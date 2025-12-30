@@ -17,11 +17,11 @@ export function SectionCard({
   return (
     <div
       className={cn(
-        "rounded-2xl border border-border/60 bg-card p-4 sm:p-5",
+        "rounded-2xl border border-border/60 bg-background p-4 sm:p-5",
         className
       )}
     >
-      <div className="mb-4 flex flex-wrap items-center justify-between gap-2 border-b border-border/50 pb-3">
+      <div className="mb-4 flex flex-wrap items-center justify-between gap-2 pb-3">
         <div className="flex min-w-0 items-center gap-2">
           <h3 className="truncate text-sm font-semibold text-foreground">{title}</h3>
         </div>

@@ -378,7 +378,7 @@ export function ResultPanel({
     >
       {/* 全局缩放控制 */}
       {!isEmpty && (
-        <div className="fixed top-4 right-20 z-30 flex items-center gap-2 bg-card/80 backdrop-blur-sm rounded-lg border border-border p-2">
+        <div className="fixed top-4 right-20 z-30 flex items-center gap-2 bg-background/80 backdrop-blur-sm rounded-lg border border-border p-2">
           <button
             onClick={handleGlobalZoomOut}
             className="w-8 h-8 flex items-center justify-center rounded hover:bg-sidebar-hover"

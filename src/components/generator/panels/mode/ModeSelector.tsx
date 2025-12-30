@@ -18,9 +18,9 @@ export function ModeSelectorPanel({ value, onChange, onClose }: ModeSelectorPane
   const t = useTranslations("generator.modes");
 
   return (
-    <div className="w-full rounded-2xl bg-card border border-border">
+    <div className="w-full rounded-2xl bg-background">
       {/* 头部 - 标题和关闭按钮 */}
-      <div className="flex items-center justify-between border-b border-border px-4 md:px-6 py-3 md:py-4 flex-shrink-0">
+      <div className="flex items-center justify-between px-4 md:px-6 pt-3 md:pt-4 pb-0 flex-shrink-0">
         <h2 className="text-base md:text-lg font-semibold text-foreground">
           {t("prompt")} Mode
         </h2>

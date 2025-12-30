@@ -120,8 +120,8 @@ export function SettingsPanel({ onClose, settings, onSettingsChange, mode = "tex
   };
 
   return (
-    <div className="flex h-full flex-col bg-card">
-      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border px-4 py-3 text-center sm:flex-nowrap sm:px-6 sm:py-4 sm:text-left">
+    <div className="flex h-full flex-col bg-background">
+      <div className="flex flex-wrap items-center justify-between gap-3 px-4 pt-3 text-center sm:flex-nowrap sm:px-6 sm:pt-4 sm:text-left pb-0">
         <h2 className="text-base font-semibold text-foreground sm:text-lg">{t("title")}</h2>
         <motion.button
           type="button"
@@ -148,7 +148,7 @@ export function SettingsPanel({ onClose, settings, onSettingsChange, mode = "tex
           </div>
 
           <Form {...form}>
-            <div className="flex flex-col gap-4 border-t border-border px-4 py-4 lg:min-h-0 lg:overflow-y-auto lg:border-t-0 lg:border-l lg:custom-scrollbar lg:px-4">
+            <div className="flex flex-col gap-4 px-4 py-4 lg:min-h-0 lg:overflow-y-auto lg:custom-scrollbar lg:px-4">
               {selectedModelConfig?.renderFormFields?.({
                 settings: currentSettings,
                 onChange: (next) => {

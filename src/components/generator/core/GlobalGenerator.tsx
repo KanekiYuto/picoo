@@ -144,13 +144,10 @@ export function GlobalGenerator({
           <ModeSelectorButton value={mode} onClick={onOpenModePanel || (() => {})} />
         </div>
 
-        {/* 分割线 */}
-        <div className="hidden md:block w-px bg-border self-stretch" />
-
         {/* 移动端和桌面端共用的输入区域 - 右侧 */}
         <div className="flex-1 flex flex-col min-w-0 gap-2 justify-between">
           {/* 文本输入框容器 */}
-          <div className="relative py-2 md:py-3">
+          <div className="relative py-2 md:py-3 px-2 md:px-3">
             <textarea
               value={prompt}
               onChange={(e) => setPrompt(e.target.value)}

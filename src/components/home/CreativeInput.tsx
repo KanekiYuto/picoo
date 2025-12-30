@@ -48,7 +48,7 @@ export function CreativeInput() {
       variants={fadeInUp}
       className="mt-6 md:mt-8 w-full max-w-3xl"
     >
-      <div className="relative rounded-2xl border border-border bg-card p-4 md:p-6">
+      <div className="relative rounded-2xl border border-border bg-secondary-background p-4 md:p-6">
         <textarea
           rows={1}
           value={inputValue}

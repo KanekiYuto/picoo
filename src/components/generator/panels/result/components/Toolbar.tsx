@@ -39,7 +39,7 @@ export function SelectionToolbar({ position, onArrange }: SelectionToolbarProps)
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: 10 }}
       transition={{ duration: 0.2 }}
-      className="absolute flex gap-1 bg-card/80 backdrop-blur-sm rounded-lg shadow-lg border border-border p-2 z-20"
+      className="absolute flex gap-1 bg-background/80 backdrop-blur-sm rounded-lg shadow-lg border border-border p-2 z-20"
       style={{
         left: `${position.x}px`,
         top: `${position.y}px`,
@@ -63,7 +63,7 @@ export function ImageToolbar({ position, onDownload, onUpscale }: ImageToolbarPr
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: 10 }}
       transition={{ duration: 0.2 }}
-      className="absolute flex gap-1 bg-card/80 backdrop-blur-sm rounded-lg shadow-lg border border-border p-2 z-20"
+      className="absolute flex gap-1 bg-background/80 backdrop-blur-sm rounded-lg shadow-lg border border-border p-2 z-20"
       style={{
         left: `${position.x}px`,
         top: `${position.y}px`,
@@ -87,7 +87,7 @@ export function ErrorToolbar({ position, onDelete }: ErrorToolbarProps) {
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: 10 }}
       transition={{ duration: 0.2 }}
-      className="absolute flex gap-1 bg-card/80 backdrop-blur-sm rounded-lg shadow-lg border border-border p-2 z-20"
+      className="absolute flex gap-1 bg-background/80 backdrop-blur-sm rounded-lg shadow-lg border border-border p-2 z-20"
       style={{
         left: `${position.x}px`,
         top: `${position.y}px`,

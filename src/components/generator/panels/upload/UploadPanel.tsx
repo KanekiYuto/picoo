@@ -122,9 +122,9 @@ export function UploadPanel({ isOpen, onClose, onImageSelect, onRecentAssetSelec
   };
 
   return (
-    <div className="h-full flex flex-col bg-card">
+    <div className="h-full flex flex-col bg-background">
       {/* 头部 */}
-      <div className="flex items-center justify-between border-b border-border px-4 md:px-6 py-3 md:py-4 flex-shrink-0">
+      <div className="flex items-center justify-between px-4 md:px-6 pt-3 md:pt-4 pb-0 flex-shrink-0">
         <h2 className="text-base md:text-lg font-semibold text-foreground">
           {t("title")}
         </h2>
