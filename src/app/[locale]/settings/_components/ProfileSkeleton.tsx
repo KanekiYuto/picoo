@@ -1,42 +1,44 @@
+import { Skeleton } from "@/components/ui/skeleton";
+
 export function ProfileSkeleton() {
   return (
-    <div className="space-y-6 md:space-y-8 animate-pulse">
+    <div className="space-y-6 md:space-y-8">
       {/* Header Skeleton */}
-      <div className="bg-sidebar-bg border border-border rounded-2xl p-5 md:p-6">
+      <div className="border border-border rounded-2xl p-5 md:p-6">
         <div className="space-y-3">
           <div className="flex items-center gap-3">
             {/* Mobile menu button skeleton */}
-            <div className="lg:hidden h-9 w-9 rounded-lg bg-sidebar-hover border border-border" />
+            <Skeleton className="lg:hidden h-9 w-9 rounded-lg" />
             {/* Title skeleton */}
-            <div className="h-8 w-32 bg-sidebar-hover rounded-lg" />
+            <Skeleton className="h-8 w-32 rounded-lg" />
           </div>
           {/* Description skeleton */}
-          <div className="h-4 w-3/4 bg-sidebar-hover rounded" />
+          <Skeleton className="h-4 w-3/4" />
         </div>
       </div>
 
       {/* Settings section skeleton */}
       <div className="space-y-3">
         {/* Section title skeleton */}
-        <div className="h-4 w-20 bg-sidebar-hover rounded" />
+        <Skeleton className="h-4 w-20" />
 
         {/* User profile card skeleton */}
-        <div className="bg-sidebar-bg border border-border rounded-2xl p-5 md:p-6">
+        <div className="border border-border rounded-2xl p-5 md:p-6">
           <div className="flex items-start justify-between gap-4">
             <div className="flex items-center gap-4">
               {/* Avatar skeleton */}
-              <div className="h-16 w-16 rounded-full bg-sidebar-hover" />
+              <Skeleton className="h-16 w-16 rounded-full" />
 
               <div className="space-y-2">
                 {/* Name skeleton */}
-                <div className="h-5 w-32 bg-sidebar-hover rounded" />
+                <Skeleton className="h-5 w-32" />
                 {/* Email skeleton */}
-                <div className="h-4 w-48 bg-sidebar-hover rounded" />
+                <Skeleton className="h-4 w-48" />
               </div>
             </div>
 
             {/* Edit button skeleton */}
-            <div className="h-9 w-20 bg-sidebar-hover rounded-lg" />
+            <Skeleton className="h-9 w-20 rounded-lg" />
           </div>
         </div>
       </div>
@@ -44,22 +46,22 @@ export function ProfileSkeleton() {
       {/* Billing section skeleton */}
       <div className="space-y-3">
         {/* Section title skeleton */}
-        <div className="h-4 w-20 bg-sidebar-hover rounded" />
+        <Skeleton className="h-4 w-20" />
 
         {/* Billing card skeleton */}
-        <div className="bg-sidebar-bg border border-border rounded-2xl p-5 md:p-6">
+        <div className="border border-border rounded-2xl p-5 md:p-6">
           <div className="space-y-4">
             {/* Plan name skeleton */}
-            <div className="h-6 w-24 bg-sidebar-hover rounded" />
+            <Skeleton className="h-6 w-24" />
 
             {/* Plan description skeleton */}
             <div className="space-y-2">
-              <div className="h-4 w-full bg-sidebar-hover rounded" />
-              <div className="h-4 w-3/4 bg-sidebar-hover rounded" />
+              <Skeleton className="h-4 w-full" />
+              <Skeleton className="h-4 w-3/4" />
             </div>
 
             {/* Button skeleton */}
-            <div className="h-10 w-32 bg-sidebar-hover rounded-lg" />
+            <Skeleton className="h-10 w-32 rounded-lg" />
           </div>
         </div>
       </div>
