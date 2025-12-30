@@ -30,8 +30,7 @@ export function createPricingPlans(t: (key: string, values?: Record<string, stri
         { text: t("plans.free.features.3") },
         { text: t("plans.free.features.4", { concurrent: 1 }) },
         { text: t("plans.free.features.5") },
-        { text: t("plans.free.features.6", { seats: 2 }) },
-        { text: t("plans.free.features.7"), isNotSupported: true },
+        { text: t("plans.free.features.6"), isNotSupported: true },
       ],
     },
     {
@@ -51,7 +50,6 @@ export function createPricingPlans(t: (key: string, values?: Record<string, stri
         { text: t("plans.basic.features.5", { imageConcurrent: 8 }) },
         { text: t("plans.basic.features.6", { videoConcurrent: 2 }) },
         { text: t("plans.basic.features.7", { support: "7×24" }) },
-        { text: t("plans.basic.features.8", { seats: 5 }) },
       ],
     },
     {
@@ -69,7 +67,6 @@ export function createPricingPlans(t: (key: string, values?: Record<string, stri
         { text: t("plans.plus.features.5", { imageConcurrent: 12 }) },
         { text: t("plans.plus.features.6", { videoConcurrent: 4 }) },
         { text: t("plans.plus.features.7", { support: "7×24" }) },
-        { text: t("plans.plus.features.8", { seats: 10 }) },
       ],
     },
     {
@@ -90,8 +87,6 @@ export function createPricingPlans(t: (key: string, values?: Record<string, stri
         { text: t("plans.pro.features.6", { videoConcurrent: 20 }) },
         { text: t("plans.pro.features.7", { support: "7×24" }) },
         { text: t("plans.pro.features.8") },
-        { text: t("plans.pro.features.9", { seats: 50 }) },
-        { text: "全部 AI 模型" },
       ],
     },
   ];

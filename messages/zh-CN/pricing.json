@@ -67,13 +67,12 @@
       "name": "免费",
       "ctaText": "免费开始",
       "features": [
-        "每月 {credits} 积分",
-        "最多可生成 {images} 张图像/月",
-        "基础 AI 模型",
-        "生成内容可见性：公开",
-        "{concurrent} 个并行图像生成",
-        "社区支持",
-        "团队 {seats} 个席位",
+        "[[{credits}]] 积分/月",
+        "最多可生成 [[{images}]] 张图像/月",
+        "[[基础]] AI 模型",
+        "生成内容可见性：[[公开]]",
+        "[[{concurrent}]] 并行图像生成",
+        "社区 [[支持]]",
         "视频生成"
       ]
     },
@@ -81,46 +80,43 @@
       "name": "基础",
       "ctaText": "开始使用",
       "features": [
-        "每月 {credits} 积分",
-        "最多可生成 {images} 张图像/每月",
-        "最多可生成 {videos} 个视频/每月",
-        "大部分 AI 模型",
-        "生成内容可见性：私有",
-        "{imageConcurrent} 个并行图像生成",
-        "{videoConcurrent} 个并行视频生成",
-        "官方 {support} 小时客服支持",
-        "团队 {seats} 个席位"
+        "[[{credits}]] 积分/月",
+        "最多可生成 [[{images}]] 张图像/每月",
+        "最多可生成 [[{videos}]] 个视频/每月",
+        "[[大部分]] AI 模型",
+        "生成内容可见性：[[私有]]",
+        "[[{imageConcurrent}]] 并行图像生成",
+        "[[{videoConcurrent}]] 并行视频生成",
+        "官方 [[{support}]] 小时客服支持"
       ]
     },
     "plus": {
       "name": "进阶",
       "ctaText": "开始使用",
       "features": [
-        "每月 {credits} 积分",
-        "最多可生成 {images} 张图像/每月",
-        "最多可生成 {videos} 个视频/每月",
-        "大部分 AI 模型",
-        "生成内容可见性：私有",
-        "{imageConcurrent} 个并行图像生成",
-        "{videoConcurrent} 个并行视频生成",
-        "官方 {support} 小时客服支持",
-        "团队 {seats} 个席位"
+        "[[{credits}]] 积分/月",
+        "最多可生成 [[{images}]] 张图像/每月",
+        "最多可生成 [[{videos}]] 个视频/每月",
+        "[[大部分]] AI 模型",
+        "生成内容可见性：[[私有]]",
+        "[[{imageConcurrent}]] 并行图像生成",
+        "[[{videoConcurrent}]] 并行视频生成",
+        "官方 [[{support}]] 小时客服支持"
       ]
     },
     "pro": {
       "name": "专业",
       "ctaText": "开始使用",
       "features": [
-        "每月 {credits} 积分",
-        "最多可生成 {images} 张图像/每月",
-        "最多可生成 {videos} 个视频/每月",
-        "全部 AI 模型",
-        "生成内容可见性：私有",
-        "{imageConcurrent} 个并行图像生成",
-        "{videoConcurrent} 个并行视频生成",
-        "一对一 {support} 小时专属优先级支持",
-        "生成队列优先处理",
-        "团队 {seats} 个席位"
+        "[[{credits}]] 积分/月",
+        "最多可生成 [[{images}]] 张图像/每月",
+        "最多可生成 [[{videos}]] 个视频/每月",
+        "[[全部]] AI 模型",
+        "生成内容可见性：[[私有]]",
+        "[[{imageConcurrent}]] 并行图像生成",
+        "[[{videoConcurrent}]] 并行视频生成",
+        "一对一 [[{support}]] 小时专属优先支持",
+        "[[优先队列]] 处理"
       ]
     }
   }
