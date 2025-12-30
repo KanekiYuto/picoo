@@ -116,7 +116,7 @@ export const SUBSCRIPTION_CREDITS_AMOUNT_CONFIG: Record<string, number> = {
 /**
  * 获取订阅计划积分金额（取整数）
  */
-function getSubscriptionCreditsAmount(planKey: string): number {
+export function getSubscriptionCreditsAmount(planKey: string): number {
   return Math.round(SUBSCRIPTION_CREDITS_AMOUNT_CONFIG[planKey] || 0);
 }
 
@@ -206,4 +206,42 @@ export const CREEM_PAY_PRODUCT_IDS: Record<string, string> = {
  */
 export function getCreemPayProductId(planKey: string): string {
   return CREEM_PAY_PRODUCT_IDS[planKey] || '';
+}
+
+/**
+ * 定价层级接口
+ */
+export interface PricingTier {
+  planType: PlanType;
+  subscriptionPlanType: string;
+}
+
+/**
+ * 反向映射：从Creem Pay产品ID查找定价层级
+ */
+const PRODUCT_ID_TO_PRICING_TIER: Record<string, PricingTier> = {};
+
+// 初始化反向映射
+Object.entries(CREEM_PAY_PRODUCT_IDS).forEach(([planKey, productId]) => {
+  if (productId) {
+    const [billingType, planType] = (planKey as string).split('_');
+    PRODUCT_ID_TO_PRICING_TIER[productId] = {
+      planType: planType as PlanType,
+      subscriptionPlanType: planKey,
+    };
+  }
+});
+
+/**
+ * 根据Creem Pay产品ID获取定价层级
+ */
+export function getPricingTierByProductId(productId: string): PricingTier | null {
+  return PRODUCT_ID_TO_PRICING_TIER[productId] || null;
+}
+
+/**
+ * 获取订阅计划的积分配额
+ */
+export function getSubscriptionQuota(subscriptionPlanType: string): number {
+  return getSubscriptionCreditsAmount(subscriptionPlanType);
 }

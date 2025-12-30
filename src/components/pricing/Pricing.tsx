@@ -6,6 +6,7 @@ import { PricingCard } from "./PricingCard";
 import { createPricingPlans, createBillingCycles } from "./data";
 import { BillingCycle } from "./types";
 import { useTranslations } from "next-intl";
+import { useUserStore } from "@/stores/userStore";
 
 interface PricingProps {
   /** 当前用户方案ID */
@@ -27,6 +28,10 @@ export function Pricing({
 }: PricingProps) {
   const t = useTranslations("pricing");
   const [billingCycle, setBillingCycle] = useState<BillingCycle>("yearly");
+
+  // 从 store 获取用户信息和登录状态
+  const user = useUserStore((state) => state.user);
+  const isAuthenticated = useUserStore((state) => state.isAuthenticated);
 
   // 使用 useMemo 缓存国际化数据
   const billingCycles = useMemo(() => createBillingCycles(t), [t]);
@@ -99,6 +104,7 @@ export function Pricing({
               savePercent={savePercent}
               onSelect={onSelectPlan}
               isCurrent={currentPlanId === plan.id}
+              user={user}
             />
           ))}
         </div>

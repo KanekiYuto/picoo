@@ -9,6 +9,8 @@ export const user = pgTable('user', {
   image: text('image'),
   // 用户类型: free(免费), basic(基础版), pro(专业版), enterprise(企业版)
   type: text('type').notNull().default('free'),
+  // 当前活跃的订阅ID
+  currentSubscriptionId: uuid('current_subscription_id'),
   createdAt: timestamp('created_at').notNull().defaultNow(),
   updatedAt: timestamp('updated_at').notNull().defaultNow(),
 }, (table) => ({

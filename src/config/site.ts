@@ -1,3 +1,5 @@
+import { locales } from '../../i18n/config';
+
 // 站点配置
 export const siteConfig = {
   // 站点名称
@@ -17,6 +19,11 @@ export const siteConfig = {
 
   // Favicon 路径
   favicon: "/favicon.ico",
+
+  url: process.env.NEXT_PUBLIC_SITE_URL,
+
+  // 支持的语言列表（从 i18n 配置导入）
+  locales,
 
   // 联系方式
   contact: {
