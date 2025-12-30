@@ -37,8 +37,8 @@ export function Pricing({
   const savePercent = currentCycle?.savePercent || 0;
 
   return (
-    <div className={`py-16 ${className}`}>
-      <div className="container mx-auto px-4">
+    <div className={`py-16 px-4 md:px-6 lg:px-8 ${className}`}>
+      <div className="container mx-auto">
         {/* 标题部分 */}
         <div className="text-center mb-12">
           <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
@@ -86,9 +86,11 @@ export function Pricing({
             ))}
           </div>
         </div>
+      </div>
 
-        {/* 定价卡片网格 */}
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mb-12 bg-muted/15 p-4 md:p-6 lg:p-8 rounded-2xl">
+      {/* 定价卡片网格和底部说明 - 共享背景色 */}
+      <div className="w-full bg-muted/20 p-4 rounded-2xl">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 2xl:grid-cols-4 gap-6 mb-6">
           {pricingPlans.map((plan) => (
             <PricingCard
               key={plan.id}
@@ -103,7 +105,7 @@ export function Pricing({
 
         {/* 底部说明 */}
         <div className="text-center">
-          <p className="text-muted-foreground text-sm">
+          <p className="inline-block px-4 py-2 rounded-lg border border-muted-foreground/20 text-muted-foreground text-xs font-medium tracking-wide">
             {t("footer.guarantee")}
           </p>
         </div>

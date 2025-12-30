@@ -28,7 +28,7 @@
       },
       {
         "question": "What is the refund policy?",
-        "answer": "We offer an unconditional 14-day money-back guarantee. If you're not satisfied within 14 days of your first subscription, you can request a full refund through customer service. After the refund is processed, subscription credits in your account will be cleared, but previously purchased credit packages are not affected. Renewal subscriptions are not eligible for refunds."
+        "answer": "We offer an unconditional 3-day money-back guarantee. If you're not satisfied within 3 days of your first subscription, you can request a full refund through customer service. After the refund is processed, subscription credits in your account will be cleared, but previously purchased credit packages are not affected. Renewal subscriptions are not eligible for refunds."
       },
       {
         "question": "How do I downgrade or upgrade?",
@@ -60,7 +60,7 @@
     "save": "SAVE"
   },
   "footer": {
-    "guarantee": "All plans include a 14-day money-back guarantee · Cancel anytime"
+    "guarantee": "All plans include a 3-day money-back guarantee · Cancel anytime"
   },
   "plans": {
     "free": {
@@ -99,7 +99,7 @@
         "{credits} credits per month",
         "Up to {images} images per month",
         "Up to {videos} videos per month",
-        "All AI models",
+        "Most AI models",
         "Content visibility: Private",
         "{imageConcurrent} concurrent image generations",
         "{videoConcurrent} concurrent video generations",
@@ -114,7 +114,7 @@
         "{credits} credits per month",
         "Up to {images} images per month",
         "Up to {videos} videos per month",
-        "Most AI models",
+        "All AI models",
         "Content visibility: Private",
         "{imageConcurrent} concurrent image generations",
         "{videoConcurrent} concurrent video generations",

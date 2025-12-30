@@ -22,6 +22,8 @@ export interface PricingPlan {
   isFree?: boolean;
   /** 卡片背景颜色类 */
   colorClass: string;
+  /** 外容器纯色背景（用于推荐卡片） */
+  outerColor?: string;
 }
 
 /**

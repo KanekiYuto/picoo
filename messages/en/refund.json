@@ -16,7 +16,7 @@
       "title": "Subscription Plans",
       "intro": "For monthly or annual subscription plans:",
       "items": [
-        "**7-Day Refund Guarantee**: First-time subscribers can request a full refund within 7 days of subscription",
+        "**3-Day Refund Guarantee**: First-time subscribers can request a full refund within 3 days of subscription",
         "**Subscription Renewals**: Renewed subscriptions are not eligible for refunds unless there are significant technical issues with the service",
         "**Cancel Subscription**: You can cancel your subscription at any time, and you will continue to enjoy the service until the end of the current billing period"
       ]
@@ -24,8 +24,8 @@
     "annual": {
       "title": "Annual Subscriptions",
       "items": [
-        "Annual subscriptions can be refunded on a prorated basis within the first 30 days of purchase",
-        "After 30 days, annual subscriptions are no longer eligible for refunds",
+        "Annual subscriptions can be refunded on a prorated basis within the first 15 days of purchase",
+        "After 15 days, annual subscriptions are no longer eligible for refunds",
         "Refund Amount = Total Fee - Monthly Price for Used Months"
       ]
     }
@@ -56,7 +56,8 @@
       "**Service Abuse**: Clear abuse of the refund policy, including repeated purchases and refunds",
       "**Third-Party Purchases**: Services purchased through third-party platforms (such as app stores) are subject to their refund policies",
       "**Promotions and Discounts**: Services purchased using promotional codes, coupons, or special discounts may not be eligible for refunds",
-      "**Free Trials**: Automatic renewals after free trial periods are not eligible for refunds unless requested within 7 days of renewal"
+      "**Free Trials**: Automatic renewals after free trial periods are not eligible for refunds unless requested within 7 days of renewal",
+      "**Excessive Credit Usage**: Accounts that have used more than 300 of the subscription-included credits are not eligible for refunds"
     ]
   },
   "technical": {
@@ -65,7 +66,7 @@
       "title": "Service Quality Guarantee",
       "intro": "If you encounter the following situations, you may be eligible for a refund or compensation:",
       "items": [
-        "Persistent service interruptions (exceeding 24 hours)",
+        "Persistent service interruptions (exceeding 72 hours)",
         "Major functional failures affecting service use",
         "Generation quality significantly below standard"
       ]

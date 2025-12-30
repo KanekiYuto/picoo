@@ -95,8 +95,8 @@ export function DocumentNav({
             flex items-center gap-2 py-2 px-3 rounded-lg cursor-pointer
             transition-all duration-200
             ${isActive
-              ? "bg-[var(--color-sidebar-active)] text-primary font-medium"
-              : "text-gray-300 hover:bg-[var(--color-sidebar-hover)] hover:text-foreground"
+              ? "bg-primary/10 text-primary font-medium"
+              : "text-muted-foreground hover:bg-muted hover:text-foreground"
             }
           `}
           style={{ paddingLeft }}
@@ -104,7 +104,7 @@ export function DocumentNav({
         >
           {hasChildren && (
             <button
-              className="flex-shrink-0 p-0.5 hover:bg-[var(--color-sidebar-active)] rounded transition-colors"
+              className="flex-shrink-0 p-0.5 hover:bg-primary/20 rounded transition-colors"
               onClick={(e) => {
                 e.stopPropagation();
                 toggleExpand(item.id);
@@ -130,7 +130,7 @@ export function DocumentNav({
 
   return (
     <nav className={`document-nav ${className}`}>
-      <div className="mb-4 pb-3 border-b border-[var(--color-border)]">
+      <div className="mb-4 pb-3 border-b border-border">
         <h2 className="text-sm font-semibold text-foreground uppercase tracking-wide">
           {t('title')}
         </h2>
@@ -141,7 +141,7 @@ export function DocumentNav({
       </ul>
 
       {items.length === 0 && (
-        <div className="text-center py-8 text-gray-500 text-sm">
+        <div className="text-center py-8 text-muted-foreground text-sm">
           {t('empty')}
         </div>
       )}

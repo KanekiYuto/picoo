@@ -22,7 +22,7 @@ export function createPricingPlans(t: (key: string, values?: Record<string, stri
       name: t("plans.free.name"),
       monthlyPrice: 0,
       ctaText: t("plans.free.ctaText"),
-      colorClass: "from-[rgba(156,163,175,0.8)] to-[rgba(0,0,0,0.8)]",
+      colorClass: "bg-[linear-gradient(180deg,rgba(96,125,139,0.03)_0%,rgba(96,125,139,0.30)_100%)]",
       features: [
         { text: t("plans.free.features.0", { credits: 100 }) },
         { text: t("plans.free.features.1", { images: 20 }) },
@@ -39,7 +39,9 @@ export function createPricingPlans(t: (key: string, values?: Record<string, stri
       name: t("plans.basic.name"),
       monthlyPrice: 10,
       ctaText: t("plans.basic.ctaText"),
-      colorClass: "from-[rgba(169,255,105,0.8)] to-[rgba(0,0,0,0.8)]",
+      isPopular: true,
+      colorClass: "bg-[linear-gradient(180deg,rgba(0,0,0,0)_0%,rgba(58,134,255,0.30)_100%)]",
+      outerColor: "bg-[#3A86FF]",
       features: [
         { text: t("plans.basic.features.0", { credits: 1500 }) },
         { text: t("plans.basic.features.1", { images: 240 }) },
@@ -57,8 +59,7 @@ export function createPricingPlans(t: (key: string, values?: Record<string, stri
       name: t("plans.plus.name"),
       monthlyPrice: 20,
       ctaText: t("plans.plus.ctaText"),
-      isPopular: true,
-      colorClass: "from-[rgba(96,165,250,0.8)] to-[rgba(0,0,0,0.8)]",
+      colorClass: "bg-[linear-gradient(180deg,rgba(251,86,7,0.03)_0%,rgba(251,86,7,0.30)_100%)]",
       features: [
         { text: t("plans.plus.features.0", { credits: 1500 }) },
         { text: t("plans.plus.features.1", { images: 240 }) },
@@ -77,7 +78,8 @@ export function createPricingPlans(t: (key: string, values?: Record<string, stri
       monthlyPrice: 100,
       ctaText: t("plans.pro.ctaText"),
       isSpecialOffer: true,
-      colorClass: "from-[rgba(236,72,153,0.8)] to-[rgba(0,0,0,0.8)]",
+      colorClass: "bg-[linear-gradient(180deg,rgba(255,0,110,0.03)_0%,rgba(255,0,110,0.30)_100%)]",
+      outerColor: "bg-[#E91E63]",
       features: [
         { text: t("plans.pro.features.0", { credits: 1500 }) },
         { text: t("plans.pro.features.1", { images: 240 }) },
@@ -89,6 +91,7 @@ export function createPricingPlans(t: (key: string, values?: Record<string, stri
         { text: t("plans.pro.features.7", { support: "7×24" }) },
         { text: t("plans.pro.features.8") },
         { text: t("plans.pro.features.9", { seats: 50 }) },
+        { text: "全部 AI 模型" },
       ],
     },
   ];

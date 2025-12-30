@@ -83,31 +83,31 @@ export function DocumentViewer({
           components={{
             // 自定义标题渲染
             h1: ({ node, ...props }) => (
-              <h1 className="text-3xl font-bold mt-8 mb-4 text-foreground scroll-mt-20" {...props} />
+              <h1 className="text-4xl font-bold mt-10 mb-6 text-foreground scroll-mt-20" {...props} />
             ),
             h2: ({ node, ...props }) => (
-              <h2 className="text-2xl font-bold mt-8 mb-4 text-foreground scroll-mt-20" {...props} />
+              <h2 className="text-3xl font-bold mt-8 mb-5 text-foreground scroll-mt-20 border-b border-muted-foreground/10 pb-3" {...props} />
             ),
             h3: ({ node, ...props }) => (
-              <h3 className="text-xl font-semibold mt-6 mb-3 text-foreground scroll-mt-20" {...props} />
+              <h3 className="text-xl font-semibold mt-6 mb-3 text-muted-foreground scroll-mt-20" {...props} />
             ),
             h4: ({ node, ...props }) => (
-              <h4 className="text-lg font-semibold mt-4 mb-2 text-foreground scroll-mt-20" {...props} />
+              <h4 className="text-lg font-medium mt-5 mb-2 text-muted-foreground scroll-mt-20" {...props} />
             ),
             // 自定义段落
-            p: ({ node, ...props }) => <p className="mb-4 leading-7 text-gray-300" {...props} />,
+            p: ({ node, ...props }) => <p className="mb-4 leading-8 text-muted-foreground" {...props} />,
             // 自定义链接
             a: ({ node, ...props }) => (
               <a
-                className="text-primary hover:text-primary-hover underline transition-colors"
+                className="text-primary hover:text-primary/80 underline underline-offset-2 transition-colors"
                 target="_blank"
                 rel="noopener noreferrer"
                 {...props}
               />
             ),
             // 自定义列表
-            ul: ({ node, ...props }) => <ul className="list-disc list-inside mb-4 space-y-2 text-gray-300" {...props} />,
-            ol: ({ node, ...props }) => <ol className="list-decimal list-inside mb-4 space-y-2 text-gray-300" {...props} />,
+            ul: ({ node, ...props }) => <ul className="list-disc list-outside mb-4 ml-6 space-y-2 text-muted-foreground" {...props} />,
+            ol: ({ node, ...props }) => <ol className="list-decimal list-outside mb-4 ml-6 space-y-2 text-muted-foreground" {...props} />,
             li: ({ node, ...props }) => <li className="leading-7" {...props} />,
             // 自定义代码块
             code: ({ node, className, children, ...props }) => {
@@ -117,7 +117,7 @@ export function DocumentViewer({
               if (isInline) {
                 return (
                   <code
-                    className="px-1.5 py-0.5 rounded bg-[#1e1e1e] text-primary text-sm font-mono border border-[var(--color-border)]"
+                    className="px-2 py-1 rounded bg-muted/50 text-primary text-sm font-mono border border-muted-foreground/20"
                     {...props}
                   >
                     {children}
@@ -133,32 +133,32 @@ export function DocumentViewer({
             },
             pre: ({ node, ...props }) => (
               <pre
-                className="bg-[#1e1e1e] rounded-lg p-4 overflow-x-auto mb-4 border border-[var(--color-border)]"
+                className="bg-muted/30 rounded-lg p-4 overflow-x-auto mb-4 border border-muted-foreground/20"
                 {...props}
               />
             ),
             // 自定义引用块
             blockquote: ({ node, ...props }) => (
               <blockquote
-                className="border-l-4 border-primary pl-4 italic text-gray-400 my-4"
+                className="border-l-4 border-primary/50 pl-4 italic text-muted-foreground my-6 bg-muted/20 py-2 pr-4 rounded-r"
                 {...props}
               />
             ),
             // 自定义表格
             table: ({ node, ...props }) => (
-              <div className="overflow-x-auto mb-4">
-                <table className="min-w-full divide-y divide-[var(--color-border)]" {...props} />
+              <div className="overflow-x-auto mb-4 rounded-lg border border-muted-foreground/20">
+                <table className="min-w-full divide-y divide-muted-foreground/20" {...props} />
               </div>
             ),
-            thead: ({ node, ...props }) => <thead className="bg-[#1a1a1a]" {...props} />,
-            tbody: ({ node, ...props }) => <tbody className="divide-y divide-[var(--color-border)]" {...props} />,
-            tr: ({ node, ...props }) => <tr className="hover:bg-[#1a1a1a] transition-colors" {...props} />,
+            thead: ({ node, ...props }) => <thead className="bg-muted/40" {...props} />,
+            tbody: ({ node, ...props }) => <tbody className="divide-y divide-muted-foreground/20" {...props} />,
+            tr: ({ node, ...props }) => <tr className="hover:bg-muted/20 transition-colors" {...props} />,
             th: ({ node, ...props }) => (
               <th className="px-4 py-3 text-left text-sm font-semibold text-foreground" {...props} />
             ),
-            td: ({ node, ...props }) => <td className="px-4 py-3 text-sm text-gray-300" {...props} />,
+            td: ({ node, ...props }) => <td className="px-4 py-3 text-sm text-muted-foreground" {...props} />,
             // 自定义水平线
-            hr: ({ node, ...props }) => <hr className="my-8 border-[var(--color-border)]" {...props} />,
+            hr: ({ node, ...props }) => <hr className="my-8 border-muted-foreground/10" {...props} />,
           }}
         >
           {content}

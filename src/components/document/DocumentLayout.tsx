@@ -77,11 +77,11 @@ export function DocumentLayout({
 
   return (
     <div className={`document-layout ${className}`}>
-      <div className="flex min-h-screen">
+      <div className="flex min-h-screen bg-background">
         {/* 移动端导航按钮 */}
         {showNav && (
           <button
-            className="fixed top-4 left-4 z-50 lg:hidden p-2 bg-[var(--color-card)] rounded-lg border border-[var(--color-border)] hover:bg-[var(--color-sidebar-hover)] transition-colors"
+            className="fixed top-4 left-4 z-50 lg:hidden p-2 bg-card rounded-lg border border-border hover:bg-muted transition-colors"
             onClick={() => setIsMobileNavOpen(!isMobileNavOpen)}
             aria-label={isMobileNavOpen ? t('closeNav') : t('openNav')}
           >
@@ -104,7 +104,7 @@ export function DocumentLayout({
             <aside
               className={`
                 fixed lg:sticky top-0 left-0 h-screen z-40
-                bg-[var(--color-sidebar-bg)] border-r border-[var(--color-border)]
+                bg-card border-r border-border
                 overflow-y-auto custom-scrollbar
                 transition-transform duration-300 ease-in-out
                 ${isMobileNavOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}
