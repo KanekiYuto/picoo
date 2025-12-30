@@ -1,4 +1,5 @@
 import { PricingPlan, BillingCycleConfig } from "./types";
+import { PRICING_PLANS_METADATA, YEARLY_DISCOUNT_PERCENT, SUBSCRIPTION_PLANS, getSubscriptionCreditsConfig, getCreemPayProductId } from "@/config/pricing";
 
 /**
  * 创建计费周期配置
@@ -7,22 +8,37 @@ import { PricingPlan, BillingCycleConfig } from "./types";
 export function createBillingCycles(t: (key: string) => string): BillingCycleConfig[] {
   return [
     { id: "monthly", label: t("billingCycle.monthly") },
-    { id: "yearly", label: t("billingCycle.yearly"), savePercent: 20 },
+    { id: "yearly", label: t("billingCycle.yearly"), savePercent: YEARLY_DISCOUNT_PERCENT },
   ];
 }
 
 /**
  * 创建定价方案数据
  * @param t 翻译函数
+ * @param billingCycle 计费周期 ('monthly' | 'yearly')
  */
-export function createPricingPlans(t: (key: string, values?: Record<string, string | number>) => string): PricingPlan[] {
+export function createPricingPlans(t: (key: string, values?: Record<string, string | number>) => string, billingCycle: 'monthly' | 'yearly' = 'monthly'): PricingPlan[] {
+  const plansMetadata = PRICING_PLANS_METADATA;
+
+  // 根据计费周期选择对应的积分配置
+  const getCreditsConfig = (planId: string) => {
+    const key = billingCycle === 'yearly' ? `yearly_${planId}` : `monthly_${planId}`;
+    return getSubscriptionCreditsConfig(key as any);
+  };
+
+  // 根据计费周期获取对应的产品 ID
+  const getProductId = (planId: string) => {
+    const key = billingCycle === 'yearly' ? `yearly_${planId}` : `monthly_${planId}`;
+    return getCreemPayProductId(key as any);
+  };
+
   return [
     {
       id: "free",
       name: t("plans.free.name"),
-      monthlyPrice: 0,
+      monthlyPrice: plansMetadata.free.monthlyPrice,
       ctaText: t("plans.free.ctaText"),
-      colorClass: "bg-[linear-gradient(180deg,rgba(96,125,139,0.03)_0%,rgba(96,125,139,0.30)_100%)]",
+      colorClass: plansMetadata.free.colorClass,
       features: [
         { text: t("plans.free.features.0", { credits: 100 }) },
         { text: t("plans.free.features.1", { images: 20 }) },
@@ -36,58 +52,70 @@ export function createPricingPlans(t: (key: string, values?: Record<string, stri
     {
       id: "basic",
       name: t("plans.basic.name"),
-      monthlyPrice: 10,
+      monthlyPrice: plansMetadata.basic.monthlyPrice,
       ctaText: t("plans.basic.ctaText"),
-      isPopular: true,
-      colorClass: "bg-[linear-gradient(180deg,rgba(0,0,0,0)_0%,rgba(58,134,255,0.30)_100%)]",
-      outerColor: "bg-[#3A86FF]",
-      features: [
-        { text: t("plans.basic.features.0", { credits: 1500 }) },
-        { text: t("plans.basic.features.1", { images: 240 }) },
-        { text: t("plans.basic.features.2", { videos: 40 }) },
-        { text: t("plans.basic.features.3") },
-        { text: t("plans.basic.features.4") },
-        { text: t("plans.basic.features.5", { imageConcurrent: 8 }) },
-        { text: t("plans.basic.features.6", { videoConcurrent: 2 }) },
-        { text: t("plans.basic.features.7", { support: "7×24" }) },
-      ],
+      isPopular: plansMetadata.basic.isPopular,
+      colorClass: plansMetadata.basic.colorClass,
+      outerColor: plansMetadata.basic.outerColor,
+      creemPayProductId: getProductId('basic'),
+      features: (() => {
+        const config = getCreditsConfig('basic');
+        return [
+          { text: t("plans.basic.features.0", { credits: config.credits }) },
+          { text: t("plans.basic.features.1", { images: config.max_images_per_month }) },
+          { text: t("plans.basic.features.2", { videos: config.max_videos_per_month }) },
+          { text: t("plans.basic.features.3") },
+          { text: t("plans.basic.features.4") },
+          { text: t("plans.basic.features.5", { imageConcurrent: config.image_concurrent }) },
+          { text: t("plans.basic.features.6", { videoConcurrent: config.video_concurrent }) },
+          { text: t("plans.basic.features.7", { support: "7×24" }) },
+        ];
+      })(),
     },
     {
       id: "plus",
       name: t("plans.plus.name"),
-      monthlyPrice: 20,
+      monthlyPrice: plansMetadata.plus.monthlyPrice,
       ctaText: t("plans.plus.ctaText"),
-      colorClass: "bg-[linear-gradient(180deg,rgba(251,86,7,0.03)_0%,rgba(251,86,7,0.30)_100%)]",
-      features: [
-        { text: t("plans.plus.features.0", { credits: 1500 }) },
-        { text: t("plans.plus.features.1", { images: 240 }) },
-        { text: t("plans.plus.features.2", { videos: 40 }) },
-        { text: t("plans.plus.features.3") },
-        { text: t("plans.plus.features.4") },
-        { text: t("plans.plus.features.5", { imageConcurrent: 12 }) },
-        { text: t("plans.plus.features.6", { videoConcurrent: 4 }) },
-        { text: t("plans.plus.features.7", { support: "7×24" }) },
-      ],
+      colorClass: plansMetadata.plus.colorClass,
+      creemPayProductId: getProductId('plus'),
+      features: (() => {
+        const config = getCreditsConfig('plus');
+        return [
+          { text: t("plans.plus.features.0", { credits: config.credits }) },
+          { text: t("plans.plus.features.1", { images: config.max_images_per_month }) },
+          { text: t("plans.plus.features.2", { videos: config.max_videos_per_month }) },
+          { text: t("plans.plus.features.3") },
+          { text: t("plans.plus.features.4") },
+          { text: t("plans.plus.features.5", { imageConcurrent: config.image_concurrent }) },
+          { text: t("plans.plus.features.6", { videoConcurrent: config.video_concurrent }) },
+          { text: t("plans.plus.features.7", { support: "7×24" }) },
+        ];
+      })(),
     },
     {
       id: "pro",
       name: t("plans.pro.name"),
-      monthlyPrice: 100,
+      monthlyPrice: plansMetadata.pro.monthlyPrice,
       ctaText: t("plans.pro.ctaText"),
       isSpecialOffer: true,
-      colorClass: "bg-[linear-gradient(180deg,rgba(255,0,110,0.03)_0%,rgba(255,0,110,0.30)_100%)]",
-      outerColor: "bg-[#E91E63]",
-      features: [
-        { text: t("plans.pro.features.0", { credits: 1500 }) },
-        { text: t("plans.pro.features.1", { images: 240 }) },
-        { text: t("plans.pro.features.2", { videos: 40 }) },
-        { text: t("plans.pro.features.3") },
-        { text: t("plans.pro.features.4") },
-        { text: t("plans.pro.features.5", { imageConcurrent: 60 }) },
-        { text: t("plans.pro.features.6", { videoConcurrent: 20 }) },
-        { text: t("plans.pro.features.7", { support: "7×24" }) },
-        { text: t("plans.pro.features.8") },
-      ],
+      colorClass: plansMetadata.pro.colorClass,
+      outerColor: plansMetadata.pro.outerColor,
+      creemPayProductId: getProductId('pro'),
+      features: (() => {
+        const config = getCreditsConfig('pro');
+        return [
+          { text: t("plans.pro.features.0", { credits: config.credits }) },
+          { text: t("plans.pro.features.1", { images: config.max_images_per_month }) },
+          { text: t("plans.pro.features.2", { videos: config.max_videos_per_month }) },
+          { text: t("plans.pro.features.3") },
+          { text: t("plans.pro.features.4") },
+          { text: t("plans.pro.features.5", { imageConcurrent: config.image_concurrent }) },
+          { text: t("plans.pro.features.6", { videoConcurrent: config.video_concurrent }) },
+          { text: t("plans.pro.features.7", { support: "7×24" }) },
+          { text: t("plans.pro.features.8") },
+        ];
+      })(),
     },
   ];
 }

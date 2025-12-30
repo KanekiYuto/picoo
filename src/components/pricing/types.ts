@@ -24,6 +24,8 @@ export interface PricingPlan {
   colorClass: string;
   /** 外容器纯色背景（用于推荐卡片） */
   outerColor?: string;
+  /** Creem Pay 产品 ID */
+  creemPayProductId?: string;
 }
 
 /**

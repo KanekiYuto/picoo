@@ -30,7 +30,7 @@ export function Pricing({
 
   // 使用 useMemo 缓存国际化数据
   const billingCycles = useMemo(() => createBillingCycles(t), [t]);
-  const pricingPlans = useMemo(() => createPricingPlans(t), [t]);
+  const pricingPlans = useMemo(() => createPricingPlans(t, billingCycle as 'monthly' | 'yearly'), [t, billingCycle]);
 
   // 获取当前计费周期的折扣百分比
   const currentCycle = billingCycles.find((c) => c.id === billingCycle);
