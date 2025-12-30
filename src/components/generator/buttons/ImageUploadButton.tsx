@@ -75,14 +75,14 @@ export function ImageUploadButton({
               alt="Uploaded"
               className="w-full h-full object-cover"
             />
-            {/* 删除按钮 */}
+            {/* 删除按钮 - 移动端始终显示，桌面端 hover 显示 */}
             <div
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
                 onRemoveImage?.(0);
               }}
-              className="absolute top-1.5 left-1.5 w-5 h-5 rounded-full bg-black/70 hover:bg-black flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
+              className="absolute top-1.5 left-1.5 w-5 h-5 rounded-full bg-black/70 hover:bg-black flex items-center justify-center md:opacity-0 md:group-hover:opacity-100 transition-opacity cursor-pointer"
             >
               <X className="w-3 h-3 text-white" />
             </div>
@@ -101,9 +101,9 @@ export function ImageUploadButton({
     );
   }
 
-  // 大尺寸 - 真正的堆叠卡片设计（从左往右堆叠，露出25%）
+  // 大尺寸 - 真正的堆叠卡片设计（从左往右堆叠，露出40%）
   const cardSize = 96; // 24 * 4 = 96px (w-24)
-  const exposedWidth = Math.round(cardSize * 0.25); // 露出25%，约24px
+  const exposedWidth = Math.round(cardSize * 0.4); // 露出40%，约38px
   const visibleCards = Math.min(uploadImages.length, 4);
   // 计算堆叠区域总宽度：(可见卡片数-1) * 露出宽度 + 完整卡片宽度
   const stackWidth = visibleCards > 0 ? (visibleCards - 1) * exposedWidth + cardSize : 0;
@@ -123,7 +123,7 @@ export function ImageUploadButton({
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.9 }}
               transition={{ delay: idx * 0.05 }}
-              whileHover={{ y: -Math.round(cardSize * 0.25) }}
+              whileHover={{ y: -Math.round(cardSize * 0.4) }}
               onClick={() => onImageClick?.(imageUrl, idx)}
               className="absolute w-24 h-24 rounded-xl overflow-hidden border-2 border-card group cursor-pointer"
               style={{
@@ -136,14 +136,14 @@ export function ImageUploadButton({
                 alt={`Uploaded ${idx + 1}`}
                 className="w-full h-full object-cover"
               />
-              {/* 删除按钮 - 显示在所有图片的左上角 */}
+              {/* 删除按钮 - 移动端始终显示，桌面端 hover 显示 */}
               <div
                 onClick={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
                   onRemoveImage?.(idx);
                 }}
-                className="absolute top-1.5 left-1.5 w-5 h-5 rounded-full bg-black/70 hover:bg-black flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
+                className="absolute top-1.5 left-1.5 w-5 h-5 rounded-full bg-black/70 hover:bg-black flex items-center justify-center md:opacity-0 md:group-hover:opacity-100 transition-opacity cursor-pointer"
               >
                 <X className="w-3 h-3 text-white" />
               </div>

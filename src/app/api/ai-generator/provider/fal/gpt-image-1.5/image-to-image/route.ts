@@ -21,7 +21,7 @@ interface ImageToImageRequest {
 export async function POST(request: NextRequest) {
   return handleFalRequest(request, {
     endpoint: 'fal-ai/gpt-image-1.5/edit',
-    taskType: 'image-to-image',
+    taskType: 'edit-image',
     model: 'gpt-image-1.5',
 
     // 参数处理回调函数

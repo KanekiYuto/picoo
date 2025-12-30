@@ -1,6 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/utils";
+import { SlidersHorizontal } from "lucide-react";
 import type { ModelOption } from "./types";
 import { MODE_CONFIGS, type GeneratorMode } from "../../config";
 
@@ -14,6 +15,8 @@ interface ModelDisplayProps {
   compact?: boolean;
   onClick?: () => void;
   mode?: GeneratorMode;
+  iconOnly?: boolean;
+  className?: string;
 }
 
 /**
@@ -30,6 +33,8 @@ export function ModelDisplay({
   compact = false,
   onClick,
   mode = "text-to-image",
+  iconOnly = false,
+  className,
 }: ModelDisplayProps) {
   const modeConfig = MODE_CONFIGS[mode];
   const displayFields = modeConfig?.displayFields || [];
@@ -69,23 +74,44 @@ export function ModelDisplay({
 
   if (compact) {
     // 紧凑模式：用于GlobalGenerator的模型信息按钮
+    const displayText = displayParts.join(" / ");
+
+    // iconOnly 模式：只显示设置图标
+    if (iconOnly) {
+      return (
+        <button
+          onClick={onClick}
+          className={cn(
+            "flex items-center justify-center w-10 h-10 rounded-xl",
+            "bg-sidebar-active text-white",
+            "hover:bg-sidebar-hover",
+            "transition-colors duration-200",
+            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary",
+            "flex-shrink-0",
+            className
+          )}
+        >
+          <SlidersHorizontal className="w-4 h-4" />
+        </button>
+      );
+    }
+
     return (
       <button
         onClick={onClick}
         className={cn(
           "flex items-center gap-1 md:gap-1.5 px-2 md:px-3 py-2 rounded-lg",
-          "text-xs md:text-sm text-white whitespace-nowrap",
+          "text-xs md:text-sm text-white",
           "hover:bg-sidebar-hover",
           "transition-colors duration-200",
-          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary",
+          "min-w-0 max-w-full",
+          className
         )}
       >
-        {displayParts.map((part, index) => (
-          <span key={index} className={cn(index === 0 && model?.name ? "font-medium" : "")}>
-            {part}
-            {index < displayParts.length - 1 && <span className="ml-1">/</span>}
-          </span>
-        ))}
+        <span className={cn("truncate", model?.name && "font-medium")}>
+          {displayText}
+        </span>
       </button>
     );
   }

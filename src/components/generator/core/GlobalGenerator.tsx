@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { useTranslations } from "next-intl";
 import { ImageOff } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { getRequiredCredits } from "@/config/model-credit-cost";
 import { ModelDisplay } from "../panels/settings/ModelDisplay";
 import type { GeneratorSettings } from "../panels/settings";
 import { ImageUploadButton } from "../buttons/ImageUploadButton";
@@ -89,6 +90,23 @@ export function GlobalGenerator({
     return mode === "text-to-image" || mode === "edit-image";
   };
 
+  // 计算所需积分
+  const requiredCredits = useMemo(() => {
+    if (!settings.model) return 0;
+
+    const parameters: Record<string, any> = {
+      resolution: settings.resolution,
+      format: settings.format,
+      num_images: settings.variations,
+    };
+
+    console.log(mode);
+    console.log(settings.model);
+    console.log(parameters);
+
+    return getRequiredCredits(mode, settings.model, parameters);
+  }, [mode, settings.model, settings.resolution, settings.format, settings.variations]);
+
   // 处理生成
   const handleCreate = () => {
     if (requiresPrompt()) {
@@ -148,18 +166,28 @@ export function GlobalGenerator({
 
           {/* 底部控制栏 */}
           <div className="flex items-end justify-between gap-2">
-            {/* 左侧：图片上传和模型信息 */}
-            <div className="flex items-center gap-2 md:gap-3">
-              {/* 移动端图片上传按钮 */}
-              <ImageUploadButton
-                className="md:hidden"
-                size="sm"
-                uploadImages={uploadImages}
-                maxUploadCount={MAX_UPLOAD_COUNT}
-                onClick={uploadImages.length > 0 ? onOpenMobileImagePanel : onOpenUploadPanel}
-                onRemoveImage={onRemoveImage}
-                onImageClick={onImageClick}
+            {/* 左侧：模式选择、图片上传和模型信息 */}
+            <div className="flex items-center gap-2 md:gap-3 min-w-0 flex-1">
+              {/* 移动端模式切换按钮 - 始终显示 */}
+              <ModeSelectorButton
+                className="md:hidden flex-shrink-0"
+                value={mode}
+                onClick={onOpenModePanel || (() => {})}
+                iconOnly={true}
               />
+
+              {/* 移动端图片上传按钮 - 非 text-to-image 模式显示 */}
+              {mode !== "text-to-image" && (
+                <ImageUploadButton
+                  className="md:hidden flex-shrink-0"
+                  size="sm"
+                  uploadImages={uploadImages}
+                  maxUploadCount={MAX_UPLOAD_COUNT}
+                  onClick={uploadImages.length > 0 ? onOpenMobileImagePanel : onOpenUploadPanel}
+                  onRemoveImage={onRemoveImage}
+                  onImageClick={onImageClick}
+                />
+              )}
 
               {/* 模型信息按钮 */}
               {settings && mode && (
@@ -172,6 +200,21 @@ export function GlobalGenerator({
                   compact={true}
                   onClick={onOpenSettingsPanel}
                   mode={mode}
+                  iconOnly={true}
+                  className="md:hidden"
+                />
+              )}
+              {settings && mode && (
+                <ModelDisplay
+                  model={currentModel}
+                  aspectRatio={settings.aspectRatio}
+                  variations={settings.variations}
+                  resolution={settings.resolution}
+                  format={settings.format}
+                  compact={true}
+                  onClick={onOpenSettingsPanel}
+                  mode={mode}
+                  className="hidden md:flex"
                 />
               )}
             </div>
@@ -181,7 +224,7 @@ export function GlobalGenerator({
               onClick={handleCreate}
               disabled={requiresPrompt() && !prompt.trim()}
               className={cn(
-                "px-4 md:px-8 py-2.5 md:py-3 rounded-xl",
+                "px-4 md:px-8 py-2.5 md:py-3 rounded-xl flex-shrink-0",
                 "bg-gradient-primary",
                 "text-sm md:text-base text-white font-medium whitespace-nowrap",
                 "disabled:opacity-50 disabled:cursor-not-allowed",
@@ -189,7 +232,7 @@ export function GlobalGenerator({
                 "hover:shadow-lg hover:shadow-primary/20 "
               )}
             >
-              {t("create")}
+              {t("create")}({requiredCredits}积分)
             </motion.button>
           </div>
         </div>

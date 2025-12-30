@@ -2,7 +2,7 @@
 
 import { Type, Maximize, Pencil, Wand2 } from "lucide-react";
 import type { ComponentType, ReactElement } from "react";
-import type { AspectRatio, AspectRatioOption, ModelOption, GeneratorSettings } from "./panels/settings/types";
+import type { AspectRatio, AspectRatioOption, ModelOption, GeneratorSettings, FormFieldRenderer } from "./panels/settings/types";
 import { AspectRatioField, VariationsField, VisibilityField, SelectField } from "./panels/settings/fields";
 
 export type GeneratorMode = "text-to-image" | "upscale" | "edit-image" | "remove-watermark";
@@ -130,6 +130,108 @@ export const DEFAULT_ASPECT_RATIO_OPTIONS: readonly AspectRatioOption[] = [
   { portrait: "9:16", landscape: "16:9" },
 ];
 
+// 默认文生图表单字段渲染器
+const defaultTextToImageFormFields: FormFieldRenderer = ({ settings, onChange, aspectRatioOptions, canReset, onReset }) => (
+  <>
+    <div className="shrink-0">
+      <AspectRatioField
+        value={settings.aspectRatio}
+        options={aspectRatioOptions}
+        onChange={(aspectRatio) => onChange({ ...settings, aspectRatio })}
+        canReset={canReset}
+        onReset={onReset}
+      />
+    </div>
+    <div>
+      <VariationsField
+        value={settings.variations}
+        onChange={(variations) => onChange({ ...settings, variations })}
+      />
+    </div>
+    <div>
+      <VisibilityField
+        value={settings.visibility}
+        onChange={(visibility) => onChange({ ...settings, visibility })}
+      />
+    </div>
+  </>
+);
+
+// 默认图生图表单字段渲染器
+const defaultImageToImageFormFields: FormFieldRenderer = ({ settings, onChange, aspectRatioOptions, canReset, onReset }) => (
+  <>
+    <div className="shrink-0">
+      <AspectRatioField
+        value={settings.aspectRatio}
+        options={aspectRatioOptions}
+        onChange={(aspectRatio) => onChange({ ...settings, aspectRatio })}
+        canReset={canReset}
+        onReset={onReset}
+      />
+    </div>
+    <div>
+      <VariationsField
+        value={settings.variations}
+        onChange={(variations) => onChange({ ...settings, variations })}
+      />
+    </div>
+    <div>
+      <VisibilityField
+        value={settings.visibility}
+        onChange={(visibility) => onChange({ ...settings, visibility })}
+      />
+    </div>
+  </>
+);
+
+// 放大模式表单字段渲染器
+const upscaleFormFields: FormFieldRenderer = ({ settings, onChange }) => (
+  <>
+    <div>
+      <SelectField
+        title="分辨率"
+        value={settings.resolution || "2k"}
+        options={[
+          { value: "2k", label: "2K" },
+          { value: "4k", label: "4K" },
+          { value: "8k", label: "8K" },
+        ]}
+        onChange={(resolution) => onChange({ ...settings, resolution })}
+      />
+    </div>
+    <div>
+      <SelectField
+        title="图片格式"
+        value={settings.format || "jpeg"}
+        options={[
+          { value: "jpeg", label: "JPEG" },
+          { value: "png", label: "PNG" },
+          { value: "webp", label: "WEBP" },
+        ]}
+        onChange={(format) => onChange({ ...settings, format })}
+      />
+    </div>
+  </>
+);
+
+// 去水印模式表单字段渲染器
+const removeWatermarkFormFields: FormFieldRenderer = ({ settings, onChange }) => (
+  <>
+    <div>
+      <SelectField
+        title="图片格式"
+        value={settings.format || "jpeg"}
+        options={[
+          { value: "jpeg", label: "JPEG" },
+          { value: "png", label: "PNG" },
+          { value: "webp", label: "WEBP" },
+        ]}
+        onChange={(format) => onChange({ ...settings, format })}
+      />
+    </div>
+  </>
+);
+
 // 模型配置接口
 export interface ModelInfo {
   name: string;
@@ -138,6 +240,7 @@ export interface ModelInfo {
   features?: string[];
   descriptionKey?: string;
   aspectRatioOptions?: readonly AspectRatioOption[];
+  renderFormFields?: FormFieldRenderer;
 }
 
 // 默认设置接口
@@ -148,15 +251,6 @@ export interface DefaultSettings {
   resolution?: string;
   format?: string;
 }
-
-// 表单字段渲染函数类型
-export type FormFieldRenderer = (props: {
-  settings: GeneratorSettings;
-  onChange: (settings: GeneratorSettings) => void;
-  aspectRatioOptions: readonly AspectRatioOption[];
-  canReset: boolean;
-  onReset: () => void;
-}) => ReactElement;
 
 // ModelDisplay 显示字段类型
 export type DisplayField = "model" | "aspectRatio" | "variations" | "resolution" | "format";
@@ -170,7 +264,6 @@ export interface ModeConfig {
   models?: Record<string, ModelInfo>; // 支持的模型及其信息
   apiRoute?: string; // 固定 API 路由（不依赖模型）
   defaultSettings?: DefaultSettings; // 默认设置
-  renderFormFields?: FormFieldRenderer; // 渲染表单字段
   displayFields: DisplayField[]; // ModelDisplay 中显示的字段
 }
 
@@ -190,22 +283,25 @@ export const MODE_CONFIGS: Record<GeneratorMode, ModeConfig> = {
         features: ["fast", "simple"],
         descriptionKey: "nano-banana-pro",
         aspectRatioOptions: DEFAULT_ASPECT_RATIO_OPTIONS,
+        renderFormFields: defaultTextToImageFormFields,
       },
-      "seedream-v4-5": {
+      "seedream-v4.5": {
         name: "Seedream v4.5",
         icon: ByteDanceIcon,
         apiRoute: "wavespeed/seedream-v4.5/text-to-image",
         features: ["artistic", "creative"],
         descriptionKey: "seedream-v4-5",
         aspectRatioOptions: DEFAULT_ASPECT_RATIO_OPTIONS,
+        renderFormFields: defaultTextToImageFormFields,
       },
-      "chatgpt-1-5": {
+      "gpt-image-1.5": {
         name: "ChatGPT 1.5",
         icon: GptMonoIcon,
         apiRoute: "fal/gpt-image-1.5/text-to-image",
         features: ["versatile", "stable"],
         descriptionKey: "chatgpt-1-5",
         aspectRatioOptions: DEFAULT_ASPECT_RATIO_OPTIONS,
+        renderFormFields: defaultTextToImageFormFields,
       },
       "flux-2-pro": {
         name: "Flux 2 Pro",
@@ -214,14 +310,16 @@ export const MODE_CONFIGS: Record<GeneratorMode, ModeConfig> = {
         features: ["professional", "highQuality"],
         descriptionKey: "flux-2-pro",
         aspectRatioOptions: DEFAULT_ASPECT_RATIO_OPTIONS,
+        renderFormFields: defaultTextToImageFormFields,
       },
-      "z-image-turbo": {
+      "z-image": {
         name: "Z Image Turbo",
         icon: AliIcon,
         apiRoute: "wavespeed/z-image/turbo",
         features: ["realtime", "ultraFast"],
         descriptionKey: "z-image-turbo",
         aspectRatioOptions: DEFAULT_ASPECT_RATIO_OPTIONS,
+        renderFormFields: defaultTextToImageFormFields,
       },
     },
     defaultSettings: {
@@ -229,31 +327,6 @@ export const MODE_CONFIGS: Record<GeneratorMode, ModeConfig> = {
       aspectRatio: "1:1",
       variations: 1,
     },
-    renderFormFields: ({ settings, onChange, aspectRatioOptions, canReset, onReset }) => (
-      <>
-        <div className="shrink-0">
-          <AspectRatioField
-            value={settings.aspectRatio}
-            options={aspectRatioOptions}
-            onChange={(aspectRatio) => onChange({ ...settings, aspectRatio })}
-            canReset={canReset}
-            onReset={onReset}
-          />
-        </div>
-        <div>
-          <VariationsField
-            value={settings.variations}
-            onChange={(variations) => onChange({ ...settings, variations })}
-          />
-        </div>
-        <div>
-          <VisibilityField
-            value={settings.visibility}
-            onChange={(visibility) => onChange({ ...settings, visibility })}
-          />
-        </div>
-      </>
-    ),
   },
   "upscale": {
     id: "upscale",
@@ -270,6 +343,7 @@ export const MODE_CONFIGS: Record<GeneratorMode, ModeConfig> = {
         features: ["fast", "highQuality"],
         descriptionKey: "upscale",
         aspectRatioOptions: DEFAULT_ASPECT_RATIO_OPTIONS,
+        renderFormFields: upscaleFormFields,
       },
     },
     defaultSettings: {
@@ -279,34 +353,6 @@ export const MODE_CONFIGS: Record<GeneratorMode, ModeConfig> = {
       resolution: "2k",
       format: "jpeg",
     },
-    renderFormFields: ({ settings, onChange }) => (
-      <>
-        <div>
-          <SelectField
-            title="分辨率"
-            value={settings.resolution || "2k"}
-            options={[
-              { value: "2k", label: "2K" },
-              { value: "4k", label: "4K" },
-              { value: "8k", label: "8K" },
-            ]}
-            onChange={(resolution) => onChange({ ...settings, resolution })}
-          />
-        </div>
-        <div>
-          <SelectField
-            title="图片格式"
-            value={settings.format || "jpeg"}
-            options={[
-              { value: "jpeg", label: "JPEG" },
-              { value: "png", label: "PNG" },
-              { value: "webp", label: "WEBP" },
-            ]}
-            onChange={(format) => onChange({ ...settings, format })}
-          />
-        </div>
-      </>
-    ),
   },
   "edit-image": {
     id: "edit-image",
@@ -322,22 +368,25 @@ export const MODE_CONFIGS: Record<GeneratorMode, ModeConfig> = {
         features: ["fast", "simple"],
         descriptionKey: "nano-banana-pro",
         aspectRatioOptions: DEFAULT_ASPECT_RATIO_OPTIONS,
+        renderFormFields: defaultImageToImageFormFields,
       },
-      "seedream-v4-5": {
+      "seedream-v4.5": {
         name: "Seedream v4.5",
         icon: ByteDanceIcon,
         apiRoute: "wavespeed/seedream-v4.5/image-to-image",
         features: ["artistic", "creative"],
         descriptionKey: "seedream-v4-5",
         aspectRatioOptions: DEFAULT_ASPECT_RATIO_OPTIONS,
+        renderFormFields: defaultImageToImageFormFields,
       },
-      "chatgpt-1-5": {
+      "gpt-image-1.5": {
         name: "ChatGPT 1.5",
         icon: GptMonoIcon,
         apiRoute: "fal/gpt-image-1.5/image-to-image",
         features: ["versatile", "stable"],
         descriptionKey: "chatgpt-1-5",
         aspectRatioOptions: DEFAULT_ASPECT_RATIO_OPTIONS,
+        renderFormFields: defaultImageToImageFormFields,
       },
       "flux-2-pro": {
         name: "Flux 2 Pro",
@@ -346,6 +395,7 @@ export const MODE_CONFIGS: Record<GeneratorMode, ModeConfig> = {
         features: ["professional", "highQuality"],
         descriptionKey: "flux-2-pro",
         aspectRatioOptions: DEFAULT_ASPECT_RATIO_OPTIONS,
+        renderFormFields: defaultImageToImageFormFields,
       },
     },
     defaultSettings: {
@@ -353,31 +403,6 @@ export const MODE_CONFIGS: Record<GeneratorMode, ModeConfig> = {
       aspectRatio: "1:1",
       variations: 1,
     },
-    renderFormFields: ({ settings, onChange, aspectRatioOptions, canReset, onReset }) => (
-      <>
-        <div className="shrink-0">
-          <AspectRatioField
-            value={settings.aspectRatio}
-            options={aspectRatioOptions}
-            onChange={(aspectRatio) => onChange({ ...settings, aspectRatio })}
-            canReset={canReset}
-            onReset={onReset}
-          />
-        </div>
-        <div>
-          <VariationsField
-            value={settings.variations}
-            onChange={(variations) => onChange({ ...settings, variations })}
-          />
-        </div>
-        <div>
-          <VisibilityField
-            value={settings.visibility}
-            onChange={(visibility) => onChange({ ...settings, visibility })}
-          />
-        </div>
-      </>
-    ),
   },
   "remove-watermark": {
     id: "remove-watermark",
@@ -394,28 +419,13 @@ export const MODE_CONFIGS: Record<GeneratorMode, ModeConfig> = {
         features: ["fast", "simple"],
         descriptionKey: "remove-watermark",
         aspectRatioOptions: DEFAULT_ASPECT_RATIO_OPTIONS,
+        renderFormFields: removeWatermarkFormFields,
       },
     },
     defaultSettings: {
       model: "remove-watermark",
       format: "jpeg",
     },
-    renderFormFields: ({ settings, onChange }) => (
-      <>
-        <div>
-          <SelectField
-            title="图片格式"
-            value={settings.format || "jpeg"}
-            options={[
-              { value: "jpeg", label: "JPEG" },
-              { value: "png", label: "PNG" },
-              { value: "webp", label: "WEBP" },
-            ]}
-            onChange={(format) => onChange({ ...settings, format })}
-          />
-        </div>
-      </>
-    ),
   },
 };
 
@@ -437,6 +447,7 @@ export const MODELS: ModelOption[] = (() => {
             features: modelInfo.features,
             descriptionKey: modelInfo.descriptionKey,
             aspectRatioOptions: modelInfo.aspectRatioOptions,
+            renderFormFields: modelInfo.renderFormFields,
           });
         }
       });

@@ -19,7 +19,7 @@ interface Flux2ProImageToImageRequest {
 export async function POST(request: NextRequest) {
   return handleWavespeedRequest(request, {
     endpoint: 'wavespeed-ai/flux-2-pro/edit',
-    taskType: 'image-to-image',
+    taskType: 'edit-image',
     model: 'flux-2-pro',
 
     // 参数处理回调函数

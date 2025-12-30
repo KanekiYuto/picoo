@@ -16,7 +16,7 @@ interface ImageWatermarkRemoverRequest {
 export async function POST(request: NextRequest) {
   return handleSyncDirect(request, {
     endpoint: 'wavespeed-ai/image-watermark-remover',
-    taskType: 'image-watermark-remover',
+    taskType: 'remove-watermark',
     model: 'wavespeed-image-watermark-remover',
 
     // 参数处理回调函数

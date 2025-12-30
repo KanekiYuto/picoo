@@ -43,6 +43,7 @@ export function SettingsPanel({ onClose, settings, onSettingsChange, mode = "tex
       features: modelInfo.features,
       descriptionKey: modelInfo.descriptionKey,
       aspectRatioOptions: modelInfo.aspectRatioOptions,
+      renderFormFields: modelInfo.renderFormFields,
     }));
   }, [mode]);
 
@@ -137,7 +138,7 @@ export function SettingsPanel({ onClose, settings, onSettingsChange, mode = "tex
           </div>
 
           <div className="flex flex-col gap-4 border-t border-border px-4 py-4 lg:min-h-0 lg:overflow-y-auto lg:border-t-0 lg:border-l lg:custom-scrollbar lg:px-4">
-            {MODE_CONFIGS[mode]?.renderFormFields?.({
+            {selectedModelConfig?.renderFormFields?.({
               settings: currentSettings,
               onChange: commitSettings,
               aspectRatioOptions,

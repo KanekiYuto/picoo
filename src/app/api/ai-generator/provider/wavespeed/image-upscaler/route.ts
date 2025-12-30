@@ -18,7 +18,7 @@ interface ImageUpscalerRequest {
 export async function POST(request: NextRequest) {
   return handleSyncDirect(request, {
     endpoint: 'wavespeed-ai/image-upscaler',
-    taskType: 'image-upscaler',
+    taskType: 'upscale',
     model: 'wavespeed-image-upscaler',
 
     // 参数处理回调函数

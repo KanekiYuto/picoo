@@ -17,7 +17,7 @@ interface ImageToImageRequest {
 export async function POST(request: NextRequest) {
   return handleWavespeedRequest(request, {
     endpoint: 'google/nano-banana/edit',
-    taskType: 'image-to-image',
+    taskType: 'edit-image',
     model: 'nano-banana-pro',
 
     // 参数处理回调函数

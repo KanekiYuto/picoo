@@ -258,6 +258,22 @@ export function GlobalGeneratorModal() {
     );
   };
 
+  // 根据模式获取最大上传数量
+  const getMaxUploadCount = () => {
+    switch (mode) {
+      case "text-to-image":
+        return 0; // 文本生成不需要上传图片
+      case "upscale":
+        return 1; // 放大支持上传一张
+      case "edit-image":
+        return 4; // 编辑最多四张
+      case "remove-watermark":
+        return 1; // 去水印一张
+      default:
+        return 0;
+    }
+  };
+
   const handleDeleteError = (id: string) => {
     setResultImages((prev) => prev.filter((item) => item.id !== id));
   };
@@ -444,7 +460,7 @@ export function GlobalGeneratorModal() {
                         <ImageUploadButton
                           size="lg"
                           uploadImages={uploadImages}
-                          maxUploadCount={4}
+                          maxUploadCount={getMaxUploadCount()}
                           onClick={() => {
                             setSelectedImageUrl(undefined);
                             setActivePanel("upload");
@@ -453,12 +469,6 @@ export function GlobalGeneratorModal() {
                           onImageClick={handleImageClick}
                         />
                       </div>
-
-                      {/* 模式选择按钮 */}
-                      <ModeSelectorButton
-                        value={mode}
-                        onClick={() => setActivePanel("mode")}
-                      />
                     </div>
                   </div>
                 </motion.div>

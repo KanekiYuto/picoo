@@ -18,7 +18,7 @@ interface SeedreamImageToImageRequest {
 export async function POST(request: NextRequest) {
   return handleWavespeedRequest(request, {
     endpoint: 'bytedance/seedream-v4.5/edit',
-    taskType: 'image-to-image',
+    taskType: 'edit-image',
     model: 'seedream-v4.5',
 
     // 参数处理回调函数

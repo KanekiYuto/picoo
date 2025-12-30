@@ -3,14 +3,8 @@
  * 用于配置各个生成器模型的配额消耗
  */
 
-// 主要生成器类型
-type MainTaskType = 'text-to-image' | 'image-to-image';
-
-// 更多生成器类型
-type MoreTaskType = 'image-upscaler' | 'image-watermark-remover';
-
-// 生成器类型（包括主要类型、更多类型和效果类型）
-export type TaskType = MainTaskType | MoreTaskType;
+// 生成器类型（与 GeneratorMode 一致）
+export type TaskType = 'text-to-image' | 'upscale' | 'edit-image' | 'remove-watermark';
 
 // 默认配额常量（未匹配到任何生成器时使用）
 export const DEFAULT_CREDITS = 88888888;
@@ -21,7 +15,6 @@ export const DEFAULT_CREDITS = 88888888;
  */
 export const NSFW_CHECK_MODELS = [
   'z-image',
-  'z-image-lora',
 ] as const;
 
 /**
@@ -41,13 +34,13 @@ export function getRequiredCredits(
     case 'text-to-image':
       return calculateTextToImageCredits(model, parameters);
 
-    case 'image-to-image':
+    case 'edit-image':
       return calculateImageToImageCredits(model, parameters);
 
-    case 'image-upscaler':
+    case 'upscale':
       return calculateImageUpscalerCredits(model, parameters);
 
-    case 'image-watermark-remover':
+    case 'remove-watermark':
       return calculateImageWatermarkRemoverCredits(model, parameters);
 
     default:
@@ -68,11 +61,6 @@ function calculateTextToImageCredits(model: string, parameters: Record<string, a
   // Z-Image Turbo 模型
   if (model === 'z-image') {
     return zImageTextToImageCredits(parameters);
-  }
-
-  // Z-Image Turbo LoRA 模型
-  if (model === 'z-image-lora') {
-    return zImageLoraTextToImageCredits(parameters);
   }
 
   // Flux 2 Pro 模型
@@ -210,14 +198,6 @@ function seedreamImageToImageCredits(_parameters: Record<string, any>): number {
   return 30;
 }
 
-/**
- * Z-Image Turbo LoRA 文生图配额计算
- * 固定 10 积分每张图
- */
-function zImageLoraTextToImageCredits(_parameters: Record<string, any>): number {
-  return 10;
-}
-
 // ============ 更多生成器的配额计算函数 ============
 
 /**
@@ -244,21 +224,6 @@ function calculateImageUpscalerCredits(model: string, parameters: Record<string,
 function calculateImageWatermarkRemoverCredits(model: string, parameters: Record<string, any>): number {
   // 去水印每张图 20 积分
   return 50;
-}
-
-/**
- * 图像效果配额计算
- */
-function calculateImageEffectsCredits(model: string, parameters: Record<string, any>): number {
-  // 根据效果类型计算配额
-  switch (model) {
-    case 'lofi-pixel-character-mini-card':
-      // 像素艺术效果每张图 20 积分
-      return 20;
-    default:
-      // 未匹配到效果模型，返回默认配额
-      return 20;
-  }
 }
 
 /**

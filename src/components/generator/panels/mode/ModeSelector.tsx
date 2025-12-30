@@ -75,9 +75,11 @@ export function ModeSelectorPanel({ value, onChange, onClose }: ModeSelectorPane
 interface ModeSelectorButtonProps {
   value: GeneratorMode;
   onClick: () => void;
+  className?: string;
+  iconOnly?: boolean;
 }
 
-export function ModeSelectorButton({ value, onClick }: ModeSelectorButtonProps) {
+export function ModeSelectorButton({ value, onClick, className, iconOnly = false }: ModeSelectorButtonProps) {
   const t = useTranslations("generator.modes");
   const currentMode = MODE_OPTIONS.find((m) => m.id === value) || MODE_OPTIONS[0];
   const CurrentIcon = currentMode.icon;
@@ -87,10 +89,16 @@ export function ModeSelectorButton({ value, onClick }: ModeSelectorButtonProps) 
       onClick={onClick}
       whileHover={{ scale: 1.02 }}
       whileTap={{ scale: 0.98 }}
-      className="w-full flex items-center gap-2 px-3 py-2 rounded-lg bg-sidebar-active text-white text-sm font-medium transition-all duration-200"
+      className={cn(
+        "flex items-center justify-center gap-2 rounded-lg bg-sidebar-active text-white text-sm font-medium transition-all duration-200",
+        iconOnly
+          ? "w-10 h-10 rounded-xl"
+          : "px-3 py-2 whitespace-nowrap",
+        className
+      )}
     >
-      <CurrentIcon className="w-4 h-4" />
-      <span>{t(currentMode.labelKey)}</span>
+      <CurrentIcon className="w-4 h-4 flex-shrink-0" />
+      {!iconOnly && <span>{t(currentMode.labelKey)}</span>}
     </motion.button>
   );
 }
