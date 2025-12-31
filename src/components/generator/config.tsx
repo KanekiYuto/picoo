@@ -11,6 +11,7 @@ import {
   defaultImageToImageFormFields,
   upscaleFormFields,
   removeWatermarkFormFields,
+  zImageFormFields,
 } from "./panels/settings/formFieldRenderers";
 import {
   GoogleMonoIcon,
@@ -19,6 +20,7 @@ import {
   FluxIcon,
   AliIcon,
 } from "./modelIcons";
+import { aspectRatioToString } from "@/lib/aspect-ratio-utils";
 
 export type GeneratorMode = "text-to-image" | "upscale" | "edit-image" | "remove-watermark";
 
@@ -172,7 +174,7 @@ export const MODE_CONFIGS: Record<GeneratorMode, ModeConfig> = {
         requestConfig: createRequestConfig("wavespeed/seedream-v4.5/text-to-image", "webhook", (prompt, mode, settings, images) => {
           return {
             prompt,
-            size: settings.size,
+            size: aspectRatioToString(settings.size),
           };
         }),
         getCreditsParams: (_settings) => ({}),
@@ -212,12 +214,12 @@ export const MODE_CONFIGS: Record<GeneratorMode, ModeConfig> = {
         descriptionKey: "flux-2-pro",
         renderFormFields: flux2ProFormFields,
         defaultSettings: {
-          aspect_ratio: "1:1",
+          size: "1:1",
         },
         requestConfig: createRequestConfig("wavespeed/flux-2-pro/text-to-image", "webhook", (prompt, _mode, settings, _images) => {
           return {
             prompt,
-            aspect_ratio: settings.aspect_ratio,
+            size: aspectRatioToString(settings.size),
           };
         }),
         getCreditsParams: (_settings) => ({}),
@@ -227,14 +229,14 @@ export const MODE_CONFIGS: Record<GeneratorMode, ModeConfig> = {
         icon: AliIcon,
         features: ["realtime", "ultraFast"],
         descriptionKey: "z-image-turbo",
-        renderFormFields: defaultTextToImageFormFields,
+        renderFormFields: zImageFormFields,
         defaultSettings: {
-          aspect_ratio: "1:1",
+          size: "1:1",
         },
         requestConfig: createRequestConfig("wavespeed/z-image/turbo", "webhook", (prompt, _mode, settings, _images) => {
           return {
             prompt,
-            aspect_ratio: settings.aspect_ratio,
+            size: aspectRatioToString(settings.size),
           };
         }),
         getCreditsParams: (_settings) => ({}),
@@ -317,7 +319,7 @@ export const MODE_CONFIGS: Record<GeneratorMode, ModeConfig> = {
           return {
             prompt,
             images,
-            size: settings.size,
+            size: aspectRatioToString(settings.size),
           };
         }),
         getCreditsParams: (_settings) => ({}),
@@ -359,13 +361,13 @@ export const MODE_CONFIGS: Record<GeneratorMode, ModeConfig> = {
         descriptionKey: "flux-2-pro",
         renderFormFields: flux2ProFormFields,
         defaultSettings: {
-          aspect_ratio: "1:1",
+          size: "1:1",
         },
         requestConfig: createRequestConfig("wavespeed/flux-2-pro/image-to-image", "webhook", (prompt, _mode, settings, images) => {
           return {
             prompt,
             images: images,
-            aspect_ratio: settings.aspect_ratio,
+            size: aspectRatioToString(settings.size),
           };
         }),
         getCreditsParams: (_settings) => ({}),

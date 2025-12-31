@@ -46,7 +46,7 @@ export const seedream45FormFields: FormFieldRenderer = () => (
 export const flux2ProFormFields: FormFieldRenderer = () => (
   <>
     <div className="shrink-0">
-      <FormField name="aspect_ratio" render={() => (
+      <FormField name="size" render={() => (
         <AspectRatioField options={DEFAULT_ASPECT_RATIO_OPTIONS} />
       )} />
     </div>
@@ -234,6 +234,22 @@ export const removeWatermarkFormFields: FormFieldRenderer = () => (
             { value: "webp", label: "WEBP" },
           ]}
         />
+      )} />
+    </div>
+  </>
+);
+
+// Z Image Turbo 文生图表单字段渲染器
+export const zImageFormFields: FormFieldRenderer = () => (
+  <>
+    <div className="shrink-0">
+      <FormField name="size" render={() => (
+        <AspectRatioField options={DEFAULT_ASPECT_RATIO_OPTIONS} />
+      )} />
+    </div>
+    <div>
+      <FormField name="visibility" render={() => (
+        <VisibilityField />
       )} />
     </div>
   </>

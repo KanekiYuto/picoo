@@ -193,12 +193,17 @@ export function useKonvaStage(
         const pointer = stage.getPointerPosition();
         if (!pointer) return;
 
-        selectionStartRef.current = { x: pointer.x, y: pointer.y };
+        // 将屏幕坐标转换为舞台坐标（考虑缩放和位移）
+        const transform = stage.getAbsoluteTransform().copy();
+        transform.invert();
+        const stagePoint = transform.point(pointer);
+
+        selectionStartRef.current = { x: stagePoint.x, y: stagePoint.y };
 
         if (!selectionBoxRef.current) {
           const selectionBox = new Konva.Rect({
-            x: pointer.x,
-            y: pointer.y,
+            x: stagePoint.x,
+            y: stagePoint.y,
             width: 0,
             height: 0,
             fill: "rgba(75, 92, 196, 0.1)",
@@ -217,14 +222,19 @@ export function useKonvaStage(
         const pointer = stage.getPointerPosition();
         if (!pointer) return;
 
+        // 将屏幕坐标转换为舞台坐标（考虑缩放和位移）
+        const transform = stage.getAbsoluteTransform().copy();
+        transform.invert();
+        const stagePoint = transform.point(pointer);
+
         const startX = selectionStartRef.current.x;
         const startY = selectionStartRef.current.y;
 
         selectionBoxRef.current.setAttrs({
-          x: Math.min(startX, pointer.x),
-          y: Math.min(startY, pointer.y),
-          width: Math.abs(pointer.x - startX),
-          height: Math.abs(pointer.y - startY),
+          x: Math.min(startX, stagePoint.x),
+          y: Math.min(startY, stagePoint.y),
+          width: Math.abs(stagePoint.x - startX),
+          height: Math.abs(stagePoint.y - startY),
         });
 
         layer.draw();
