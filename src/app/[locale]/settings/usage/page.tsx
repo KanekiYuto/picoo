@@ -270,10 +270,10 @@ export default function UsagePage() {
                     <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
                       {t("table.columns.description")}
                     </TableHead>
-                    <TableHead className="text-right text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                    <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
                       {t("table.columns.amount")}
                     </TableHead>
-                    <TableHead className="text-right text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                    <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
                       {t("table.columns.balance")}
                     </TableHead>
                   </TableRow>
@@ -292,14 +292,14 @@ export default function UsagePage() {
                       <TableCell className="text-sm text-muted-foreground">
                         {record.note || '-'}
                       </TableCell>
-                      <TableCell className="text-right text-sm">
+                      <TableCell className="text-sm">
                         <span className={`font-semibold ${
                           record.amount > 0 ? 'text-green-600' : 'text-red-600'
                         }`}>
                           {record.amount > 0 ? '+' : ''}{record.amount}
                         </span>
                       </TableCell>
-                      <TableCell className="text-right text-sm text-muted-foreground">
+                      <TableCell className="text-sm text-muted-foreground">
                         {record.balanceAfter.toLocaleString()}
                       </TableCell>
                     </TableRow>

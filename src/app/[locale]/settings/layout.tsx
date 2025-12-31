@@ -44,7 +44,6 @@ export default function SettingsLayout({
       title: t("nav.billing"),
       items: [
         { label: t("nav.subscriptionPlan"), href: "./billing", icon: CreditCard },
-        { label: t("nav.billingDetails"), href: "./billing/details", icon: Receipt },
       ],
     },
   ];

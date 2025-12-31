@@ -4,6 +4,22 @@
 export type PlanType = 'free' | 'basic' | 'plus' | 'pro';
 
 /**
+ * 将订阅计划类型映射到套餐类型
+ * @param subscriptionPlanType 订阅计划类型（如 monthly_basic, yearly_pro 等）
+ * @returns 套餐类型
+ */
+export function mapSubscriptionPlanType(subscriptionPlanType: string): PlanType {
+  if (subscriptionPlanType.includes('pro')) {
+    return 'pro';
+  } else if (subscriptionPlanType.includes('plus')) {
+    return 'plus';
+  } else if (subscriptionPlanType.includes('basic')) {
+    return 'basic';
+  }
+  return 'free';
+}
+
+/**
  * 套餐信息
  */
 export interface PlanInfo {

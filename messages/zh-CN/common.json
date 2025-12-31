@@ -19,6 +19,12 @@
     "free": "免费",
     "basic": "基础",
     "plus": "进阶",
-    "pro": "专业"
+    "pro": "专业",
+    "monthly_basic": "基础 - 月度",
+    "yearly_basic": "基础 - 年度",
+    "monthly_plus": "进阶 - 月度",
+    "yearly_plus": "进阶 - 年度",
+    "monthly_pro": "专业 - 月度",
+    "yearly_pro": "专业 - 年度"
   }
 }

@@ -3,13 +3,13 @@
 import { useEffect, useRef, useState } from "react";
 import { Menu } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { UserProfile } from "../_components/UserProfile";
+import { BillingInfo } from "../_components/BillingInfo";
 import { ProfileSkeleton } from "../_components/ProfileSkeleton";
 import { useSettingsNav } from "../_components/SettingsNavContext";
 import { useUserStore } from "@/stores/userStore";
 
-export default function ProfilePage() {
-  const t = useTranslations("settings.profile");
+export default function BillingPage() {
+  const t = useTranslations("settings.billing");
   const { openMenu } = useSettingsNav();
   const { user, isLoading: userLoading } = useUserStore();
 
@@ -70,10 +70,9 @@ export default function ProfilePage() {
         </div>
       </div>
 
-      {/* 设置部分 */}
+      {/* 订阅信息 */}
       <div className="space-y-3">
-        <h2 className="text-sm font-medium text-muted">{t("sections.settings")}</h2>
-        <UserProfile user={user} />
+        <BillingInfo />
       </div>
     </div>
   );

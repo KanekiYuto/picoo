@@ -15,12 +15,11 @@
   },
   "profile": {
     "title": "Profile settings",
-    "description": "Manage your personal information and billing details",
+    "description": "Manage your personal information",
     "openMenu": "Open settings menu",
     "editProfile": "Edit profile",
     "sections": {
-      "settings": "Settings",
-      "billing": "Billing"
+      "settings": "Settings"
     },
     "billing": {
       "currentPlan": "Current subscription plan",
@@ -107,5 +106,19 @@
       "previous": "Previous",
       "next": "Next"
     }
+  },
+  "billing": {
+    "title": "Subscription Management",
+    "description": "Manage your subscription plan and billing information",
+    "openMenu": "Open settings menu",
+    "currentPlan": "Current Subscription Plan",
+    "upgradePlan": "Upgrade Plan",
+    "billingAmount": "Amount",
+    "paymentPlatform": "Payment Platform",
+    "startDate": "Start Date",
+    "expiryDate": "Expiry Date",
+    "renewalDate": "Next Renewal Date",
+    "manageSubscription": "Manage Subscription",
+    "active": "Active"
   }
 }

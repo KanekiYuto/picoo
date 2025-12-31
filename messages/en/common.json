@@ -19,6 +19,12 @@
     "free": "Free",
     "basic": "Basic",
     "plus": "Plus",
-    "pro": "Professional"
+    "pro": "Professional",
+    "monthly_basic": "Basic - Monthly",
+    "yearly_basic": "Basic - Yearly",
+    "monthly_plus": "Plus - Monthly",
+    "yearly_plus": "Plus - Yearly",
+    "monthly_pro": "Professional - Monthly",
+    "yearly_pro": "Professional - Yearly"
   }
 }

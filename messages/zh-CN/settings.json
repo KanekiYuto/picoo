@@ -15,12 +15,11 @@
   },
   "profile": {
     "title": "个人设置",
-    "description": "管理您的个人信息和账单详情",
+    "description": "管理您的个人信息",
     "openMenu": "打开设置菜单",
     "editProfile": "编辑资料",
     "sections": {
-      "settings": "设置",
-      "billing": "账单"
+      "settings": "设置"
     },
     "billing": {
       "currentPlan": "当前订阅计划",
@@ -107,5 +106,19 @@
       "previous": "上一页",
       "next": "下一页"
     }
+  },
+  "billing": {
+    "title": "订阅管理",
+    "description": "管理您的订阅计划和账单信息",
+    "openMenu": "打开设置菜单",
+    "currentPlan": "当前订阅计划",
+    "upgradePlan": "升级套餐",
+    "billingAmount": "金额",
+    "paymentPlatform": "支付平台",
+    "startDate": "开始日期",
+    "expiryDate": "有效期",
+    "renewalDate": "下一次续费日期",
+    "manageSubscription": "管理订阅",
+    "active": "活跃"
   }
 }
