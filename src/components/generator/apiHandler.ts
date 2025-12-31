@@ -1,4 +1,4 @@
-import type { GeneratorSettings, GeneratorRequestParams, RequestResponse } from "./panels/settings/types";
+import type { GeneratorSettings, RequestResponse } from "./panels/settings/types";
 import type { GeneratorMode } from "./config";
 import { MODE_CONFIGS } from "./config";
 
@@ -25,19 +25,8 @@ export async function handleAIGenerate(params: {
     throw new Error(`Unsupported model: ${settings.model}`);
   }
 
-  // 构建请求参数
-  const requestParams: GeneratorRequestParams = {
-    prompt,
-    imageUrl: images?.[0],
-    aspectRatio: settings.aspectRatio,
-    resolution: settings.resolution,
-    format: settings.format,
-    variations: settings.variations,
-    visibility: settings.visibility,
-  };
-
   // 直接调用模型的请求处理函数
-  return await modelInfo.requestConfig.handler(requestParams);
+  return await modelInfo.requestConfig.handler(prompt, mode, settings, images);
 }
 
 /**

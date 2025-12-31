@@ -11,7 +11,6 @@ export type AspectRatioOption = {
 export type FormFieldRenderer = (props: {
   settings: GeneratorSettings;
   onChange: (settings: GeneratorSettings) => void;
-  aspectRatioOptions: readonly AspectRatioOption[];
   canReset: boolean;
   onReset: () => void;
 }) => ReactElement;
@@ -20,35 +19,20 @@ export interface ModelOption {
   id: string;
   name: string;
   nameKey?: string; // 国际化key，如 "models.nanoBanana"
-  icon?: React.ComponentType<{ className?: string }>;
+  icon: React.ComponentType<{ className?: string }>;
   glyph?: string;
   locked?: boolean;
   tag?: string;
   availability?: string;
   features?: string[];
   descriptionKey?: string;
-  aspectRatioOptions?: readonly AspectRatioOption[];
   modelType?: string; // 模型类别，用于展示
-  renderFormFields?: FormFieldRenderer;
+  renderFormFields: FormFieldRenderer;
 }
 
 export interface GeneratorSettings {
   model: string;
-  aspectRatio: AspectRatio;
-  variations: 1 | 2 | 3 | 4;
-  visibility: "public" | "private";
-  resolution?: string;
-  format?: string;
-}
-
-export interface GeneratorRequestParams {
-  prompt?: string;
-  imageUrl?: string;
-  aspectRatio?: AspectRatio;
-  resolution?: string;
-  format?: string;
-  variations?: number;
-  visibility?: "public" | "private";
+  [key: string]: any;
 }
 
 export interface RequestResponse {
@@ -60,5 +44,10 @@ export interface RequestResponse {
 
 export interface RequestConfig {
   type: 'direct' | 'webhook';
-  handler: (params: GeneratorRequestParams) => Promise<RequestResponse>;
+  handler: (
+    prompt: string | undefined,
+    mode: string,
+    settings: GeneratorSettings,
+    images: string[] | undefined
+  ) => Promise<RequestResponse>;
 }

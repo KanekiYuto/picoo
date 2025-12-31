@@ -8,9 +8,9 @@ import { useTranslations } from "next-intl";
 
 import { cn } from "@/lib/utils";
 import { Form } from "@/components/ui/form";
-import { MODELS, MODE_CONFIGS, type GeneratorMode } from "../../config";
+import { MODE_CONFIGS, DEFAULT_ASPECT_RATIO_OPTIONS, type GeneratorMode } from "../../config";
 import { ModelGrid } from "./ModelGrid";
-import type { AspectRatio, GeneratorSettings, ModelOption } from "./types";
+import type { GeneratorSettings, ModelOption } from "./types";
 import {
   normalizeSettings,
   areSettingsEqual,
@@ -44,12 +44,10 @@ export function SettingsPanel({ onClose, settings, onSettingsChange, mode = "tex
       icon: modelInfo.icon,
       features: modelInfo.features,
       descriptionKey: modelInfo.descriptionKey,
-      aspectRatioOptions: modelInfo.aspectRatioOptions,
       renderFormFields: modelInfo.renderFormFields,
     }));
   }, [mode]);
 
-  const defaultSettings = useMemo(() => normalizeSettings(undefined, availableModels), [availableModels]);
   const isExternallyControlled = settings !== undefined && onSettingsChange !== undefined;
 
   const [localSettings, setLocalSettings] = useState<GeneratorSettings>(() => normalizeSettings(settings, availableModels));
@@ -74,9 +72,8 @@ export function SettingsPanel({ onClose, settings, onSettingsChange, mode = "tex
   }, [isExternallyControlled, localSettings, settings, availableModels]);
 
   const selectedModelConfig = useMemo(() => getModelById(currentSettings.model, availableModels), [currentSettings.model, availableModels]);
-  const aspectRatioOptions = selectedModelConfig?.aspectRatioOptions ?? [];
 
-  const defaultAspectRatio = useMemo(() => getDefaultAspectRatio(aspectRatioOptions), [aspectRatioOptions]);
+  const defaultAspectRatio = useMemo(() => getDefaultAspectRatio(DEFAULT_ASPECT_RATIO_OPTIONS), []);
   const canReset = currentSettings.aspectRatio !== defaultAspectRatio;
 
   // 使用 react-hook-form
@@ -110,10 +107,9 @@ export function SettingsPanel({ onClose, settings, onSettingsChange, mode = "tex
     const model = getModelById(modelId, availableModels);
     if (model?.locked) return;
 
-    const options = model?.aspectRatioOptions ?? [];
-    const nextAspectRatio = isAspectRatioSupported(options, currentSettings.aspectRatio)
+    const nextAspectRatio = isAspectRatioSupported(DEFAULT_ASPECT_RATIO_OPTIONS, currentSettings.aspectRatio)
       ? currentSettings.aspectRatio
-      : getDefaultAspectRatio(options);
+      : getDefaultAspectRatio(DEFAULT_ASPECT_RATIO_OPTIONS);
 
     form.setValue("model", model?.id ?? modelId);
     form.setValue("aspectRatio", nextAspectRatio);
@@ -153,10 +149,9 @@ export function SettingsPanel({ onClose, settings, onSettingsChange, mode = "tex
                 settings: currentSettings,
                 onChange: (next) => {
                   Object.entries(next).forEach(([key, value]) => {
-                    form.setValue(key as keyof GeneratorSettings, value);
+                    form.setValue(key as string, value);
                   });
                 },
-                aspectRatioOptions,
                 canReset,
                 onReset: handleReset,
               })}
