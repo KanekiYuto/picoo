@@ -63,7 +63,7 @@ export function GlobalGenerator({
       icon: modelInfo.icon,
       features: modelInfo.features,
       descriptionKey: modelInfo.descriptionKey,
-      aspectRatioOptions: modelInfo.aspectRatioOptions,
+      renderFormFields: modelInfo.renderFormFields,
     };
   }, [mode, settings.model]);
 
@@ -91,21 +91,18 @@ export function GlobalGenerator({
   };
 
   // 计算所需积分
-  const requiredCredits = useMemo(() => {
-    if (!settings.model) return 0;
+  const requiredCredits = useMemo<number | null>(() => {
+    if (!settings.model) return null;
 
-    const parameters: Record<string, any> = {
-      resolution: settings.resolution,
-      format: settings.format,
-      num_images: settings.variations,
-    };
+    const modeConfig = MODE_CONFIGS[mode];
+    const modelInfo = modeConfig?.models?.[settings.model];
 
-    console.log(mode);
-    console.log(settings.model);
-    console.log(parameters);
+    if (!modelInfo?.getCreditsParams) return null;
+
+    const parameters = modelInfo.getCreditsParams(settings);
 
     return getRequiredCredits(mode, settings.model, parameters);
-  }, [mode, settings.model, settings.resolution, settings.format, settings.variations]);
+  }, [mode, settings]);
 
   // 处理生成
   const handleCreate = () => {

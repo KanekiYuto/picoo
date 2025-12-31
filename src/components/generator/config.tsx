@@ -106,6 +106,7 @@ export interface ModelInfo {
   renderFormFields: FormFieldRenderer;
   defaultSettings: DefaultSettings;
   requestConfig: RequestConfig;
+  getCreditsParams: (settings: GeneratorSettings) => Record<string, any>;
 }
 
 // 默认设置接口
@@ -155,6 +156,9 @@ export const MODE_CONFIGS: Record<GeneratorMode, ModeConfig> = {
             resolution: settings.resolution,
           };
         }),
+        getCreditsParams: (settings) => ({
+          resolution: settings.resolution,
+        }),
       },
       "seedream-v4.5": {
         name: "Seedream v4.5",
@@ -171,6 +175,7 @@ export const MODE_CONFIGS: Record<GeneratorMode, ModeConfig> = {
             size: settings.size,
           };
         }),
+        getCreditsParams: (_settings) => ({}),
       },
       "gpt-image-1.5": {
         name: "ChatGPT 1.5",
@@ -183,6 +188,7 @@ export const MODE_CONFIGS: Record<GeneratorMode, ModeConfig> = {
           format: "jpeg",
           background: "auto",
           quality: "medium",
+          num_images: 1,
         },
         requestConfig: createRequestConfig("fal/gpt-image-1.5/text-to-image", "webhook", (prompt, _mode, settings, _images) => {
           return {
@@ -190,7 +196,13 @@ export const MODE_CONFIGS: Record<GeneratorMode, ModeConfig> = {
             output_format: settings.format,
             background: settings.background,
             quality: settings.quality,
+            num_images: settings.num_images,
           };
+        }),
+        getCreditsParams: (settings) => ({
+          size: settings.size,
+          quality: settings.quality,
+          num_images: settings.num_images || 1,
         }),
       },
       "flux-2-pro": {
@@ -208,6 +220,7 @@ export const MODE_CONFIGS: Record<GeneratorMode, ModeConfig> = {
             aspect_ratio: settings.aspect_ratio,
           };
         }),
+        getCreditsParams: (_settings) => ({}),
       },
       "z-image": {
         name: "Z Image Turbo",
@@ -224,6 +237,7 @@ export const MODE_CONFIGS: Record<GeneratorMode, ModeConfig> = {
             aspect_ratio: settings.aspect_ratio,
           };
         }),
+        getCreditsParams: (_settings) => ({}),
       },
     },
     defaultModel: "nano-banana-pro",
@@ -251,6 +265,9 @@ export const MODE_CONFIGS: Record<GeneratorMode, ModeConfig> = {
             target_resolution: settings.resolution,
             output_format: settings.format,
           };
+        }),
+        getCreditsParams: (settings) => ({
+          resolution: settings.resolution,
         }),
       },
     },
@@ -283,6 +300,9 @@ export const MODE_CONFIGS: Record<GeneratorMode, ModeConfig> = {
             resolution: settings.resolution,
           };
         }),
+        getCreditsParams: (settings) => ({
+          resolution: settings.resolution,
+        }),
       },
       "seedream-v4.5": {
         name: "Seedream v4.5",
@@ -300,6 +320,7 @@ export const MODE_CONFIGS: Record<GeneratorMode, ModeConfig> = {
             size: settings.size,
           };
         }),
+        getCreditsParams: (_settings) => ({}),
       },
       "gpt-image-1.5": {
         name: "ChatGPT 1.5",
@@ -312,6 +333,7 @@ export const MODE_CONFIGS: Record<GeneratorMode, ModeConfig> = {
           format: "jpeg",
           background: "auto",
           quality: "medium",
+          num_images: 1,
         },
         requestConfig: createRequestConfig("fal/gpt-image-1.5/image-to-image", "webhook", (prompt, _mode, settings, images) => {
           return {
@@ -323,6 +345,11 @@ export const MODE_CONFIGS: Record<GeneratorMode, ModeConfig> = {
             size: settings.size,
             background: settings.background,
           };
+        }),
+        getCreditsParams: (settings) => ({
+          size: settings.size,
+          quality: settings.quality,
+          num_images: settings.num_images || 1,
         }),
       },
       "flux-2-pro": {
@@ -341,6 +368,7 @@ export const MODE_CONFIGS: Record<GeneratorMode, ModeConfig> = {
             aspect_ratio: settings.aspect_ratio,
           };
         }),
+        getCreditsParams: (_settings) => ({}),
       },
     },
     defaultModel: "nano-banana-pro",
@@ -366,6 +394,9 @@ export const MODE_CONFIGS: Record<GeneratorMode, ModeConfig> = {
             image: images?.[0],
             output_format: settings.format,
           };
+        }),
+        getCreditsParams: (_settings) => ({
+          num_images: 1,
         }),
       },
     },

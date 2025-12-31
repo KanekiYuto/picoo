@@ -57,7 +57,7 @@ export function useKonvaStage(
       targetNode = selectedErrorNode;
     }
     // 多个图片被选中
-    else if (selectedImages.length > 1 && transformer?.nodes().length > 0) {
+    else if (selectedImages.length > 1 && transformer && transformer.nodes().length > 0) {
       const pos = calculateToolbarPosition(
         transformer.getClientRect(),
         containerRef.current.getBoundingClientRect()

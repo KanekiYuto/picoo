@@ -66,19 +66,9 @@ export function GlobalGeneratorModal() {
     if (modelExistsInNewMode) {
       // 模型在新模式中存在，保留模型但更新其默认设置
       const newModelDefaults = getDefaultSettings(newMode, currentModel);
-      const currentModelInNewMode = newModeModels[currentModel];
-
-      // 检查当前的 aspectRatio 是否被新模式的模型支持
-      const aspectRatioOptions = currentModelInNewMode.aspectRatioOptions || [];
-      const isAspectRatioSupported = aspectRatioOptions.some(
-        option => option.portrait === settings.aspectRatio || option.landscape === settings.aspectRatio
-      );
-
       setSettings({
         ...settings,
-        aspectRatio: isAspectRatioSupported ? settings.aspectRatio : newModelDefaults.aspectRatio,
-        resolution: newModelDefaults.resolution,
-        format: newModelDefaults.format,
+        ...newModelDefaults,
       });
     } else {
       // 模型不在新模式中，切换到新模式的默认模型和默认设置
