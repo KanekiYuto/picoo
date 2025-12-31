@@ -58,11 +58,11 @@ export function Footer({ className }: FooterProps) {
       whileInView="animate"
       viewport={{ once: true }}
       className={cn(
-        "bg-[linear-gradient(180deg,rgba(255,105,180,0.05)_0%,rgba(218,112,214,0.15)_100%)] relative",
+        "bg-secondary-background relative",
         className
       )}
     >
-      <div className="mx-auto max-w-7xl px-4 md:px-6 py-12 md:py-16 lg:px-8">
+      <div className="mx-auto max-w-7xl px-8 py-12">
         {/* Navigation Links */}
         <motion.div
           variants={fadeInUp}

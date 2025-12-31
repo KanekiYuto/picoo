@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { X } from "lucide-react";
 import { useTranslations } from "next-intl";
@@ -66,7 +67,7 @@ export function EditProfileModal({ isOpen, onClose, user, onSuccess }: EditProfi
     }
   };
 
-  return (
+  const modalContent = (
     <AnimatePresence>
       {isOpen && (
         <>
@@ -212,4 +213,6 @@ export function EditProfileModal({ isOpen, onClose, user, onSuccess }: EditProfi
       )}
     </AnimatePresence>
   );
+
+  return typeof window !== "undefined" ? createPortal(modalContent, document.body) : null;
 }
