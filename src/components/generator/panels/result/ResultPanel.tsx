@@ -6,7 +6,7 @@ import { Download, RefreshCw } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
-import { useKonvaStage } from "./hooks/useKonvaStage";
+import { usePixiStage } from "./hooks/usePixiStage";
 import { SelectionToolbar, ImageToolbar, ErrorToolbar } from "./components/Toolbar";
 import { LAYOUT_CONSTANTS, ZOOM_CONSTANTS } from "./utils/konvaHelpers";
 
@@ -29,8 +29,7 @@ export interface ResultPanelProps {
 }
 
 /**
- * 生成结果面板
- * 使用 Konva.js 画布引擎，支持图片拖动和缩放
+ * 生成结果面板 - 使用 PixiJS 画布引擎
  */
 export function ResultPanel({
   images,
@@ -45,7 +44,6 @@ export function ResultPanel({
 }: ResultPanelProps) {
   const t = useTranslations("generator.resultPanel");
   const containerRef = useRef<HTMLDivElement | null>(null);
-  const [globalZoom, setGlobalZoom] = useState(100);
 
   const {
     stageRef,
@@ -60,55 +58,41 @@ export function ResultPanel({
     setSelectedErrorNode,
     updateToolbarPosition,
     clearAllSelections,
-  } = useKonvaStage(containerRef, images, onImagePositionChange);
+    globalZoom,
+    handleGlobalZoomIn,
+    handleGlobalZoomOut,
+  } = usePixiStage(containerRef, images, onImagePositionChange);
 
   const isEmpty = !images || images.length === 0;
 
-  // 禁止右键菜单
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
 
-    const handleContextMenu = (e: MouseEvent) => {
-      e.preventDefault();
-    };
-
+    const handleContextMenu = (e: MouseEvent) => e.preventDefault();
     container.addEventListener('contextmenu', handleContextMenu);
     return () => container.removeEventListener('contextmenu', handleContextMenu);
   }, []);
 
-  // 复制选中图片到剪贴板
   const handleCopyImage = async () => {
-    if (!selectedImage) {
+    const imageData = imagesData.get(selectedImage!);
+    if (!selectedImage || !imageData?.url) {
       toast.error('请先选择图片');
       return;
     }
 
-    const imageData = imagesData.get(selectedImage);
-    if (!imageData?.url) {
-      toast.error('图片数据不存在');
+    if (!navigator.clipboard) {
+      toast.error('浏览器不支持剪贴板功能');
       return;
     }
 
     try {
-      // 检查剪贴板 API 是否可用
-      if (!navigator.clipboard) {
-        toast.error('浏览器不支持剪贴板功能');
-        return;
-      }
-
-      // 从 blob URL 获取 blob
       const response = await fetch(imageData.url);
-      if (!response.ok) {
-        throw new Error('Failed to fetch image');
-      }
+      if (!response.ok) throw new Error('Failed to fetch image');
 
-      const blob = await response.blob();
+      let blob = await response.blob();
 
-      // 如果是 JPEG 或其他不支持的格式，转换为 PNG
-      let finalBlob = blob;
       if (blob.type !== 'image/png') {
-        // 创建 Image 元素
         const img = new Image();
         const imageUrl = URL.createObjectURL(blob);
 
@@ -118,41 +102,26 @@ export function ResultPanel({
           img.src = imageUrl;
         });
 
-        // 创建 Canvas 并绘制图片
         const canvas = document.createElement('canvas');
         canvas.width = img.width;
         canvas.height = img.height;
         const ctx = canvas.getContext('2d');
 
-        if (!ctx) {
-          throw new Error('Failed to get canvas context');
-        }
+        if (!ctx) throw new Error('Failed to get canvas context');
 
         ctx.drawImage(img, 0, 0);
         URL.revokeObjectURL(imageUrl);
 
-        // 转换为 PNG blob
-        finalBlob = await new Promise<Blob>((resolve, reject) => {
+        blob = await new Promise<Blob>((resolve, reject) => {
           canvas.toBlob((blob) => {
-            if (blob) {
-              resolve(blob);
-            } else {
-              reject(new Error('Failed to convert to PNG'));
-            }
+            blob ? resolve(blob) : reject(new Error('Failed to convert to PNG'));
           }, 'image/png');
         });
       }
 
-      // 写入剪贴板
-      await navigator.clipboard.write([
-        new ClipboardItem({
-          'image/png': finalBlob
-        })
-      ]);
-
+      await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
       toast.success('图片已复制到剪贴板');
     } catch (error) {
-      console.error('Failed to copy image:', error);
       toast.error('复制失败: ' + (error instanceof Error ? error.message : '未知错误'));
     }
   };
@@ -235,136 +204,58 @@ export function ResultPanel({
     };
   }, [selectedImage, imagesData, onPasteImageStart, onPasteImageComplete, onPasteImageError]);
 
-  // 下载选中图片
   const handleDownloadSelected = () => {
-    if (!selectedImage) return;
-    const imageData = imagesData.get(selectedImage);
-    if (imageData?.imageUrl) {
+    const imageData = imagesData.get(selectedImage!);
+    if (selectedImage && imageData?.imageUrl) {
       onDownload?.(imageData.imageUrl);
     }
   };
 
-  // 放大选中图片
   const handleUpscaleSelected = () => {
-    if (!selectedImage) return;
-    const imageData = imagesData.get(selectedImage);
-    if (imageData?.imageUrl) {
+    const imageData = imagesData.get(selectedImage!);
+    if (selectedImage && imageData?.imageUrl) {
       onUpscale?.(imageData.imageUrl);
     }
   };
 
-  // 删除错误节点
   const handleDeleteError = () => {
     if (!selectedErrorNode) return;
-    const nodeId = selectedErrorNode.name().replace('item-', '');
+    const nodeId = (selectedErrorNode as any).errorId?.replace('item-', '') || '';
     onDeleteError?.(nodeId);
     setSelectedErrorNode(null);
   };
 
-  // 整理图片
   const handleArrange = () => {
     if (!layerRef.current || !stageRef.current || selectedImages.length === 0) return;
 
-    const layer = layerRef.current;
-
     const count = selectedImages.length;
     const cols = Math.ceil(Math.sqrt(count));
-    const rows = Math.ceil(count / cols);
 
     const firstImg = selectedImages[0];
-    const imgWidth = firstImg.width() * firstImg.scaleX();
-    const imgHeight = firstImg.height() * firstImg.scaleY();
+    const imgWidth = firstImg.width * firstImg.scale.x;
+    const imgHeight = firstImg.height * firstImg.scale.y;
 
-    // 计算起始位置（所有选中图片的左上角）
-    let minX = Infinity;
-    let minY = Infinity;
+    let minX = Infinity, minY = Infinity;
     selectedImages.forEach((img) => {
-      minX = Math.min(minX, img.x());
-      minY = Math.min(minY, img.y());
+      minX = Math.min(minX, img.x);
+      minY = Math.min(minY, img.y);
     });
 
-    // 重新排列图片
     selectedImages.forEach((img, index) => {
       const row = Math.floor(index / cols);
       const col = index % cols;
-
       const x = minX + col * (imgWidth + LAYOUT_CONSTANTS.gridSpacing);
       const y = minY + row * (imgHeight + LAYOUT_CONSTANTS.gridSpacing);
 
-      img.position({ x, y });
+      img.x = x;
+      img.y = y;
 
-      // 更新位置到状态
-      const nodeId = img.name().replace('item-', '');
-      onImagePositionChange?.(nodeId, { x, y });
+      if (img.imageId) {
+        onImagePositionChange?.(img.imageId, { x, y });
+      }
     });
 
     clearAllSelections();
-    layer.draw();
-  };
-
-  // 全局缩放
-  const handleGlobalZoomIn = () => {
-    if (!stageRef.current) return;
-
-    clearAllSelections();
-
-    const stage = stageRef.current;
-    const oldScale = stage.scaleX();
-    const newZoom = Math.min(globalZoom + ZOOM_CONSTANTS.step, ZOOM_CONSTANTS.max);
-    const newScale = newZoom / 100;
-
-    // 以舞台中心为缩放原点
-    const centerX = stage.width() / 2;
-    const centerY = stage.height() / 2;
-
-    // 计算缩放前后中心点对应的世界坐标
-    const mousePointTo = {
-      x: centerX / oldScale - stage.x() / oldScale,
-      y: centerY / oldScale - stage.y() / oldScale,
-    };
-
-    // 计算新的位置以保持中心点不变
-    const newPos = {
-      x: centerX - mousePointTo.x * newScale,
-      y: centerY - mousePointTo.y * newScale,
-    };
-
-    stage.scale({ x: newScale, y: newScale });
-    stage.position(newPos);
-    setGlobalZoom(newZoom);
-    stage.batchDraw();
-  };
-
-  const handleGlobalZoomOut = () => {
-    if (!stageRef.current) return;
-
-    clearAllSelections();
-
-    const stage = stageRef.current;
-    const oldScale = stage.scaleX();
-    const newZoom = Math.max(globalZoom - ZOOM_CONSTANTS.step, ZOOM_CONSTANTS.min);
-    const newScale = newZoom / 100;
-
-    // 以舞台中心为缩放原点
-    const centerX = stage.width() / 2;
-    const centerY = stage.height() / 2;
-
-    // 计算缩放前后中心点对应的世界坐标
-    const mousePointTo = {
-      x: centerX / oldScale - stage.x() / oldScale,
-      y: centerY / oldScale - stage.y() / oldScale,
-    };
-
-    // 计算新的位置以保持中心点不变
-    const newPos = {
-      x: centerX - mousePointTo.x * newScale,
-      y: centerY - mousePointTo.y * newScale,
-    };
-
-    stage.scale({ x: newScale, y: newScale });
-    stage.position(newPos);
-    setGlobalZoom(newZoom);
-    stage.batchDraw();
   };
 
   return (
@@ -376,7 +267,6 @@ export function ResultPanel({
       className="fixed inset-0 bg-secondary-background"
       style={{ zIndex: 0 }}
     >
-      {/* 全局缩放控制 */}
       {!isEmpty && (
         <div className="fixed top-4 right-20 z-30 flex items-center gap-2 bg-background/80 backdrop-blur-sm rounded-lg border border-border p-2">
           <button
@@ -395,12 +285,9 @@ export function ResultPanel({
         </div>
       )}
 
-      {/* 画板区域 */}
       <div className="w-full h-full flex items-center justify-center relative overflow-hidden">
-        {/* 画布始终渲染 */}
         <div ref={containerRef} className="w-full h-full overflow-hidden" />
 
-        {/* 空状态提示 - 覆盖在画布上方 */}
         {isEmpty && (
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
             <div className="flex flex-col items-center gap-3 text-center">
@@ -412,12 +299,10 @@ export function ResultPanel({
           </div>
         )}
 
-        {/* 框选工具栏 - 显示整理 */}
         {selectedImages.length > 1 && toolbarPos && !isEmpty && (
           <SelectionToolbar position={toolbarPos} onArrange={handleArrange} />
         )}
 
-        {/* 单个图片工具栏 */}
         {selectedImage && selectedImages.length === 1 && toolbarPos && !isEmpty && (
           <ImageToolbar
             position={toolbarPos}
@@ -426,13 +311,11 @@ export function ResultPanel({
           />
         )}
 
-        {/* 错误节点工具栏 */}
         {selectedErrorNode && toolbarPos && !isEmpty && (
           <ErrorToolbar position={toolbarPos} onDelete={handleDeleteError} />
         )}
       </div>
 
-      {/* 底部按钮 */}
       {selectedImage && !isEmpty && (
         <div className="fixed bottom-8 left-1/2 transform -translate-x-1/2 flex gap-3 z-10">
           <button
