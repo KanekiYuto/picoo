@@ -58,7 +58,7 @@ export function Footer({ className }: FooterProps) {
       whileInView="animate"
       viewport={{ once: true }}
       className={cn(
-        "border-t border-border bg-background",
+        "bg-[linear-gradient(180deg,rgba(255,105,180,0.05)_0%,rgba(218,112,214,0.15)_100%)] relative",
         className
       )}
     >
@@ -94,7 +94,7 @@ export function Footer({ className }: FooterProps) {
           variants={fadeInUp}
           className="relative overflow-hidden py-8 md:py-12 lg:py-16 xl:py-20"
         >
-          <div className="text-[4rem] sm:text-[6rem] md:text-[10rem] lg:text-[14rem] xl:text-[18rem] font-bold text-foreground/5 leading-none tracking-tighter text-center select-none">
+          <div className="text-[4rem] sm:text-[6rem] md:text-[10rem] lg:text-[14rem] xl:text-[18rem] font-bold text-foreground/8 leading-none tracking-tighter text-center select-none">
             {siteConfig.name}
           </div>
         </motion.div>
@@ -102,7 +102,7 @@ export function Footer({ className }: FooterProps) {
         {/* Bottom Bar */}
         <motion.div
           variants={fadeInUp}
-          className="flex flex-col md:flex-row items-center justify-between gap-4 md:gap-6 pt-6 md:pt-8 border-t border-border"
+          className="flex flex-col md:flex-row items-center justify-between gap-4 md:gap-6 pt-6 md:pt-8"
         >
           <p className="text-xs md:text-sm text-muted-foreground text-center md:text-left">
             © {siteConfig.copyright.year} {siteConfig.fullName}. {siteConfig.copyright.text}

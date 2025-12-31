@@ -80,11 +80,11 @@ export default function SettingsLayout({
       {/* 侧边栏 */}
       <aside
         className={cn(
-          "fixed left-0 top-16 bottom-0 z-50 w-[min(20rem,85vw)] border-r border-border bg-background transition-transform lg:static lg:translate-x-0 lg:w-64",
+          "fixed left-0 top-16 bottom-0 z-50 w-[min(20rem,85vw)] bg-background transition-transform lg:static lg:translate-x-0 lg:w-64",
           mobileMenuOpen ? "translate-x-0" : "-translate-x-full"
         )}
       >
-        <div className="h-full overflow-y-auto custom-scrollbar p-5 lg:p-6">
+        <div className="h-full overflow-y-auto custom-scrollbar p-4">
           {/* 移动端关闭按钮 */}
           <div className="flex items-center justify-between mb-5 lg:hidden">
             <div className="text-sm font-medium text-muted">{t("title")}</div>
@@ -135,7 +135,7 @@ export default function SettingsLayout({
 
       {/* 主内容区域 */}
       <main className="flex-1 overflow-auto">
-        <div className="max-w-6xl mx-auto px-5 py-6 sm:p-6 md:p-8 lg:p-12">
+        <div className="w-full px-4 py-4">
           {children}
         </div>
       </main>

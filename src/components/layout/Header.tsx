@@ -25,7 +25,7 @@ export function Header({ className, onMenuClick, isMobileMenuOpen }: HeaderProps
     <>
       <header
         className={cn(
-          "sticky top-0 z-50 bg-header-bg border-b border-border h-16 flex-shrink-0",
+          "sticky top-0 z-50 bg-header-bg h-16 flex-shrink-0",
           className
         )}
       >
@@ -49,26 +49,6 @@ export function Header({ className, onMenuClick, isMobileMenuOpen }: HeaderProps
 
           {/* Right: Actions */}
           <div className="ml-auto flex items-center gap-2">
-            {/* 桌面端显示的按钮 */}
-            <div className="hidden items-center gap-2 md:flex">
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className="flex h-10 w-10 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
-                aria-label="邀请成员"
-              >
-                <Users className="h-5 w-5" />
-              </motion.button>
-
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className="flex h-10 w-10 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
-                aria-label="消息"
-              >
-                <MessageSquare className="h-5 w-5" />
-              </motion.button>
-            </div>
 
             {/* 主题切换按钮 */}
             <motion.button
@@ -87,22 +67,6 @@ export function Header({ className, onMenuClick, isMobileMenuOpen }: HeaderProps
 
             {/* 语言切换按钮 */}
             <LanguageSwitcher />
-
-            {/* 通知按钮（移动端和桌面端都显示） */}
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="relative flex h-10 w-10 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
-              aria-label="通知"
-            >
-              <Bell className="h-5 w-5" />
-              <span className="absolute right-1 top-1 flex h-2 w-2">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-75"></span>
-                <span className="relative inline-flex h-2 w-2 rounded-full bg-primary"></span>
-              </span>
-            </motion.button>
-
-            <div className="ml-2 h-8 w-px bg-border"></div>
 
             {/* 用户按钮或登录按钮 */}
             <div className="ml-2">

@@ -48,7 +48,7 @@ export function AppLayout({
           />
 
           {/* Main 内容区域 - 可滚动 */}
-          <main className="relative flex-1 min-h-0 bg-background overflow-y-auto custom-scrollbar">
+          <main className="relative flex-1 min-h-0 overflow-y-auto custom-scrollbar">
             <MainContent>{children}</MainContent>
             {showFooter && <Footer />}
           </main>

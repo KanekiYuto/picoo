@@ -154,7 +154,7 @@ export function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
               </div>
 
               {/* 底部导航 */}
-              <div className="mt-auto flex flex-col gap-2 border-t border-border pt-6">
+              <div className="mt-auto flex flex-col gap-2 pt-6">
                 {bottomItems.map((item, index) => {
                   const Icon = item.icon;
                   const isActive = isActiveRoute(item.href);

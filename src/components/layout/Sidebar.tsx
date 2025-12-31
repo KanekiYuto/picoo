@@ -59,12 +59,12 @@ export function Sidebar({ className }: SidebarProps) {
   return (
     <aside
       className={cn(
-        "hidden lg:flex lg:flex-col lg:w-16 flex-shrink-0 border-r border-border bg-sidebar-bg",
+        "hidden lg:flex lg:flex-col lg:w-16 flex-shrink-0 bg-sidebar-bg",
         className
       )}
     >
       {/* Logo */}
-      <Link href="/" className="flex h-16 items-center justify-center border-b border-border">
+      <Link href="/" className="flex h-16 items-center justify-center">
         <div className="relative h-10 w-10 overflow-hidden rounded-lg bg-foreground/5">
           <Image
             src={siteConfig.logo}
@@ -111,7 +111,7 @@ export function Sidebar({ className }: SidebarProps) {
         </div>
 
         {/* Bottom Navigation */}
-        <div className="mt-auto flex flex-col gap-1 border-t border-border px-2 pt-4">
+        <div className="mt-auto flex flex-col gap-1 px-2 pt-4">
           {bottomItems.map((item) => {
             const Icon = item.icon;
             const isActive = isActiveRoute(item.href);

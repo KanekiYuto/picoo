@@ -42,7 +42,7 @@ export function UserButton() {
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
         onClick={() => setIsOpen(!isOpen)}
-        className="flex h-10 w-10 items-center justify-center rounded-full overflow-hidden bg-gradient-to-br from-primary to-primary-hover ring-2 ring-border"
+        className="flex h-10 w-10 items-center justify-center rounded-full overflow-hidden bg-gradient-to-br ring-2 ring-border"
       >
         {user.image ? (
           <img

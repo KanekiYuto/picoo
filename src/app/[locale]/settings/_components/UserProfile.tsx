@@ -22,7 +22,7 @@ export function UserProfile({ user }: UserProfileProps) {
 
   return (
     <>
-      <div className="bg-card border border-border rounded-2xl p-5 md:p-6">
+      <div className="bg-background border border-border rounded-2xl p-4">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div className="flex items-center gap-3 md:gap-4">
             {/* 用户头像 */}

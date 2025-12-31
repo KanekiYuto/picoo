@@ -33,7 +33,7 @@ export function LanguageModal() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={closeLanguageModal}
-            className="fixed inset-0 z-50 bg-background/60 backdrop-blur-sm"
+            className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm"
           />
 
           {/* 模态框内容 */}
@@ -42,7 +42,7 @@ export function LanguageModal() {
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              className="relative w-full max-w-md rounded-2xl border border-border bg-background p-6 shadow-2xl"
+              className="relative w-full max-w-md rounded-2xl bg-background p-6 shadow-2xl border border-border"
             >
               {/* 头部 */}
               <div className="mb-6 flex items-center justify-between">
@@ -51,7 +51,7 @@ export function LanguageModal() {
                 </h2>
                 <motion.button
                   onClick={closeLanguageModal}
-                  className="flex h-8 w-8 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
+                  className="flex h-8 w-8 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground cursor-pointer"
                   aria-label={t("close")}
                 >
                   <X className="h-5 w-5" />
