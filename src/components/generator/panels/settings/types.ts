@@ -40,3 +40,25 @@ export interface GeneratorSettings {
   resolution?: string;
   format?: string;
 }
+
+export interface GeneratorRequestParams {
+  prompt?: string;
+  imageUrl?: string;
+  aspectRatio?: AspectRatio;
+  resolution?: string;
+  format?: string;
+  variations?: number;
+  visibility?: "public" | "private";
+}
+
+export interface RequestResponse {
+  success: boolean;
+  taskId?: string;
+  results?: string[];
+  [key: string]: any;
+}
+
+export interface RequestConfig {
+  type: 'direct' | 'webhook';
+  handler: (params: GeneratorRequestParams) => Promise<RequestResponse>;
+}

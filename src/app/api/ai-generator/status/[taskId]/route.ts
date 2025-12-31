@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
-import { mediaGenerationTask } from '@/lib/db/schema';
+import { mediaGenerationTask, user } from '@/lib/db/schema';
 import { eq, and, sql } from 'drizzle-orm';
 import { auth } from '@/lib/auth';
 import { processImageResults, UserType } from '@/lib/image/resource';
@@ -36,10 +36,14 @@ export async function GET(
       );
     }
 
-    // 查询任务（验证任务属于当前用户）
+    // 查询任务（验证任务属于当前用户，并获取用户类型）
     const tasks = await db
-      .select()
+      .select({
+        task: mediaGenerationTask,
+        userType: user.type,
+      })
       .from(mediaGenerationTask)
+      .innerJoin(user, eq(mediaGenerationTask.userId, user.id))
       .where(
         and(
           eq(mediaGenerationTask.taskId, taskId),
@@ -55,7 +59,7 @@ export async function GET(
       );
     }
 
-    const task = tasks[0];
+    const { task, userType } = tasks[0];
 
     // 计算动态进度（仅对进行中的任务）
     let dynamicProgress = task.progress;
@@ -95,12 +99,11 @@ export async function GET(
 
     // 任务完成 - 返回结果
     if (task.status === 'completed') {
-      const userType = session.user.userType as UserType;
       return NextResponse.json({
         success: true,
         data: {
           ...baseData,
-          results: processImageResults(task.results, userType),
+          results: processImageResults(task.results, userType as UserType),
           started_at: task.startedAt,
           completed_at: task.completedAt,
           duration_ms: task.durationMs,

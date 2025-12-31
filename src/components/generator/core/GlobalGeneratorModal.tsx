@@ -1,31 +1,18 @@
 "use client";
 
-import { useState, useMemo, useRef, useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X } from "lucide-react";
 import { useGeneratorStore } from "@/stores/generatorStore";
 import { downloadImage } from "@/lib/image-utils";
-import { handleAIGenerate } from "@/lib/ai-generator-handler";
+import { handleAIGenerate, startPolling } from "../apiHandler";
 import { GlobalGenerator } from "./GlobalGenerator";
 import { UploadPanel } from "../panels/upload/UploadPanel";
 import { SettingsPanel, type GeneratorSettings } from "../panels/settings";
-import { ModeSelectorPanel, ModeSelectorButton, type GeneratorMode } from "../panels/mode";
+import { ModeSelectorPanel, type GeneratorMode } from "../panels/mode";
 import { ResultPanel, type ImageItem } from "../panels/result/ResultPanel";
 import { ImageUploadButton } from "../buttons/ImageUploadButton";
 import { MODE_CONFIGS } from "../config";
-
-// AI 生成结果类型定义
-interface AIResultItem {
-  type: 'image' | 'text';
-  url?: string;
-  content?: string;
-}
-
-interface AIGenerateResult {
-  data?: {
-    results?: AIResultItem[];
-  };
-}
 
 /**
  * 全局生成器模态框
@@ -50,17 +37,20 @@ export function GlobalGeneratorModal() {
     };
   }, []);
 
-  // 根据 mode 获取默认设置
-  const getDefaultSettings = (currentMode: GeneratorMode): GeneratorSettings => {
+  // 根据 mode 和 model 获取默认设置
+  const getDefaultSettings = (currentMode: GeneratorMode, modelName?: string): GeneratorSettings => {
     const modeConfig = MODE_CONFIGS[currentMode];
-    const defaults = modeConfig?.defaultSettings || {};
+    const targetModelName = modelName || modeConfig.defaultModel || "nano-banana-pro";
+    const modelInfo = modeConfig.models?.[targetModelName];
+    const modelDefaults = modelInfo?.defaultSettings || {};
+
     return {
-      model: defaults.model || "nano-banana-pro",
-      aspectRatio: (defaults.aspectRatio || "1:1") as `${number}:${number}`,
-      variations: defaults.variations || 1,
+      model: targetModelName,
+      aspectRatio: (modelDefaults.aspectRatio || "1:1") as `${number}:${number}`,
+      variations: (modelDefaults.variations || 1) as 1 | 2 | 3 | 4,
       visibility: "public",
-      resolution: defaults.resolution,
-      format: defaults.format,
+      resolution: modelDefaults.resolution,
+      format: modelDefaults.format,
     };
   };
 
@@ -70,13 +60,17 @@ export function GlobalGeneratorModal() {
 
     const newModeConfig = MODE_CONFIGS[newMode];
     const newModeModels = newModeConfig?.models;
-    const defaultSettings = getDefaultSettings(newMode);
+    const currentModel = settings.model;
 
-    // 如果新模式支持当前模型，保留当前设置
-    if (newModeModels && settings.model && newModeModels[settings.model]) {
-      const currentModelInNewMode = newModeModels[settings.model];
+    // 检查当前模型是否在新模式中存在
+    const modelExistsInNewMode = newModeModels && currentModel && newModeModels[currentModel];
 
-      // 检查当前的aspectRatio是否被新模式的模型支持
+    if (modelExistsInNewMode) {
+      // 模型在新模式中存在，保留模型但更新其默认设置
+      const newModelDefaults = getDefaultSettings(newMode, currentModel);
+      const currentModelInNewMode = newModeModels[currentModel];
+
+      // 检查当前的 aspectRatio 是否被新模式的模型支持
       const aspectRatioOptions = currentModelInNewMode.aspectRatioOptions || [];
       const isAspectRatioSupported = aspectRatioOptions.some(
         option => option.portrait === settings.aspectRatio || option.landscape === settings.aspectRatio
@@ -84,15 +78,14 @@ export function GlobalGeneratorModal() {
 
       setSettings({
         ...settings,
-        aspectRatio: isAspectRatioSupported ? settings.aspectRatio : defaultSettings.aspectRatio,
-        resolution: defaultSettings.resolution,
-        format: defaultSettings.format,
+        aspectRatio: isAspectRatioSupported ? settings.aspectRatio : newModelDefaults.aspectRatio,
+        resolution: newModelDefaults.resolution,
+        format: newModelDefaults.format,
       });
-      return;
+    } else {
+      // 模型不在新模式中，切换到新模式的默认模型和默认设置
+      setSettings(getDefaultSettings(newMode));
     }
-
-    // 如果新模式不支持当前模型，使用新模式的默认设置
-    setSettings(defaultSettings);
   };
 
   const [settings, setSettings] = useState<GeneratorSettings>(() => getDefaultSettings("text-to-image"));
@@ -170,57 +163,104 @@ export function GlobalGeneratorModal() {
     setActivePanel("upload");
   };
 
-  const handleGenerate = async (prompt: string, modeParam: string, settingsParam: GeneratorSettings, imagesParam: string[]) => {
-    // 创建唯一ID
-    const taskId = `task-${Date.now()}`;
-
-    // 添加加载占位符
-    setResultImages((prev) => [...prev, { type: 'loading', id: taskId }]);
+  const handleGenerate = async (
+    prompt: string,
+    modeParam: string,
+    settingsParam: GeneratorSettings,
+    imagesParam: string[]
+  ) => {
+    const displayTaskId = `task-${Date.now()}`;
+    const variationsCount = settingsParam.variations || 1;
+    const loadingItems = Array.from({ length: variationsCount }, (_, index) => ({
+      type: 'loading' as const,
+      id: `${displayTaskId}-${index}`,
+    }));
+    setResultImages((prev) => [...prev, ...loadingItems]);
 
     try {
+      const modeConfig = MODE_CONFIGS[modeParam as GeneratorMode];
+      const modelInfo = modeConfig.models?.[settingsParam.model];
+
+      if (!modelInfo) {
+        throw new Error(`Model ${settingsParam.model} not found`);
+      }
+
       const result = await handleAIGenerate({
         prompt,
         mode: modeParam as GeneratorMode,
         settings: settingsParam,
         images: imagesParam,
-      }) as AIGenerateResult;
+      });
 
-      // 从返回结果中提取图片 URL，带类型守卫
-      if (result?.data?.results && Array.isArray(result.data.results)) {
-        const imageUrls = result.data.results
-          .filter((item): item is AIResultItem & { url: string } =>
-            item.type === "image" && typeof item.url === 'string'
-          )
-          .map((item) => item.url);
-
-        // 替换加载占位符为成功图片
+      if (!result.success) {
         setResultImages((prev) =>
-          prev.map((item) =>
-            item.id === taskId
-              ? { type: 'success', id: taskId, url: imageUrls[0] || '' }
+          prev.map(item =>
+            item.type === 'loading' && item.id.startsWith(`${displayTaskId}-`)
+              ? { ...item, type: 'error', error: '' }
               : item
-          )
-        );
+          ));
+        return;
+      }
 
-        // 如果有多张图片，添加其他图片
-        if (imageUrls.length > 1) {
-          const additionalImages = imageUrls.slice(1).map((url, index) => ({
-            type: 'success' as const,
-            id: `${taskId}-${index + 1}`,
-            url,
-          }));
-          setResultImages((prev) => [...prev, ...additionalImages]);
+      console.log('result', result);
+
+      if (modelInfo.requestConfig.type === 'webhook') {
+        // Webhook 异步模式：启动轮询
+        if (!result.data.task_id) {
+          throw new Error('Webhook mode requires taskId in response');
         }
-      } else {
-        throw new Error("Invalid response format");
+
+        startPolling(
+          result.data.task_id,
+          (results) => {
+            setResultImages((prev) => {
+              // 移除所有与此任务相关的loading项
+              const withoutLoading = prev.filter(item => !item.id.startsWith(`${displayTaskId}-`));
+              // 添加所有成功的图片
+              const newImages = results.map((item, index) => ({
+                type: 'success' as const,
+                id: `${displayTaskId}-${index}`,
+                url: item.url,
+              }));
+              return [...withoutLoading, ...newImages];
+            });
+          },
+          (error) => {
+            setResultImages((prev) =>
+              prev.map(item =>
+                item.type === 'loading' && item.id.startsWith(`${displayTaskId}-`)
+                  ? { ...item, type: 'error', error }
+                  : item
+              )
+            );
+          }
+        );
+      } else if (modelInfo.requestConfig.type === 'direct') {
+        // Direct模式：处理多个结果
+        if (!result.data.results || !Array.isArray(result.data.results)) {
+          throw new Error('Direct mode requires results array in response');
+        }
+
+        setResultImages((prev) => {
+          // 移除所有与此任务相关的loading项
+          const withoutLoading = prev.filter(item => !item.id.startsWith(`${displayTaskId}-`));
+          // 添加所有成功的图片
+          const newImages = result.data.results!.map((item: any, index: number) => ({
+            type: 'success' as const,
+            id: `${displayTaskId}-${index}`,
+            url: item.url,
+          }));
+          return [...withoutLoading, ...newImages];
+        });
       }
     } catch (error) {
       console.error("Generate failed:", error);
-      // 替换加载占位符为错误状态
+      const errorMessage =
+        error instanceof Error ? error.message : "生成失败";
       setResultImages((prev) =>
-        prev.map((item) =>
-          item.id === taskId
-            ? { type: 'error', id: taskId, error: error instanceof Error ? error.message : "生成失败" }
+        prev.map(item =>
+          item.type === 'loading' && item.id.startsWith(`${displayTaskId}-`)
+            ? { ...item, type: 'error', error: errorMessage }
             : item
         )
       );

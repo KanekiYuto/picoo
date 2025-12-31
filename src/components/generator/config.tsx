@@ -2,11 +2,104 @@
 
 import { Type, Maximize, Pencil, Wand2 } from "lucide-react";
 import type { ComponentType } from "react";
-import type { AspectRatio, AspectRatioOption, ModelOption, FormFieldRenderer } from "./panels/settings/types";
+import type { AspectRatio, AspectRatioOption, ModelOption, FormFieldRenderer, RequestConfig, GeneratorRequestParams, RequestResponse } from "./panels/settings/types";
 import { AspectRatioField, VariationsField, VisibilityField, SelectField } from "./panels/settings/fields";
 import { FormField } from "@/components/ui/form";
 
 export type GeneratorMode = "text-to-image" | "upscale" | "edit-image" | "remove-watermark";
+
+// 辅助函数：生成 webhook 类型的 requestConfig
+function createWebhookConfig(apiRoute: string): RequestConfig {
+  return {
+    type: 'webhook',
+    handler: async (params: GeneratorRequestParams): Promise<RequestResponse> => {
+      const response = await fetch(`/api/ai-generator/provider/${apiRoute}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          prompt: params.prompt,
+          image_url: params.imageUrl,
+          aspect_ratio: params.aspectRatio,
+          output_format: params.format || 'jpeg',
+          resolution: params.resolution || '1k',
+        }),
+      });
+
+      if (!response.ok) {
+        return {
+          success: false,
+          error: `API request failed: ${response.statusText}`,
+        };
+      }
+
+      return await response.json();
+    },
+  };
+}
+
+// 辅助函数：生成 direct 类型的 requestConfig
+function createDirectConfig(apiRoute: string): RequestConfig {
+  return {
+    type: 'direct',
+    handler: async (params: GeneratorRequestParams): Promise<RequestResponse> => {
+      const response = await fetch(`/api/ai-generator/provider/${apiRoute}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          image: params.imageUrl,
+          target_resolution: params.resolution || '2k',
+          output_format: params.format || 'jpeg',
+          enable_sync_mode: true,
+        }),
+      });
+
+      if (!response.ok) {
+        return {
+          success: false,
+          error: `API request failed: ${response.statusText}`,
+        };
+      }
+
+      const data = await response.json();
+
+      console.log('Direct API Response:', data);
+
+      // 直接返回原始响应格式
+      return data;
+    },
+  };
+}
+
+// 辅助函数：生成 remove-watermark 的 requestConfig（direct 类型）
+function createRemoveWatermarkConfig(apiRoute: string): RequestConfig {
+  return {
+    type: 'direct',
+    handler: async (params: GeneratorRequestParams): Promise<RequestResponse> => {
+      const response = await fetch(`/api/ai-generator/provider/${apiRoute}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          image: params.imageUrl,
+          output_format: params.format || 'png',
+        }),
+      });
+
+      if (!response.ok) {
+        return {
+          success: false,
+          error: `API request failed: ${response.statusText}`,
+        };
+      }
+
+      const data = await response.json();
+
+      console.log('Remove Watermark API Response:', data);
+
+      // 直接返回原始响应格式
+      return data;
+    },
+  };
+}
 
 // 模型 Icon 组件
 export const GoogleMonoIcon: ComponentType<{ className?: string }> = ({ className }) => (
@@ -284,6 +377,7 @@ export interface ModelInfo {
   aspectRatioOptions?: readonly AspectRatioOption[];
   renderFormFields?: FormFieldRenderer;
   defaultSettings?: DefaultSettings;
+  requestConfig: RequestConfig;
 }
 
 // 默认设置接口
@@ -331,6 +425,7 @@ export const MODE_CONFIGS: Record<GeneratorMode, ModeConfig> = {
           resolution: "1k",
           format: "png",
         },
+        requestConfig: createWebhookConfig("wavespeed/nano-banana-pro/text-to-image"),
       },
       "seedream-v4.5": {
         name: "Seedream v4.5",
@@ -341,6 +436,7 @@ export const MODE_CONFIGS: Record<GeneratorMode, ModeConfig> = {
         aspectRatioOptions: DEFAULT_ASPECT_RATIO_OPTIONS,
         renderFormFields: defaultTextToImageFormFields,
         defaultSettings: {},
+        requestConfig: createWebhookConfig("wavespeed/seedream-v4.5/text-to-image"),
       },
       "gpt-image-1.5": {
         name: "ChatGPT 1.5",
@@ -351,6 +447,7 @@ export const MODE_CONFIGS: Record<GeneratorMode, ModeConfig> = {
         aspectRatioOptions: DEFAULT_ASPECT_RATIO_OPTIONS,
         renderFormFields: defaultTextToImageFormFields,
         defaultSettings: {},
+        requestConfig: createWebhookConfig("fal/gpt-image-1.5/text-to-image"),
       },
       "flux-2-pro": {
         name: "Flux 2 Pro",
@@ -361,6 +458,7 @@ export const MODE_CONFIGS: Record<GeneratorMode, ModeConfig> = {
         aspectRatioOptions: DEFAULT_ASPECT_RATIO_OPTIONS,
         renderFormFields: defaultTextToImageFormFields,
         defaultSettings: {},
+        requestConfig: createWebhookConfig("wavespeed/flux-2-pro/text-to-image"),
       },
       "z-image": {
         name: "Z Image Turbo",
@@ -371,6 +469,7 @@ export const MODE_CONFIGS: Record<GeneratorMode, ModeConfig> = {
         aspectRatioOptions: DEFAULT_ASPECT_RATIO_OPTIONS,
         renderFormFields: defaultTextToImageFormFields,
         defaultSettings: {},
+        requestConfig: createWebhookConfig("wavespeed/z-image/turbo"),
       },
     },
     defaultModel: "nano-banana-pro",
@@ -395,6 +494,7 @@ export const MODE_CONFIGS: Record<GeneratorMode, ModeConfig> = {
           resolution: "2k",
           format: "jpeg",
         },
+        requestConfig: createDirectConfig("wavespeed/image-upscaler"),
       },
     },
     defaultModel: "upscale",
@@ -415,6 +515,7 @@ export const MODE_CONFIGS: Record<GeneratorMode, ModeConfig> = {
         aspectRatioOptions: DEFAULT_ASPECT_RATIO_OPTIONS,
         renderFormFields: defaultImageToImageFormFields,
         defaultSettings: {},
+        requestConfig: createWebhookConfig("wavespeed/nano-banana-pro/image-to-image"),
       },
       "seedream-v4.5": {
         name: "Seedream v4.5",
@@ -425,6 +526,7 @@ export const MODE_CONFIGS: Record<GeneratorMode, ModeConfig> = {
         aspectRatioOptions: DEFAULT_ASPECT_RATIO_OPTIONS,
         renderFormFields: defaultImageToImageFormFields,
         defaultSettings: {},
+        requestConfig: createWebhookConfig("wavespeed/seedream-v4.5/image-to-image"),
       },
       "gpt-image-1.5": {
         name: "ChatGPT 1.5",
@@ -435,6 +537,7 @@ export const MODE_CONFIGS: Record<GeneratorMode, ModeConfig> = {
         aspectRatioOptions: DEFAULT_ASPECT_RATIO_OPTIONS,
         renderFormFields: defaultImageToImageFormFields,
         defaultSettings: {},
+        requestConfig: createWebhookConfig("fal/gpt-image-1.5/image-to-image"),
       },
       "flux-2-pro": {
         name: "Flux 2 Pro",
@@ -445,6 +548,7 @@ export const MODE_CONFIGS: Record<GeneratorMode, ModeConfig> = {
         aspectRatioOptions: DEFAULT_ASPECT_RATIO_OPTIONS,
         renderFormFields: defaultImageToImageFormFields,
         defaultSettings: {},
+        requestConfig: createWebhookConfig("wavespeed/flux-2-pro/image-to-image"),
       },
     },
     defaultModel: "nano-banana-pro",
@@ -468,6 +572,7 @@ export const MODE_CONFIGS: Record<GeneratorMode, ModeConfig> = {
         defaultSettings: {
           format: "png",
         },
+        requestConfig: createRemoveWatermarkConfig("wavespeed/image-watermark-remover"),
       },
     },
     defaultModel: "remove-watermark",
