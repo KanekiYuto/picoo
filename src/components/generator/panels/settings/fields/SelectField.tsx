@@ -1,6 +1,5 @@
 "use client";
 
-import { SectionCard } from "../SectionCard";
 import {
   Select,
   SelectContent,
@@ -25,7 +24,10 @@ export function SelectField({ title, options }: SelectFieldProps) {
   const { field } = useFormField();
 
   return (
-    <SectionCard title={title}>
+    <div className="rounded-2xl border border-border/60 bg-background p-4 sm:p-5 flex items-center justify-between gap-4">
+      <label className="text-sm font-semibold text-foreground">
+        {title}
+      </label>
       <FormControl>
         <Select value={field.value} onValueChange={field.onChange}>
           <SelectTrigger>
@@ -40,6 +42,6 @@ export function SelectField({ title, options }: SelectFieldProps) {
           </SelectContent>
         </Select>
       </FormControl>
-    </SectionCard>
+    </div>
   );
 }

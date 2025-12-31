@@ -21,7 +21,7 @@ export function SectionCard({
         className
       )}
     >
-      <div className="mb-4 flex flex-wrap items-center justify-between gap-2 pb-3">
+      <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
         <div className="flex min-w-0 items-center gap-2">
           <h3 className="truncate text-sm font-semibold text-foreground">{title}</h3>
         </div>
