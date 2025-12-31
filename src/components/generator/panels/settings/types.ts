@@ -11,8 +11,6 @@ export type AspectRatioOption = {
 export type FormFieldRenderer = (props: {
   settings: GeneratorSettings;
   onChange: (settings: GeneratorSettings) => void;
-  canReset: boolean;
-  onReset: () => void;
 }) => ReactElement;
 
 export interface ModelOption {

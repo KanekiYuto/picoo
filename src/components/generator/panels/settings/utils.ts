@@ -83,14 +83,16 @@ export function areSettingsEqual(
   a: GeneratorSettings,
   b: GeneratorSettings
 ): boolean {
-  return (
-    a.model === b.model &&
-    a.aspectRatio === b.aspectRatio &&
-    a.variations === b.variations &&
-    a.visibility === b.visibility &&
-    a.resolution === b.resolution &&
-    a.format === b.format
-  );
+  // 只比较 model 字段，因为其他字段是动态的
+  if (a.model !== b.model) return false;
+
+  // 比较所有公共字段
+  const allKeys = new Set([...Object.keys(a), ...Object.keys(b)]);
+  for (const key of allKeys) {
+    if (a[key] !== b[key]) return false;
+  }
+
+  return true;
 }
 
 /**
@@ -101,17 +103,10 @@ export function normalizeSettings(
   models: readonly ModelOption[]
 ): GeneratorSettings {
   const defaultModel = getDefaultModel(models);
-  const defaultModelId = defaultModel?.id ?? "nano-banana";
+  const defaultModelId = defaultModel?.id ?? "nano-banana-pro";
 
   const modelId = settings?.model ?? defaultModelId;
   const model = getModelById(modelId, models) ?? defaultModel;
-  const aspectRatioOptions = model?.aspectRatioOptions ?? [];
-
-  const defaultAspectRatio = getDefaultAspectRatio(aspectRatioOptions);
-  const requestedAspectRatio = (settings?.aspectRatio as AspectRatio | undefined) ?? defaultAspectRatio;
-  const aspectRatio = isAspectRatioSupported(aspectRatioOptions, requestedAspectRatio)
-    ? requestedAspectRatio
-    : defaultAspectRatio;
 
   const variations = ([1, 2, 3, 4] as const).includes(settings?.variations as GeneratorSettings["variations"])
     ? (settings?.variations as GeneratorSettings["variations"])
@@ -121,10 +116,8 @@ export function normalizeSettings(
 
   return {
     model: model?.id ?? modelId,
-    aspectRatio,
     variations,
     visibility,
-    resolution: settings?.resolution,
-    format: settings?.format,
+    ...settings,
   };
 }

@@ -6,12 +6,12 @@ import { ProcessParamsResult } from '@/lib/ai-generator/handleRequest';
 interface ImageToImageRequest {
   prompt: string;
   image_urls: string[];
-  negative_prompt?: string;
-  num_images?: number;
-  guidance_scale?: number;
-  seed?: number;
-  quality?: 'low' | 'medium' | 'high';
-  size?: '1024x1024' | '1024x1536' | '1536x1024';
+  num_images: number;
+  seed: number;
+  quality: 'low' | 'medium' | 'high';
+  size: '1024x1024' | '1024x1536' | '1536x1024';
+  background: string;
+  output_format: string;
 }
 
 /**
@@ -30,12 +30,12 @@ export async function POST(request: NextRequest) {
       const {
         prompt,
         image_urls,
-        negative_prompt,
         num_images,
-        guidance_scale,
+        background,
         seed,
         quality,
         size,
+        output_format,
       } = body;
 
       // 验证必填参数
@@ -57,32 +57,12 @@ export async function POST(request: NextRequest) {
       const apiParams: Record<string, any> = {
         prompt,
         image_urls,
+        output_format,
+        num_images,
+        quality,
+        size,
+        background,
       };
-
-      // 添加可选参数
-      if (negative_prompt) {
-        apiParams.negative_prompt = negative_prompt;
-      }
-
-      if (num_images) {
-        apiParams.num_images = num_images;
-      }
-
-      if (guidance_scale !== undefined) {
-        apiParams.guidance_scale = guidance_scale;
-      }
-
-      if (seed !== undefined) {
-        apiParams.seed = seed;
-      }
-
-      if (quality) {
-        apiParams.quality = quality;
-      }
-
-      if (size) {
-        apiParams.size = size;
-      }
 
       // 返回处理结果
       return {
@@ -98,12 +78,12 @@ export async function POST(request: NextRequest) {
         dbParams: {
           prompt,
           image_urls,
-          negative_prompt,
           num_images,
-          guidance_scale,
           seed,
           quality,
           size,
+          output_format,
+          background,
         },
         // 配额消费描述
         description: `Image-to-image generation: ${prompt.substring(0, 50)}...`,

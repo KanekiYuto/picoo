@@ -110,13 +110,7 @@ export interface ModelInfo {
 
 // 默认设置接口
 export interface DefaultSettings {
-  model?: string;
-  aspectRatio?: AspectRatio;
-  variations?: 1 | 2 | 3 | 4;
-  resolution?: string;
-  format?: string;
-  background?: string;
-  quality?: string;
+  [key: string]: any;
 }
 
 // ModelDisplay 显示字段类型
@@ -149,14 +143,15 @@ export const MODE_CONFIGS: Record<GeneratorMode, ModeConfig> = {
         descriptionKey: "nano-banana-pro",
         renderFormFields: nanoBananaProFormFields,
         defaultSettings: {
+          aspect_ratio: "1:1",
           resolution: "1k",
-          format: "png",
+          output_format: "png",
         },
         requestConfig: createRequestConfig("wavespeed/nano-banana-pro/text-to-image", "webhook", (prompt, _mode, settings, _images) => {
           return {
             prompt,
-            aspect_ratio: settings.aspectRatio,
-            output_format: settings.format,
+            aspect_ratio: settings.aspect_ratio,
+            output_format: settings.output_format,
             resolution: settings.resolution,
           };
         }),
@@ -167,11 +162,13 @@ export const MODE_CONFIGS: Record<GeneratorMode, ModeConfig> = {
         features: ["artistic", "creative"],
         descriptionKey: "seedream-v4-5",
         renderFormFields: seedream45FormFields,
-        defaultSettings: {},
+        defaultSettings: {
+          size: "1:1",
+        },
         requestConfig: createRequestConfig("wavespeed/seedream-v4.5/text-to-image", "webhook", (prompt, mode, settings, images) => {
           return {
             prompt,
-            size: settings.aspectRatio,
+            size: settings.size,
           };
         }),
       },
@@ -182,6 +179,7 @@ export const MODE_CONFIGS: Record<GeneratorMode, ModeConfig> = {
         descriptionKey: "chatgpt-1-5",
         renderFormFields: gptImage15FormFields,
         defaultSettings: {
+          size: "1024x1024",
           format: "jpeg",
           background: "auto",
           quality: "medium",
@@ -201,11 +199,13 @@ export const MODE_CONFIGS: Record<GeneratorMode, ModeConfig> = {
         features: ["professional", "highQuality"],
         descriptionKey: "flux-2-pro",
         renderFormFields: flux2ProFormFields,
-        defaultSettings: {},
+        defaultSettings: {
+          aspect_ratio: "1:1",
+        },
         requestConfig: createRequestConfig("wavespeed/flux-2-pro/text-to-image", "webhook", (prompt, _mode, settings, _images) => {
           return {
             prompt,
-            aspect_ratio: settings.aspectRatio,
+            aspect_ratio: settings.aspect_ratio,
           };
         }),
       },
@@ -215,8 +215,15 @@ export const MODE_CONFIGS: Record<GeneratorMode, ModeConfig> = {
         features: ["realtime", "ultraFast"],
         descriptionKey: "z-image-turbo",
         renderFormFields: defaultTextToImageFormFields,
-        defaultSettings: {},
-        requestConfig: createWebhookConfig("wavespeed/z-image/turbo"),
+        defaultSettings: {
+          aspect_ratio: "1:1",
+        },
+        requestConfig: createRequestConfig("wavespeed/z-image/turbo", "webhook", (prompt, _mode, settings, _images) => {
+          return {
+            prompt,
+            aspect_ratio: settings.aspect_ratio,
+          };
+        }),
       },
     },
     defaultModel: "nano-banana-pro",
@@ -261,36 +268,79 @@ export const MODE_CONFIGS: Record<GeneratorMode, ModeConfig> = {
         icon: GoogleMonoIcon,
         features: ["fast", "simple"],
         descriptionKey: "nano-banana-pro",
-        renderFormFields: defaultImageToImageFormFields,
-        defaultSettings: {},
-        requestConfig: createWebhookConfig("wavespeed/nano-banana-pro/image-to-image"),
+        renderFormFields: nanoBananaProFormFields,
+        defaultSettings: {
+          aspect_ratio: "1:1",
+          resolution: "1k",
+          output_format: "png",
+        },
+        requestConfig: createRequestConfig("wavespeed/nano-banana-pro/image-to-image", "webhook", (prompt, _mode, settings, images) => {
+          return {
+            prompt,
+            images,
+            aspect_ratio: settings.aspect_ratio,
+            output_format: settings.output_format,
+            resolution: settings.resolution,
+          };
+        }),
       },
       "seedream-v4.5": {
         name: "Seedream v4.5",
         icon: ByteDanceIcon,
         features: ["artistic", "creative"],
         descriptionKey: "seedream-v4-5",
-        renderFormFields: defaultImageToImageFormFields,
-        defaultSettings: {},
-        requestConfig: createWebhookConfig("wavespeed/seedream-v4.5/image-to-image"),
+        renderFormFields: seedream45FormFields,
+        defaultSettings: {
+          size: "1:1",
+        },
+        requestConfig: createRequestConfig("wavespeed/seedream-v4.5/image-to-image", "webhook", (prompt, _mode, settings, images) => {
+          return {
+            prompt,
+            images,
+            size: settings.size,
+          };
+        }),
       },
       "gpt-image-1.5": {
         name: "ChatGPT 1.5",
         icon: GptMonoIcon,
         features: ["versatile", "stable"],
         descriptionKey: "chatgpt-1-5",
-        renderFormFields: defaultImageToImageFormFields,
-        defaultSettings: {},
-        requestConfig: createWebhookConfig("fal/gpt-image-1.5/image-to-image"),
+        renderFormFields: gptImage15FormFields,
+        defaultSettings: {
+          size: "1024x1024",
+          format: "jpeg",
+          background: "auto",
+          quality: "medium",
+        },
+        requestConfig: createRequestConfig("fal/gpt-image-1.5/image-to-image", "webhook", (prompt, _mode, settings, images) => {
+          return {
+            prompt,
+            image_urls: images,
+            output_format: settings.format,
+            num_images: settings.num_images,
+            quality: settings.quality,
+            size: settings.size,
+            background: settings.background,
+          };
+        }),
       },
       "flux-2-pro": {
         name: "Flux 2 Pro",
         icon: FluxIcon,
         features: ["professional", "highQuality"],
         descriptionKey: "flux-2-pro",
-        renderFormFields: defaultImageToImageFormFields,
-        defaultSettings: {},
-        requestConfig: createWebhookConfig("wavespeed/flux-2-pro/image-to-image"),
+        renderFormFields: flux2ProFormFields,
+        defaultSettings: {
+          aspect_ratio: "1:1",
+        },
+        requestConfig: createRequestConfig("wavespeed/flux-2-pro/image-to-image", "webhook", (prompt, _mode, settings, images) => {
+          return {
+            prompt,
+            images: images,
+            aspect_ratio: settings.aspect_ratio,
+          };
+        }),
       },
     },
     defaultModel: "nano-banana-pro",

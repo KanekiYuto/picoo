@@ -46,11 +46,9 @@ export function GlobalGeneratorModal() {
 
     return {
       model: targetModelName,
-      aspectRatio: (modelDefaults.aspectRatio || "1:1") as `${number}:${number}`,
-      variations: (modelDefaults.variations || 1) as 1 | 2 | 3 | 4,
+      variations: 1,
       visibility: "public",
-      resolution: modelDefaults.resolution,
-      format: modelDefaults.format,
+      ...modelDefaults,
     };
   };
 

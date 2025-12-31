@@ -8,14 +8,12 @@ import { useTranslations } from "next-intl";
 
 import { cn } from "@/lib/utils";
 import { Form } from "@/components/ui/form";
-import { MODE_CONFIGS, DEFAULT_ASPECT_RATIO_OPTIONS, type GeneratorMode } from "../../config";
+import { MODE_CONFIGS, type GeneratorMode } from "../../config";
 import { ModelGrid } from "./ModelGrid";
 import type { GeneratorSettings, ModelOption } from "./types";
 import {
   normalizeSettings,
   areSettingsEqual,
-  getDefaultAspectRatio,
-  isAspectRatioSupported,
   getModelById,
 } from "./utils";
 import { FOCUS_RING_CLASSES } from "./constants";
@@ -33,11 +31,8 @@ export function SettingsPanel({ onClose, settings, onSettingsChange, mode = "tex
   // 从 MODE_CONFIGS 获取当前模式的模型配置
   const availableModels = useMemo<ModelOption[]>(() => {
     const modeConfig = MODE_CONFIGS[mode];
-    if (!modeConfig?.models) {
-      return [];
-    }
+    if (!modeConfig?.models) return [];
 
-    // 将 ModelInfo 转换为 ModelOption
     return Object.entries(modeConfig.models).map(([id, modelInfo]): ModelOption => ({
       id,
       name: modelInfo.name,
@@ -50,14 +45,33 @@ export function SettingsPanel({ onClose, settings, onSettingsChange, mode = "tex
 
   const isExternallyControlled = settings !== undefined && onSettingsChange !== undefined;
 
+  // 状态管理
   const [localSettings, setLocalSettings] = useState<GeneratorSettings>(() => normalizeSettings(settings, availableModels));
 
+  const currentSettings = useMemo(() => {
+    if (!settings) return localSettings;
+    return isExternallyControlled ? normalizeSettings(settings, availableModels) : localSettings;
+  }, [isExternallyControlled, localSettings, settings, availableModels]);
+
+  const selectedModelConfig = useMemo(
+    () => getModelById(currentSettings.model, availableModels),
+    [currentSettings.model, availableModels]
+  );
+
+  // 表单初始化
+  const form = useForm<GeneratorSettings>({
+    defaultValues: currentSettings,
+    values: currentSettings,
+  });
+
+  // 处理外部 settings 变化
   useEffect(() => {
     if (!settings || isExternallyControlled) return;
     const next = normalizeSettings(settings, availableModels);
     setLocalSettings((prev) => (areSettingsEqual(prev, next) ? prev : next));
   }, [isExternallyControlled, settings, availableModels]);
 
+  // ESC 关闭
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") onClose();
@@ -66,22 +80,7 @@ export function SettingsPanel({ onClose, settings, onSettingsChange, mode = "tex
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [onClose]);
 
-  const currentSettings = useMemo(() => {
-    if (!settings) return localSettings;
-    return isExternallyControlled ? normalizeSettings(settings, availableModels) : localSettings;
-  }, [isExternallyControlled, localSettings, settings, availableModels]);
-
-  const selectedModelConfig = useMemo(() => getModelById(currentSettings.model, availableModels), [currentSettings.model, availableModels]);
-
-  const defaultAspectRatio = useMemo(() => getDefaultAspectRatio(DEFAULT_ASPECT_RATIO_OPTIONS), []);
-  const canReset = currentSettings.aspectRatio !== defaultAspectRatio;
-
-  // 使用 react-hook-form
-  const form = useForm<GeneratorSettings>({
-    defaultValues: currentSettings,
-    values: currentSettings,
-  });
-
+  // 监听表单变化
   useEffect(() => {
     const subscription = form.watch((values) => {
       const next = values as GeneratorSettings;
@@ -89,30 +88,38 @@ export function SettingsPanel({ onClose, settings, onSettingsChange, mode = "tex
 
       if (isExternallyControlled) {
         onSettingsChange?.(next);
-        return;
+      } else {
+        setLocalSettings(next);
+        onSettingsChange?.(next);
       }
-
-      setLocalSettings(next);
-      onSettingsChange?.(next);
     });
 
     return () => subscription.unsubscribe();
   }, [form, currentSettings, isExternallyControlled, onSettingsChange]);
 
-  const handleReset = () => {
-    form.setValue("aspectRatio", defaultAspectRatio);
-  };
-
+  // 事件处理
   const handleSelectModel = (modelId: string) => {
     const model = getModelById(modelId, availableModels);
     if (model?.locked) return;
 
-    const nextAspectRatio = isAspectRatioSupported(DEFAULT_ASPECT_RATIO_OPTIONS, currentSettings.aspectRatio)
-      ? currentSettings.aspectRatio
-      : getDefaultAspectRatio(DEFAULT_ASPECT_RATIO_OPTIONS);
+    // 从 MODE_CONFIGS 获取模型的默认设置
+    const modeConfig = MODE_CONFIGS[mode];
+    const modelInfo = modeConfig.models?.[modelId];
+    const modelDefaults = modelInfo?.defaultSettings || {};
 
+    // 更新 model 字段
     form.setValue("model", model?.id ?? modelId);
-    form.setValue("aspectRatio", nextAspectRatio);
+
+    // 应用模型的默认设置
+    Object.entries(modelDefaults).forEach(([key, value]) => {
+      form.setValue(key as string, value);
+    });
+  };
+
+  const handleFormFieldChange = (next: GeneratorSettings) => {
+    Object.entries(next).forEach(([key, value]) => {
+      form.setValue(key as string, value);
+    });
   };
 
   return (
@@ -147,13 +154,7 @@ export function SettingsPanel({ onClose, settings, onSettingsChange, mode = "tex
             <div className="flex flex-col gap-4 px-4 py-4 lg:min-h-0 lg:overflow-y-auto lg:custom-scrollbar lg:px-4">
               {selectedModelConfig?.renderFormFields?.({
                 settings: currentSettings,
-                onChange: (next) => {
-                  Object.entries(next).forEach(([key, value]) => {
-                    form.setValue(key as string, value);
-                  });
-                },
-                canReset,
-                onReset: handleReset,
+                onChange: handleFormFieldChange,
               })}
             </div>
           </Form>
