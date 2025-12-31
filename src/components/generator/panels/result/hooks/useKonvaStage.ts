@@ -201,6 +201,7 @@ export function useKonvaStage(
         selectionStartRef.current = { x: stagePoint.x, y: stagePoint.y };
 
         if (!selectionBoxRef.current) {
+          const currentScale = stage.scaleX();
           const selectionBox = new Konva.Rect({
             x: stagePoint.x,
             y: stagePoint.y,
@@ -208,7 +209,8 @@ export function useKonvaStage(
             height: 0,
             fill: "rgba(75, 92, 196, 0.1)",
             stroke: "#4b5cc4",
-            strokeWidth: 2,
+            strokeWidth: 2 / currentScale,
+            strokeScaleEnabled: false,
             name: "selection-box",
           });
           layer.add(selectionBox);
@@ -244,27 +246,27 @@ export function useKonvaStage(
         if (!selectionBoxRef.current || !selectionStartRef.current) return;
 
         const selectionBox = selectionBoxRef.current;
-        const boxX = selectionBox.x();
-        const boxY = selectionBox.y();
-        const boxWidth = selectionBox.width();
-        const boxHeight = selectionBox.height();
+
+        // 获取框选框的客户端矩形（考虑所有变换）
+        const boxRect = selectionBox.getClientRect();
 
         const selectedList: Konva.Image[] = [];
 
         layer.children.forEach((child) => {
           if (!(child instanceof Konva.Image) || child.name().startsWith("selection")) return;
 
-          const imageX = child.x();
-          const imageY = child.y();
-          const imageWidth = child.width() * child.scaleX();
-          const imageHeight = child.height() * child.scaleY();
+          // 获取图片的客户端矩形（考虑所有变换）
+          const imageRect = child.getClientRect();
 
-          if (
-            imageX >= boxX &&
-            imageY >= boxY &&
-            imageX + imageWidth <= boxX + boxWidth &&
-            imageY + imageHeight <= boxY + boxHeight
-          ) {
+          // 相交检测：只要框选框与图片有重叠就选中
+          const hasIntersection = !(
+            boxRect.x + boxRect.width < imageRect.x ||
+            boxRect.x > imageRect.x + imageRect.width ||
+            boxRect.y + boxRect.height < imageRect.y ||
+            boxRect.y > imageRect.y + imageRect.height
+          );
+
+          if (hasIntersection) {
             selectedList.push(child);
           }
         });
