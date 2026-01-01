@@ -15,7 +15,7 @@ export function VisibilityField({}: VisibilityFieldProps) {
   const { field } = useFormField();
 
   return (
-    <div className="rounded-2xl border border-border/60 bg-background px-3 py-3 sm:px-4 sm:py-3.5">
+    <div className="rounded-2xl border border-border/60 bg-muted/10 px-3 py-3 sm:px-4 sm:py-3.5">
       <div className="flex items-center justify-between gap-3">
         <p className="text-sm font-medium text-foreground">{t("visibility")}</p>
         <FormControl>

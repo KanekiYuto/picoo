@@ -90,7 +90,7 @@ export function ModeSelectorButton({ value, onClick, className, iconOnly = false
       whileHover={{ scale: 1.02 }}
       whileTap={{ scale: 0.98 }}
       className={cn(
-        "flex items-center justify-center gap-2 rounded-lg bg-sidebar-active text-foreground text-sm font-medium transition-all duration-200 cursor-pointer",
+        "flex items-center justify-center gap-2 rounded-lg bg-muted/15 text-foreground text-sm font-medium transition-all duration-200 cursor-pointer",
         iconOnly
           ? "w-10 h-10 rounded-xl"
           : "px-3 py-2 whitespace-nowrap",

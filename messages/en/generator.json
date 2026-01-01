@@ -81,7 +81,10 @@
       "flux-1-1-ultra": "Ultra high-definition model for detailed and precise outputs",
       "chatgpt": "Classic reliable model with proven stability",
       "nano-banana": "Simple and fast model for everyday use",
-      "imagen-4": "Advanced Google-powered model with cutting-edge technology"
+      "imagen-4": "Advanced Google-powered model with cutting-edge technology",
+      "upscale": "Professional-grade upscaling model providing high-quality image enhancement",
+      "edit-image": "Model optimized for image editing with fine-grained control support",
+      "remove-watermark": "Professional watermark removal model that preserves image quality"
     }
   }
 }

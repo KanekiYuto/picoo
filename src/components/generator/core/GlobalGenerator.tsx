@@ -3,7 +3,6 @@
 import { useState, useMemo } from "react";
 import { motion } from "framer-motion";
 import { useTranslations } from "next-intl";
-import { ImageOff } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { getRequiredCredits } from "@/config/model-credit-cost";
 import { ModelDisplay } from "../panels/settings/ModelDisplay";
@@ -17,6 +16,7 @@ interface GlobalGeneratorProps {
   className?: string;
   onGenerate?: (prompt: string, mode: string, settings: GeneratorSettings, images: string[]) => void;
   onOpenUploadPanel?: () => void;
+  onOpenUploadPanelForReplace?: (index: number) => void;
   onOpenSettingsPanel?: () => void;
   onOpenModePanel?: () => void;
   onOpenMobileImagePanel?: () => void;
@@ -33,6 +33,7 @@ export function GlobalGenerator({
   className,
   onGenerate,
   onOpenUploadPanel,
+  onOpenUploadPanelForReplace,
   onOpenSettingsPanel,
   onOpenModePanel,
   onOpenMobileImagePanel,
@@ -66,24 +67,6 @@ export function GlobalGenerator({
       renderFormFields: modelInfo.renderFormFields,
     };
   }, [mode, settings.model]);
-
-  // 根据模式获取最大上传数量
-  const getMaxUploadCount = () => {
-    switch (mode) {
-      case "text-to-image":
-        return 0; // 文本生成不需要上传图片
-      case "upscale":
-        return 1; // 放大支持上传一张
-      case "edit-image":
-        return 4; // 编辑最多四张
-      case "remove-watermark":
-        return 1; // 去水印一张
-      default:
-        return 0;
-    }
-  };
-
-  const MAX_UPLOAD_COUNT = getMaxUploadCount();
 
   // ModelDisplay 配置
   const modelDisplayConfigs = [
@@ -141,23 +124,15 @@ export function GlobalGenerator({
       <div className="flex flex-col md:flex-row gap-3 md:gap-4">
         {/* 桌面端图片上传区域 - 左侧 */}
         <div className="hidden justify-end md:flex flex-col gap-3 bg-muted/10 rounded-xl border-1 border-dashed p-2">
-          {mode === "text-to-image" ? (
-            <div className="flex h-24 w-24 items-center justify-center rounded-xl border-2 border-dashed border-border/35 bg-sidebar-hover/15">
-              <div className="flex flex-col items-center gap-1">
-                <ImageOff className="h-6 w-6 text-muted-foreground/45" />
-                <span className="text-[10px] font-medium text-muted-foreground/45">{t("noImageRequired")}</span>
-              </div>
-            </div>
-          ) : (
-            <ImageUploadButton
-              size="lg"
-              uploadImages={uploadImages}
-              maxUploadCount={MAX_UPLOAD_COUNT}
-              onClick={onOpenUploadPanel}
-              onRemoveImage={onRemoveImage}
-              onImageClick={onImageClick}
-            />
-          )}
+          <ImageUploadButton
+            size="lg"
+            uploadImages={uploadImages}
+            onClick={onOpenUploadPanel}
+            onOpenUploadPanelForReplace={onOpenUploadPanelForReplace}
+            onRemoveImage={onRemoveImage}
+            onImageClick={onImageClick}
+            mode={mode}
+          />
           {/* 模式切换按钮 */}
           <ModeSelectorButton value={mode} onClick={onOpenModePanel || (() => {})} />
         </div>
@@ -197,10 +172,12 @@ export function GlobalGenerator({
                   className="md:hidden flex-shrink-0"
                   size="sm"
                   uploadImages={uploadImages}
-                  maxUploadCount={MAX_UPLOAD_COUNT}
                   onClick={onOpenUploadPanel}
+                  onOpenUploadPanelForReplace={onOpenUploadPanelForReplace}
+                  onOpenMobileImagePanel={onOpenMobileImagePanel}
                   onRemoveImage={onRemoveImage}
                   onImageClick={onImageClick}
+                  mode={mode}
                 />
               )}
 

@@ -8,30 +8,44 @@ import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip
 interface ImageUploadButtonProps {
   onClick?: () => void;
   uploadImages?: string[];
-  maxUploadCount?: number;
   onRemoveImage?: (index: number) => void;
   onImageClick?: (imageUrl: string, index: number) => void;
+  onOpenUploadPanelForReplace?: (index: number) => void;
+  onOpenMobileImagePanel?: () => void;
   size?: "sm" | "md" | "lg";
   className?: string;
+  mode: "text-to-image" | "upscale" | "edit-image" | "remove-watermark";
 }
 
 export function ImageUploadButton({
   onClick,
   uploadImages = [],
-  maxUploadCount = 5,
   onRemoveImage,
   onImageClick,
+  onOpenUploadPanelForReplace,
+  onOpenMobileImagePanel,
   size = "md",
   className,
+  mode,
 }: ImageUploadButtonProps) {
-  const uploadCount = uploadImages.length;
-  const isMaxReached = uploadCount >= maxUploadCount;
-
   // 小尺寸按钮（移动端）- 总是可点击的，用于上传或管理图片
   if (size === "sm") {
+    // text-to-image 模式不需要上传图片
+    if (mode === "text-to-image") {
+      return null;
+    }
+
+    const hasImages = uploadImages.length > 0;
+
     return (
       <motion.button
-        onClick={onClick}
+        onClick={() => {
+          if (hasImages) {
+            onOpenMobileImagePanel?.();
+          } else {
+            onClick?.();
+          }
+        }}
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
         className={cn(
@@ -44,23 +58,36 @@ export function ImageUploadButton({
         )}
       >
         <Plus className="h-5 w-5 text-muted-foreground" />
-        {uploadCount > 0 && (
+        {uploadImages.length > 0 && (
           <motion.div
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
             className="absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-primary text-white text-xs font-semibold flex items-center justify-center"
           >
-            {uploadCount}
+            {uploadImages.length}
           </motion.div>
         )}
       </motion.button>
     );
   }
 
-  // 单图模式（maxUploadCount = 1）- 显示单个固定大小的上传框
-  if (maxUploadCount === 1) {
+  // text-to-image 模式不需要上传图片
+  if (mode === "text-to-image") {
+    return (
+      <div className={cn("flex h-24 w-24 items-center justify-center rounded-xl border-2 border-dashed border-border/35 bg-muted/10", className)}>
+        <div className="flex flex-col items-center gap-1">
+          <Plus className="h-6 w-6 text-muted-foreground/45 rotate-45" />
+          <span className="text-[10px] font-medium text-muted-foreground/45">无需图片</span>
+        </div>
+      </div>
+    );
+  }
+
+  // upscale 或 remove-watermark - 单图模式
+  if (mode === "upscale" || mode === "remove-watermark") {
     const hasImage = uploadImages.length > 0;
     const imageUrl = uploadImages[0];
+    const isMaxReached = uploadImages.length >= 1;
 
     return (
       <div className={cn("flex items-end gap-2", className)}>
@@ -70,7 +97,7 @@ export function ImageUploadButton({
               <motion.div
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
-                onClick={() => onImageClick?.(imageUrl, 0)}
+                onClick={() => onOpenUploadPanelForReplace?.(0)}
                 className="relative w-24 h-24 rounded-xl overflow-hidden border-2 border-card group cursor-pointer"
               >
                 <img
@@ -115,12 +142,13 @@ export function ImageUploadButton({
     );
   }
 
-  // 大尺寸 - 真正的堆叠卡片设计（从左往右堆叠，露出40%）
+  // edit-image 模式 - 多图堆叠卡片设计
   const cardSize = 96; // 24 * 4 = 96px (w-24)
   const exposedWidth = Math.round(cardSize * 0.4); // 露出40%，约38px
   const visibleCards = Math.min(uploadImages.length, 4);
   // 计算堆叠区域总宽度：(可见卡片数-1) * 露出宽度 + 完整卡片宽度
   const stackWidth = visibleCards > 0 ? (visibleCards - 1) * exposedWidth + cardSize : 0;
+  const isMaxReached = uploadImages.length >= 4;
 
   return (
     <div className={cn("flex items-end gap-2", className)}>
@@ -138,7 +166,7 @@ export function ImageUploadButton({
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.9 }}
                   transition={{ delay: idx * 0.05 }}
-                  onClick={() => onImageClick?.(imageUrl, idx)}
+                  onClick={() => onOpenUploadPanelForReplace?.(idx)}
                   className="absolute w-24 h-24 rounded-xl overflow-hidden border-2 border-card group cursor-pointer"
                   style={{
                     left: idx * exposedWidth,

@@ -14,7 +14,7 @@ export function VariationsField({}: VariationsFieldProps) {
   const { field } = useFormField();
 
   return (
-    <div className="rounded-2xl border border-border/60 bg-background p-4 sm:p-5">
+    <div className="rounded-2xl border border-border/60 bg-muted/10 p-4 sm:p-5">
       <p className="text-sm font-semibold text-foreground mb-3">{t("variations")}</p>
       <FormControl>
         <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">

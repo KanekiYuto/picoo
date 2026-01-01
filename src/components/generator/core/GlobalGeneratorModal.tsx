@@ -11,7 +11,7 @@ import { UploadPanel } from "../panels/upload/UploadPanel";
 import { SettingsPanel, type GeneratorSettings } from "../panels/settings";
 import { ModeSelectorPanel, type GeneratorMode } from "../panels/mode";
 import { ResultPanel, type ImageItem } from "../panels/result/ResultPanel";
-import { ImageUploadButton } from "../buttons/ImageUploadButton";
+import { MobileImagePanel } from "../panels/mobile/MobileImagePanel";
 import { MODE_CONFIGS } from "../config";
 
 /**
@@ -23,6 +23,7 @@ export function GlobalGeneratorModal() {
   const [uploadImages, setUploadImages] = useState<string[]>([]);
   const [selectedImageUrl, setSelectedImageUrl] = useState<string | undefined>(undefined);
   const [mode, setMode] = useState<GeneratorMode>("text-to-image");
+  const [replaceIndex, setReplaceIndex] = useState<number | undefined>(undefined);
 
   // 跟踪 blob URLs 以便清理
   const blobUrlsRef = useRef<Set<string>>(new Set());
@@ -55,6 +56,10 @@ export function GlobalGeneratorModal() {
   // 智能切换模式：如果当前模型在新模式下可用则保留，否则使用新模式的默认模型
   const handleModeChange = (newMode: GeneratorMode) => {
     setMode(newMode);
+    // 切换模式时清空上传的图片
+    setUploadImages([]);
+    setSelectedImageUrl(undefined);
+    setReplaceIndex(undefined);
 
     const newModeConfig = MODE_CONFIGS[newMode];
     const newModeModels = newModeConfig?.models;
@@ -149,6 +154,78 @@ export function GlobalGeneratorModal() {
   const handleImageClick = (imageUrl: string, index: number) => {
     setSelectedImageUrl(imageUrl);
     setActivePanel("upload");
+  };
+
+  const handleImageReplace = async (file: File, index: number) => {
+    const localUrl = URL.createObjectURL(file);
+    blobUrlsRef.current.add(localUrl);
+
+    setUploadImages((prev) => {
+      const newImages = [...prev];
+      newImages[index] = localUrl;
+      return newImages;
+    });
+
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const response = await fetch("/api/asset/upload", {
+        method: "POST",
+        body: formData,
+      });
+
+      const result = (await response.json()) as
+        | { success: true; data: { url: string } }
+        | { success: false; error?: string };
+
+      if (!result.success) {
+        throw new Error(result.error || "Upload failed");
+      }
+
+      const uploadedUrl = result.data.url;
+      setUploadImages((prev) => {
+        const newImages = [...prev];
+        const oldUrl = newImages[index];
+        // 撤销 blob URL
+        if (blobUrlsRef.current.has(oldUrl)) {
+          URL.revokeObjectURL(oldUrl);
+          blobUrlsRef.current.delete(oldUrl);
+        }
+        newImages[index] = uploadedUrl;
+        return newImages;
+      });
+      setReplaceIndex(undefined);
+    } catch (error) {
+      console.error("Replace image failed:", error);
+      // 恢复为原始图片
+      setUploadImages((prev) => {
+        const newImages = [...prev];
+        const failedUrl = newImages[index];
+        if (blobUrlsRef.current.has(failedUrl)) {
+          URL.revokeObjectURL(failedUrl);
+          blobUrlsRef.current.delete(failedUrl);
+        }
+        // 这里应该恢复原始 URL，但我们没有保存它，所以先移除
+        return prev;
+      });
+      setReplaceIndex(undefined);
+    }
+  };
+
+  const handleRecentAssetReplace = (url: string, index: number) => {
+    setUploadImages((prev) => {
+      const newImages = [...prev];
+      const oldUrl = newImages[index];
+      // 清理 blob URL
+      if (blobUrlsRef.current.has(oldUrl)) {
+        URL.revokeObjectURL(oldUrl);
+        blobUrlsRef.current.delete(oldUrl);
+      }
+      newImages[index] = url;
+      return newImages;
+    });
+    setReplaceIndex(undefined);
   };
 
   const handleGenerate = async (
@@ -267,22 +344,6 @@ export function GlobalGeneratorModal() {
     }
   };
 
-  // 根据模式获取最大上传数量
-  const getMaxUploadCount = () => {
-    switch (mode) {
-      case "text-to-image":
-        return 0; // 文本生成不需要上传图片
-      case "upscale":
-        return 1; // 放大支持上传一张
-      case "edit-image":
-        return 4; // 编辑最多四张
-      case "remove-watermark":
-        return 1; // 去水印一张
-      default:
-        return 0;
-    }
-  };
-
   const handleDeleteError = (id: string) => {
     setResultImages((prev) => prev.filter((item) => item.id !== id));
   };
@@ -362,10 +423,14 @@ export function GlobalGeneratorModal() {
                             onClose={() => {
                               setActivePanel(null);
                               setSelectedImageUrl(undefined);
+                              setReplaceIndex(undefined);
                             }}
                             onImageSelect={handleImageSelect}
+                            onImageReplace={handleImageReplace}
                             onRecentAssetSelect={handleRecentAssetSelect}
+                            onRecentAssetReplace={handleRecentAssetReplace}
                             initialImageUrl={selectedImageUrl}
+                            replaceIndex={replaceIndex}
                           />
                         </div>
                       </motion.div>
@@ -401,43 +466,23 @@ export function GlobalGeneratorModal() {
 
               {/* 移动端图片管理面板 */}
               {activePanel === "mobile-images" && (
-                <motion.div
-                  key="mobile-images"
-                  initial={{ opacity: 0, y: -20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -20 }}
-                  transition={{ duration: 0.3 }}
-                  className="w-full"
-                >
-                  <div className="bg-background rounded-2xl p-4 md:p-6">
-                    <div className="flex items-center justify-between mb-6">
-                      <h2 className="text-lg font-semibold text-foreground">图片管理</h2>
-                      <button
-                        onClick={() => setActivePanel(null)}
-                        className="flex h-8 w-8 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-sidebar-hover hover:text-foreground cursor-pointer"
-                      >
-                        <X className="h-5 w-5" />
-                      </button>
-                    </div>
-
-                    <div className="flex flex-col gap-4">
-                      {/* 图片堆叠 */}
-                      <div className="flex items-center justify-center">
-                        <ImageUploadButton
-                          size="lg"
-                          uploadImages={uploadImages}
-                          maxUploadCount={getMaxUploadCount()}
-                          onClick={() => {
-                            setSelectedImageUrl(undefined);
-                            setActivePanel("upload");
-                          }}
-                          onRemoveImage={handleRemoveImage}
-                          onImageClick={handleImageClick}
-                        />
-                      </div>
-                    </div>
-                  </div>
-                </motion.div>
+                <MobileImagePanel
+                  uploadImages={uploadImages}
+                  mode={mode}
+                  onClose={() => setActivePanel(null)}
+                  onOpenUploadPanel={() => {
+                    setSelectedImageUrl(undefined);
+                    setReplaceIndex(undefined);
+                    setActivePanel("upload");
+                  }}
+                  onRemoveImage={handleRemoveImage}
+                  onImageClick={handleImageClick}
+                  onOpenUploadPanelForReplace={(index: number) => {
+                    setSelectedImageUrl(undefined);
+                    setReplaceIndex(index);
+                    setActivePanel("upload");
+                  }}
+                />
               )}
 
               {/* 生成器 */}
@@ -446,7 +491,13 @@ export function GlobalGeneratorModal() {
                   onGenerate={handleGenerate}
                   onOpenUploadPanel={() => {
                     setSelectedImageUrl(undefined);
+                    setReplaceIndex(undefined);
                     setActivePanel(activePanel === "upload" ? null : "upload");
+                  }}
+                  onOpenUploadPanelForReplace={(index: number) => {
+                    setSelectedImageUrl(undefined);
+                    setReplaceIndex(index);
+                    setActivePanel("upload");
                   }}
                   onOpenSettingsPanel={() => setActivePanel(activePanel === "settings" ? null : "settings")}
                   onOpenModePanel={() => setActivePanel(activePanel === "mode" ? null : "mode")}

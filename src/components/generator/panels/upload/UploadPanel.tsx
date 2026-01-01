@@ -19,11 +19,14 @@ interface UploadPanelProps {
   isOpen: boolean;
   onClose: () => void;
   onImageSelect: (file: File) => void;
+  onImageReplace?: (file: File, index: number) => void;
   onRecentAssetSelect?: (url: string) => void;
+  onRecentAssetReplace?: (url: string, index: number) => void;
   initialImageUrl?: string;
+  replaceIndex?: number;
 }
 
-export function UploadPanel({ isOpen, onClose, onImageSelect, onRecentAssetSelect, initialImageUrl }: UploadPanelProps) {
+export function UploadPanel({ isOpen, onClose, onImageSelect, onImageReplace, onRecentAssetSelect, onRecentAssetReplace, initialImageUrl, replaceIndex }: UploadPanelProps) {
   const t = useTranslations("generator.uploadPanel");
   const [isDragging, setIsDragging] = useState(false);
   const [recentAssets, setRecentAssets] = useState<Asset[]>([]);
@@ -74,7 +77,11 @@ export function UploadPanel({ isOpen, onClose, onImageSelect, onRecentAssetSelec
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      onImageSelect(file);
+      if (replaceIndex !== undefined && onImageReplace) {
+        onImageReplace(file, replaceIndex);
+      } else {
+        onImageSelect(file);
+      }
       onClose();
     }
   };
@@ -95,7 +102,11 @@ export function UploadPanel({ isOpen, onClose, onImageSelect, onRecentAssetSelec
 
     const file = e.dataTransfer.files?.[0];
     if (file && file.type.startsWith('image/')) {
-      onImageSelect(file);
+      if (replaceIndex !== undefined && onImageReplace) {
+        onImageReplace(file, replaceIndex);
+      } else {
+        onImageSelect(file);
+      }
       onClose();
     }
   };
@@ -103,7 +114,9 @@ export function UploadPanel({ isOpen, onClose, onImageSelect, onRecentAssetSelec
   // 处理点击已上传的图片
   const handleRecentAssetClick = (asset: Asset) => {
     setSelectedImage(asset.url);
-    if (onRecentAssetSelect) {
+    if (replaceIndex !== undefined && onRecentAssetReplace) {
+      onRecentAssetReplace(asset.url, replaceIndex);
+    } else if (onRecentAssetSelect) {
       onRecentAssetSelect(asset.url);
     } else {
       // 降级方案：创建一个伪 File 对象
@@ -114,7 +127,11 @@ export function UploadPanel({ isOpen, onClose, onImageSelect, onRecentAssetSelec
         const file = new File([blob], asset.originalFilename || asset.filename, {
           type: "image/jpeg",
         });
-        onImageSelect(file);
+        if (replaceIndex !== undefined && onImageReplace) {
+          onImageReplace(file, replaceIndex);
+        } else {
+          onImageSelect(file);
+        }
       };
       xhr.open("GET", asset.url);
       xhr.send();

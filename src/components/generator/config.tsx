@@ -3,12 +3,10 @@
 import { Type, Maximize, Pencil, Wand2 } from "lucide-react";
 import type { AspectRatio, AspectRatioOption, ModelOption, FormFieldRenderer, RequestConfig, GeneratorSettings, RequestResponse } from "./panels/settings/types";
 import {
-  defaultTextToImageFormFields,
   seedream45FormFields,
   flux2ProFormFields,
   gptImage15FormFields,
   nanoBananaProFormFields,
-  defaultImageToImageFormFields,
   upscaleFormFields,
   removeWatermarkFormFields,
   zImageFormFields,
@@ -54,39 +52,6 @@ const createRequestConfig = (
       return await response.json();
     },
   }
-}
-
-// 辅助函数：生成 webhook 类型的 requestConfig
-function createWebhookConfig(apiRoute: string): RequestConfig {
-  return {
-    type: 'webhook',
-    handler: async (prompt, mode, settings, images): Promise<RequestResponse> => {
-      // 构建请求体，过滤掉 undefined 的值
-      const requestBody: Record<string, any> = {};
-
-      if (prompt !== undefined) requestBody.prompt = prompt;
-      if (images?.[0] !== undefined) requestBody.image_url = images[0];
-      if (settings.aspectRatio !== undefined) requestBody.aspect_ratio = settings.aspectRatio;
-      if (settings.format !== undefined) requestBody.output_format = settings.format;
-      if (settings.resolution !== undefined) requestBody.resolution = settings.resolution;
-      if (settings.variations !== undefined) requestBody.variations = settings.variations;
-
-      const response = await fetch(`/api/ai-generator/provider/${apiRoute}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(requestBody),
-      });
-
-      if (!response.ok) {
-        return {
-          success: false,
-          error: `API request failed: ${response.statusText}`,
-        };
-      }
-
-      return await response.json();
-    },
-  };
 }
 
 // 默认纵横比选项
@@ -171,6 +136,7 @@ export const MODE_CONFIGS: Record<GeneratorMode, ModeConfig> = {
         getDisplayContent: (settings) => [
           { label: "Aspect Ratio", value: settings.aspect_ratio || "-" },
           { label: "Resolution", value: settings.resolution || "-" },
+          { label: "Format", value: settings.output_format || "-" },
         ],
       },
       "seedream-v4.5": {
@@ -335,8 +301,9 @@ export const MODE_CONFIGS: Record<GeneratorMode, ModeConfig> = {
           resolution: settings.resolution,
         }),
         getDisplayContent: (settings) => [
-          { label: "Aspect Ratio", value: settings.aspectRatio || "-" },
+          { label: "Aspect Ratio", value: settings.aspect_ratio || "-" },
           { label: "Resolution", value: settings.resolution || "-" },
+          { label: "Format", value: settings.output_format || "-" },
         ],
       },
       "seedream-v4.5": {
