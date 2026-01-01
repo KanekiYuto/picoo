@@ -81,6 +81,7 @@ export interface ModelInfo {
   requestConfig: RequestConfig;
   getCreditsParams: (settings: GeneratorSettings) => Record<string, any>;
   getDisplayContent: (settings: GeneratorSettings) => DisplayContent[]; // 获取显示内容
+  getVariations: (settings: GeneratorSettings) => number; // 获取实际生成的图片数量
 }
 
 // 默认设置接口
@@ -138,6 +139,7 @@ export const MODE_CONFIGS: Record<GeneratorMode, ModeConfig> = {
           { label: "Resolution", value: settings.resolution || "-" },
           { label: "Format", value: settings.output_format || "-" },
         ],
+        getVariations: (_settings) => 1,
       },
       "seedream-v4.5": {
         name: "Seedream v4.5",
@@ -158,6 +160,7 @@ export const MODE_CONFIGS: Record<GeneratorMode, ModeConfig> = {
         getDisplayContent: (settings) => [
           { label: "Size", value: settings.size || "-" },
         ],
+        getVariations: (_settings) => 1,
       },
       "gpt-image-1.5": {
         name: "ChatGPT 1.5",
@@ -191,6 +194,7 @@ export const MODE_CONFIGS: Record<GeneratorMode, ModeConfig> = {
           { label: "Quality", value: settings.quality || "-" },
           { label: "Format", value: settings.format || "-" },
         ],
+        getVariations: (settings) => settings.num_images || 1,
       },
       "flux-2-pro": {
         name: "Flux 2 Pro",
@@ -211,6 +215,7 @@ export const MODE_CONFIGS: Record<GeneratorMode, ModeConfig> = {
         getDisplayContent: (settings) => [
           { label: "Size", value: settings.size || "-" },
         ],
+        getVariations: (_settings) => 1,
       },
       "z-image": {
         name: "Z Image Turbo",
@@ -231,6 +236,7 @@ export const MODE_CONFIGS: Record<GeneratorMode, ModeConfig> = {
         getDisplayContent: (settings) => [
           { label: "Size", value: settings.size || "-" },
         ],
+        getVariations: (_settings) => 1,
       },
     },
     defaultModel: "nano-banana-pro",
@@ -266,6 +272,7 @@ export const MODE_CONFIGS: Record<GeneratorMode, ModeConfig> = {
           { label: "Resolution", value: settings.resolution || "-" },
           { label: "Format", value: settings.format || "-" },
         ],
+        getVariations: () => 1,
       },
     },
     defaultModel: "upscale",
@@ -305,6 +312,7 @@ export const MODE_CONFIGS: Record<GeneratorMode, ModeConfig> = {
           { label: "Resolution", value: settings.resolution || "-" },
           { label: "Format", value: settings.output_format || "-" },
         ],
+        getVariations: (_settings) => 1,
       },
       "seedream-v4.5": {
         name: "Seedream v4.5",
@@ -326,6 +334,7 @@ export const MODE_CONFIGS: Record<GeneratorMode, ModeConfig> = {
         getDisplayContent: (settings) => [
           { label: "Size", value: settings.size || "-" },
         ],
+        getVariations: (_settings) => 1,
       },
       "gpt-image-1.5": {
         name: "ChatGPT 1.5",
@@ -361,6 +370,7 @@ export const MODE_CONFIGS: Record<GeneratorMode, ModeConfig> = {
           { label: "Quality", value: settings.quality || "-" },
           { label: "Format", value: settings.format || "-" },
         ],
+        getVariations: (settings) => settings.num_images || 1,
       },
       "flux-2-pro": {
         name: "Flux 2 Pro",
@@ -382,6 +392,7 @@ export const MODE_CONFIGS: Record<GeneratorMode, ModeConfig> = {
         getDisplayContent: (settings) => [
           { label: "Size", value: settings.size || "-" },
         ],
+        getVariations: (_settings) => 1,
       },
     },
     defaultModel: "nano-banana-pro",
@@ -414,6 +425,7 @@ export const MODE_CONFIGS: Record<GeneratorMode, ModeConfig> = {
         getDisplayContent: (settings) => [
           { label: "Format", value: settings.format || "-" },
         ],
+        getVariations: () => 1,
       },
     },
     defaultModel: "remove-watermark",

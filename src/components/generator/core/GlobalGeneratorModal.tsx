@@ -101,24 +101,37 @@ export function GlobalGeneratorModal() {
       });
 
       const result = (await response.json()) as
-        | { success: true; data: { url: string } }
+        | { success: true; data: { url?: string; results?: Array<{ url: string }> } }
         | { success: false; error?: string };
 
       if (!result.success) {
         throw new Error(result.error || "Upload failed");
       }
 
-      const uploadedUrl = result.data.url;
-      // 替换最后一张图片的URL为真实URL
+      // 获取上传的 URL 列表：优先使用 results 数组，其次使用单个 url
+      const uploadedUrls = result.data.results?.map(r => r.url) || (result.data.url ? [result.data.url] : []);
+
+      if (uploadedUrls.length === 0) {
+        throw new Error("No URLs returned from upload");
+      }
+
+      // 替换最后一张 blob URL 为第一个真实 URL，然后添加其余的 URL
       setUploadImages((prev) => {
         const newImages = [...prev];
         const oldUrl = newImages[newImages.length - 1];
+
         // 撤销 blob URL
         if (blobUrlsRef.current.has(oldUrl)) {
           URL.revokeObjectURL(oldUrl);
           blobUrlsRef.current.delete(oldUrl);
         }
-        newImages[newImages.length - 1] = uploadedUrl;
+
+        // 替换第一个 URL，添加其余 URL
+        newImages[newImages.length - 1] = uploadedUrls[0];
+        if (uploadedUrls.length > 1) {
+          newImages.push(...uploadedUrls.slice(1));
+        }
+
         return newImages;
       });
     } catch (error) {
@@ -176,14 +189,20 @@ export function GlobalGeneratorModal() {
       });
 
       const result = (await response.json()) as
-        | { success: true; data: { url: string } }
+        | { success: true; data: { url?: string; results?: Array<{ url: string }> } }
         | { success: false; error?: string };
 
       if (!result.success) {
         throw new Error(result.error || "Upload failed");
       }
 
-      const uploadedUrl = result.data.url;
+      // 获取上传的 URL：优先使用 results 数组的第一个，其次使用单个 url
+      const uploadedUrl = result.data.results?.[0]?.url || result.data.url;
+
+      if (!uploadedUrl) {
+        throw new Error("No URL returned from upload");
+      }
+
       setUploadImages((prev) => {
         const newImages = [...prev];
         const oldUrl = newImages[index];
@@ -235,7 +254,14 @@ export function GlobalGeneratorModal() {
     imagesParam: string[]
   ) => {
     const displayTaskId = `task-${Date.now()}`;
-    const variationsCount = settingsParam.variations || 1;
+    const modeConfig = MODE_CONFIGS[modeParam as GeneratorMode];
+    const modelInfo = modeConfig.models?.[settingsParam.model];
+
+    if (!modelInfo) {
+      throw new Error(`Model ${settingsParam.model} not found`);
+    }
+
+    const variationsCount = modelInfo.getVariations(settingsParam);
     const loadingItems = Array.from({ length: variationsCount }, (_, index) => ({
       type: 'loading' as const,
       id: `${displayTaskId}-${index}`,
@@ -243,13 +269,6 @@ export function GlobalGeneratorModal() {
     setResultImages((prev) => [...prev, ...loadingItems]);
 
     try {
-      const modeConfig = MODE_CONFIGS[modeParam as GeneratorMode];
-      const modelInfo = modeConfig.models?.[settingsParam.model];
-
-      if (!modelInfo) {
-        throw new Error(`Model ${settingsParam.model} not found`);
-      }
-
       const result = await handleAIGenerate({
         prompt,
         mode: modeParam as GeneratorMode,
@@ -279,9 +298,9 @@ export function GlobalGeneratorModal() {
           result.data.task_id,
           (results) => {
             setResultImages((prev) => {
-              // 替换loading项为成功结果，保持顺序
+              // 先替换 loading 项为成功结果
               let resultIndex = 0;
-              return prev.map(item =>
+              let newImages = prev.map(item =>
                 item.type === 'loading' && item.id.startsWith(`${displayTaskId}-`)
                   ? {
                       type: 'success' as const,
@@ -290,6 +309,17 @@ export function GlobalGeneratorModal() {
                     }
                   : item
               );
+
+              // 如果结果数大于预期的 loading 项数，添加额外的结果
+              while (resultIndex < results.length) {
+                newImages.push({
+                  type: 'success' as const,
+                  id: `${displayTaskId}-extra-${resultIndex}`,
+                  url: results[resultIndex++].url,
+                });
+              }
+
+              return newImages;
             });
           },
           (error) => {
@@ -309,9 +339,9 @@ export function GlobalGeneratorModal() {
         }
 
         setResultImages((prev) => {
-          // 替换loading项为成功结果，保持顺序
+          // 先替换 loading 项为成功结果
           let resultIndex = 0;
-          return prev.map(item =>
+          let newImages = prev.map(item =>
             item.type === 'loading' && item.id.startsWith(`${displayTaskId}-`)
               ? {
                   type: 'success' as const,
@@ -320,6 +350,17 @@ export function GlobalGeneratorModal() {
                 }
               : item
           );
+
+          // 如果结果数大于预期的 loading 项数，添加额外的结果
+          while (resultIndex < result.data.results!.length) {
+            newImages.push({
+              type: 'success' as const,
+              id: `${displayTaskId}-extra-${resultIndex}`,
+              url: result.data.results![resultIndex++].url,
+            });
+          }
+
+          return newImages;
         });
       }
     } catch (error) {
