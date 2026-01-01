@@ -5,11 +5,13 @@ import { siteConfig } from "@/config/site";
 import { UserProvider } from "@/components/providers/UserProvider";
 import { UserStoreProvider } from "@/components/providers/UserStoreProvider";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
+import { TooltipProvider } from "@/components/ui/tooltip";
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, setRequestLocale } from 'next-intl/server';
 import { routing } from '../../../i18n/routing';
 import { rtlLocales } from '../../../i18n/config';
 import { Toaster } from "sonner";
+import MediaPreviewModal from "@/components/MediaPreviewModal";
 import "../globals.css";
 
 const geistSans = Geist({
@@ -57,11 +59,14 @@ export default async function LocaleLayout({
           <NextIntlClientProvider locale={locale} messages={messages}>
             <UserProvider>
               <UserStoreProvider>
-                <AppLayout>{children}</AppLayout>
+                <TooltipProvider>
+                  <AppLayout>{children}</AppLayout>
+                </TooltipProvider>
               </UserStoreProvider>
             </UserProvider>
           </NextIntlClientProvider>
           <Toaster position="top-center" richColors />
+          <MediaPreviewModal />
         </ThemeProvider>
       </body>
     </html>

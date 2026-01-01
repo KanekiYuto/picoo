@@ -3,15 +3,12 @@
 import { cn } from "@/lib/utils";
 import { SlidersHorizontal } from "lucide-react";
 import type { ModelOption } from "./types";
+import type { GeneratorSettings } from ".";
 import { MODE_CONFIGS, type GeneratorMode } from "../../config";
 
 interface ModelDisplayProps {
   model: ModelOption | undefined;
-  aspectRatio: string;
-  variations: 1 | 2 | 3 | 4;
-  visibility?: "public" | "private";
-  resolution?: string;
-  format?: string;
+  settings: GeneratorSettings;
   compact?: boolean;
   onClick?: () => void;
   mode?: GeneratorMode;
@@ -21,59 +18,39 @@ interface ModelDisplayProps {
 
 /**
  * 模型信息展示组件
- * 根据 MODE_CONFIGS 中的 displayFields 动态显示内容
+ * 根据模型配置中的 getDisplayContent 回调动态显示内容
  */
 export function ModelDisplay({
   model,
-  aspectRatio,
-  variations,
-  visibility,
-  resolution,
-  format,
+  settings,
   compact = false,
   onClick,
-  mode = "text-to-image",
+  mode,
   iconOnly = false,
   className,
 }: ModelDisplayProps) {
-  const modeConfig = MODE_CONFIGS[mode];
-  const displayFields = modeConfig?.displayFields || [];
+  const modeConfig = mode ? MODE_CONFIGS[mode] : undefined;
+  const modelInfo = modeConfig?.models?.[settings.model];
 
-  // 构建显示内容
-  const displayParts: string[] = [];
+  // 从模型配置获取显示内容
+  const displayContent = modelInfo?.getDisplayContent(settings) || [];
 
-  displayFields.forEach((field) => {
-    switch (field) {
-      case "model":
-        if (model?.name) {
-          displayParts.push(model.name);
-        }
-        break;
-      case "aspectRatio":
-        displayParts.push(aspectRatio);
-        break;
-      case "variations":
-        displayParts.push(`${variations}v`);
-        break;
-      case "resolution":
-        if (resolution) {
-          displayParts.push(resolution.toUpperCase());
-        }
-        break;
-      case "format":
-        if (format) {
-          displayParts.push(format.toUpperCase());
-        }
-        break;
-    }
-  });
-
-  if (displayParts.length === 0) {
+  if (displayContent.length === 0 && !model?.name) {
     return null;
   }
 
   if (compact) {
     // 紧凑模式：用于GlobalGenerator的模型信息按钮
+    const displayParts: string[] = [];
+    if (model?.name) {
+      displayParts.push(model.name);
+    }
+    displayParts.push(...displayContent.map(item => item.value));
+
+    if (displayParts.length === 0) {
+      return null;
+    }
+
     const displayText = displayParts.join(" / ");
 
     // iconOnly 模式：只显示设置图标
@@ -122,11 +99,15 @@ export function ModelDisplay({
       {model?.name && (
         <div className="flex items-center justify-between">
           <span className="text-sm font-medium text-foreground">{model.name}</span>
-          {visibility && <span className="text-xs text-muted-foreground">{visibility}</span>}
+          {settings.visibility && <span className="text-xs text-muted-foreground">{settings.visibility}</span>}
         </div>
       )}
       <div className="text-xs text-muted-foreground">
-        {displayParts.filter(part => part !== model?.name).join(" • ")}
+        {displayContent.map((item, index) => (
+          <div key={index}>
+            <span className="font-medium">{item.label}:</span> {item.value}
+          </div>
+        ))}
       </div>
     </div>
   );

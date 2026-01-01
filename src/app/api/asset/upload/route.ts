@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { asset } from "@/lib/db/schema";
-import { eq, desc, and } from "drizzle-orm";
+import { eq, desc, and, count } from "drizzle-orm";
 import { uploadToR2 } from "@/lib/storage/r2";
 import { validateFile } from "@/lib/storage/validation";
 
@@ -148,8 +148,14 @@ export async function GET(request: NextRequest) {
       conditions.push(eq(asset.type, type));
     }
 
-    // 执行查询
-    const query = db
+    // 获取总数
+    const [{ total }] = await db
+      .select({ total: count() })
+      .from(asset)
+      .where(conditions.length > 1 ? and(...conditions) : conditions[0]);
+
+    // 执行分页查询
+    const assets = await db
       .select()
       .from(asset)
       .where(conditions.length > 1 ? and(...conditions) : conditions[0])
@@ -157,15 +163,14 @@ export async function GET(request: NextRequest) {
       .limit(limit)
       .offset(offset);
 
-    const assets = await query;
-
     return NextResponse.json({
       success: true,
       data: {
         assets,
-        total: assets.length,
+        total,
         limit,
         offset,
+        hasMore: offset + assets.length < total,
       },
     });
   } catch (error) {

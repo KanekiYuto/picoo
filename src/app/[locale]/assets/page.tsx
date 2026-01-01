@@ -25,57 +25,46 @@ interface AssetInfo {
 export default function AssetsPage() {
   const t = useTranslations("assets");
   const [assets, setAssets] = useState<AssetInfo[]>([]);
-  const [isInitialLoading, setIsInitialLoading] = useState(true);
-  const [isContentLoading, setIsContentLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [filter, setFilter] = useState<"all" | "image" | "video">("all");
   const [selectedAsset, setSelectedAsset] = useState<AssetInfo | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalCount, setTotalCount] = useState(0);
+  const itemsPerPage = 20;
 
-  // 获取素材列表
+  // 获取数据
   useEffect(() => {
     const fetchAssets = async () => {
       try {
-        // 首次加载使用 isInitialLoading，后续切换使用 isContentLoading
-        if (isInitialLoading) {
-          setIsInitialLoading(true);
-        } else {
-          setIsContentLoading(true);
-        }
-
-        // 设置最小显示时间为 300ms，避免闪烁
-        const minLoadingTime = new Promise((resolve) => setTimeout(resolve, 300));
+        setIsLoading(true);
+        const offset = (currentPage - 1) * itemsPerPage;
 
         const params = new URLSearchParams();
         if (filter !== "all") {
           params.append("type", filter);
         }
-        params.append("limit", "50");
+        params.append("offset", String(offset));
+        params.append("limit", String(itemsPerPage));
 
-        const fetchPromise = fetch(`/api/asset/upload?${params.toString()}`)
-          .then((response) => {
-            if (!response.ok) {
-              throw new Error("Failed to fetch assets");
-            }
-            return response.json();
-          })
-          .then((data) => {
-            setAssets(data.data?.assets || []);
-          });
+        const response = await fetch(`/api/asset/upload?${params.toString()}`);
+        if (!response.ok) {
+          throw new Error("Failed to fetch assets");
+        }
 
-        // 等待数据加载和最小显示时间都完成
-        await Promise.all([fetchPromise, minLoadingTime]);
+        const data = await response.json();
+        setAssets(data.data?.assets || []);
+        setTotalCount(data.data?.total || 0);
       } catch (error) {
         console.error("Failed to fetch assets:", error);
         setAssets([]);
-        // 即使出错也要等待最小显示时间
-        await new Promise((resolve) => setTimeout(resolve, 300));
+        setTotalCount(0);
       } finally {
-        setIsInitialLoading(false);
-        setIsContentLoading(false);
+        setIsLoading(false);
       }
     };
 
     fetchAssets();
-  }, [filter]);
+  }, [currentPage, filter, itemsPerPage]);
 
   // 格式化文件大小
   const formatFileSize = (bytes: number): string => {
@@ -98,8 +87,11 @@ export default function AssetsPage() {
   // 筛选后的素材
   const filteredAssets = assets;
 
+  // 计算总页数
+  const totalPages = Math.ceil(totalCount / itemsPerPage);
+
   // 首次加载显示完整骨架屏
-  if (isInitialLoading) {
+  if (isLoading && currentPage === 1) {
     return <AssetsSkeleton />;
   }
 
@@ -115,7 +107,10 @@ export default function AssetsPage() {
           <div className="relative flex gap-1 rounded-lg border border-border bg-sidebar-bg p-1">
             {/* 全部 */}
             <motion.button
-              onClick={() => setFilter("all")}
+              onClick={() => {
+                setFilter("all");
+                setCurrentPage(1);
+              }}
               className={`relative rounded px-3 py-1.5 text-xs font-medium transition-colors cursor-pointer ${
                 filter === "all" ? "text-foreground" : "text-muted-foreground hover:text-foreground"
               }`}
@@ -134,7 +129,10 @@ export default function AssetsPage() {
 
             {/* 图片 */}
             <motion.button
-              onClick={() => setFilter("image")}
+              onClick={() => {
+                setFilter("image");
+                setCurrentPage(1);
+              }}
               className={`relative rounded px-3 py-1.5 text-xs font-medium transition-colors cursor-pointer ${
                 filter === "image" ? "text-foreground" : "text-muted-foreground hover:text-foreground"
               }`}
@@ -154,7 +152,10 @@ export default function AssetsPage() {
 
             {/* 视频 */}
             <motion.button
-              onClick={() => setFilter("video")}
+              onClick={() => {
+                setFilter("video");
+                setCurrentPage(1);
+              }}
               className={`relative rounded px-3 py-1.5 text-xs font-medium transition-colors cursor-pointer ${
                 filter === "video" ? "text-foreground" : "text-muted-foreground hover:text-foreground"
               }`}
@@ -175,9 +176,7 @@ export default function AssetsPage() {
         </div>
 
         {/* 素材网格 */}
-        {isContentLoading ? (
-          <AssetsContentSkeleton />
-        ) : filteredAssets.length === 0 ? (
+        {filteredAssets.length === 0 && !isLoading ? (
           <div className="flex flex-col items-center justify-center rounded-2xl border border-border bg-sidebar-bg py-16">
             <div className="mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-sidebar-bg">
               {filter === "image" ? (
@@ -192,56 +191,94 @@ export default function AssetsPage() {
             <p className="mt-1 text-sm text-muted-foreground">{t("empty.description")}</p>
           </div>
         ) : (
-          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
-            {filteredAssets.map((asset) => (
-              <motion.div
-                key={asset.id}
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                className="group relative aspect-square cursor-pointer overflow-hidden rounded-lg border border-border bg-muted transition-all hover:border-foreground/20 hover:shadow-md"
-                onClick={() => setSelectedAsset(asset)}
-              >
-                {/* 素材预览 */}
-                {asset.type === "image" ? (
-                  <img
-                    src={asset.url}
-                    alt={asset.originalFilename}
-                    className="h-full w-full object-cover"
-                  />
-                ) : (
-                  <video src={asset.url} className="h-full w-full object-cover" />
-                )}
+          <>
+            <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
+              {filteredAssets.map((asset) => (
+                <motion.div
+                  key={asset.id}
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  className="group relative aspect-square cursor-pointer overflow-hidden rounded-lg border border-border bg-muted transition-all hover:border-foreground/20 hover:shadow-md"
+                  onClick={() => setSelectedAsset(asset)}
+                >
+                  {/* 素材预览 */}
+                  {asset.type === "image" ? (
+                    <img
+                      src={asset.url}
+                      alt={asset.originalFilename}
+                      className="h-full w-full object-cover"
+                    />
+                  ) : (
+                    <video src={asset.url} className="h-full w-full object-cover" />
+                  )}
 
-                {/* 悬停遮罩 */}
-                <div className="absolute inset-0 bg-black/60 opacity-0 transition-opacity group-hover:opacity-100">
-                  <div className="flex h-full flex-col justify-between p-3">
-                    {/* 文件类型标签 */}
-                    <div className="flex items-center gap-1">
-                      {asset.type === "image" ? (
-                        <div className="flex items-center gap-1 rounded-full bg-blue-500/90 px-2 py-1 text-xs font-medium text-white">
-                          <Image className="h-3 w-3" />
-                          {t("types.image")}
-                        </div>
-                      ) : (
-                        <div className="flex items-center gap-1 rounded-full bg-purple-500/90 px-2 py-1 text-xs font-medium text-white">
-                          <Video className="h-3 w-3" />
-                          {t("types.video")}
-                        </div>
-                      )}
-                    </div>
+                  {/* 悬停遮罩 */}
+                  <div className="absolute inset-0 bg-black/60 opacity-0 transition-opacity group-hover:opacity-100">
+                    <div className="flex h-full flex-col justify-between p-3">
+                      {/* 文件类型标签 */}
+                      <div className="flex items-center gap-1">
+                        {asset.type === "image" ? (
+                          <div className="flex items-center gap-1 rounded-full bg-blue-500/90 px-2 py-1 text-xs font-medium text-white">
+                            <Image className="h-3 w-3" />
+                            {t("types.image")}
+                          </div>
+                        ) : (
+                          <div className="flex items-center gap-1 rounded-full bg-purple-500/90 px-2 py-1 text-xs font-medium text-white">
+                            <Video className="h-3 w-3" />
+                            {t("types.video")}
+                          </div>
+                        )}
+                      </div>
 
-                    {/* 文件信息 */}
-                    <div>
-                      <p className="truncate text-xs font-medium text-white">
-                        {asset.originalFilename}
-                      </p>
-                      <p className="mt-1 text-xs text-white/70">{formatFileSize(asset.size)}</p>
+                      {/* 文件信息 */}
+                      <div>
+                        <p className="truncate text-xs font-medium text-white">
+                          {asset.originalFilename}
+                        </p>
+                        <p className="mt-1 text-xs text-white/70">{formatFileSize(asset.size)}</p>
+                      </div>
                     </div>
                   </div>
-                </div>
-              </motion.div>
-            ))}
-          </div>
+                </motion.div>
+              ))}
+            </div>
+
+            {/* 分页器 */}
+            {totalPages > 1 && (
+              <div className="mt-8 flex items-center justify-center gap-2">
+                <button
+                  onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
+                  disabled={currentPage === 1 || isLoading}
+                  className="rounded-lg border border-border px-3 py-2 text-sm font-medium transition-colors hover:bg-muted disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  Previous
+                </button>
+
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                  <button
+                    key={page}
+                    onClick={() => setCurrentPage(page)}
+                    disabled={isLoading}
+                    className={`rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
+                      currentPage === page
+                        ? "bg-primary text-primary-foreground"
+                        : "border border-border hover:bg-muted disabled:opacity-50 disabled:cursor-not-allowed"
+                    }`}
+                  >
+                    {page}
+                  </button>
+                ))}
+
+                <button
+                  onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
+                  disabled={currentPage === totalPages || isLoading}
+                  className="rounded-lg border border-border px-3 py-2 text-sm font-medium transition-colors hover:bg-muted disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  Next
+                </button>
+              </div>
+            )}
+          </>
         )}
       </div>
 

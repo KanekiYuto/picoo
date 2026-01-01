@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { X, Upload, ImageOff, Plus } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
+import { useMediaPreviewStore } from "@/store/useMediaPreviewStore";
 
 interface Asset {
   id: string;
@@ -150,12 +151,13 @@ export function UploadPanel({ isOpen, onClose, onImageSelect, onRecentAssetSelec
           />
           {selectedImage ? (
             /* 图片预览区域 */
-            <div className="relative w-full rounded-2xl overflow-hidden bg-muted/30 backdrop-blur-sm">
+            <div className="relative w-full rounded-2xl overflow-hidden bg-muted/10 border-2 border-dashed backdrop-blur-sm">
               <div className="flex items-center justify-center p-8 min-h-[300px]">
                 <img
                   src={selectedImage}
                   alt="Selected"
-                  className="max-w-full max-h-[400px] object-contain rounded-lg"
+                  onClick={() => useMediaPreviewStore.getState().open([{ id: 'upload-preview', type: 'image' as const, url: selectedImage }], 0)}
+                  className="max-w-full max-h-[400px] object-contain rounded-lg cursor-pointer"
                 />
               </div>
               {/* 删除按钮 */}
@@ -239,7 +241,7 @@ export function UploadPanel({ isOpen, onClose, onImageSelect, onRecentAssetSelec
                     className={cn(
                       "aspect-square rounded-lg border transition-colors relative group cursor-pointer",
                       isSelected
-                        ? "border-muted/20 bg-muted/10"
+                        ? "border-muted/10"
                         : "border-border"
                     )}
                   >

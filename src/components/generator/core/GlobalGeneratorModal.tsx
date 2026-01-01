@@ -202,15 +202,17 @@ export function GlobalGeneratorModal() {
           result.data.task_id,
           (results) => {
             setResultImages((prev) => {
-              // 移除所有与此任务相关的loading项
-              const withoutLoading = prev.filter(item => !item.id.startsWith(`${displayTaskId}-`));
-              // 添加所有成功的图片
-              const newImages = results.map((item, index) => ({
-                type: 'success' as const,
-                id: `${displayTaskId}-${index}`,
-                url: item.url,
-              }));
-              return [...withoutLoading, ...newImages];
+              // 替换loading项为成功结果，保持顺序
+              let resultIndex = 0;
+              return prev.map(item =>
+                item.type === 'loading' && item.id.startsWith(`${displayTaskId}-`)
+                  ? {
+                      type: 'success' as const,
+                      id: item.id,
+                      url: results[resultIndex++].url,
+                    }
+                  : item
+              );
             });
           },
           (error) => {
@@ -230,15 +232,17 @@ export function GlobalGeneratorModal() {
         }
 
         setResultImages((prev) => {
-          // 移除所有与此任务相关的loading项
-          const withoutLoading = prev.filter(item => !item.id.startsWith(`${displayTaskId}-`));
-          // 添加所有成功的图片
-          const newImages = result.data.results!.map((item: any, index: number) => ({
-            type: 'success' as const,
-            id: `${displayTaskId}-${index}`,
-            url: item.url,
-          }));
-          return [...withoutLoading, ...newImages];
+          // 替换loading项为成功结果，保持顺序
+          let resultIndex = 0;
+          return prev.map(item =>
+            item.type === 'loading' && item.id.startsWith(`${displayTaskId}-`)
+              ? {
+                  type: 'success' as const,
+                  id: item.id,
+                  url: result.data.results![resultIndex++].url,
+                }
+              : item
+          );
         });
       }
     } catch (error) {
@@ -255,35 +259,12 @@ export function GlobalGeneratorModal() {
     }
   };
 
-  const handleResultRegenerate = () => {
-    // TODO: 重新生成逻辑
-  };
-
   const handleResultDownload = async (imageUrl: string) => {
     try {
       await downloadImage(imageUrl);
     } catch (error) {
       console.error("Download failed:", error);
     }
-  };
-
-  const handleResultUpscale = async (imageUrl: string) => {
-    // 切换到图像放大模式
-    handleModeChange("upscale");
-
-    // 将图片添加到上传列表
-    setUploadImages([imageUrl]);
-
-    // 打开设置面板以便用户调整参数
-    setActivePanel("settings");
-  };
-
-  const handleImagePositionChange = (id: string, position: { x: number; y: number }) => {
-    setResultImages((prev) =>
-      prev.map((item) =>
-        item.id === id ? { ...item, position } : item
-      )
-    );
   };
 
   // 根据模式获取最大上传数量
@@ -306,43 +287,6 @@ export function GlobalGeneratorModal() {
     setResultImages((prev) => prev.filter((item) => item.id !== id));
   };
 
-  const handlePasteImageStart = (id: string, localUrl: string) => {
-    blobUrlsRef.current.add(localUrl);
-    setResultImages((prev) => [...prev, { type: 'uploading', id, localUrl }]);
-  };
-
-  const handlePasteImageComplete = (id: string, url: string) => {
-    setResultImages((prev) =>
-      prev.map((item) => {
-        if (item.id === id && item.type === 'uploading') {
-          // 清理 blob URL
-          if (blobUrlsRef.current.has(item.localUrl)) {
-            URL.revokeObjectURL(item.localUrl);
-            blobUrlsRef.current.delete(item.localUrl);
-          }
-          return { type: 'success', id, url };
-        }
-        return item;
-      })
-    );
-  };
-
-  const handlePasteImageError = (id: string, error: string) => {
-    setResultImages((prev) =>
-      prev.map((item) => {
-        if (item.id === id && item.type === 'uploading') {
-          // 清理 blob URL
-          if (blobUrlsRef.current.has(item.localUrl)) {
-            URL.revokeObjectURL(item.localUrl);
-            blobUrlsRef.current.delete(item.localUrl);
-          }
-          return { type: 'error', id, error };
-        }
-        return item;
-      })
-    );
-  };
-
   return (
     <AnimatePresence>
       {isGeneratorModalOpen && (
@@ -356,14 +300,8 @@ export function GlobalGeneratorModal() {
           {/* 结果面板 - 全屏背景 */}
           <ResultPanel
             images={resultImages}
-            onRegenerate={handleResultRegenerate}
             onDownload={handleResultDownload}
-            onUpscale={handleResultUpscale}
-            onImagePositionChange={handleImagePositionChange}
             onDeleteError={handleDeleteError}
-            onPasteImageStart={handlePasteImageStart}
-            onPasteImageComplete={handlePasteImageComplete}
-            onPasteImageError={handlePasteImageError}
           />
 
           {/* 关闭按钮 - activePanel 为 null 时显示 */}
@@ -374,7 +312,7 @@ export function GlobalGeneratorModal() {
               exit={{ opacity: 0 }}
               transition={{ duration: 0.2 }}
               onClick={closeGeneratorModal}
-              className="fixed top-4 right-4 flex h-12.5 w-12.5 items-center justify-center rounded-lg bg-background/80 text-foreground transition-colors backdrop-blur-sm hover:bg-sidebar-hover cursor-pointer"
+              className="fixed top-4 right-4 flex h-9 w-9 items-center justify-center rounded-lg bg-background/80 text-foreground transition-colors backdrop-blur-sm hover:bg-sidebar-hover cursor-pointer"
               style={{ zIndex: 60 }}
               aria-label="关闭"
             >

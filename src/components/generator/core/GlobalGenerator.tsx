@@ -85,6 +85,27 @@ export function GlobalGenerator({
 
   const MAX_UPLOAD_COUNT = getMaxUploadCount();
 
+  // ModelDisplay 配置
+  const modelDisplayConfigs = [
+    {
+      key: 'mobile',
+      props: {
+        compact: true,
+        iconOnly: true,
+        className: 'md:hidden',
+      },
+    },
+    {
+      key: 'desktop',
+      props: {
+        compact: true,
+        className: 'hidden md:flex',
+      },
+    },
+  ] as const;
+
+  const MAX_MODEL_DISPLAYS = modelDisplayConfigs.length;
+
   // 判断当前模式是否需要提示词
   const requiresPrompt = () => {
     return mode === "text-to-image" || mode === "edit-image";
@@ -119,7 +140,7 @@ export function GlobalGenerator({
     <div className={cn("w-full", className)}>
       <div className="flex flex-col md:flex-row gap-3 md:gap-4">
         {/* 桌面端图片上传区域 - 左侧 */}
-        <div className="hidden justify-end md:flex flex-col gap-3">
+        <div className="hidden justify-end md:flex flex-col gap-3 bg-muted/10 rounded-xl border-1 border-dashed p-2">
           {mode === "text-to-image" ? (
             <div className="flex h-24 w-24 items-center justify-center rounded-xl border-2 border-dashed border-border/35 bg-sidebar-hover/15">
               <div className="flex flex-col items-center gap-1">
@@ -177,40 +198,23 @@ export function GlobalGenerator({
                   size="sm"
                   uploadImages={uploadImages}
                   maxUploadCount={MAX_UPLOAD_COUNT}
-                  onClick={uploadImages.length > 0 ? onOpenMobileImagePanel : onOpenUploadPanel}
+                  onClick={onOpenUploadPanel}
                   onRemoveImage={onRemoveImage}
                   onImageClick={onImageClick}
                 />
               )}
 
               {/* 模型信息按钮 */}
-              {settings && mode && (
+              {settings && mode && modelDisplayConfigs.slice(0, MAX_MODEL_DISPLAYS).map((config) => (
                 <ModelDisplay
+                  key={config.key}
                   model={currentModel}
-                  aspectRatio={settings.aspectRatio}
-                  variations={settings.variations}
-                  resolution={settings.resolution}
-                  format={settings.format}
-                  compact={true}
+                  settings={settings}
                   onClick={onOpenSettingsPanel}
                   mode={mode}
-                  iconOnly={true}
-                  className="md:hidden"
+                  {...config.props}
                 />
-              )}
-              {settings && mode && (
-                <ModelDisplay
-                  model={currentModel}
-                  aspectRatio={settings.aspectRatio}
-                  variations={settings.variations}
-                  resolution={settings.resolution}
-                  format={settings.format}
-                  compact={true}
-                  onClick={onOpenSettingsPanel}
-                  mode={mode}
-                  className="hidden md:flex"
-                />
-              )}
+              ))}
             </div>
 
             {/* 右侧：创建按钮 */}

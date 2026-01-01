@@ -67,7 +67,7 @@ export const gptImage15FormFields: FormFieldRenderer = () => (
       )} />
     </div>
 
-    <div className="flex gap-4">
+    <div className="flex flex-col sm:flex-row gap-4">
       <div className="flex-1">
         <FormField name="size" render={() => (
           <SelectField
@@ -94,7 +94,7 @@ export const gptImage15FormFields: FormFieldRenderer = () => (
       </div>
     </div>
 
-    <div className="flex gap-4">
+    <div className="flex flex-col sm:flex-row gap-4">
       <div className="flex-1">
         <FormField name="format" render={() => (
           <SelectField
@@ -137,7 +137,7 @@ export const nanoBananaProFormFields: FormFieldRenderer = () => (
         <AspectRatioField options={DEFAULT_ASPECT_RATIO_OPTIONS} />
       )} />
     </div>
-    <div className="flex gap-4">
+    <div className="flex flex-col sm:flex-row gap-4">
       <div className="flex-1">
         <FormField name="resolution" render={() => (
           <SelectField

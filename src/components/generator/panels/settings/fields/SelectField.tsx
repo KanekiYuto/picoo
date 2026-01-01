@@ -24,7 +24,7 @@ export function SelectField({ title, options }: SelectFieldProps) {
   const { field } = useFormField();
 
   return (
-    <div className="rounded-2xl border border-border/60 bg-background p-4 sm:p-5 flex items-center justify-between gap-4">
+    <div className="rounded-2xl border border-border/60 bg-background p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 sm:justify-between">
       <label className="text-sm font-semibold text-foreground">
         {title}
       </label>
