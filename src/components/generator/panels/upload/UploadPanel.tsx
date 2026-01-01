@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { X, Upload, ImageOff, Plus } from "lucide-react";
+import { X, Upload, ImageOff, Plus, Check } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
 import { useMediaPreviewStore } from "@/store/useMediaPreviewStore";
@@ -149,7 +149,8 @@ export function UploadPanel({ isOpen, onClose, onImageSelect, onImageReplace, on
         <motion.button
           onClick={onClose}
           className="flex h-8 w-8 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-sidebar-hover hover:text-foreground cursor-pointer"
-          aria-label="关闭"
+          aria-label={t("close")}
+          title={t("close")}
         >
           <X className="h-4 w-4 md:h-5 md:w-5" />
         </motion.button>
@@ -181,7 +182,8 @@ export function UploadPanel({ isOpen, onClose, onImageSelect, onImageReplace, on
               <button
                 onClick={() => setSelectedImage(null)}
                 className="absolute top-4 right-4 flex h-10 w-10 items-center justify-center rounded-lg bg-black/60 hover:bg-black/80 text-white transition-colors backdrop-blur-sm cursor-pointer"
-                aria-label="清除图片"
+                aria-label={t("clearImage")}
+                title={t("clearImage")}
               >
                 <X className="h-5 w-5" />
               </button>
@@ -281,8 +283,14 @@ export function UploadPanel({ isOpen, onClose, onImageSelect, onImageReplace, on
                         : "opacity-0 group-hover:opacity-100"
                     )}>
                       <div className="flex flex-col items-center gap-2">
-                        <Plus className="w-6 h-6 text-white" />
-                        <span className="text-xs text-white font-medium">{t("clickToAdd")}</span>
+                        {isSelected ? (
+                          <Check className="w-6 h-6 text-white" />
+                        ) : (
+                          <Plus className="w-6 h-6 text-white" />
+                        )}
+                        <span className="text-xs text-white font-medium">
+                          {isSelected ? t("selected") : t("clickToAdd")}
+                        </span>
                       </div>
                     </div>
                   </motion.button>

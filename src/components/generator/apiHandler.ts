@@ -58,11 +58,11 @@ export function startPolling(
           const imageResults = results.filter((item: any) => item.type === 'image' && item.url);
           onSuccess(imageResults);
         } else {
-          onError('生成完成但未返回图片');
+          onError('Image generation completed but no results returned');
         }
       } else if (status === 'failed') {
         // 失败
-        onError(taskData.error || taskData.errorMessage || '生成失败');
+        onError(taskData.error || taskData.errorMessage || 'Image generation failed');
       } else if (status === 'processing' || status === 'pending') {
         // 继续轮询
         if (retries < maxRetries) {
@@ -70,7 +70,7 @@ export function startPolling(
           setTimeout(pollStatus, 1000); // 1 秒后重新轮询
         } else {
           // 超时
-          onError('生成超时');
+          onError('Image generation timeout');
         }
       } else {
         // 未知状态，继续轮询
@@ -79,7 +79,7 @@ export function startPolling(
           retries++;
           setTimeout(pollStatus, 1000);
         } else {
-          onError('轮询超时：未知状态');
+          onError('Polling timeout: unknown status');
         }
       }
     } catch (error) {
@@ -88,7 +88,7 @@ export function startPolling(
         retries++;
         setTimeout(pollStatus, 2000); // 错误时延长间隔
       } else {
-        onError('轮询失败');
+        onError('Polling failed');
       }
     }
   };

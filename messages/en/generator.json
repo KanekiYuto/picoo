@@ -16,7 +16,10 @@
     "recentUploads": "Recent Uploads",
     "personalize": "Personalize",
     "noRecentUploads": "No recent uploads yet",
-    "clickToAdd": "Click to add"
+    "clickToAdd": "Click to add",
+    "selected": "Selected",
+    "close": "Close",
+    "clearImage": "Clear Image"
   },
   "modes": {
     "prompt": "Prompt",
@@ -36,7 +39,17 @@
     "error": "Generation failed",
     "download": "Download",
     "regenerate": "Regenerate",
-    "close": "Close"
+    "close": "Close",
+    "requestInProgress": "Generating...",
+    "loadingImage": "Loading image...",
+    "delete": "Delete"
+  },
+  "mobileImagePanel": {
+    "title": "Manage Images"
+  },
+  "common": {
+    "credits": "credits",
+    "createWithCredits": "Create({credits}credits)"
   },
   "settingsPanel": {
     "title": "Settings",
@@ -48,6 +61,15 @@
     "visibility": "Visibility",
     "public": "Public",
     "private": "Private",
+    "close": "Close",
+    "formFields": {
+      "size": "Size",
+      "quality": "Quality",
+      "outputFormat": "Output Format",
+      "background": "Background",
+      "resolution": "Resolution",
+      "imageFormat": "Image Format"
+    },
     "features": {
       "fast": "Fast",
       "highQuality": "High Quality",

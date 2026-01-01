@@ -16,7 +16,10 @@
     "recentUploads": "最近上传",
     "personalize": "个性化",
     "noRecentUploads": "暂无上传记录",
-    "clickToAdd": "点击添加"
+    "clickToAdd": "点击添加",
+    "selected": "已选择",
+    "close": "关闭",
+    "clearImage": "清除图片"
   },
   "modes": {
     "prompt": "文本生成",
@@ -36,7 +39,17 @@
     "error": "生成失败",
     "download": "下载",
     "regenerate": "重新生成",
-    "close": "关闭"
+    "close": "关闭",
+    "requestInProgress": "生成中...",
+    "loadingImage": "加载图像...",
+    "delete": "删除"
+  },
+  "mobileImagePanel": {
+    "title": "图片管理"
+  },
+  "common": {
+    "credits": "积分",
+    "createWithCredits": "创建({credits}积分)"
   },
   "settingsPanel": {
     "title": "设置",
@@ -48,6 +61,15 @@
     "visibility": "可见性",
     "public": "公开",
     "private": "私密",
+    "close": "关闭",
+    "formFields": {
+      "size": "尺寸",
+      "quality": "质量",
+      "outputFormat": "输出格式",
+      "background": "背景",
+      "resolution": "分辨率",
+      "imageFormat": "图片格式"
+    },
     "features": {
       "fast": "快速",
       "highQuality": "高质量",

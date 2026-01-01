@@ -1,380 +1,69 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X } from "lucide-react";
 import { useGeneratorStore } from "@/stores/generatorStore";
 import { downloadImage } from "@/lib/image-utils";
-import { handleAIGenerate, startPolling } from "../apiHandler";
 import { GlobalGenerator } from "./GlobalGenerator";
 import { UploadPanel } from "../panels/upload/UploadPanel";
-import { SettingsPanel, type GeneratorSettings } from "../panels/settings";
-import { ModeSelectorPanel, type GeneratorMode } from "../panels/mode";
-import { ResultPanel, type ImageItem } from "../panels/result/ResultPanel";
+import { SettingsPanel } from "../panels/settings";
+import { ModeSelectorPanel } from "../panels/mode";
+import { ResultPanel } from "../panels/result/ResultPanel";
 import { MobileImagePanel } from "../panels/mobile/MobileImagePanel";
-import { MODE_CONFIGS } from "../config";
+import {
+  useImageUpload,
+  useAIGenerate,
+  usePanelState,
+  useGeneratorSettings,
+} from "../hooks";
 
 /**
  * 全局生成器模态框
  */
 export function GlobalGeneratorModal() {
   const { isGeneratorModalOpen, closeGeneratorModal } = useGeneratorStore();
-  const [activePanel, setActivePanel] = useState<"upload" | "settings" | "mode" | "mobile-images" | null>(null);
-  const [uploadImages, setUploadImages] = useState<string[]>([]);
-  const [selectedImageUrl, setSelectedImageUrl] = useState<string | undefined>(undefined);
-  const [mode, setMode] = useState<GeneratorMode>("text-to-image");
-  const [replaceIndex, setReplaceIndex] = useState<number | undefined>(undefined);
 
-  // 跟踪 blob URLs 以便清理
-  const blobUrlsRef = useRef<Set<string>>(new Set());
+  // 使用 Hooks 管理所有状态
+  const {
+    uploadImages,
+    handleImageSelect,
+    handleImageReplace,
+    handleRemoveImage,
+    handleRecentAssetSelect,
+    handleRecentAssetReplace,
+  } = useImageUpload();
 
-  // 清理所有 blob URLs
-  useEffect(() => {
-    return () => {
-      blobUrlsRef.current.forEach((url) => {
-        URL.revokeObjectURL(url);
-      });
-      blobUrlsRef.current.clear();
-    };
-  }, []);
+  const {
+    resultImages,
+    handleGenerate,
+    handleDeleteError,
+  } = useAIGenerate();
 
-  // 根据 mode 和 model 获取默认设置
-  const getDefaultSettings = (currentMode: GeneratorMode, modelName?: string): GeneratorSettings => {
-    const modeConfig = MODE_CONFIGS[currentMode];
-    const targetModelName = modelName || modeConfig.defaultModel || "nano-banana-pro";
-    const modelInfo = modeConfig.models?.[targetModelName];
-    const modelDefaults = modelInfo?.defaultSettings || {};
+  const {
+    activePanel,
+    selectedImageUrl,
+    replaceIndex,
+    openUploadPanel,
+    openUploadPanelForReplace,
+    openSettingsPanel,
+    openModePanel,
+    openMobileImagePanel,
+    closePanel,
+    togglePanel,
+    setSelectedImageUrl,
+    setReplaceIndex,
+    setActivePanel,
+  } = usePanelState();
 
-    return {
-      model: targetModelName,
-      variations: 1,
-      visibility: "public",
-      ...modelDefaults,
-    };
-  };
-
-  // 智能切换模式：如果当前模型在新模式下可用则保留，否则使用新模式的默认模型
-  const handleModeChange = (newMode: GeneratorMode) => {
-    setMode(newMode);
-    // 切换模式时清空上传的图片
-    setUploadImages([]);
-    setSelectedImageUrl(undefined);
-    setReplaceIndex(undefined);
-
-    const newModeConfig = MODE_CONFIGS[newMode];
-    const newModeModels = newModeConfig?.models;
-    const currentModel = settings.model;
-
-    // 检查当前模型是否在新模式中存在
-    const modelExistsInNewMode = newModeModels && currentModel && newModeModels[currentModel];
-
-    if (modelExistsInNewMode) {
-      // 模型在新模式中存在，保留模型但更新其默认设置
-      const newModelDefaults = getDefaultSettings(newMode, currentModel);
-      setSettings({
-        ...settings,
-        ...newModelDefaults,
-      });
-    } else {
-      // 模型不在新模式中，切换到新模式的默认模型和默认设置
-      setSettings(getDefaultSettings(newMode));
-    }
-  };
-
-  const [settings, setSettings] = useState<GeneratorSettings>(() => getDefaultSettings("text-to-image"));
-
-  // 结果面板状态
-  const [resultImages, setResultImages] = useState<ImageItem[]>([]);
-
-  const handleImageSelect = async (file: File) => {
-    const localUrl = URL.createObjectURL(file);
-    blobUrlsRef.current.add(localUrl);
-    setUploadImages((prev) => [...prev, localUrl]);
-
-    try {
-      const formData = new FormData();
-      formData.append("file", file);
-
-      const response = await fetch("/api/asset/upload", {
-        method: "POST",
-        body: formData,
-      });
-
-      const result = (await response.json()) as
-        | { success: true; data: { url?: string; results?: Array<{ url: string }> } }
-        | { success: false; error?: string };
-
-      if (!result.success) {
-        throw new Error(result.error || "Upload failed");
-      }
-
-      // 获取上传的 URL 列表：优先使用 results 数组，其次使用单个 url
-      const uploadedUrls = result.data.results?.map(r => r.url) || (result.data.url ? [result.data.url] : []);
-
-      if (uploadedUrls.length === 0) {
-        throw new Error("No URLs returned from upload");
-      }
-
-      // 替换最后一张 blob URL 为第一个真实 URL，然后添加其余的 URL
-      setUploadImages((prev) => {
-        const newImages = [...prev];
-        const oldUrl = newImages[newImages.length - 1];
-
-        // 撤销 blob URL
-        if (blobUrlsRef.current.has(oldUrl)) {
-          URL.revokeObjectURL(oldUrl);
-          blobUrlsRef.current.delete(oldUrl);
-        }
-
-        // 替换第一个 URL，添加其余 URL
-        newImages[newImages.length - 1] = uploadedUrls[0];
-        if (uploadedUrls.length > 1) {
-          newImages.push(...uploadedUrls.slice(1));
-        }
-
-        return newImages;
-      });
-    } catch (error) {
-      console.error("Upload image failed:", error);
-      // 移除失败的图片并清理 blob URL
-      setUploadImages((prev) => {
-        const oldUrl = prev[prev.length - 1];
-        if (blobUrlsRef.current.has(oldUrl)) {
-          URL.revokeObjectURL(oldUrl);
-          blobUrlsRef.current.delete(oldUrl);
-        }
-        return prev.slice(0, -1);
-      });
-    }
-  };
-
-  const handleRecentAssetSelect = (url: string) => {
-    setUploadImages((prev) => [...prev, url]);
-  };
-
-  const handleRemoveImage = (index: number) => {
-    setUploadImages((prev) => {
-      const url = prev[index];
-      // 清理 blob URL
-      if (blobUrlsRef.current.has(url)) {
-        URL.revokeObjectURL(url);
-        blobUrlsRef.current.delete(url);
-      }
-      return prev.filter((_, i) => i !== index);
-    });
-  };
+  const {
+    mode,
+    settings,
+    setSettings,
+    handleModeChange,
+  } = useGeneratorSettings();
 
   const handleImageClick = (imageUrl: string, index: number) => {
-    setSelectedImageUrl(imageUrl);
-    setActivePanel("upload");
-  };
-
-  const handleImageReplace = async (file: File, index: number) => {
-    const localUrl = URL.createObjectURL(file);
-    blobUrlsRef.current.add(localUrl);
-
-    setUploadImages((prev) => {
-      const newImages = [...prev];
-      newImages[index] = localUrl;
-      return newImages;
-    });
-
-    try {
-      const formData = new FormData();
-      formData.append("file", file);
-
-      const response = await fetch("/api/asset/upload", {
-        method: "POST",
-        body: formData,
-      });
-
-      const result = (await response.json()) as
-        | { success: true; data: { url?: string; results?: Array<{ url: string }> } }
-        | { success: false; error?: string };
-
-      if (!result.success) {
-        throw new Error(result.error || "Upload failed");
-      }
-
-      // 获取上传的 URL：优先使用 results 数组的第一个，其次使用单个 url
-      const uploadedUrl = result.data.results?.[0]?.url || result.data.url;
-
-      if (!uploadedUrl) {
-        throw new Error("No URL returned from upload");
-      }
-
-      setUploadImages((prev) => {
-        const newImages = [...prev];
-        const oldUrl = newImages[index];
-        // 撤销 blob URL
-        if (blobUrlsRef.current.has(oldUrl)) {
-          URL.revokeObjectURL(oldUrl);
-          blobUrlsRef.current.delete(oldUrl);
-        }
-        newImages[index] = uploadedUrl;
-        return newImages;
-      });
-      setReplaceIndex(undefined);
-    } catch (error) {
-      console.error("Replace image failed:", error);
-      // 恢复为原始图片
-      setUploadImages((prev) => {
-        const newImages = [...prev];
-        const failedUrl = newImages[index];
-        if (blobUrlsRef.current.has(failedUrl)) {
-          URL.revokeObjectURL(failedUrl);
-          blobUrlsRef.current.delete(failedUrl);
-        }
-        // 这里应该恢复原始 URL，但我们没有保存它，所以先移除
-        return prev;
-      });
-      setReplaceIndex(undefined);
-    }
-  };
-
-  const handleRecentAssetReplace = (url: string, index: number) => {
-    setUploadImages((prev) => {
-      const newImages = [...prev];
-      const oldUrl = newImages[index];
-      // 清理 blob URL
-      if (blobUrlsRef.current.has(oldUrl)) {
-        URL.revokeObjectURL(oldUrl);
-        blobUrlsRef.current.delete(oldUrl);
-      }
-      newImages[index] = url;
-      return newImages;
-    });
-    setReplaceIndex(undefined);
-  };
-
-  const handleGenerate = async (
-    prompt: string,
-    modeParam: string,
-    settingsParam: GeneratorSettings,
-    imagesParam: string[]
-  ) => {
-    const displayTaskId = `task-${Date.now()}`;
-    const modeConfig = MODE_CONFIGS[modeParam as GeneratorMode];
-    const modelInfo = modeConfig.models?.[settingsParam.model];
-
-    if (!modelInfo) {
-      throw new Error(`Model ${settingsParam.model} not found`);
-    }
-
-    const variationsCount = modelInfo.getVariations(settingsParam);
-    const loadingItems = Array.from({ length: variationsCount }, (_, index) => ({
-      type: 'loading' as const,
-      id: `${displayTaskId}-${index}`,
-    }));
-    setResultImages((prev) => [...prev, ...loadingItems]);
-
-    try {
-      const result = await handleAIGenerate({
-        prompt,
-        mode: modeParam as GeneratorMode,
-        settings: settingsParam,
-        images: imagesParam,
-      });
-
-      if (!result.success) {
-        setResultImages((prev) =>
-          prev.map(item =>
-            item.type === 'loading' && item.id.startsWith(`${displayTaskId}-`)
-              ? { ...item, type: 'error', error: '' }
-              : item
-          ));
-        return;
-      }
-
-      console.log('result', result);
-
-      if (modelInfo.requestConfig.type === 'webhook') {
-        // Webhook 异步模式：启动轮询
-        if (!result.data.task_id) {
-          throw new Error('Webhook mode requires taskId in response');
-        }
-
-        startPolling(
-          result.data.task_id,
-          (results) => {
-            setResultImages((prev) => {
-              // 先替换 loading 项为成功结果
-              let resultIndex = 0;
-              let newImages = prev.map(item =>
-                item.type === 'loading' && item.id.startsWith(`${displayTaskId}-`)
-                  ? {
-                      type: 'success' as const,
-                      id: item.id,
-                      url: results[resultIndex++].url,
-                    }
-                  : item
-              );
-
-              // 如果结果数大于预期的 loading 项数，添加额外的结果
-              while (resultIndex < results.length) {
-                newImages.push({
-                  type: 'success' as const,
-                  id: `${displayTaskId}-extra-${resultIndex}`,
-                  url: results[resultIndex++].url,
-                });
-              }
-
-              return newImages;
-            });
-          },
-          (error) => {
-            setResultImages((prev) =>
-              prev.map(item =>
-                item.type === 'loading' && item.id.startsWith(`${displayTaskId}-`)
-                  ? { ...item, type: 'error', error }
-                  : item
-              )
-            );
-          }
-        );
-      } else if (modelInfo.requestConfig.type === 'direct') {
-        // Direct模式：处理多个结果
-        if (!result.data.results || !Array.isArray(result.data.results)) {
-          throw new Error('Direct mode requires results array in response');
-        }
-
-        setResultImages((prev) => {
-          // 先替换 loading 项为成功结果
-          let resultIndex = 0;
-          let newImages = prev.map(item =>
-            item.type === 'loading' && item.id.startsWith(`${displayTaskId}-`)
-              ? {
-                  type: 'success' as const,
-                  id: item.id,
-                  url: result.data.results![resultIndex++].url,
-                }
-              : item
-          );
-
-          // 如果结果数大于预期的 loading 项数，添加额外的结果
-          while (resultIndex < result.data.results!.length) {
-            newImages.push({
-              type: 'success' as const,
-              id: `${displayTaskId}-extra-${resultIndex}`,
-              url: result.data.results![resultIndex++].url,
-            });
-          }
-
-          return newImages;
-        });
-      }
-    } catch (error) {
-      console.error("Generate failed:", error);
-      const errorMessage =
-        error instanceof Error ? error.message : "生成失败";
-      setResultImages((prev) =>
-        prev.map(item =>
-          item.type === 'loading' && item.id.startsWith(`${displayTaskId}-`)
-            ? { ...item, type: 'error', error: errorMessage }
-            : item
-        )
-      );
-    }
+    openUploadPanelForReplace(imageUrl, index);
   };
 
   const handleResultDownload = async (imageUrl: string) => {
@@ -385,8 +74,26 @@ export function GlobalGeneratorModal() {
     }
   };
 
-  const handleDeleteError = (id: string) => {
-    setResultImages((prev) => prev.filter((item) => item.id !== id));
+  const handleUploadPanelToggle = () => {
+    togglePanel("upload");
+  };
+
+  const handleSettingsPanelToggle = () => {
+    togglePanel("settings");
+  };
+
+  const handleModePanelToggle = () => {
+    togglePanel("mode");
+  };
+
+  const handleMobileImagePanelToggle = () => {
+    activePanel === "mobile-images" ? closePanel() : openMobileImagePanel();
+  };
+
+  const handleUploadPanelClose = () => {
+    closePanel();
+    setSelectedImageUrl(undefined);
+    setReplaceIndex(undefined);
   };
 
   return (
@@ -441,7 +148,7 @@ export function GlobalGeneratorModal() {
                       >
                         <div className="bg-background rounded-2xl overflow-hidden h-full flex flex-col">
                           <SettingsPanel
-                            onClose={() => setActivePanel(null)}
+                            onClose={closePanel}
                             settings={settings}
                             onSettingsChange={setSettings}
                             mode={mode}
@@ -461,11 +168,7 @@ export function GlobalGeneratorModal() {
                         <div className="rounded-2xl overflow-hidden h-full flex flex-col">
                           <UploadPanel
                             isOpen={true}
-                            onClose={() => {
-                              setActivePanel(null);
-                              setSelectedImageUrl(undefined);
-                              setReplaceIndex(undefined);
-                            }}
+                            onClose={handleUploadPanelClose}
                             onImageSelect={handleImageSelect}
                             onImageReplace={handleImageReplace}
                             onRecentAssetSelect={handleRecentAssetSelect}
@@ -500,7 +203,7 @@ export function GlobalGeneratorModal() {
                   <ModeSelectorPanel
                     value={mode}
                     onChange={handleModeChange}
-                    onClose={() => setActivePanel(null)}
+                    onClose={closePanel}
                   />
                 </motion.div>
               )}
@@ -510,19 +213,10 @@ export function GlobalGeneratorModal() {
                 <MobileImagePanel
                   uploadImages={uploadImages}
                   mode={mode}
-                  onClose={() => setActivePanel(null)}
-                  onOpenUploadPanel={() => {
-                    setSelectedImageUrl(undefined);
-                    setReplaceIndex(undefined);
-                    setActivePanel("upload");
-                  }}
+                  onClose={closePanel}
+                  onOpenUploadPanel={openUploadPanel}
                   onRemoveImage={handleRemoveImage}
                   onImageClick={handleImageClick}
-                  onOpenUploadPanelForReplace={(index: number) => {
-                    setSelectedImageUrl(undefined);
-                    setReplaceIndex(index);
-                    setActivePanel("upload");
-                  }}
                 />
               )}
 
@@ -530,19 +224,10 @@ export function GlobalGeneratorModal() {
               <div className="bg-background rounded-2xl p-4">
                 <GlobalGenerator
                   onGenerate={handleGenerate}
-                  onOpenUploadPanel={() => {
-                    setSelectedImageUrl(undefined);
-                    setReplaceIndex(undefined);
-                    setActivePanel(activePanel === "upload" ? null : "upload");
-                  }}
-                  onOpenUploadPanelForReplace={(index: number) => {
-                    setSelectedImageUrl(undefined);
-                    setReplaceIndex(index);
-                    setActivePanel("upload");
-                  }}
-                  onOpenSettingsPanel={() => setActivePanel(activePanel === "settings" ? null : "settings")}
-                  onOpenModePanel={() => setActivePanel(activePanel === "mode" ? null : "mode")}
-                  onOpenMobileImagePanel={() => setActivePanel(activePanel === "mobile-images" ? null : "mobile-images")}
+                  onOpenUploadPanel={handleUploadPanelToggle}
+                  onOpenSettingsPanel={handleSettingsPanelToggle}
+                  onOpenModePanel={handleModePanelToggle}
+                  onOpenMobileImagePanel={handleMobileImagePanelToggle}
                   uploadImages={uploadImages}
                   onRemoveImage={handleRemoveImage}
                   onImageClick={handleImageClick}

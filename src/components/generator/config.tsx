@@ -54,6 +54,49 @@ const createRequestConfig = (
   }
 }
 
+// Nano Banana Pro 模型工厂函数
+const createNanoBananaProModel = (mode: GeneratorMode): ModelInfo => {
+  const apiSuffix = mode === "edit-image" ? "image-to-image" : "text-to-image";
+
+  return {
+    name: "Nano Banana Pro",
+    icon: GoogleMonoIcon,
+    features: ["fast", "simple"],
+    descriptionKey: "nano-banana-pro",
+    renderFormFields: nanoBananaProFormFields,
+    defaultSettings: {
+      aspect_ratio: "1:1",
+      resolution: "1k",
+      output_format: "png",
+    },
+    requestConfig: createRequestConfig(
+      `wavespeed/nano-banana-pro/${apiSuffix}`,
+      "webhook",
+      (prompt, _mode, settings, images) => {
+        const params: any = {
+          prompt,
+          aspect_ratio: settings.aspect_ratio,
+          output_format: settings.output_format,
+          resolution: settings.resolution,
+        };
+        if (mode === "edit-image" && images) {
+          params.images = images;
+        }
+        return params;
+      }
+    ),
+    getCreditsParams: (settings) => ({
+      resolution: settings.resolution,
+    }),
+    getDisplayContent: (settings) => [
+      { label: "Aspect Ratio", value: settings.aspect_ratio || "-" },
+      { label: "Resolution", value: settings.resolution || "-" },
+      { label: "Format", value: settings.output_format || "-" },
+    ],
+    getVariations: (_settings) => 1,
+  };
+};
+
 // 默认纵横比选项
 export const DEFAULT_ASPECT_RATIO_OPTIONS: readonly AspectRatioOption[] = [
   { portrait: "1:1" },
@@ -112,35 +155,7 @@ export const MODE_CONFIGS: Record<GeneratorMode, ModeConfig> = {
     descKey: "promptDesc",
     displayFields: ["model", "aspectRatio", "variations"],
     models: {
-      "nano-banana-pro": {
-        name: "Nano Banana Pro",
-        icon: GoogleMonoIcon,
-        features: ["fast", "simple"],
-        descriptionKey: "nano-banana-pro",
-        renderFormFields: nanoBananaProFormFields,
-        defaultSettings: {
-          aspect_ratio: "1:1",
-          resolution: "1k",
-          output_format: "png",
-        },
-        requestConfig: createRequestConfig("wavespeed/nano-banana-pro/text-to-image", "webhook", (prompt, _mode, settings, _images) => {
-          return {
-            prompt,
-            aspect_ratio: settings.aspect_ratio,
-            output_format: settings.output_format,
-            resolution: settings.resolution,
-          };
-        }),
-        getCreditsParams: (settings) => ({
-          resolution: settings.resolution,
-        }),
-        getDisplayContent: (settings) => [
-          { label: "Aspect Ratio", value: settings.aspect_ratio || "-" },
-          { label: "Resolution", value: settings.resolution || "-" },
-          { label: "Format", value: settings.output_format || "-" },
-        ],
-        getVariations: (_settings) => 1,
-      },
+      "nano-banana-pro": createNanoBananaProModel("text-to-image"),
       "seedream-v4.5": {
         name: "Seedream v4.5",
         icon: ByteDanceIcon,
@@ -284,36 +299,7 @@ export const MODE_CONFIGS: Record<GeneratorMode, ModeConfig> = {
     descKey: "editDesc",
     displayFields: ["model", "aspectRatio", "variations"],
     models: {
-      "nano-banana-pro": {
-        name: "Nano Banana Pro",
-        icon: GoogleMonoIcon,
-        features: ["fast", "simple"],
-        descriptionKey: "nano-banana-pro",
-        renderFormFields: nanoBananaProFormFields,
-        defaultSettings: {
-          aspect_ratio: "1:1",
-          resolution: "1k",
-          output_format: "png",
-        },
-        requestConfig: createRequestConfig("wavespeed/nano-banana-pro/image-to-image", "webhook", (prompt, _mode, settings, images) => {
-          return {
-            prompt,
-            images,
-            aspect_ratio: settings.aspect_ratio,
-            output_format: settings.output_format,
-            resolution: settings.resolution,
-          };
-        }),
-        getCreditsParams: (settings) => ({
-          resolution: settings.resolution,
-        }),
-        getDisplayContent: (settings) => [
-          { label: "Aspect Ratio", value: settings.aspect_ratio || "-" },
-          { label: "Resolution", value: settings.resolution || "-" },
-          { label: "Format", value: settings.output_format || "-" },
-        ],
-        getVariations: (_settings) => 1,
-      },
+      "nano-banana-pro": createNanoBananaProModel("edit-image"),
       "seedream-v4.5": {
         name: "Seedream v4.5",
         icon: ByteDanceIcon,

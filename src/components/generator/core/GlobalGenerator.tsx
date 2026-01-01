@@ -16,7 +16,6 @@ interface GlobalGeneratorProps {
   className?: string;
   onGenerate?: (prompt: string, mode: string, settings: GeneratorSettings, images: string[]) => void;
   onOpenUploadPanel?: () => void;
-  onOpenUploadPanelForReplace?: (index: number) => void;
   onOpenSettingsPanel?: () => void;
   onOpenModePanel?: () => void;
   onOpenMobileImagePanel?: () => void;
@@ -33,7 +32,6 @@ export function GlobalGenerator({
   className,
   onGenerate,
   onOpenUploadPanel,
-  onOpenUploadPanelForReplace,
   onOpenSettingsPanel,
   onOpenModePanel,
   onOpenMobileImagePanel,
@@ -128,7 +126,6 @@ export function GlobalGenerator({
             size="lg"
             uploadImages={uploadImages}
             onClick={onOpenUploadPanel}
-            onOpenUploadPanelForReplace={onOpenUploadPanelForReplace}
             onRemoveImage={onRemoveImage}
             onImageClick={onImageClick}
             mode={mode}
@@ -144,7 +141,7 @@ export function GlobalGenerator({
             <textarea
               value={prompt}
               onChange={(e) => setPrompt(e.target.value)}
-              placeholder={requiresPrompt() ? t("placeholder") : "无需提示词"}
+              placeholder={requiresPrompt() ? t("placeholder") : t("noImageRequired")}
               disabled={!requiresPrompt()}
               className={cn(
                 "max-h-40 min-h-10 w-full resize-none !border-0 bg-transparent text-sm md:text-base text-foreground placeholder:text-muted-foreground focus:outline-none !ring-0 custom-scrollbar overflow-hidden",
@@ -173,7 +170,6 @@ export function GlobalGenerator({
                   size="sm"
                   uploadImages={uploadImages}
                   onClick={onOpenUploadPanel}
-                  onOpenUploadPanelForReplace={onOpenUploadPanelForReplace}
                   onOpenMobileImagePanel={onOpenMobileImagePanel}
                   onRemoveImage={onRemoveImage}
                   onImageClick={onImageClick}
@@ -204,10 +200,10 @@ export function GlobalGenerator({
                 "text-sm md:text-base text-white font-medium whitespace-nowrap",
                 "disabled:opacity-50 disabled:cursor-not-allowed",
                 "transition-all duration-300",
-                "hover:shadow-lg hover:shadow-primary/20 "
+                "hover:shadow-lg hover:shadow-primary/20 cursor-pointer"
               )}
             >
-              {t("create")}({requiredCredits}积分)
+              {t("common.createWithCredits", { credits: requiredCredits ?? 0 })}
             </motion.button>
           </div>
         </div>

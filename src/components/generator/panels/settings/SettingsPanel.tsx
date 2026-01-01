@@ -133,7 +133,8 @@ export function SettingsPanel({ onClose, settings, onSettingsChange, mode = "tex
             "flex h-9 w-9 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-sidebar-hover hover:text-foreground cursor-pointer",
             FOCUS_RING_CLASSES
           )}
-          aria-label="关闭"
+          aria-label={t("close")}
+          title={t("close")}
         >
           <X className="h-4 w-4 sm:h-5 sm:w-5" />
         </motion.button>
@@ -155,6 +156,7 @@ export function SettingsPanel({ onClose, settings, onSettingsChange, mode = "tex
               {selectedModelConfig?.renderFormFields?.({
                 settings: currentSettings,
                 onChange: handleFormFieldChange,
+                t,
               })}
             </div>
           </Form>

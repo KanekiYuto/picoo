@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { X } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { ImageUploadButton } from "../../buttons/ImageUploadButton";
 import type { GeneratorMode } from "../../config";
 
@@ -12,7 +13,6 @@ interface MobileImagePanelProps {
   onOpenUploadPanel: () => void;
   onRemoveImage: (index: number) => void;
   onImageClick: (imageUrl: string, index: number) => void;
-  onOpenUploadPanelForReplace: (index: number) => void;
 }
 
 export function MobileImagePanel({
@@ -22,8 +22,9 @@ export function MobileImagePanel({
   onOpenUploadPanel,
   onRemoveImage,
   onImageClick,
-  onOpenUploadPanelForReplace,
 }: MobileImagePanelProps) {
+  const t = useTranslations("generator");
+
   return (
     <motion.div
       key="mobile-images"
@@ -35,10 +36,12 @@ export function MobileImagePanel({
     >
       <div className="bg-background rounded-2xl p-4 md:p-6">
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-lg font-semibold text-foreground">图片管理</h2>
+          <h2 className="text-lg font-semibold text-foreground">{t("mobileImagePanel.title")}</h2>
           <button
             onClick={onClose}
             className="flex h-8 w-8 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-sidebar-hover hover:text-foreground cursor-pointer"
+            aria-label={t("resultPanel.close")}
+            title={t("resultPanel.close")}
           >
             <X className="h-5 w-5" />
           </button>
@@ -53,7 +56,6 @@ export function MobileImagePanel({
               onClick={onOpenUploadPanel}
               onRemoveImage={onRemoveImage}
               onImageClick={onImageClick}
-              onOpenUploadPanelForReplace={onOpenUploadPanelForReplace}
               mode={mode}
             />
           </div>

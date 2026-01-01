@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
+import { useTranslations } from "next-intl";
 import { motion } from "framer-motion";
 import { Download } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -22,6 +23,7 @@ export function ResultPanel({
   onDownload,
   onDeleteError,
 }: ResultPanelProps) {
+  const t = useTranslations("generator.resultPanel");
   const containerRef = useRef<HTMLDivElement | null>(null);
   const { open: openPreview } = useMediaPreviewStore();
   const [loadedImages, setLoadedImages] = useState<Set<string>>(new Set());
@@ -66,16 +68,9 @@ export function ResultPanel({
       style={{ zIndex: 0 }}
     >
       <div className="w-full h-full flex flex-col">
-        {/* 空状态 */}
+        {/* 空状态 - 不显示任何内容 */}
         {isEmpty && (
-          <div className="flex-1 flex items-center justify-center">
-            <div className="flex flex-col items-center gap-3 text-center">
-              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-muted/10">
-                <span className="text-2xl text-muted-foreground">📷</span>
-              </div>
-              <p className="text-sm text-muted-foreground">生成结果会显示在这里</p>
-            </div>
-          </div>
+          <div className="flex-1" />
         )}
 
         {/* 结果网格 */}
@@ -118,7 +113,7 @@ export function ResultPanel({
                         <div className="relative w-4 h-4">
                           <div className="absolute inset-0 rounded-full border-2 border-transparent border-t-foreground border-r-foreground animate-spin"></div>
                         </div>
-                        <p className="text-sm text-foreground font-medium">Request in progress</p>
+                        <p className="text-sm text-foreground font-medium">{t("requestInProgress")}</p>
                       </div>
                     </motion.div>
                   )}
@@ -144,7 +139,7 @@ export function ResultPanel({
                             <div className="relative w-4 h-4">
                               <div className="absolute inset-0 rounded-full border-2 border-transparent border-t-foreground border-r-foreground animate-spin"></div>
                             </div>
-                            <p className="text-sm text-foreground font-medium">Loading image</p>
+                            <p className="text-sm text-foreground font-medium">{t("loadingImage")}</p>
                           </div>
                         </div>
                       )}
@@ -173,7 +168,7 @@ export function ResultPanel({
                                 "bg-black/60 text-foreground transition-all",
                                 "hover:bg-black/80"
                               )}
-                              title="下载"
+                              title={t("download")}
                             >
                               <Download className="h-4 w-4" />
                             </button>
@@ -208,7 +203,7 @@ export function ResultPanel({
                           "hover:bg-red-600"
                         )}
                       >
-                        删除
+                        {t("delete")}
                       </button>
                     </motion.div>
                   )}
