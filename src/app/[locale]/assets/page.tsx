@@ -30,7 +30,7 @@ export default function AssetsPage() {
   const [selectedAsset, setSelectedAsset] = useState<AssetInfo | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalCount, setTotalCount] = useState(0);
-  const itemsPerPage = 20;
+  const itemsPerPage = 30;
 
   // 获取数据
   useEffect(() => {
@@ -96,7 +96,7 @@ export default function AssetsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="bg-background">
       <div className="px-4 py-8 sm:px-6 lg:px-8">
         {/* 标题和筛选器 */}
         <div className="mb-6 flex items-center justify-between">
@@ -245,13 +245,14 @@ export default function AssetsPage() {
 
             {/* 分页器 */}
             {totalPages > 1 && (
-              <div className="mt-8 flex items-center justify-center gap-2">
+              <div className="mt-8 flex items-center justify-center gap-1">
                 <button
                   onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
                   disabled={currentPage === 1 || isLoading}
-                  className="rounded-lg border border-border px-3 py-2 text-sm font-medium transition-colors hover:bg-muted disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-lg border border-border transition-colors hover:bg-muted/20 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                  title={t("pagination.previous")}
                 >
-                  Previous
+                  <span className="text-xs sm:text-sm font-medium">‹</span>
                 </button>
 
                 {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
@@ -259,10 +260,10 @@ export default function AssetsPage() {
                     key={page}
                     onClick={() => setCurrentPage(page)}
                     disabled={isLoading}
-                    className={`rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
+                    className={`flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-lg text-xs sm:text-sm font-medium transition-colors cursor-pointer ${
                       currentPage === page
-                        ? "bg-primary text-primary-foreground"
-                        : "border border-border hover:bg-muted disabled:opacity-50 disabled:cursor-not-allowed"
+                        ? "border border-foreground/20 bg-muted/20 text-foreground"
+                        : "border border-border hover:bg-muted/20 disabled:opacity-50 disabled:cursor-not-allowed"
                     }`}
                   >
                     {page}
@@ -272,9 +273,10 @@ export default function AssetsPage() {
                 <button
                   onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
                   disabled={currentPage === totalPages || isLoading}
-                  className="rounded-lg border border-border px-3 py-2 text-sm font-medium transition-colors hover:bg-muted disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-lg border border-border transition-colors hover:bg-muted/20 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                  title={t("pagination.next")}
                 >
-                  Next
+                  <span className="text-xs sm:text-sm font-medium">›</span>
                 </button>
               </div>
             )}

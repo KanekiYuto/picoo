@@ -22,5 +22,9 @@
     "noDescription": "No description",
     "viewOriginal": "View Original",
     "download": "Download"
+  },
+  "pagination": {
+    "previous": "Previous",
+    "next": "Next"
   }
 }

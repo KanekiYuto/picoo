@@ -7,28 +7,27 @@ import {
   Image as ImageIcon,
   Settings,
   HelpCircle,
-  MoreHorizontal,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useLocale } from "next-intl";
+import { useTranslations } from "next-intl";
 import { useEffect } from "react";
 
 interface NavItem {
   icon: React.ComponentType<{ className?: string }>;
-  label: string;
+  labelKey: string;
   href: string;
 }
 
-const navItems: NavItem[] = [
-  { icon: Home, label: "首页", href: "/" },
-  { icon: ImageIcon, label: "素材", href: "/assets" },
-  { icon: Settings, label: "设置", href: "/settings/profile" },
+const navItemsConfig: Omit<NavItem, "labelKey">[] = [
+  { icon: Home, href: "/" },
+  { icon: ImageIcon, href: "/assets" },
+  { icon: Settings, href: "/settings/profile" },
 ];
 
-const bottomItems: NavItem[] = [
-  { icon: HelpCircle, label: "帮助", href: "/help" },
-  { icon: MoreHorizontal, label: "更多", href: "/more" },
+const bottomItemsConfig: Omit<NavItem, "labelKey">[] = [
+  { icon: HelpCircle, href: "/help" },
 ];
 
 interface MobileSidebarProps {
@@ -39,6 +38,17 @@ interface MobileSidebarProps {
 export function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
   const pathname = usePathname();
   const locale = useLocale();
+  const t = useTranslations("sidebar");
+
+  const navItems: NavItem[] = [
+    { ...navItemsConfig[0], labelKey: t("home") },
+    { ...navItemsConfig[1], labelKey: t("assets") },
+    { ...navItemsConfig[2], labelKey: t("settings") },
+  ];
+
+  const bottomItems: NavItem[] = [
+    { ...bottomItemsConfig[0], labelKey: t("help") },
+  ];
 
   // 判断是否激活的辅助函数（处理国际化路由）
   const isActiveRoute = (href: string) => {
@@ -114,7 +124,7 @@ export function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
                   const isActive = isActiveRoute(item.href);
                   return (
                     <motion.div
-                      key={item.label}
+                      key={item.href}
                       initial={{ opacity: 0, x: -20 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{
@@ -139,7 +149,7 @@ export function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
                           )}
                         >
                           <Icon className="h-6 w-6" />
-                          <span className="text-base font-medium">{item.label}</span>
+                          <span className="text-base font-medium">{item.labelKey}</span>
                           {isActive && (
                             <motion.div
                               layoutId="mobile-active-indicator"
@@ -160,7 +170,7 @@ export function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
                   const isActive = isActiveRoute(item.href);
                   return (
                     <motion.div
-                      key={item.label}
+                      key={item.href}
                       initial={{ opacity: 0, x: -20 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{
@@ -185,7 +195,7 @@ export function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
                           )}
                         >
                           <Icon className="h-6 w-6" />
-                          <span className="text-base font-medium">{item.label}</span>
+                          <span className="text-base font-medium">{item.labelKey}</span>
                           {isActive && (
                             <motion.div
                               layoutId="mobile-active-indicator"

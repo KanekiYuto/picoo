@@ -1,0 +1,42 @@
+{
+  "title": "Help Center",
+  "subtitle": "Find answers to common questions and learn how to get the most out of {name}",
+  "faqTitle": "Frequently Asked Questions",
+  "faq": {
+    "0": {
+      "question": "How do I upload images?",
+      "answer": "Click the 'Add image' button in the generator panel. You can either drag and drop files or click to browse. Supported formats include JPG, PNG, WEBP, and GIF. Maximum file size is 25MB."
+    },
+    "1": {
+      "question": "What models are available?",
+      "answer": "{name} offers multiple AI models optimized for different tasks including text-to-image generation, image upscaling, editing, and watermark removal. Each model has different capabilities and credit costs."
+    },
+    "2": {
+      "question": "How do credits work?",
+      "answer": "Credits are used to generate images. Different models and settings require different amounts of credits. You can purchase credits from your account dashboard."
+    },
+    "3": {
+      "question": "Can I download my generated images?",
+      "answer": "Yes, all generated images can be downloaded directly. You can also view your previous generations in the Assets section."
+    }
+  },
+  "features": {
+    "0": {
+      "title": "Powerful AI Models",
+      "description": "Access state-of-the-art image generation and editing models"
+    },
+    "1": {
+      "title": "Customization",
+      "description": "Fine-tune aspects like resolution, quality, and style"
+    },
+    "2": {
+      "title": "Easy Management",
+      "description": "Organize and access your assets library"
+    }
+  },
+  "contact": {
+    "title": "Need more help?",
+    "description": "Can't find what you're looking for? Get in touch with our support team.",
+    "button": "Contact Support"
+  }
+}

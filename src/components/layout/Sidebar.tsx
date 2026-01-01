@@ -8,28 +8,27 @@ import {
   Image as ImageIcon,
   Settings,
   HelpCircle,
-  MoreHorizontal,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useLocale } from "next-intl";
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 
 interface NavItem {
   icon: React.ComponentType<{ className?: string }>;
-  label: string;
+  labelKey: string;
   href: string;
 }
 
-const navItems: NavItem[] = [
-  { icon: Home, label: "首页", href: "/" },
-  { icon: ImageIcon, label: "素材", href: "/assets" },
-  { icon: Settings, label: "设置", href: "/settings/profile" },
+const navItemsConfig: Omit<NavItem, "labelKey">[] = [
+  { icon: Home, href: "/" },
+  { icon: ImageIcon, href: "/assets" },
+  { icon: Settings, href: "/settings/profile" },
 ];
 
-const bottomItems: NavItem[] = [
-  { icon: HelpCircle, label: "帮助", href: "/help" },
-  { icon: MoreHorizontal, label: "更多", href: "/more" },
+const bottomItemsConfig: Omit<NavItem, "labelKey">[] = [
+  { icon: HelpCircle, href: "/help" },
 ];
 
 interface SidebarProps {
@@ -39,6 +38,17 @@ interface SidebarProps {
 export function Sidebar({ className }: SidebarProps) {
   const pathname = usePathname();
   const locale = useLocale();
+  const t = useTranslations("sidebar");
+
+  const navItems: NavItem[] = [
+    { ...navItemsConfig[0], labelKey: t("home") },
+    { ...navItemsConfig[1], labelKey: t("assets") },
+    { ...navItemsConfig[2], labelKey: t("settings") },
+  ];
+
+  const bottomItems: NavItem[] = [
+    { ...bottomItemsConfig[0], labelKey: t("help") },
+  ];
 
   // 判断是否激活的辅助函数（处理国际化路由）
   const isActiveRoute = (href: string) => {
@@ -85,7 +95,7 @@ export function Sidebar({ className }: SidebarProps) {
             const isActive = isActiveRoute(item.href);
             return (
               <Link
-                key={item.label}
+                key={item.href}
                 href={item.href}
                 className="group relative flex flex-col items-center gap-1"
               >
@@ -104,7 +114,7 @@ export function Sidebar({ className }: SidebarProps) {
                 <span className={cn(
                   "text-[10px] transition-colors",
                   isActive ? "text-foreground font-medium" : "text-muted-foreground"
-                )}>{item.label}</span>
+                )}>{item.labelKey}</span>
               </Link>
             );
           })}
@@ -117,7 +127,7 @@ export function Sidebar({ className }: SidebarProps) {
             const isActive = isActiveRoute(item.href);
             return (
               <Link
-                key={item.label}
+                key={item.href}
                 href={item.href}
                 className="group relative flex flex-col items-center gap-1"
               >
@@ -136,7 +146,7 @@ export function Sidebar({ className }: SidebarProps) {
                 <span className={cn(
                   "text-[10px] transition-colors",
                   isActive ? "text-foreground font-medium" : "text-muted-foreground"
-                )}>{item.label}</span>
+                )}>{item.labelKey}</span>
               </Link>
             );
           })}
