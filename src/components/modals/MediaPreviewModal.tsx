@@ -2,10 +2,30 @@
 
 import { useEffect, useCallback } from 'react';
 import { X, ChevronLeft, ChevronRight, Download } from 'lucide-react';
-import { useMediaPreviewStore } from '@/store/useMediaPreviewStore';
+import { useTranslations } from 'next-intl';
+import { downloadImage } from '@/lib/image-utils';
+import type { MediaItem } from '@/store/useModalStore';
 
-export default function MediaPreviewModal() {
-  const { isOpen, items, currentIndex, close, next, prev, goTo } = useMediaPreviewStore();
+interface MediaPreviewModalProps {
+  isOpen: boolean;
+  items: MediaItem[];
+  currentIndex: number;
+  onClose: () => void;
+  onNext: () => void;
+  onPrev: () => void;
+  onGoTo: (index: number) => void;
+}
+
+export default function MediaPreviewModal({
+  isOpen,
+  items,
+  currentIndex,
+  onClose,
+  onNext,
+  onPrev,
+  onGoTo,
+}: MediaPreviewModalProps) {
+  const t = useTranslations();
 
   // 键盘事件处理
   const handleKeyDown = useCallback(
@@ -14,17 +34,17 @@ export default function MediaPreviewModal() {
 
       switch (e.key) {
         case 'Escape':
-          close();
+          onClose();
           break;
         case 'ArrowLeft':
-          prev();
+          onPrev();
           break;
         case 'ArrowRight':
-          next();
+          onNext();
           break;
       }
     },
-    [isOpen, close, prev, next]
+    [isOpen, onClose, onPrev, onNext]
   );
 
   // 注册键盘事件
@@ -48,7 +68,7 @@ export default function MediaPreviewModal() {
   // 点击遮罩层关闭
   const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (e.target === e.currentTarget) {
-      close();
+      onClose();
     }
   };
 
@@ -56,12 +76,10 @@ export default function MediaPreviewModal() {
   const handleDownload = async () => {
     if (items[currentIndex]) {
       const item = items[currentIndex];
-      const link = document.createElement('a');
-      link.href = item.url;
-      link.download = `media-${item.id}`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
+      await downloadImage(item.url, {
+        success: t("common.download.success") || "Downloaded successfully",
+        error: t("common.download.error") || "Failed to download image",
+      });
     }
   };
 
@@ -109,7 +127,7 @@ export default function MediaPreviewModal() {
             onClick={(e) => {
               e.preventDefault();
               e.stopPropagation();
-              close();
+              onClose();
             }}
             className="p-2 text-white/80 hover:text-white hover:bg-white/10 rounded-lg transition-colors cursor-pointer"
             title="关闭 (Esc)"
@@ -130,7 +148,7 @@ export default function MediaPreviewModal() {
             alt={`Image ${currentIndex + 1}`}
             className="max-w-full max-h-full object-contain select-none animate-in zoom-in-95 duration-200"
             draggable={false}
-            onClick={() => close()}
+            onClick={() => onClose()}
           />
         )}
 
@@ -141,7 +159,7 @@ export default function MediaPreviewModal() {
             className="max-w-full max-h-full object-contain select-none animate-in zoom-in-95 duration-200"
             controls
             autoPlay
-            onClick={() => close()}
+            onClick={() => onClose()}
           />
         )}
 
@@ -150,7 +168,7 @@ export default function MediaPreviewModal() {
           <button
             onClick={(e) => {
               e.stopPropagation();
-              prev();
+              onPrev();
             }}
             className="absolute left-4 top-1/2 -translate-y-1/2 p-3 bg-black/40 hover:bg-black/60 text-white rounded-full transition-colors cursor-pointer"
             title="上一个 (←)"
@@ -164,7 +182,7 @@ export default function MediaPreviewModal() {
           <button
             onClick={(e) => {
               e.stopPropagation();
-              next();
+              onNext();
             }}
             className="absolute right-4 top-1/2 -translate-y-1/2 p-3 bg-black/40 hover:bg-black/60 text-white rounded-full transition-colors cursor-pointer"
             title="下一个 (→)"
@@ -186,7 +204,7 @@ export default function MediaPreviewModal() {
                 key={index}
                 onClick={(e) => {
                   e.stopPropagation();
-                  goTo(index);
+                  onGoTo(index);
                 }}
                 className={`flex-shrink-0 w-14 h-14 rounded-md overflow-hidden border-2 transition-all cursor-pointer ${
                   index === currentIndex

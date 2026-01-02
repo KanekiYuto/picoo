@@ -1,13 +1,12 @@
 "use client";
 
-import { useState } from "react";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { Bell, MessageSquare, Users, Menu, X, Moon, Sun } from "lucide-react";
 import { UserButton } from "@/components/auth/UserButton";
-import { LoginModal } from "@/components/auth/LoginModal";
 import { useUserStore } from "@/stores/userStore";
 import { useThemeStore } from "@/stores/themeStore";
+import { useModalStore } from "@/store/useModalStore";
 import { LanguageSwitcher } from "./LanguageSwitcher";
 
 interface HeaderProps {
@@ -19,7 +18,7 @@ interface HeaderProps {
 export function Header({ className, onMenuClick, isMobileMenuOpen }: HeaderProps) {
   const { user, isLoading } = useUserStore();
   const { theme, toggleTheme } = useThemeStore();
-  const [showLoginModal, setShowLoginModal] = useState(false);
+  const { openLoginModal } = useModalStore();
 
   return (
     <>
@@ -81,7 +80,7 @@ export function Header({ className, onMenuClick, isMobileMenuOpen }: HeaderProps
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  onClick={() => setShowLoginModal(true)}
+                  onClick={openLoginModal}
                   className="flex h-10 px-4 items-center justify-center rounded-full bg-gradient-to-br from-primary to-primary-hover text-white font-medium text-sm"
                 >
                   登录
@@ -91,12 +90,6 @@ export function Header({ className, onMenuClick, isMobileMenuOpen }: HeaderProps
           </div>
         </div>
       </header>
-
-      {/* 登录模态框 */}
-      <LoginModal
-        isOpen={showLoginModal}
-        onClose={() => setShowLoginModal(false)}
-      />
     </>
   );
 }

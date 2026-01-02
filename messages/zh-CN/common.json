@@ -26,5 +26,11 @@
     "yearly_plus": "进阶 - 年度",
     "monthly_pro": "专业 - 月度",
     "yearly_pro": "专业 - 年度"
+  },
+  "download": {
+    "success": "下载成功",
+    "error": "下载失败",
+    "filesSuccess": "成功下载 {count} 个文件",
+    "filesError": "下载 {count} 个文件失败"
   }
 }

@@ -26,5 +26,11 @@
     "yearly_plus": "Plus - Yearly",
     "monthly_pro": "Professional - Monthly",
     "yearly_pro": "Professional - Yearly"
+  },
+  "download": {
+    "success": "Downloaded successfully",
+    "error": "Failed to download image",
+    "filesSuccess": "Downloaded {count} file{count, plural, one {} other {s}}",
+    "filesError": "Failed to download {count} file{count, plural, one {} other {s}}"
   }
 }

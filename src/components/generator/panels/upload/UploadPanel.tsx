@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import { X, Upload, ImageOff, Plus, Check } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
-import { useMediaPreviewStore } from "@/store/useMediaPreviewStore";
+import { useModalStore } from "@/store/useModalStore";
 
 interface Asset {
   id: string;
@@ -174,7 +174,7 @@ export function UploadPanel({ isOpen, onClose, onImageSelect, onImageReplace, on
                 <img
                   src={selectedImage}
                   alt="Selected"
-                  onClick={() => useMediaPreviewStore.getState().open([{ id: 'upload-preview', type: 'image' as const, url: selectedImage }], 0)}
+                  onClick={() => useModalStore.getState().openMediaPreview([{ id: 'upload-preview', type: 'image' as const, url: selectedImage }], 0)}
                   className="max-w-full max-h-[400px] object-contain rounded-lg cursor-pointer"
                 />
               </div>

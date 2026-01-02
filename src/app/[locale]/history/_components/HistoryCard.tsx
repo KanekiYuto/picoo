@@ -3,7 +3,8 @@
 import { motion } from "framer-motion";
 import { Trash2, Download } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useMediaPreviewStore } from "@/store/useMediaPreviewStore";
+import { useModalStore } from "@/store/useModalStore";
+import { useImageDownload } from "@/hooks/useImageDownload";
 import { formatDate } from "./utils";
 import type { HistoryItem } from "./types";
 
@@ -14,7 +15,12 @@ interface HistoryCardProps {
 
 export function HistoryCard({ item, onDelete }: HistoryCardProps) {
   const t = useTranslations("history");
-  const { open: openMediaPreview } = useMediaPreviewStore();
+  const { openMediaPreview } = useModalStore();
+  const { downloadImages } = useImageDownload();
+
+  const handleDownload = async () => {
+    await downloadImages(item.results.map(r => r.url));
+  };
 
   return (
     <motion.div
@@ -37,14 +43,13 @@ export function HistoryCard({ item, onDelete }: HistoryCardProps) {
         {/* 右侧操作按钮 */}
         <div className="flex-shrink-0 flex gap-2">
           {item.results && item.results.length > 0 && (
-            <a
-              href={item.results[0].url}
-              download
+            <button
+              onClick={handleDownload}
               className="flex items-center gap-1 rounded-lg border border-border bg-muted/10 px-3 py-2 text-xs font-medium text-foreground transition-colors hover:bg-muted/20 cursor-pointer"
               title={t("download")}
             >
               <Download className="h-4 w-4" />
-            </a>
+            </button>
           )}
           <button
             onClick={() => onDelete(item.id)}

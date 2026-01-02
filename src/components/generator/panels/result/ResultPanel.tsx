@@ -5,7 +5,7 @@ import { useTranslations } from "next-intl";
 import { motion } from "framer-motion";
 import { Download } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useMediaPreviewStore } from "@/store/useMediaPreviewStore";
+import { useModalStore } from "@/store/useModalStore";
 
 export type ImageItem =
   | { type: 'loading'; id: string }
@@ -25,7 +25,7 @@ export function ResultPanel({
 }: ResultPanelProps) {
   const t = useTranslations("generator.resultPanel");
   const containerRef = useRef<HTMLDivElement | null>(null);
-  const { open: openPreview } = useMediaPreviewStore();
+  const { openMediaPreview } = useModalStore();
   const [loadedImages, setLoadedImages] = useState<Set<string>>(new Set());
 
   const handleImageLoad = (id: string) => {
@@ -46,7 +46,7 @@ export function ResultPanel({
           type: 'image' as const,
         }));
       const startIndex = previewItems.findIndex(p => p.id === item.id);
-      openPreview(previewItems, startIndex);
+      openMediaPreview(previewItems, startIndex);
     }
   };
 

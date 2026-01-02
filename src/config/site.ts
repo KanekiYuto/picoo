@@ -38,13 +38,7 @@ export const siteConfig = {
 
   // 社交媒体链接
   social: {
-    github: "https://github.com",
-    twitter: "https://twitter.com",
-    linkedin: "https://linkedin.com",
-    facebook: "https://facebook.com",
-    instagram: "https://instagram.com",
-    youtube: "https://youtube.com",
-    discord: "https://discord.com",
+    discord: "https://discord.gg/sQT3rkAN28",
   },
 
   // 导航链接
@@ -62,20 +56,13 @@ export const siteConfig = {
     resources: [
       { label: "定价", href: "/pricing" },
       { label: "帮助中心", href: "/help" },
-      { label: "教程", href: "/tutorials" },
-      { label: "博客", href: "/blog" },
     ],
     community: [
-      { label: "Discord", href: "https://discord.com" },
-      { label: "Facebook", href: "https://facebook.com" },
-      { label: "Instagram", href: "https://instagram.com" },
-      { label: "YouTube", href: "https://youtube.com" },
-      { label: "LinkedIn", href: "https://linkedin.com" },
+      { label: "Discord", href: "https://discord.gg/sQT3rkAN28" },
     ],
     contact: [
-      { label: "技术支持", href: "/support" },
-      { label: "商务合作", href: "/business" },
-      { label: "个人演示", href: "/demo/individual" },
+      { label: "Discord", href: "https://discord.gg/sQT3rkAN28" },
+      { label: "Email", href: "mailto:support@fluxreve.com" },
     ],
     legal: [
       { label: "隐私政策", href: "/legal/privacy" },
