@@ -46,7 +46,7 @@ export default function AssetsPage() {
         params.append("offset", String(offset));
         params.append("limit", String(itemsPerPage));
 
-        const response = await fetch(`/api/asset/upload?${params.toString()}`);
+        const response = await fetch(`/api/asset?${params.toString()}`);
         if (!response.ok) {
           throw new Error("Failed to fetch assets");
         }

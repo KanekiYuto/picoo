@@ -1,3 +1,14 @@
+CREATE TABLE "asset" (
+	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"user_id" text NOT NULL,
+	"storage_id" uuid NOT NULL,
+	"tags" text[],
+	"description" text,
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	"updated_at" timestamp DEFAULT now() NOT NULL,
+	"deleted_at" timestamp
+);
+--> statement-breakpoint
 CREATE TABLE "credit" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"user_id" text NOT NULL,
@@ -22,6 +33,65 @@ CREATE TABLE "credit_transaction" (
 	"related_transaction_id" uuid,
 	"note" text,
 	"created_at" timestamp DEFAULT now() NOT NULL
+);
+--> statement-breakpoint
+CREATE TABLE "generation_parameters" (
+	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"task_id" uuid NOT NULL,
+	"storage_id" uuid NOT NULL,
+	"param_type" text NOT NULL,
+	"created_at" timestamp DEFAULT now() NOT NULL
+);
+--> statement-breakpoint
+CREATE TABLE "generation_result" (
+	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"task_id" uuid NOT NULL,
+	"storage_id" uuid NOT NULL,
+	"watermark_storage_id" uuid,
+	"order_index" integer NOT NULL,
+	"created_at" timestamp DEFAULT now() NOT NULL
+);
+--> statement-breakpoint
+CREATE TABLE "generation_task" (
+	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"task_id" uuid NOT NULL,
+	"share_id" text NOT NULL,
+	"user_id" text NOT NULL,
+	"task_type" text NOT NULL,
+	"provider" text NOT NULL,
+	"provider_request_id" text,
+	"model" text NOT NULL,
+	"status" text DEFAULT 'pending' NOT NULL,
+	"progress" integer DEFAULT 0 NOT NULL,
+	"parameters" jsonb NOT NULL,
+	"consume_transaction_id" uuid NOT NULL,
+	"refund_transaction_id" uuid,
+	"error_message" jsonb,
+	"started_at" timestamp NOT NULL,
+	"completed_at" timestamp,
+	"duration_ms" integer,
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	"updated_at" timestamp DEFAULT now() NOT NULL,
+	"deleted_at" timestamp,
+	"is_private" boolean DEFAULT false NOT NULL,
+	"is_nsfw" boolean DEFAULT false NOT NULL,
+	"nsfw_details" jsonb,
+	CONSTRAINT "generation_task_task_id_unique" UNIQUE("task_id"),
+	CONSTRAINT "generation_task_share_id_unique" UNIQUE("share_id")
+);
+--> statement-breakpoint
+CREATE TABLE "storage" (
+	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"key" text NOT NULL,
+	"url" text NOT NULL,
+	"filename" text NOT NULL,
+	"original_filename" text NOT NULL,
+	"type" text NOT NULL,
+	"mime_type" text NOT NULL,
+	"size" integer NOT NULL,
+	"metadata" jsonb,
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	CONSTRAINT "storage_key_unique" UNIQUE("key")
 );
 --> statement-breakpoint
 CREATE TABLE "subscription" (
@@ -62,6 +132,8 @@ CREATE TABLE "user" (
 	"email" text NOT NULL,
 	"email_verified" boolean DEFAULT false NOT NULL,
 	"image" text,
+	"type" text DEFAULT 'free' NOT NULL,
+	"current_subscription_id" uuid,
 	"created_at" timestamp DEFAULT now() NOT NULL,
 	"updated_at" timestamp DEFAULT now() NOT NULL,
 	CONSTRAINT "user_email_unique" UNIQUE("email")
@@ -104,15 +176,30 @@ CREATE TABLE "verification" (
 	"updatedAt" timestamp DEFAULT now()
 );
 --> statement-breakpoint
+ALTER TABLE "asset" ADD CONSTRAINT "asset_user_id_user_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."user"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "asset" ADD CONSTRAINT "asset_storage_id_storage_id_fk" FOREIGN KEY ("storage_id") REFERENCES "public"."storage"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "credit" ADD CONSTRAINT "credit_user_id_user_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."user"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "credit" ADD CONSTRAINT "credit_transaction_id_transaction_id_fk" FOREIGN KEY ("transaction_id") REFERENCES "public"."transaction"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "credit_transaction" ADD CONSTRAINT "credit_transaction_user_id_user_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."user"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "credit_transaction" ADD CONSTRAINT "credit_transaction_credit_id_credit_id_fk" FOREIGN KEY ("credit_id") REFERENCES "public"."credit"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "generation_parameters" ADD CONSTRAINT "generation_parameters_task_id_generation_task_id_fk" FOREIGN KEY ("task_id") REFERENCES "public"."generation_task"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "generation_parameters" ADD CONSTRAINT "generation_parameters_storage_id_storage_id_fk" FOREIGN KEY ("storage_id") REFERENCES "public"."storage"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "generation_result" ADD CONSTRAINT "generation_result_task_id_generation_task_id_fk" FOREIGN KEY ("task_id") REFERENCES "public"."generation_task"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "generation_result" ADD CONSTRAINT "generation_result_storage_id_storage_id_fk" FOREIGN KEY ("storage_id") REFERENCES "public"."storage"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "generation_result" ADD CONSTRAINT "generation_result_watermark_storage_id_storage_id_fk" FOREIGN KEY ("watermark_storage_id") REFERENCES "public"."storage"("id") ON DELETE set null ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "generation_task" ADD CONSTRAINT "generation_task_user_id_user_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."user"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "generation_task" ADD CONSTRAINT "generation_task_consume_transaction_id_credit_transaction_id_fk" FOREIGN KEY ("consume_transaction_id") REFERENCES "public"."credit_transaction"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "generation_task" ADD CONSTRAINT "generation_task_refund_transaction_id_credit_transaction_id_fk" FOREIGN KEY ("refund_transaction_id") REFERENCES "public"."credit_transaction"("id") ON DELETE set null ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "subscription" ADD CONSTRAINT "subscription_user_id_user_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."user"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "transaction" ADD CONSTRAINT "transaction_user_id_user_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."user"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "transaction" ADD CONSTRAINT "transaction_subscription_id_subscription_id_fk" FOREIGN KEY ("subscription_id") REFERENCES "public"."subscription"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "account" ADD CONSTRAINT "account_userId_user_id_fk" FOREIGN KEY ("userId") REFERENCES "public"."user"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "session" ADD CONSTRAINT "session_userId_user_id_fk" FOREIGN KEY ("userId") REFERENCES "public"."user"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+CREATE INDEX "asset_user_id_idx" ON "asset" USING btree ("user_id");--> statement-breakpoint
+CREATE INDEX "asset_user_id_created_at_idx" ON "asset" USING btree ("user_id","created_at" DESC NULLS LAST);--> statement-breakpoint
+CREATE INDEX "asset_storage_id_idx" ON "asset" USING btree ("storage_id");--> statement-breakpoint
+CREATE INDEX "asset_deleted_at_idx" ON "asset" USING btree ("deleted_at");--> statement-breakpoint
+CREATE INDEX "asset_user_id_deleted_at_idx" ON "asset" USING btree ("user_id","deleted_at");--> statement-breakpoint
 CREATE INDEX "credit_user_id_idx" ON "credit" USING btree ("user_id");--> statement-breakpoint
 CREATE INDEX "credit_user_id_expires_at_idx" ON "credit" USING btree ("user_id","expires_at");--> statement-breakpoint
 CREATE INDEX "credit_user_id_type_idx" ON "credit" USING btree ("user_id","type");--> statement-breakpoint
@@ -124,6 +211,24 @@ CREATE INDEX "credit_transaction_user_id_type_idx" ON "credit_transaction" USING
 CREATE INDEX "credit_transaction_credit_id_idx" ON "credit_transaction" USING btree ("credit_id");--> statement-breakpoint
 CREATE INDEX "credit_transaction_type_idx" ON "credit_transaction" USING btree ("type");--> statement-breakpoint
 CREATE INDEX "credit_transaction_related_transaction_id_idx" ON "credit_transaction" USING btree ("related_transaction_id");--> statement-breakpoint
+CREATE INDEX "generation_parameters_task_id_idx" ON "generation_parameters" USING btree ("task_id");--> statement-breakpoint
+CREATE INDEX "generation_parameters_storage_id_idx" ON "generation_parameters" USING btree ("storage_id");--> statement-breakpoint
+CREATE INDEX "generation_parameters_task_id_param_type_idx" ON "generation_parameters" USING btree ("task_id","param_type");--> statement-breakpoint
+CREATE INDEX "generation_result_task_id_idx" ON "generation_result" USING btree ("task_id");--> statement-breakpoint
+CREATE INDEX "generation_result_storage_id_idx" ON "generation_result" USING btree ("storage_id");--> statement-breakpoint
+CREATE INDEX "generation_result_watermark_storage_id_idx" ON "generation_result" USING btree ("watermark_storage_id");--> statement-breakpoint
+CREATE INDEX "generation_result_task_id_order_idx" ON "generation_result" USING btree ("task_id","order_index");--> statement-breakpoint
+CREATE INDEX "generation_task_user_id_idx" ON "generation_task" USING btree ("user_id");--> statement-breakpoint
+CREATE INDEX "generation_task_user_id_status_idx" ON "generation_task" USING btree ("user_id","status");--> statement-breakpoint
+CREATE INDEX "generation_task_status_idx" ON "generation_task" USING btree ("status");--> statement-breakpoint
+CREATE INDEX "generation_task_is_private_deleted_at_idx" ON "generation_task" USING btree ("is_private","deleted_at");--> statement-breakpoint
+CREATE INDEX "generation_task_is_nsfw_deleted_at_idx" ON "generation_task" USING btree ("is_nsfw","deleted_at");--> statement-breakpoint
+CREATE INDEX "generation_task_deleted_at_idx" ON "generation_task" USING btree ("deleted_at");--> statement-breakpoint
+CREATE INDEX "generation_task_created_at_idx" ON "generation_task" USING btree ("created_at");--> statement-breakpoint
+CREATE INDEX "generation_task_task_type_idx" ON "generation_task" USING btree ("task_type");--> statement-breakpoint
+CREATE INDEX "generation_task_provider_request_id_idx" ON "generation_task" USING btree ("provider_request_id");--> statement-breakpoint
+CREATE INDEX "storage_type_idx" ON "storage" USING btree ("type");--> statement-breakpoint
+CREATE INDEX "storage_created_at_idx" ON "storage" USING btree ("created_at");--> statement-breakpoint
 CREATE INDEX "subscription_user_id_idx" ON "subscription" USING btree ("user_id");--> statement-breakpoint
 CREATE INDEX "subscription_user_id_status_idx" ON "subscription" USING btree ("user_id","status");--> statement-breakpoint
 CREATE INDEX "subscription_user_id_plan_type_idx" ON "subscription" USING btree ("user_id","plan_type");--> statement-breakpoint
@@ -138,4 +243,5 @@ CREATE INDEX "transaction_user_id_type_idx" ON "transaction" USING btree ("user_
 CREATE INDEX "transaction_subscription_id_idx" ON "transaction" USING btree ("subscription_id");--> statement-breakpoint
 CREATE INDEX "transaction_type_idx" ON "transaction" USING btree ("type");--> statement-breakpoint
 CREATE INDEX "user_email_idx" ON "user" USING btree ("email");--> statement-breakpoint
-CREATE INDEX "user_created_at_idx" ON "user" USING btree ("created_at");
+CREATE INDEX "user_created_at_idx" ON "user" USING btree ("created_at");--> statement-breakpoint
+CREATE INDEX "user_type_idx" ON "user" USING btree ("type");

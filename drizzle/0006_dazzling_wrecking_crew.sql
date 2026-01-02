@@ -1,1 +1,0 @@
-ALTER TABLE "user" ADD COLUMN "current_subscription_id" uuid;

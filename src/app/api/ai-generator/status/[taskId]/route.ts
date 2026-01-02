@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
-import { mediaGenerationTask, user } from '@/lib/db/schema';
+import { generationTask, user } from '@/lib/db/schema';
 import { eq, and, sql } from 'drizzle-orm';
 import { auth } from '@/lib/auth';
 import { processImageResults, UserType } from '@/lib/image/resource';
@@ -39,15 +39,15 @@ export async function GET(
     // 查询任务（验证任务属于当前用户，并获取用户类型）
     const tasks = await db
       .select({
-        task: mediaGenerationTask,
+        task: generationTask,
         userType: user.type,
       })
-      .from(mediaGenerationTask)
-      .innerJoin(user, eq(mediaGenerationTask.userId, user.id))
+      .from(generationTask)
+      .innerJoin(user, eq(generationTask.userId, user.id))
       .where(
         and(
-          eq(mediaGenerationTask.taskId, taskId),
-          eq(mediaGenerationTask.userId, session.user.id)
+          eq(generationTask.taskId, taskId),
+          eq(generationTask.userId, session.user.id)
         )
       )
       .limit(1);
@@ -69,8 +69,8 @@ export async function GET(
         .select({
           avgDuration: sql<number>`ROUND(AVG(EXTRACT(EPOCH FROM (completed_at - created_at))))`,
         })
-        .from(mediaGenerationTask)
-        .where(eq(mediaGenerationTask.status, 'completed'))
+        .from(generationTask)
+        .where(eq(generationTask.status, 'completed'))
         .limit(1);
 
       // 默认 30 秒，如果有历史数据则使用平均值

@@ -191,6 +191,36 @@ export const subscription = pgTable('subscription', {
   expiresAtIdx: index('subscription_expires_at_idx').on(table.expiresAt),
 }));
 
+// 存储表 - S3资源管理
+export const storage = pgTable('storage', {
+  // UUID 主键,由数据库自动生成
+  id: uuid('id').primaryKey().defaultRandom(),
+  // S3 key (存储路径)
+  key: text('key').notNull().unique(),
+  // 资源URL
+  url: text('url').notNull(),
+  // 文件名
+  filename: text('filename').notNull(),
+  // 原始文件名
+  originalFilename: text('original_filename').notNull(),
+  // 资源类型: image(图片), video(视频), audio(音频), document(文档), other(其他)
+  type: text('type').notNull(),
+  // MIME类型: image/png, video/mp4 等
+  mimeType: text('mime_type').notNull(),
+  // 文件大小(字节)
+  size: integer('size').notNull(),
+  // 元数据 (JSON 格式: 宽度、高度、时长等)
+  metadata: jsonb('metadata'),
+  // 创建时间
+  createdAt: timestamp('created_at').notNull().defaultNow(),
+}, (table) => ({
+  // S3 key 快速查询（已设为 unique，自动创建索引）
+  // 资源类型过滤
+  typeIdx: index('storage_type_idx').on(table.type),
+  // 创建时间查询
+  createdAtIdx: index('storage_created_at_idx').on(table.createdAt),
+}));
+
 // 素材表
 export const asset = pgTable('asset', {
   // UUID 主键,由数据库自动生成
@@ -199,18 +229,10 @@ export const asset = pgTable('asset', {
   userId: text('user_id')
     .notNull()
     .references(() => user.id, { onDelete: 'cascade' }),
-  // 文件名
-  filename: text('filename').notNull(),
-  // 原始文件名
-  originalFilename: text('original_filename').notNull(),
-  // 文件URL
-  url: text('url').notNull(),
-  // 文件类型: image(图片), video(视频), audio(音频), document(文档), other(其他)
-  type: text('type').notNull(),
-  // MIME类型: image/png, video/mp4 等
-  mimeType: text('mime_type').notNull(),
-  // 文件大小(字节)
-  size: integer('size').notNull(),
+  // 存储资源ID (外键引用)
+  storageId: uuid('storage_id')
+    .notNull()
+    .references(() => storage.id, { onDelete: 'cascade' }),
   // 标签(用于分类和搜索)
   tags: text('tags').array(),
   // 描述
@@ -219,19 +241,23 @@ export const asset = pgTable('asset', {
   createdAt: timestamp('created_at').notNull().defaultNow(),
   // 更新时间
   updatedAt: timestamp('updated_at').notNull().defaultNow(),
+  // 删除时间 (软删除标记)
+  deletedAt: timestamp('deleted_at'),
 }, (table) => ({
   // 用户素材查询
   userIdIdx: index('asset_user_id_idx').on(table.userId),
   // 用户时间范围查询（倒序）
   userIdCreatedAtIdx: index('asset_user_id_created_at_idx').on(table.userId, table.createdAt.desc()),
-  // 用户素材类型查询
-  userIdTypeIdx: index('asset_user_id_type_idx').on(table.userId, table.type),
-  // 素材类型过滤
-  typeIdx: index('asset_type_idx').on(table.type),
+  // 存储资源ID查询
+  storageIdIdx: index('asset_storage_id_idx').on(table.storageId),
+  // 软删除逻辑查询
+  deletedAtIdx: index('asset_deleted_at_idx').on(table.deletedAt),
+  // 用户未删除的素材查询
+  userIdDeletedAtIdx: index('asset_user_id_deleted_at_idx').on(table.userId, table.deletedAt),
 }));
 
-// 媒体生成任务表
-export const mediaGenerationTask = pgTable('media_generation_task', {
+// 生成任务表
+export const generationTask = pgTable('generation_task', {
   // UUID 主键,由数据库自动生成
   id: uuid('id').primaryKey().defaultRandom(),
   // 任务ID (UUID格式,用于前端查询和 webhook 回调)
@@ -256,8 +282,6 @@ export const mediaGenerationTask = pgTable('media_generation_task', {
   progress: integer('progress').notNull().default(0),
   // 生成参数 (JSON 格式存储: prompt、negativePrompt、aspectRatio、numImages、seed、steps、guidanceScale 等)
   parameters: jsonb('parameters').notNull(),
-  // 生成结果 (JSONB 格式存储媒体文件信息数组: [{url, filename, type, size}])
-  results: jsonb('results'),
   // 消费的配额交易记录ID
   consumeTransactionId: uuid('consume_transaction_id')
     .notNull()
@@ -286,21 +310,75 @@ export const mediaGenerationTask = pgTable('media_generation_task', {
   nsfwDetails: jsonb('nsfw_details'),
 }, (table) => ({
   // 用户任务查询、状态过滤
-  userIdIdx: index('media_generation_task_user_id_idx').on(table.userId),
-  userIdStatusIdx: index('media_generation_task_user_id_status_idx').on(table.userId, table.status),
+  userIdIdx: index('generation_task_user_id_idx').on(table.userId),
+  userIdStatusIdx: index('generation_task_user_id_status_idx').on(table.userId, table.status),
   // 任务状态过滤、处理中任务扫描
-  statusIdx: index('media_generation_task_status_idx').on(table.status),
+  statusIdx: index('generation_task_status_idx').on(table.status),
   // 公开分享任务查询 (用于 sitemap 生成)
-  isPrivateDeletedAtIdx: index('media_generation_task_is_private_deleted_at_idx').on(table.isPrivate, table.deletedAt),
-  isNsfwDeletedAtIdx: index('media_generation_task_is_nsfw_deleted_at_idx').on(table.isNsfw, table.deletedAt),
+  isPrivateDeletedAtIdx: index('generation_task_is_private_deleted_at_idx').on(table.isPrivate, table.deletedAt),
+  isNsfwDeletedAtIdx: index('generation_task_is_nsfw_deleted_at_idx').on(table.isNsfw, table.deletedAt),
   // 软删除逻辑查询
-  deletedAtIdx: index('media_generation_task_deleted_at_idx').on(table.deletedAt),
+  deletedAtIdx: index('generation_task_deleted_at_idx').on(table.deletedAt),
   // 创建时间范围查询、分页
-  createdAtIdx: index('media_generation_task_created_at_idx').on(table.createdAt),
+  createdAtIdx: index('generation_task_created_at_idx').on(table.createdAt),
   // 任务类型统计
-  taskTypeIdx: index('media_generation_task_task_type_idx').on(table.taskType),
+  taskTypeIdx: index('generation_task_task_type_idx').on(table.taskType),
   // webhook 回调查询
-  providerRequestIdIdx: index('media_generation_task_provider_request_id_idx').on(table.providerRequestId),
+  providerRequestIdIdx: index('generation_task_provider_request_id_idx').on(table.providerRequestId),
+}));
+
+// 生成任务结果表 - 关联任务和存储资源
+export const generationResult = pgTable('generation_result', {
+  // UUID 主键,由数据库自动生成
+  id: uuid('id').primaryKey().defaultRandom(),
+  // 任务ID
+  taskId: uuid('task_id')
+    .notNull()
+    .references(() => generationTask.id, { onDelete: 'cascade' }),
+  // 存储资源ID
+  storageId: uuid('storage_id')
+    .notNull()
+    .references(() => storage.id, { onDelete: 'cascade' }),
+  // 水印资源ID (可选)
+  watermarkStorageId: uuid('watermark_storage_id').references(() => storage.id, { onDelete: 'set null' }),
+  // 结果序号 (用于保持多个结果的顺序)
+  orderIndex: integer('order_index').notNull(),
+  // 创建时间
+  createdAt: timestamp('created_at').notNull().defaultNow(),
+}, (table) => ({
+  // 任务结果查询
+  taskIdIdx: index('generation_result_task_id_idx').on(table.taskId),
+  // 存储资源ID查询
+  storageIdIdx: index('generation_result_storage_id_idx').on(table.storageId),
+  // 水印资源ID查询
+  watermarkStorageIdIdx: index('generation_result_watermark_storage_id_idx').on(table.watermarkStorageId),
+  // 任务和序号的复合查询
+  taskIdOrderIdx: index('generation_result_task_id_order_idx').on(table.taskId, table.orderIndex),
+}));
+
+// 生成任务参数表 - 存储生成参数中的资源（如图生图的输入图片）
+export const generationParameters = pgTable('generation_parameters', {
+  // UUID 主键,由数据库自动生成
+  id: uuid('id').primaryKey().defaultRandom(),
+  // 任务ID
+  taskId: uuid('task_id')
+    .notNull()
+    .references(() => generationTask.id, { onDelete: 'cascade' }),
+  // 存储资源ID
+  storageId: uuid('storage_id')
+    .notNull()
+    .references(() => storage.id, { onDelete: 'cascade' }),
+  // 参数类型: image(输入图片), mask(蒙版), reference(参考图) 等
+  paramType: text('param_type').notNull(),
+  // 创建时间
+  createdAt: timestamp('created_at').notNull().defaultNow(),
+}, (table) => ({
+  // 任务参数查询
+  taskIdIdx: index('generation_parameters_task_id_idx').on(table.taskId),
+  // 存储资源ID查询
+  storageIdIdx: index('generation_parameters_storage_id_idx').on(table.storageId),
+  // 任务和参数类型的复合查询
+  taskIdParamTypeIdx: index('generation_parameters_task_id_param_type_idx').on(table.taskId, table.paramType),
 }));
 
 // 重新导出 better-auth 表

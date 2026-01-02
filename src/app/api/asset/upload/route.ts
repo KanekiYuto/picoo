@@ -1,10 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
-import { db } from "@/lib/db";
-import { asset } from "@/lib/db/schema";
-import { eq, desc, and, count } from "drizzle-orm";
 import { uploadToR2 } from "@/lib/storage/r2";
 import { validateFile } from "@/lib/storage/validation";
+import { createAsset } from "@/lib/db/services/asset";
 
 export const runtime = "nodejs";
 
@@ -81,33 +79,35 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // 保存到数据库
-    const [newAsset] = await db
-      .insert(asset)
-      .values({
-        userId: session.user.id,
-        filename: uploadResult.key,
-        originalFilename: file.name,
+    // 1. 先创建 storage 记录
+    const { storage: storageRecord } = await createAsset(
+      session.user.id,
+      {
+        key: uploadResult.key,
         url: uploadResult.url,
+        filename: file.name,
+        originalFilename: file.name,
         type: fileType,
         mimeType: file.type,
         size: file.size,
+      },
+      {
         tags: parsedTags,
         description,
-      })
-      .returning();
+      }
+    );
 
     return NextResponse.json({
       success: true,
       data: {
-        id: newAsset.id,
-        url: newAsset.url,
-        type: newAsset.type,
-        filename: newAsset.filename,
-        originalFilename: newAsset.originalFilename,
-        size: newAsset.size,
-        mimeType: newAsset.mimeType,
-        createdAt: newAsset.createdAt,
+        id: storageRecord.id,
+        url: uploadResult.url,
+        type: fileType,
+        filename: file.name,
+        originalFilename: file.name,
+        size: file.size,
+        mimeType: file.type,
+        createdAt: new Date(),
       },
     });
   } catch (error) {
@@ -116,69 +116,6 @@ export async function POST(request: NextRequest) {
       {
         success: false,
         error: error instanceof Error ? error.message : "上传素材失败",
-      },
-      { status: 500 }
-    );
-  }
-}
-
-/**
- * 获取用户的素材列表
- * GET /api/asset/upload?type=image&limit=20&offset=0
- */
-export async function GET(request: NextRequest) {
-  try {
-    // 验证用户身份
-    const session = await auth.api.getSession({
-      headers: request.headers,
-    });
-
-    if (!session?.user?.id) {
-      return NextResponse.json({ success: false, error: "未授权" }, { status: 401 });
-    }
-
-    // 获取查询参数
-    const type = request.nextUrl.searchParams.get("type");
-    const limit = parseInt(request.nextUrl.searchParams.get("limit") || "20");
-    const offset = parseInt(request.nextUrl.searchParams.get("offset") || "0");
-
-    // 构建查询条件
-    const conditions = [eq(asset.userId, session.user.id)];
-    if (type) {
-      conditions.push(eq(asset.type, type));
-    }
-
-    // 获取总数
-    const [{ total }] = await db
-      .select({ total: count() })
-      .from(asset)
-      .where(conditions.length > 1 ? and(...conditions) : conditions[0]);
-
-    // 执行分页查询
-    const assets = await db
-      .select()
-      .from(asset)
-      .where(conditions.length > 1 ? and(...conditions) : conditions[0])
-      .orderBy(desc(asset.createdAt))
-      .limit(limit)
-      .offset(offset);
-
-    return NextResponse.json({
-      success: true,
-      data: {
-        assets,
-        total,
-        limit,
-        offset,
-        hasMore: offset + assets.length < total,
-      },
-    });
-  } catch (error) {
-    console.error("Get assets error:", error);
-    return NextResponse.json(
-      {
-        success: false,
-        error: error instanceof Error ? error.message : "获取素材列表失败",
       },
       { status: 500 }
     );

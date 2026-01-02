@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
-import { mediaGenerationTask } from "@/lib/db/schema";
+import { generationTask } from "@/lib/db/schema";
 import { eq, and } from "drizzle-orm";
 
 export const runtime = "nodejs";
@@ -29,11 +29,11 @@ export async function DELETE(
     // 验证记录是否存在且属于当前用户
     const task = await db
       .select()
-      .from(mediaGenerationTask)
+      .from(generationTask)
       .where(
         and(
-          eq(mediaGenerationTask.id, id),
-          eq(mediaGenerationTask.userId, session.user.id)
+          eq(generationTask.id, id),
+          eq(generationTask.userId, session.user.id)
         )
       )
       .limit(1);
@@ -47,9 +47,9 @@ export async function DELETE(
 
     // 软删除（标记删除时间）
     await db
-      .update(mediaGenerationTask)
+      .update(generationTask)
       .set({ deletedAt: new Date() })
-      .where(eq(mediaGenerationTask.id, id));
+      .where(eq(generationTask.id, id));
 
     return NextResponse.json({ success: true });
   } catch (error) {

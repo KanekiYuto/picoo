@@ -8,7 +8,7 @@ import { auth } from '@/lib/auth';
 import { getAvailableCredit, consumeCredit } from '@/lib/credit';
 import { getRequiredCredits, TaskType } from '@/config/model-credit-cost';
 import { db } from '@/lib/db';
-import { mediaGenerationTask } from '@/lib/db/schema';
+import { generationTask } from '@/lib/db/schema';
 import { randomUUID } from 'crypto';
 import { generateShareId } from '@/lib/utils/generate-share-id';
 
@@ -171,7 +171,7 @@ export async function handleRequest(
     // 8. 创建任务记录
     const shareId = generateShareId(taskType, model);
 
-    await db.insert(mediaGenerationTask).values({
+    await db.insert(generationTask).values({
       taskId,
       shareId,
       userId,

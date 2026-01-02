@@ -1,10 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
-import { mediaGenerationTask } from '@/lib/db/schema';
+import { generationTask, storage } from '@/lib/db/schema';
 import { eq, and } from 'drizzle-orm';
 import { refundCredit } from '@/lib/credit/transaction';
 import { uploadToR2 } from '@/lib/storage/r2';
 import { addWatermark } from '@/lib/image/watermark';
+import { saveGenerationResults } from '@/lib/db/services/generation-task';
 
 // 通用任务状态
 type TaskStatus = 'pending' | 'processing' | 'completed' | 'failed';
@@ -155,7 +156,7 @@ async function transferImageToR2(
   taskId: string,
   index: number,
   model: string
-): Promise<{ url: string; watermarkUrl: string } | null> {
+): Promise<{ url: string; watermarkUrl: string; storageId: string; watermarkStorageId: string } | null> {
   try {
     // 下载原始图片
     const imageBuffer = await downloadImage(originalUrl);
@@ -174,6 +175,20 @@ async function transferImageToR2(
       prefix: `text-to-image/${model}`,
     });
 
+    // 查询原始图片的 storage ID
+    const storageKey = `text-to-image/${model}/${fileName}`;
+    const storageRecords = await db
+      .select({ id: storage.id })
+      .from(storage)
+      .where(eq(storage.key, storageKey))
+      .limit(1);
+
+    if (storageRecords.length === 0) {
+      throw new Error(`Storage record not found for key: ${storageKey}`);
+    }
+
+    const storageId = storageRecords[0].id;
+
     // 2. 生成带水印的图片
     const watermarkedBuffer = await addWatermark(imageBuffer);
 
@@ -186,15 +201,33 @@ async function transferImageToR2(
       prefix: `text-to-image/${model}`,
     });
 
+    // 查询水印图片的 storage ID
+    const watermarkStorageKey = `text-to-image/${model}/${watermarkFileName}`;
+    const watermarkStorageRecords = await db
+      .select({ id: storage.id })
+      .from(storage)
+      .where(eq(storage.key, watermarkStorageKey))
+      .limit(1);
+
+    if (watermarkStorageRecords.length === 0) {
+      throw new Error(`Storage record not found for watermark key: ${watermarkStorageKey}`);
+    }
+
+    const watermarkStorageId = watermarkStorageRecords[0].id;
+
     console.log(`Image transferred for task ${taskId}:`, {
       original: originalUrl,
       r2: uploadResult.url,
       watermark: watermarkUploadResult.url,
+      storageId,
+      watermarkStorageId,
     });
 
     return {
       url: uploadResult.url,
       watermarkUrl: watermarkUploadResult.url,
+      storageId,
+      watermarkStorageId,
     };
   } catch (error) {
     console.error(`Failed to transfer image to R2:`, error);
@@ -219,34 +252,36 @@ async function transferAndUpdateTask(
       outputs.map((url, index) => transferImageToR2(url, taskId, index, model))
     );
 
-    // 2. 构建结果数组：包含原始地址和水印地址
-    const results = transferredImages.map((transferred, index) => {
-      if (transferred) {
-        return {
-          url: transferred.url,
-          watermarkUrl: transferred.watermarkUrl,
-          type: 'image',
-        };
-      }
-      // 如果转存失败，保留原始地址
-      return {
-        url: outputs[index],
-        type: 'image',
-      };
-    });
+    // 2. 构建生成结果数组：包含 storageId 和 watermarkStorageId
+    const generationResults = transferredImages
+      .map((transferred, index) => {
+        if (transferred) {
+          return {
+            storageId: transferred.storageId,
+            watermarkStorageId: transferred.watermarkStorageId,
+            orderIndex: index,
+          };
+        }
+        return null;
+      })
+      .filter((result): result is NonNullable<typeof result> => result !== null);
 
-    // 3. 转存完成后，更新数据库状态为 completed
+    // 3. 保存生成结果到数据库
+    if (generationResults.length > 0) {
+      await saveGenerationResults(taskId, generationResults);
+    }
+
+    // 4. 更新任务状态为 completed
     await db
-      .update(mediaGenerationTask)
+      .update(generationTask)
       .set({
         status: 'completed',
         progress: 100,
-        results,
         completedAt: new Date(),
         durationMs,
         updatedAt: new Date(),
       })
-      .where(eq(mediaGenerationTask.taskId, taskId));
+      .where(eq(generationTask.taskId, taskId));
 
     console.log(`Task completed and images transferred for task ${taskId}`);
   } catch (error) {
@@ -261,13 +296,13 @@ async function handleTaskCompleted(taskId: string, outputs: string[], startedAt:
   try {
     // 1. 先将状态更新为 processing，表示正在处理
     await db
-      .update(mediaGenerationTask)
+      .update(generationTask)
       .set({
         status: 'processing',
         progress: 50,
         updatedAt: new Date(),
       })
-      .where(eq(mediaGenerationTask.taskId, taskId));
+      .where(eq(generationTask.taskId, taskId));
 
     console.log(`Task ${taskId} status updated to processing, starting image transfer`);
 
@@ -297,7 +332,7 @@ async function handleTaskFailed(taskId: string, consumeTransactionId: string | n
 
       // 更新任务状态并关联退款交易ID
       await db
-        .update(mediaGenerationTask)
+        .update(generationTask)
         .set({
           status: 'failed',
           errorMessage: {
@@ -309,13 +344,13 @@ async function handleTaskFailed(taskId: string, consumeTransactionId: string | n
           durationMs,
           updatedAt: new Date(),
         })
-        .where(eq(mediaGenerationTask.taskId, taskId));
+        .where(eq(generationTask.taskId, taskId));
     } else {
       console.error(`Refund failed for task ${taskId}:`, refundResult.error);
 
       // 即使退款失败，也要更新任务状态
       await db
-        .update(mediaGenerationTask)
+        .update(generationTask)
         .set({
           status: 'failed',
           errorMessage: {
@@ -327,12 +362,12 @@ async function handleTaskFailed(taskId: string, consumeTransactionId: string | n
           durationMs,
           updatedAt: new Date(),
         })
-        .where(eq(mediaGenerationTask.taskId, taskId));
+        .where(eq(generationTask.taskId, taskId));
     }
   } else {
     // 没有消费交易ID，直接标记失败
     await db
-      .update(mediaGenerationTask)
+      .update(generationTask)
       .set({
         status: 'failed',
         errorMessage: {
@@ -343,7 +378,7 @@ async function handleTaskFailed(taskId: string, consumeTransactionId: string | n
         durationMs,
         updatedAt: new Date(),
       })
-      .where(eq(mediaGenerationTask.taskId, taskId));
+      .where(eq(generationTask.taskId, taskId));
   }
 
   console.error(`Task failed: ${taskId}, duration: ${durationMs}ms`, errorMessage);
@@ -354,13 +389,13 @@ async function handleTaskFailed(taskId: string, consumeTransactionId: string | n
  */
 async function handleTaskProcessing(taskId: string) {
   await db
-    .update(mediaGenerationTask)
+    .update(generationTask)
     .set({
       status: 'processing',
       progress: 50,
       updatedAt: new Date(),
     })
-    .where(eq(mediaGenerationTask.taskId, taskId));
+    .where(eq(generationTask.taskId, taskId));
 
   console.log(`Task processing: ${taskId}`);
 }
@@ -406,11 +441,11 @@ export async function POST(
     // 查找任务
     const tasks = await db
       .select()
-      .from(mediaGenerationTask)
+      .from(generationTask)
       .where(
         and(
-          eq(mediaGenerationTask.taskId, taskId),
-          eq(mediaGenerationTask.provider, provider)
+          eq(generationTask.taskId, taskId),
+          eq(generationTask.provider, provider)
         )
       )
       .limit(1);

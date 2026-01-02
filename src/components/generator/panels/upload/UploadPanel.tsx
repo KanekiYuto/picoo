@@ -52,7 +52,7 @@ export function UploadPanel({ isOpen, onClose, onImageSelect, onImageReplace, on
     setIsLoading(true);
     const startTime = Date.now();
     try {
-      const response = await fetch("/api/asset/upload?type=image&limit=10&offset=0");
+      const response = await fetch("/api/asset?type=image&limit=10&offset=0");
       const result = (await response.json()) as {
         success: boolean;
         data?: { assets: Asset[] };
