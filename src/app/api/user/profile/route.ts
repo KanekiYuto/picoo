@@ -1,33 +1,22 @@
-import { NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
-import { headers } from "next/headers";
+import { NextResponse, NextRequest } from "next/server";
 import { db } from "@/lib/db";
 import { user } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
-    const session = await auth.api.getSession({
-      headers: await headers(),
-    });
-
-    if (!session?.user) {
-      return NextResponse.json(
-        { error: "未授权" },
-        { status: 401 }
-      );
-    }
+    const userId = request.headers.get('x-user-id');
 
     // 从数据库查询最新用户信息
     const [userData] = await db
       .select()
       .from(user)
-      .where(eq(user.id, session.user.id))
+      .where(eq(user.id, userId!))
       .limit(1);
 
     if (!userData) {
       return NextResponse.json(
-        { error: "用户不存在" },
+        { error: "User not found" },
         { status: 404 }
       );
     }
@@ -45,7 +34,7 @@ export async function GET() {
   } catch (error) {
     console.error("Failed to fetch user profile:", error);
     return NextResponse.json(
-      { error: "获取用户信息失败" },
+      { error: "Failed to fetch user profile" },
       { status: 500 }
     );
   }

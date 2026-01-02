@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
 import { uploadToR2 } from "@/lib/storage/r2";
 import { validateFile } from "@/lib/storage/validation";
 import { createAsset } from "@/lib/db/services/asset";
@@ -18,12 +17,10 @@ export const runtime = "nodejs";
 export async function POST(request: NextRequest) {
   try {
     // 验证用户身份
-    const session = await auth.api.getSession({
-      headers: request.headers,
-    });
+    const userId = request.headers.get('x-user-id');
 
-    if (!session?.user?.id) {
-      return NextResponse.json({ success: false, error: "未授权" }, { status: 401 });
+    if (!userId) {
+      return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
     }
 
     // 获取表单数据
@@ -33,7 +30,7 @@ export async function POST(request: NextRequest) {
     const tags = formData.get("tags") as string | null; // JSON 数组字符串
 
     if (!file) {
-      return NextResponse.json({ success: false, error: "未提供文件" }, { status: 400 });
+      return NextResponse.json({ success: false, error: "File is required" }, { status: 400 });
     }
 
     // 验证文件
@@ -53,7 +50,7 @@ export async function POST(request: NextRequest) {
       file: buffer,
       fileName: file.name,
       contentType: file.type,
-      prefix: `assets/${session.user.id}`,
+      prefix: `assets/${userId}`,
     });
 
     // 解析标签
@@ -74,14 +71,14 @@ export async function POST(request: NextRequest) {
       fileType = "video";
     } else {
       return NextResponse.json(
-        { success: false, error: "只支持图片和视频文件" },
+        { success: false, error: "Only image and video files are supported" },
         { status: 400 }
       );
     }
 
     // 1. 先创建 storage 记录
     const { storage: storageRecord } = await createAsset(
-      session.user.id,
+      userId,
       {
         key: uploadResult.key,
         url: uploadResult.url,
@@ -115,7 +112,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(
       {
         success: false,
-        error: error instanceof Error ? error.message : "上传素材失败",
+        error: error instanceof Error ? error.message : "Failed to upload asset",
       },
       { status: 500 }
     );

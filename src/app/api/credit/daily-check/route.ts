@@ -1,23 +1,22 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { checkAndIssueDailyCredit } from '@/lib/credit/daily-credit';
-import { auth } from '@/lib/auth';
+import { getUserType } from '@/lib/db/services/user';
+import type { UserType } from '@/lib/image/resource';
 
 export async function POST(request: NextRequest) {
   try {
-    // 从 session 中获取当前用户
-    const session = await auth.api.getSession({
-      headers: request.headers,
-    });
+    // 从 header 中获取当前用户
+    const userId = request.headers.get('x-user-id');
 
-    if (!session?.user?.id) {
+    if (!userId) {
       return NextResponse.json(
         { error: 'Unauthorized' },
         { status: 401 }
       );
     }
 
-    const userId = session.user.id;
-    const userType = (session.user as any).type || 'free';
+    // 获取用户类型
+    const userType = (await getUserType(userId)) as UserType;
 
     // 检查并下发每日积分
     const issued = await checkAndIssueDailyCredit(userId, userType);

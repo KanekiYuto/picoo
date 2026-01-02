@@ -1,26 +1,22 @@
-import { NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
-import { headers } from "next/headers";
+import { NextRequest, NextResponse } from "next/server";
 import { getAvailableCredit, getAllUserCredits } from "@/lib/credit/query";
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
-    const session = await auth.api.getSession({
-      headers: await headers(),
-    });
+    const userId = request.headers.get('x-user-id');
 
-    if (!session?.user) {
+    if (!userId) {
       return NextResponse.json(
-        { error: "未授权" },
+        { error: "Unauthorized" },
         { status: 401 }
       );
     }
 
     // 获取用户所有积分记录
-    const userCredits = await getAllUserCredits(session.user.id);
+    const userCredits = await getAllUserCredits(userId);
 
     // 获取可用积分总数
-    const totalRemaining = await getAvailableCredit(session.user.id);
+    const totalRemaining = await getAvailableCredit(userId);
 
     // 计算总消耗
     const totalConsumed = userCredits.reduce((sum, c) => sum + c.consumed, 0);
@@ -55,7 +51,7 @@ export async function GET() {
   } catch (error) {
     console.error("Failed to fetch credit balance:", error);
     return NextResponse.json(
-      { error: "获取积分信息失败" },
+      { error: "Failed to fetch credit balance" },
       { status: 500 }
     );
   }

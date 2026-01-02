@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
 import { getUserGenerationHistory } from "@/lib/db/services/generation-task";
 
 export const runtime = "nodejs";
@@ -11,12 +10,10 @@ export const runtime = "nodejs";
 export async function GET(request: NextRequest) {
   try {
     // 验证用户身份
-    const session = await auth.api.getSession({
-      headers: request.headers,
-    });
+    const userId = request.headers.get('x-user-id');
 
-    if (!session?.user?.id) {
-      return NextResponse.json({ success: false, error: "未授权" }, { status: 401 });
+    if (!userId) {
+      return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
     }
 
     // 获取查询参数
@@ -24,7 +21,7 @@ export async function GET(request: NextRequest) {
     const offset = parseInt(request.nextUrl.searchParams.get("offset") || "0");
 
     // 调用公共函数获取历史
-    const result = await getUserGenerationHistory(session.user.id, limit, offset);
+    const result = await getUserGenerationHistory(userId, limit, offset);
 
     return NextResponse.json({
       success: true,
@@ -35,7 +32,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json(
       {
         success: false,
-        error: error instanceof Error ? error.message : "获取历史列表失败",
+        error: error instanceof Error ? error.message : "Failed to fetch history",
       },
       { status: 500 }
     );

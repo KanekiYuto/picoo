@@ -1,19 +1,15 @@
-import { NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
-import { headers } from "next/headers";
+import { NextResponse, NextRequest } from "next/server";
 import { db } from "@/lib/db";
 import { creditTransaction } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
-    const session = await auth.api.getSession({
-      headers: await headers(),
-    });
+    const userId = request.headers.get('x-user-id');
 
-    if (!session?.user) {
+    if (!userId) {
       return NextResponse.json(
-        { error: "未授权" },
+        { error: "Unauthorized" },
         { status: 401 }
       );
     }
@@ -25,7 +21,7 @@ export async function GET() {
         amount: creditTransaction.amount,
       })
       .from(creditTransaction)
-      .where(eq(creditTransaction.userId, session.user.id));
+      .where(eq(creditTransaction.userId, userId));
 
     // 计算总消耗（consume 类型）
     const totalConsumed = transactions
@@ -49,7 +45,7 @@ export async function GET() {
   } catch (error) {
     console.error("Failed to fetch usage stats:", error);
     return NextResponse.json(
-      { error: "获取统计数据失败" },
+      { error: "Failed to fetch usage stats" },
       { status: 500 }
     );
   }

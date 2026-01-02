@@ -1,19 +1,15 @@
 import { NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
-import { headers } from "next/headers";
 import { db } from "@/lib/db";
 import { creditTransaction, credit } from "@/lib/db/schema";
 import { eq, desc, and } from "drizzle-orm";
 
 export async function GET(request: Request) {
   try {
-    const session = await auth.api.getSession({
-      headers: await headers(),
-    });
+    const userId = request.headers.get('x-user-id');
 
-    if (!session?.user) {
+    if (!userId) {
       return NextResponse.json(
-        { error: "未授权" },
+        { error: "Unauthorized" },
         { status: 401 }
       );
     }
@@ -25,7 +21,7 @@ export async function GET(request: Request) {
     const type = searchParams.get("type") || "all";
 
     // 构建查询条件
-    const whereConditions = [eq(creditTransaction.userId, session.user.id)];
+    const whereConditions = [eq(creditTransaction.userId, userId)];
     if (type !== "all") {
       whereConditions.push(eq(creditTransaction.type, type));
     }
@@ -68,7 +64,7 @@ export async function GET(request: Request) {
         type: credit.type,
       })
       .from(credit)
-      .where(eq(credit.userId, session.user.id));
+      .where(eq(credit.userId, userId));
 
     const creditTypeMap = new Map(credits.map(c => [c.id, c.type]));
 
@@ -94,7 +90,7 @@ export async function GET(request: Request) {
   } catch (error) {
     console.error("Failed to fetch usage records:", error);
     return NextResponse.json(
-      { error: "获取用量记录失败" },
+      { error: "Failed to fetch usage records" },
       { status: 500 }
     );
   }

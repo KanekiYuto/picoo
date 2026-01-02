@@ -1,19 +1,15 @@
 import { NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
-import { headers } from "next/headers";
 import { db } from "@/lib/db";
 import { user } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 
 export async function PUT(request: Request) {
   try {
-    const session = await auth.api.getSession({
-      headers: await headers(),
-    });
+    const userId = request.headers.get('x-user-id');
 
-    if (!session?.user) {
+    if (!userId) {
       return NextResponse.json(
-        { error: "未授权" },
+        { error: "Unauthorized" },
         { status: 401 }
       );
     }
@@ -23,7 +19,7 @@ export async function PUT(request: Request) {
 
     if (!name) {
       return NextResponse.json(
-        { error: "昵称不能为空" },
+        { error: "Name is required" },
         { status: 400 }
       );
     }
@@ -35,12 +31,12 @@ export async function PUT(request: Request) {
         name,
         updatedAt: new Date(),
       })
-      .where(eq(user.id, session.user.id))
+      .where(eq(user.id, userId))
       .returning();
 
     if (!updatedUser) {
       return NextResponse.json(
-        { error: "更新失败" },
+        { error: "Update failed" },
         { status: 500 }
       );
     }
@@ -58,7 +54,7 @@ export async function PUT(request: Request) {
   } catch (error) {
     console.error("Failed to update user profile:", error);
     return NextResponse.json(
-      { error: "更新用户信息失败" },
+      { error: "Failed to update user profile" },
       { status: 500 }
     );
   }

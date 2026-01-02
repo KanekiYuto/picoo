@@ -1,6 +1,8 @@
 import createMiddleware from 'next-intl/middleware';
 import { locales, defaultLocale } from '../i18n/config';
 import { type NextRequest } from 'next/server';
+import { NextResponse } from 'next/server';
+import { auth } from './lib/auth';
 
 const intlMiddleware = createMiddleware({
   // 支持的所有语言
@@ -22,19 +24,63 @@ const intlMiddleware = createMiddleware({
   alternateLinks: true,
 });
 
+// 需要身份验证的 API 路由模式
+const protectedApiPatterns = [
+  /^\/api\/asset\/?/,
+  /^\/api\/history\/?/,
+  /^\/api\/subscription\/?/,
+  /^\/api\/upload\/?/,
+  /^\/api\/user\/?/,
+  /^\/api\/credit\/?/,
+  /^\/api\/ai-generator\/provider\/?/,
+  /^\/api\/ai-generator\/status\/?/,
+];
+
+function isProtectedApiRoute(pathname: string): boolean {
+  return protectedApiPatterns.some(pattern => pattern.test(pathname));
+}
+
 export async function proxy(request: NextRequest) {
+  const pathname = request.nextUrl.pathname;
+
+  // 检查是否为受保护的 API 路由
+  if (isProtectedApiRoute(pathname)) {
+    const session = await auth.api.getSession({
+      headers: request.headers,
+    });
+
+    if (!session?.user?.id) {
+      return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
+    }
+
+    // 验证通过，注入userId到header，继续处理
+    const response = NextResponse.next();
+    response.headers.set('x-user-id', session.user.id);
+    return response;
+  }
+
   // 处理 i18n 路由
   return intlMiddleware(request);
 }
 
 export const config = {
-  // 匹配所有路径，除了:
-  // - API 路由 (/api/*)
-  // - Next.js 内部路由 (/_next/*)
-  // - Vercel 路由 (/_vercel/*)
-  // - .well-known 目录 (/.well-known/*)
-  // - 静态资源 (带扩展名的文件，如 .js, .css, .png 等)
   matcher: [
-    '/((?!api|_next|_vercel|\\.well-known|.*\\.[a-zA-Z0-9]+$).*)'
+    // i18n 路由
+    '/((?!_next|_vercel|\\.well-known|.*\\.[a-zA-Z0-9]+$|api).*)',
+    // 受保护的 API 路由
+    '/api/asset',
+    '/api/asset/:path*',
+    '/api/history',
+    '/api/history/:path*',
+    '/api/subscription',
+    '/api/subscription/:path*',
+    '/api/upload',
+    '/api/upload/:path*',
+    '/api/user',
+    '/api/user/:path*',
+    '/api/credit',
+    '/api/credit/:path*',
+    '/api/ai-generator/provider/:path*',
+    '/api/ai-generator/status/:path*',
   ],
 };

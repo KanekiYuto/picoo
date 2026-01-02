@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { asset, storage } from "@/lib/db/schema";
 import { eq, desc, and, count, isNull } from "drizzle-orm";
@@ -13,12 +12,10 @@ export const runtime = "nodejs";
 export async function GET(request: NextRequest) {
   try {
     // 验证用户身份
-    const session = await auth.api.getSession({
-      headers: request.headers,
-    });
+    const userId = request.headers.get('x-user-id');
 
-    if (!session?.user?.id) {
-      return NextResponse.json({ success: false, error: "未授权" }, { status: 401 });
+    if (!userId) {
+      return NextResponse.json({ success: false, error: userId }, { status: 401 });
     }
 
     // 获取查询参数
@@ -28,7 +25,7 @@ export async function GET(request: NextRequest) {
 
     // 构建查询条件
     const conditions = [
-      eq(asset.userId, session.user.id),
+      eq(asset.userId, userId),
       isNull(asset.deletedAt),
     ];
     if (type) {
@@ -79,7 +76,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json(
       {
         success: false,
-        error: error instanceof Error ? error.message : "获取素材列表失败",
+        error: error instanceof Error ? error.message : "Failed to fetch assets",
       },
       { status: 500 }
     );

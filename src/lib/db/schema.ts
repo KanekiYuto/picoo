@@ -381,5 +381,32 @@ export const generationParameters = pgTable('generation_parameters', {
   taskIdParamTypeIdx: index('generation_parameters_task_id_param_type_idx').on(table.taskId, table.paramType),
 }));
 
+// 文章表
+export const article = pgTable('article', {
+  // UUID 主键,由数据库自动生成
+  id: uuid('id').primaryKey().defaultRandom(),
+  // 文章标题
+  title: text('title').notNull(),
+  // 文章描述
+  description: text('description'),
+  // 文章封面存储资源ID (可选)
+  coverStorageId: uuid('cover_storage_id').references(() => storage.id, { onDelete: 'set null' }),
+  // 文章内容
+  content: text('content').notNull(),
+  // 创建时间
+  createdAt: timestamp('created_at').notNull().defaultNow(),
+  // 更新时间
+  updatedAt: timestamp('updated_at').notNull().defaultNow(),
+  // 删除时间 (软删除标记)
+  deletedAt: timestamp('deleted_at'),
+}, (table) => ({
+  // 封面存储资源ID查询
+  coverStorageIdIdx: index('article_cover_storage_id_idx').on(table.coverStorageId),
+  // 软删除逻辑查询
+  deletedAtIdx: index('article_deleted_at_idx').on(table.deletedAt),
+  // 创建时间范围查询（倒序）
+  createdAtIdx: index('article_created_at_idx').on(table.createdAt.desc()),
+}));
+
 // 重新导出 better-auth 表
 export * from './auth-schema';

@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { generationTask } from "@/lib/db/schema";
 import { eq, and } from "drizzle-orm";
@@ -16,12 +15,10 @@ export async function DELETE(
 ) {
   try {
     // 验证用户身份
-    const session = await auth.api.getSession({
-      headers: request.headers,
-    });
+    const userId = request.headers.get('x-user-id');
 
-    if (!session?.user?.id) {
-      return NextResponse.json({ success: false, error: "未授权" }, { status: 401 });
+    if (!userId) {
+      return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
     }
 
     const { id } = await params;
@@ -33,14 +30,14 @@ export async function DELETE(
       .where(
         and(
           eq(generationTask.id, id),
-          eq(generationTask.userId, session.user.id)
+          eq(generationTask.userId, userId)
         )
       )
       .limit(1);
 
     if (!task || task.length === 0) {
       return NextResponse.json(
-        { success: false, error: "记录不存在或无权删除" },
+        { success: false, error: "Record not found or access denied" },
         { status: 404 }
       );
     }
@@ -57,7 +54,7 @@ export async function DELETE(
     return NextResponse.json(
       {
         success: false,
-        error: error instanceof Error ? error.message : "删除历史失败",
+        error: error instanceof Error ? error.message : "Failed to delete history",
       },
       { status: 500 }
     );

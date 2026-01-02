@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { generationTask, user } from '@/lib/db/schema';
 import { eq, and, sql } from 'drizzle-orm';
-import { auth } from '@/lib/auth';
 import { processImageResults, UserType } from '@/lib/image/resource';
 import { getGenerationTaskWithResults } from '@/lib/db/services/generation-task';
 
@@ -26,11 +25,9 @@ export async function GET(
     }
 
     // 获取当前用户
-    const session = await auth.api.getSession({
-      headers: _request.headers,
-    });
+    const userId = _request.headers.get('x-user-id');
 
-    if (!session?.user?.id) {
+    if (!userId) {
       return NextResponse.json(
         { success: false, error: 'Unauthorized' },
         { status: 401 }
@@ -48,7 +45,7 @@ export async function GET(
       .where(
         and(
           eq(generationTask.taskId, taskId),
-          eq(generationTask.userId, session.user.id)
+          eq(generationTask.userId, userId)
         )
       )
       .limit(1);

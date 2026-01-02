@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { auth } from '@/lib/auth';
 import { db } from '@/lib/db';
 import { subscription } from '@/lib/db/schema';
 import { and, eq } from 'drizzle-orm';
@@ -11,18 +10,14 @@ import { and, eq } from 'drizzle-orm';
 export async function GET(request: NextRequest) {
   try {
     // 获取当前用户会话
-    const session = await auth.api.getSession({
-      headers: request.headers,
-    });
+    const userId = request.headers.get('x-user-id');
 
-    if (!session?.user) {
+    if (!userId) {
       return NextResponse.json(
         { success: false, error: 'Unauthorized' },
         { status: 401 }
       );
     }
-
-    const userId = session.user.id;
 
     // 查询用户的当前激活订阅
     const [currentSubscription] = await db

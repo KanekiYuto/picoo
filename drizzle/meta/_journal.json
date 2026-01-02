@@ -8,6 +8,13 @@
       "when": 1767356107236,
       "tag": "0000_volatile_sage",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1767382555342,
+      "tag": "0001_naive_hellfire_club",
+      "breakpoints": true
     }
   ]
 }
