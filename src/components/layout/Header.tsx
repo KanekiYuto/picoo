@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
 import { Bell, MessageSquare, Users, Menu, X, Moon, Sun } from "lucide-react";
 import { UserButton } from "@/components/auth/UserButton";
@@ -16,6 +17,7 @@ interface HeaderProps {
 }
 
 export function Header({ className, onMenuClick, isMobileMenuOpen }: HeaderProps) {
+  const t = useTranslations("header");
   const { user, isLoading } = useUserStore();
   const { theme, toggleTheme } = useThemeStore();
   const { openLoginModal } = useModalStore();
@@ -36,7 +38,7 @@ export function Header({ className, onMenuClick, isMobileMenuOpen }: HeaderProps
               whileTap={{ scale: 0.95 }}
               onClick={onMenuClick}
               className="flex h-10 w-10 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
-              aria-label={isMobileMenuOpen ? "关闭菜单" : "打开菜单"}
+              aria-label={isMobileMenuOpen ? t("closeMenu") : t("openMenu")}
             >
               {isMobileMenuOpen ? (
                 <X className="h-5 w-5" />
@@ -54,8 +56,8 @@ export function Header({ className, onMenuClick, isMobileMenuOpen }: HeaderProps
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={toggleTheme}
-              className="flex h-10 w-10 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
-              aria-label="切换主题"
+              className="flex h-10 w-10 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground cursor-pointer"
+              aria-label={t("toggleTheme")}
             >
               {theme === 'light' ? (
                 <Moon className="h-5 w-5" />
@@ -81,9 +83,9 @@ export function Header({ className, onMenuClick, isMobileMenuOpen }: HeaderProps
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={openLoginModal}
-                  className="flex h-10 px-4 items-center justify-center rounded-full bg-gradient-to-br from-primary to-primary-hover text-white font-medium text-sm"
+                  className="flex h-10 px-4 items-center justify-center rounded-full bg-gradient-to-br from-primary to-primary-hover text-white font-medium text-sm cursor-pointer"
                 >
-                  登录
+                  {t("signIn")}
                 </motion.button>
               )}
             </div>

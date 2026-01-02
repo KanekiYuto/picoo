@@ -32,5 +32,17 @@
     "error": "Failed to download image",
     "filesSuccess": "Downloaded {count} file{count, plural, one {} other {s}}",
     "filesError": "Failed to download {count} file{count, plural, one {} other {s}}"
+  },
+  "mediaPreviewModal": {
+    "buttons": {
+      "download": "Download",
+      "closeEsc": "Close (Esc)",
+      "previous": "Previous (←)",
+      "next": "Next (→)"
+    },
+    "download": {
+      "success": "Downloaded successfully",
+      "error": "Failed to download image"
+    }
   }
 }

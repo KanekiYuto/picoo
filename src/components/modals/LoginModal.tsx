@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Loader2 } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { signIn } from "@/lib/auth-client";
 import { usePathname } from "next/navigation";
 import { siteConfig } from "@/config/site";
@@ -13,6 +14,7 @@ interface LoginModalProps {
 }
 
 export function LoginModal({ isOpen, onClose }: LoginModalProps) {
+  const t = useTranslations("auth.loginModal");
   const [loadingProvider, setLoadingProvider] = useState<"google" | "github" | null>(null);
   const pathname = usePathname();
 
@@ -62,9 +64,9 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
 
               {/* 标题 */}
               <div className="mb-8 text-center">
-                <h2 className="text-2xl font-bold text-foreground">欢迎回来</h2>
+                <h2 className="text-2xl font-bold text-foreground">{t("title")}</h2>
                 <p className="mt-2 text-sm text-muted">
-                  选择一种方式登录
+                  {t("subtitle")}
                 </p>
               </div>
 
@@ -107,7 +109,7 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
                         transition={{ duration: 0.3 }}
                         className="inline-flex items-center"
                       >
-                        登录中
+                        {t("loggingIn")}
                         <span className="inline-flex ml-0.5">
                           <motion.span
                             animate={{ opacity: [0, 1, 0] }}
@@ -131,7 +133,7 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
                       </motion.span>
                     </>
                   ) : (
-                    "使用 Google 登录"
+                    t("signInWithGoogle")
                   )}
                 </button>
 
@@ -158,7 +160,7 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
                         transition={{ duration: 0.3 }}
                         className="inline-flex items-center"
                       >
-                        登录中
+                        {t("loggingIn")}
                         <span className="inline-flex ml-0.5">
                           <motion.span
                             animate={{ opacity: [0, 1, 0] }}
@@ -182,20 +184,20 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
                       </motion.span>
                     </>
                   ) : (
-                    "使用 GitHub 登录"
+                    t("signInWithGitHub")
                   )}
                 </button>
               </div>
 
               {/* 服务条款 */}
               <p className="mt-6 text-center text-xs text-muted">
-                登录即表示您同意我们的
+                {t("agreement")}
                 <a href="/terms" className="text-primary hover:underline cursor-pointer">
-                  服务条款
+                  {t("termsOfService")}
                 </a>
-                和
+                {t("and")}
                 <a href="/privacy" className="text-primary hover:underline cursor-pointer">
-                  隐私政策
+                  {t("privacyPolicy")}
                 </a>
               </p>
             </motion.div>

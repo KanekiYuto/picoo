@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import { signOut } from "@/lib/auth-client";
 import Link from "next/link";
+import Image from "next/image";
 import { useUserStore } from "@/stores/userStore";
 import { useTranslations } from "next-intl";
 
@@ -42,12 +43,14 @@ export function UserButton() {
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
         onClick={() => setIsOpen(!isOpen)}
-        className="flex h-10 w-10 items-center justify-center rounded-full overflow-hidden bg-gradient-to-br ring-2 ring-border"
+        className="flex h-10 w-10 items-center justify-center rounded-full overflow-hidden bg-gradient-to-br ring-2 ring-border cursor-pointer"
       >
         {user.image ? (
-          <img
+          <Image
             src={user.image}
             alt={user.name || "User"}
+            width={40}
+            height={40}
             className="h-full w-full object-cover"
           />
         ) : (
@@ -82,9 +85,11 @@ export function UserButton() {
                 <div className="flex items-center gap-3">
                   <div className="h-12 w-12 rounded-full overflow-hidden bg-gradient-to-br from-primary to-primary-hover flex-shrink-0 ring-2 ring-border">
                     {user.image ? (
-                      <img
+                      <Image
                         src={user.image}
                         alt={user.name || "User"}
+                        width={48}
+                        height={48}
                         className="h-full w-full object-cover"
                       />
                     ) : (

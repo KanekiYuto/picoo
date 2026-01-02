@@ -66,7 +66,7 @@ export function Footer({ className }: FooterProps) {
       whileInView="animate"
       viewport={{ once: true }}
       className={cn(
-        "bg-secondary-background relative",
+        "bg-secondary-background relative rounded-t-3xl",
         className
       )}
     >

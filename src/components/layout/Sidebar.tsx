@@ -78,14 +78,14 @@ export function Sidebar({ className }: SidebarProps) {
     >
       {/* Logo */}
       <Link href="/" className="flex h-16 items-center justify-center">
-        <div className="relative h-10 w-10 overflow-hidden rounded-lg bg-foreground/5">
+        <div className="relative h-10 w-10 overflow-hidden rounded-lg">
           <Image
             src={siteConfig.logo}
             alt={`${siteConfig.name} Logo`}
-            fill
+            width={40}
+            height={40}
             className="object-contain"
             priority
-            unoptimized
           />
         </div>
       </Link>

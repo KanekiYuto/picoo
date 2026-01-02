@@ -15,7 +15,7 @@ export const siteConfig = {
   tagline: "AI-Powered Solutions",
 
   // Logo 路径
-  logo: "/dark-logo.png",
+  logo: "/dark-logo.webp",
 
   // Favicon 路径
   favicon: "/favicon.ico",

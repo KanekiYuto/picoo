@@ -32,5 +32,17 @@
     "error": "下载失败",
     "filesSuccess": "成功下载 {count} 个文件",
     "filesError": "下载 {count} 个文件失败"
+  },
+  "mediaPreviewModal": {
+    "buttons": {
+      "download": "下载",
+      "closeEsc": "关闭 (Esc)",
+      "previous": "上一个 (←)",
+      "next": "下一个 (→)"
+    },
+    "download": {
+      "success": "下载成功",
+      "error": "下载失败"
+    }
   }
 }

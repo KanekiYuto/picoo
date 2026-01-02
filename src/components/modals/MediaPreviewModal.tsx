@@ -25,7 +25,7 @@ export default function MediaPreviewModal({
   onPrev,
   onGoTo,
 }: MediaPreviewModalProps) {
-  const t = useTranslations();
+  const t = useTranslations('common.mediaPreviewModal');
 
   // 键盘事件处理
   const handleKeyDown = useCallback(
@@ -77,8 +77,8 @@ export default function MediaPreviewModal({
     if (items[currentIndex]) {
       const item = items[currentIndex];
       await downloadImage(item.url, {
-        success: t("common.download.success") || "Downloaded successfully",
-        error: t("common.download.error") || "Failed to download image",
+        success: t("download.success") || "Downloaded successfully",
+        error: t("download.error") || "Failed to download image",
       });
     }
   };
@@ -117,7 +117,7 @@ export default function MediaPreviewModal({
               handleDownload();
             }}
             className="p-2 text-white/80 hover:text-white hover:bg-white/10 rounded-lg transition-colors cursor-pointer"
-            title="下载"
+            title={t("buttons.download")}
           >
             <Download className="w-5 h-5" />
           </button>
@@ -130,7 +130,7 @@ export default function MediaPreviewModal({
               onClose();
             }}
             className="p-2 text-white/80 hover:text-white hover:bg-white/10 rounded-lg transition-colors cursor-pointer"
-            title="关闭 (Esc)"
+            title={t("buttons.closeEsc")}
           >
             <X className="w-5 h-5" />
           </button>
@@ -171,7 +171,7 @@ export default function MediaPreviewModal({
               onPrev();
             }}
             className="absolute left-4 top-1/2 -translate-y-1/2 p-3 bg-black/40 hover:bg-black/60 text-white rounded-full transition-colors cursor-pointer"
-            title="上一个 (←)"
+            title={t("buttons.previous")}
           >
             <ChevronLeft className="w-6 h-6" />
           </button>
@@ -185,7 +185,7 @@ export default function MediaPreviewModal({
               onNext();
             }}
             className="absolute right-4 top-1/2 -translate-y-1/2 p-3 bg-black/40 hover:bg-black/60 text-white rounded-full transition-colors cursor-pointer"
-            title="下一个 (→)"
+            title={t("buttons.next")}
           >
             <ChevronRight className="w-6 h-6" />
           </button>
