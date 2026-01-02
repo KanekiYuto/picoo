@@ -5,7 +5,6 @@ import { motion } from "framer-motion";
 import { Image, Video, X } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { AssetsSkeleton } from "./AssetsSkeleton";
-import { AssetsContentSkeleton } from "./AssetsContentSkeleton";
 
 // 素材信息类型
 interface AssetInfo {
@@ -26,17 +25,30 @@ export default function AssetsPage() {
   const t = useTranslations("assets");
   const [assets, setAssets] = useState<AssetInfo[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [minTimeElapsed, setMinTimeElapsed] = useState(false);
   const [filter, setFilter] = useState<"all" | "image" | "video">("all");
   const [selectedAsset, setSelectedAsset] = useState<AssetInfo | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalCount, setTotalCount] = useState(0);
   const itemsPerPage = 30;
 
+  // 当 filter 或 currentPage 变化时立即重置加载状态
+  useEffect(() => {
+    setIsLoading(true);
+    setMinTimeElapsed(false);
+  }, [currentPage, filter]);
+
   // 获取数据
   useEffect(() => {
+    let timer: NodeJS.Timeout;
+
     const fetchAssets = async () => {
       try {
-        setIsLoading(true);
+        // 设置最小显示时间
+        timer = setTimeout(() => {
+          setMinTimeElapsed(true);
+        }, 600);
+
         const offset = (currentPage - 1) * itemsPerPage;
 
         const params = new URLSearchParams();
@@ -64,6 +76,10 @@ export default function AssetsPage() {
     };
 
     fetchAssets();
+
+    return () => {
+      if (timer) clearTimeout(timer);
+    };
   }, [currentPage, filter, itemsPerPage]);
 
   // 格式化文件大小
@@ -90,8 +106,8 @@ export default function AssetsPage() {
   // 计算总页数
   const totalPages = Math.ceil(totalCount / itemsPerPage);
 
-  // 首次加载显示完整骨架屏
-  if (isLoading && currentPage === 1) {
+  // 当加载完成且最小显示时间已过时，隐藏骨架屏
+  if (isLoading || !minTimeElapsed) {
     return <AssetsSkeleton />;
   }
 

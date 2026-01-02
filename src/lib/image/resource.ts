@@ -32,17 +32,16 @@ export function processImageResults(
   // Free 用户或未登录用户返回水印版本
   const isFreeUser = !userType || userType === 'free';
 
-  if (!isFreeUser) {
-    return results;
-  }
-
   return results.map((result: any) => {
-    if (result.watermarkUrl) {
+    const { watermarkUrl, ...rest } = result;
+    if (isFreeUser && result.watermarkUrl) {
+      // Free 用户：使用水印版本作为 url
       return {
-        ...result,
+        ...rest,
         url: result.watermarkUrl,
       };
     }
-    return result;
+    // 所有用户都不返回 watermarkUrl 字段
+    return rest;
   });
 }

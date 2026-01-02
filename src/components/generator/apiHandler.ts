@@ -48,15 +48,14 @@ export function startPolling(
       console.log('Polling response:', data);
 
       // 处理嵌套的响应格式 { success: true, data: { status, results, ... } }
-      const taskData = data.data || data;
+      const taskData = data.data;
       const status = taskData.status;
       const results = taskData.results;
 
       if (status === 'completed') {
         // 处理 results 数组格式
         if (results && Array.isArray(results)) {
-          const imageResults = results.filter((item: any) => item.type === 'image' && item.url);
-          onSuccess(imageResults);
+          onSuccess(results.filter((item: any) => item.url));
         } else {
           onError('Image generation completed but no results returned');
         }

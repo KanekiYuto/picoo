@@ -2,16 +2,24 @@
 
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { Trash2, Download, Image as ImageIcon, Video } from "lucide-react";
+import { Trash2, Download, Clock } from "lucide-react";
 import { useTranslations } from "next-intl";
-import Image from "next/image";
+import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
+import { useMediaPreviewStore } from "@/store/useMediaPreviewStore";
+
+// 历史记录结果类型
+interface HistoryResult {
+  id: string;
+  url: string;
+  mimeType: string;
+  type: string;
+}
 
 // 历史记录类型
 interface HistoryItem {
   id: string;
   prompt: string;
-  results: string[];
-  type: "image" | "video";
+  results: HistoryResult[];
   createdAt: string;
   updatedAt: string;
 }
@@ -22,6 +30,7 @@ export default function HistoryPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalCount, setTotalCount] = useState(0);
+  const { open: openMediaPreview } = useMediaPreviewStore();
   const itemsPerPage = 20;
 
   // 获取历史数据
@@ -95,25 +104,15 @@ export default function HistoryPage() {
 
         {/* 历史列表 */}
         {histories.length === 0 && !isLoading ? (
-          <div className="flex flex-col items-center justify-center rounded-2xl border border-border bg-sidebar-bg py-16">
-            <div className="mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-sidebar-bg">
-              <svg
-                className="h-10 w-10 text-muted-foreground"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                />
-              </svg>
-            </div>
-            <h3 className="text-lg font-medium text-foreground">{t("empty.title")}</h3>
-            <p className="mt-1 text-sm text-muted-foreground">{t("empty.description")}</p>
-          </div>
+          <Empty className="border border-border rounded-2xl bg-sidebar-bg py-16 border-solid">
+            <EmptyHeader>
+              <EmptyMedia variant="icon" className="bg-sidebar-bg">
+                <Clock className="h-6 w-6" />
+              </EmptyMedia>
+              <EmptyTitle>{t("empty.title")}</EmptyTitle>
+              <EmptyDescription>{t("empty.description")}</EmptyDescription>
+            </EmptyHeader>
+          </Empty>
         ) : (
           <>
             <div className="space-y-4">
@@ -139,7 +138,7 @@ export default function HistoryPage() {
                     <div className="flex-shrink-0 flex gap-2">
                       {item.results && item.results.length > 0 && (
                         <a
-                          href={item.results[0]}
+                          href={item.results[0].url}
                           download
                           className="flex items-center gap-1 rounded-lg border border-border bg-muted/10 px-3 py-2 text-xs font-medium text-foreground transition-colors hover:bg-muted/20 cursor-pointer"
                           title={t("download")}
@@ -162,18 +161,26 @@ export default function HistoryPage() {
                     <div className="grid grid-cols-3 gap-2 sm:grid-cols-5 md:grid-cols-6 lg:grid-cols-8">
                       {item.results.map((result, idx) => (
                         <div
-                          key={idx}
+                          key={result.id}
+                          onClick={() => openMediaPreview(
+                            item.results.map(r => ({
+                              id: r.id,
+                              url: r.url,
+                              type: r.type as 'image' | 'video',
+                            })),
+                            idx
+                          )}
                           className="aspect-square rounded-lg overflow-hidden bg-muted border border-border hover:border-foreground/30 transition-colors cursor-pointer group"
                         >
-                          {item.type === "image" ? (
+                          {result.type === "image" ? (
                             <img
-                              src={result}
-                              alt={`${item.prompt}-${idx}`}
+                              src={result.url}
+                              alt={`${item.prompt}-${result.id}`}
                               className="w-full h-full object-cover group-hover:scale-105 transition-transform"
                             />
                           ) : (
                             <video
-                              src={result}
+                              src={result.url}
                               className="w-full h-full object-cover group-hover:scale-105 transition-transform"
                             />
                           )}

@@ -30,6 +30,7 @@
     "framer-motion": "^12.23.26",
     "https-proxy-agent": "^7.0.6",
     "lucide-react": "^0.562.0",
+    "mime-types": "^3.0.2",
     "nanoid": "^5.1.6",
     "next": "16.1.0",
     "next-intl": "^4.6.1",
@@ -56,6 +57,7 @@
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
+    "@types/mime-types": "^3.0.1",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",

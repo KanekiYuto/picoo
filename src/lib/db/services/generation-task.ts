@@ -27,19 +27,49 @@ export async function getGenerationTaskWithResults(taskId: string) {
   // 获取结果
   const results = await db
     .select({
-      url: storage.url,
-      watermarkUrl: storage.url,
-      type: storage.type,
+      id: generationResult.id,
+      storageId: generationResult.storageId,
+      watermarkStorageId: generationResult.watermarkStorageId,
       orderIndex: generationResult.orderIndex,
     })
     .from(generationResult)
-    .innerJoin(storage, eq(generationResult.storageId, storage.id))
     .where(eq(generationResult.taskId, task.id))
     .orderBy(generationResult.orderIndex);
 
+  // 获取所有关联的存储信息
+  const storageIds = new Set<string>();
+  results.forEach((r) => {
+    storageIds.add(r.storageId);
+    if (r.watermarkStorageId) {
+      storageIds.add(r.watermarkStorageId);
+    }
+  });
+
+  const storageMap = new Map<string, any>();
+  if (storageIds.size > 0) {
+    const storageRecords = await db
+      .select()
+      .from(storage);
+
+    storageRecords.forEach((s) => {
+      if (storageIds.has(s.id)) {
+        storageMap.set(s.id, s);
+      }
+    });
+  }
+
+  // 组装结果
+  const formattedResults = results.map((result) => ({
+    id: result.id,
+    url: storageMap.get(result.storageId)?.url || null,
+    watermarkUrl: result.watermarkStorageId ? storageMap.get(result.watermarkStorageId)?.url || null : null,
+    mimeType: storageMap.get(result.storageId)?.mimeType || null,
+    type: storageMap.get(result.storageId)?.mimeType?.split('/')[0] || null,
+  }));
+
   return {
     ...task,
-    results,
+    results: formattedResults,
   };
 }
 
@@ -80,13 +110,15 @@ export async function getUserGenerationHistory(userId: string, limit: number = 2
 
   // 获取每个任务的结果
   const taskIds = tasks.map(t => t.id);
-  const resultsMap = new Map<string, Array<{ url: string }>>();
+  const resultsMap = new Map<string, Array<{ id: string; url: string; mimeType: string; type: string }>>();
 
   if (taskIds.length > 0) {
     for (const taskId of taskIds) {
       const taskResults = await db
         .select({
+          id: generationResult.id,
           url: storage.url,
+          mimeType: storage.mimeType,
           orderIndex: generationResult.orderIndex,
         })
         .from(generationResult)
@@ -96,7 +128,12 @@ export async function getUserGenerationHistory(userId: string, limit: number = 2
 
       resultsMap.set(
         taskId,
-        taskResults.map(r => ({ url: r.url }))
+        taskResults.map(r => ({
+          id: r.id,
+          url: r.url,
+          mimeType: r.mimeType,
+          type: r.mimeType?.split('/')[0] || "unknown",
+        }))
       );
     }
   }
@@ -105,12 +142,11 @@ export async function getUserGenerationHistory(userId: string, limit: number = 2
   const histories = tasks.map((task) => {
     const parameters = task.parameters as Record<string, any> || {};
     const resultsArray = resultsMap.get(task.id) || [];
-    const resultUrls = resultsArray.map((r: any) => r.url).filter(Boolean);
 
     return {
       id: task.id,
       prompt: parameters.prompt || "",
-      results: resultUrls,
+      results: resultsArray,
       createdAt: task.createdAt,
       updatedAt: task.updatedAt,
     };

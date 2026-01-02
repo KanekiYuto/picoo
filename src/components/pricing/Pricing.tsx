@@ -110,7 +110,7 @@ export function Pricing({
                 {billingCycle === cycle.id && (
                   <motion.div
                     layoutId="billing-cycle-tab"
-                    className="absolute inset-0 rounded-md bg-card shadow-lg z-0"
+                    className="absolute inset-0 rounded-md bg-background shadow-lg z-0"
                     transition={{ type: "spring", duration: 0.5, bounce: 0.2 }}
                   />
                 )}
@@ -139,7 +139,7 @@ export function Pricing({
 
         {/* 底部说明 */}
         <div className="text-center">
-          <p className="inline-block px-4 py-2 rounded-lg border border-muted-foreground/20 text-muted-foreground text-xs font-medium tracking-wide">
+          <p className="inline-block px-4 py-2 rounded-lg border border-muted-foreground/20 text-muted-foreground text-xs font-medium tracking-wide bg-background">
             {t("footer.guarantee")}
           </p>
         </div>

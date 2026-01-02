@@ -75,6 +75,9 @@ export function useAIGenerate(): UseAIGenerateReturn {
           result.data.task_id,
           (results) => {
             setResultImages((prev) => {
+              console.log('results', results);
+              console.log('prev', prev);
+
               // 先替换 loading 项为成功结果
               let resultIndex = 0;
               let newImages = prev.map(item =>

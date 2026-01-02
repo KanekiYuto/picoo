@@ -4,6 +4,7 @@ import { generationTask, user } from '@/lib/db/schema';
 import { eq, and, sql } from 'drizzle-orm';
 import { auth } from '@/lib/auth';
 import { processImageResults, UserType } from '@/lib/image/resource';
+import { getGenerationTaskWithResults } from '@/lib/db/services/generation-task';
 
 /**
  * GET /api/ai-generator/status/[taskId]
@@ -99,11 +100,16 @@ export async function GET(
 
     // 任务完成 - 返回结果
     if (task.status === 'completed') {
+      // 获取任务结果
+      const taskWithResults = await getGenerationTaskWithResults(taskId);
+
+      const results = processImageResults(taskWithResults?.results || [], userType as UserType);
+
       return NextResponse.json({
         success: true,
         data: {
           ...baseData,
-          results: processImageResults(task.results, userType as UserType),
+          results,
           started_at: task.startedAt,
           completed_at: task.completedAt,
           duration_ms: task.durationMs,
