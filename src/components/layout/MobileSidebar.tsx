@@ -10,15 +10,12 @@ import {
   HelpCircle,
   X,
   ChevronRight,
-  Sun,
-  Moon,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useLocale } from "next-intl";
 import { useTranslations } from "next-intl";
-import { useEffect, useState } from "react";
-import { useTheme } from "next-themes";
+import { useEffect } from "react";
 import { useUserStore } from "@/stores/userStore";
 import Image from "next/image";
 import { siteConfig } from "@/config/site";
@@ -51,8 +48,6 @@ export function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
   const locale = useLocale();
   const t = useTranslations("sidebar");
   const { user } = useUserStore();
-  const { theme, setTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
 
   const navItems: NavItem[] = [
     { ...navItemsConfig[0], labelKey: t("home") },
@@ -64,15 +59,6 @@ export function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
   const bottomItems: NavItem[] = [
     { ...bottomItemsConfig[0], labelKey: t("help") },
   ];
-
-  // 主题切换函数
-  const handleThemeToggle = () => {
-    setTheme(theme === 'dark' ? 'light' : 'dark');
-  };
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   // 禁止背景滚动
   useEffect(() => {
@@ -205,26 +191,14 @@ export function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
                         ease: "easeOut"
                       }}
                     >
-                      {item.external ? (
-                        <a
-                          href={item.href}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex flex-col items-center gap-1 p-2"
-                        >
-                          <Icon className="h-5 w-5 text-muted-foreground" />
-                          <span className="text-xs text-foreground text-center">{item.labelKey}</span>
-                        </a>
-                      ) : (
-                        <Link
-                          href={item.href}
-                          onClick={onClose}
-                          className="flex flex-col items-center gap-1 p-2"
-                        >
-                          <Icon className="h-5 w-5 text-muted-foreground" />
-                          <span className="text-xs text-foreground text-center">{item.labelKey}</span>
-                        </Link>
-                      )}
+                      <Link
+                        href={item.href}
+                        onClick={onClose}
+                        className="flex flex-col items-center gap-1 p-2"
+                      >
+                        <Icon className="h-5 w-5 text-muted-foreground" />
+                        <span className="text-xs text-foreground text-center">{item.labelKey}</span>
+                      </Link>
                     </motion.div>
                   );
                 })}
