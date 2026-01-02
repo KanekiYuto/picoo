@@ -16,18 +16,19 @@ interface ModeSelectorPanelProps {
 
 export function ModeSelectorPanel({ value, onChange, onClose }: ModeSelectorPanelProps) {
   const t = useTranslations("generator.modes");
+  const tMode = useTranslations("generator.modeSelector");
 
   return (
     <div className="w-full rounded-2xl bg-background">
       {/* 头部 - 标题和关闭按钮 */}
       <div className="flex items-center justify-between px-4 md:px-6 pt-3 md:pt-4 pb-0 flex-shrink-0">
         <h2 className="text-base md:text-lg font-semibold text-foreground">
-          {t("prompt")} Mode
+          {t("prompt")} {tMode("mode")}
         </h2>
         <motion.button
           onClick={onClose}
           className="flex h-8 w-8 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-sidebar-hover hover:text-foreground cursor-pointer"
-          aria-label="关闭"
+          aria-label={tMode("close")}
         >
           <X className="h-4 w-4 md:h-5 md:w-5" />
         </motion.button>

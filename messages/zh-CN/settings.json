@@ -33,8 +33,10 @@
       "characters": "字符",
       "cancel": "取消",
       "save": "保存",
-      "saving": "保存中..."
-    }
+      "saving": "保存中...",
+      "close": "关闭"
+    },
+    "notSignedIn": "未登录"
   },
   "credits": {
     "title": "积分管理",

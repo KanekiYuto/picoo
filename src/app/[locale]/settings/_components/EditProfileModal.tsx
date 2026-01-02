@@ -109,7 +109,7 @@ export function EditProfileModal({ isOpen, onClose, user, onSuccess }: EditProfi
                     onClick={handleClose}
                     disabled={loading}
                     className="flex items-center justify-center h-9 w-9 rounded-full bg-sidebar-bg/80 backdrop-blur-sm border border-border text-muted hover:bg-sidebar-hover hover:text-foreground transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
-                    aria-label="Close"
+                    aria-label={t("close")}
                   >
                     <X className="h-4.5 w-4.5" />
                   </button>

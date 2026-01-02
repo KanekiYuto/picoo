@@ -108,5 +108,9 @@
       "edit-image": "专为图像编辑优化的模型，支持细节控制",
       "remove-watermark": "专业的水印去除模型，保留图像质量"
     }
+  },
+  "modeSelector": {
+    "close": "关闭",
+    "mode": "模式"
   }
 }

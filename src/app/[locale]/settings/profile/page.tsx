@@ -42,7 +42,7 @@ export default function ProfilePage() {
   if (!user) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="text-muted">Not signed in</div>
+        <div className="text-muted">{t("notSignedIn")}</div>
       </div>
     );
   }

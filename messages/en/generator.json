@@ -108,5 +108,9 @@
       "edit-image": "Model optimized for image editing with fine-grained control support",
       "remove-watermark": "Professional watermark removal model that preserves image quality"
     }
+  },
+  "modeSelector": {
+    "close": "Close",
+    "mode": "Mode"
   }
 }

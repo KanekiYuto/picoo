@@ -8,17 +8,26 @@ import {
   Clock,
   Settings,
   HelpCircle,
+  X,
+  ChevronRight,
+  Sun,
+  Moon,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useLocale } from "next-intl";
 import { useTranslations } from "next-intl";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { useTheme } from "next-themes";
+import { useUserStore } from "@/stores/userStore";
+import Image from "next/image";
+import { siteConfig } from "@/config/site";
 
 interface NavItem {
   icon: React.ComponentType<{ className?: string }>;
   labelKey: string;
   href: string;
+  external?: boolean;
 }
 
 const navItemsConfig: Omit<NavItem, "labelKey">[] = [
@@ -41,6 +50,9 @@ export function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
   const pathname = usePathname();
   const locale = useLocale();
   const t = useTranslations("sidebar");
+  const { user } = useUserStore();
+  const { theme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
 
   const navItems: NavItem[] = [
     { ...navItemsConfig[0], labelKey: t("home") },
@@ -53,21 +65,14 @@ export function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
     { ...bottomItemsConfig[0], labelKey: t("help") },
   ];
 
-  // 判断是否激活的辅助函数（处理国际化路由）
-  const isActiveRoute = (href: string) => {
-    // 移除当前 locale 前缀来比较路径
-    const localePrefix = `/${locale}`;
-    const pathWithoutLocale = pathname.startsWith(localePrefix)
-      ? pathname.slice(localePrefix.length)
-      : pathname;
-    const normalizedPath = pathWithoutLocale || '/';
-
-    if (href === '/') {
-      return normalizedPath === '/';
-    }
-
-    return normalizedPath.startsWith(href);
+  // 主题切换函数
+  const handleThemeToggle = () => {
+    setTheme(theme === 'dark' ? 'light' : 'dark');
   };
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // 禁止背景滚动
   useEffect(() => {
@@ -96,35 +101,66 @@ export function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
     <AnimatePresence>
       {isOpen && (
         <>
-          {/* 背景遮罩 - 从 Header 下方开始 */}
+          {/* 侧边栏面板 */}
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            onClick={onClose}
-            className="fixed inset-x-0 top-16 bottom-0 z-40 bg-background/60 backdrop-blur-sm lg:hidden"
-          />
-
-          {/* 从 Header 下方滑出的全屏面板 */}
-          <motion.div
-            initial={{ y: "-100vh" }}
-            animate={{ y: 0 }}
-            exit={{ y: "-100vh" }}
+            initial={{ x: "-100vw" }}
+            animate={{ x: 0 }}
+            exit={{ x: "-100vw" }}
             transition={{
               type: "spring",
-              damping: 35,
-              stiffness: 400,
+              damping: 30,
+              stiffness: 300,
               mass: 0.8
             }}
-            className="fixed inset-x-0 top-16 z-41 flex h-[calc(100vh-4rem)] flex-col overflow-hidden bg-sidebar-bg lg:hidden"
+            className="fixed inset-y-0 left-0 z-[1000] w-full flex flex-col bg-background lg:hidden"
           >
-            {/* 主导航 */}
-            <nav className="flex flex-1 flex-col overflow-y-auto custom-scrollbar p-6">
-              <div className="flex flex-col gap-2">
+            {/* 顶部栏 - 关闭按钮 */}
+            <div className="flex items-center justify-end px-4 py-3">
+              <button
+                onClick={onClose}
+                className="flex h-8 w-8 items-center justify-center rounded-md bg-muted/10"
+              >
+                <X className="h-5 w-5 text-foreground" />
+              </button>
+            </div>
+
+            {/* 用户信息卡片 */}
+            {user && (
+              <div className="mx-4 mb-6 rounded-lg border border-border bg-muted/10 p-5">
+                <div className="flex items-start gap-3">
+                  <div className="h-12 w-12 flex-shrink-0 rounded-full overflow-hidden bg-gradient-to-br from-primary to-primary-hover ring-2 ring-border">
+                    {user.image ? (
+                      <Image
+                        src={user.image}
+                        alt={user.name || "User"}
+                        width={48}
+                        height={48}
+                        className="h-full w-full object-cover"
+                      />
+                    ) : (
+                      <div className="h-full w-full flex items-center justify-center text-white font-bold text-sm">
+                        {user.name?.charAt(0).toUpperCase()}
+                      </div>
+                    )}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="font-semibold text-foreground truncate text-sm">
+                      {user.name}
+                    </p>
+                    <p className="text-xs text-muted-foreground truncate">
+                      {user.email}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* 菜单列表 */}
+            <nav className="flex-1 overflow-y-auto custom-scrollbar">
+              {/* 主导航 */}
+              <div className="flex flex-col gap-4">
                 {navItems.map((item, index) => {
                   const Icon = item.icon;
-                  const isActive = isActiveRoute(item.href);
                   return (
                     <motion.div
                       key={item.href}
@@ -139,79 +175,61 @@ export function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
                       <Link
                         href={item.href}
                         onClick={onClose}
-                        className="group"
+                        className="flex items-center justify-between rounded-lg py-2 px-4"
                       >
-                        <motion.div
-                          whileHover={{ x: 4 }}
-                          whileTap={{ scale: 0.98 }}
-                          className={cn(
-                            "flex items-center gap-4 rounded-xl px-5 py-4 transition-colors",
-                            isActive
-                              ? "bg-sidebar-active text-primary-foreground"
-                              : "text-muted-foreground hover:bg-secondary hover:text-foreground"
-                          )}
-                        >
-                          <Icon className="h-6 w-6" />
-                          <span className="text-base font-medium">{item.labelKey}</span>
-                          {isActive && (
-                            <motion.div
-                              layoutId="mobile-active-indicator"
-                              className="ml-auto h-2 w-2 rounded-full bg-primary"
-                            />
-                          )}
-                        </motion.div>
-                      </Link>
-                    </motion.div>
-                  );
-                })}
-              </div>
-
-              {/* 底部导航 */}
-              <div className="mt-auto flex flex-col gap-2 pt-6">
-                {bottomItems.map((item, index) => {
-                  const Icon = item.icon;
-                  const isActive = isActiveRoute(item.href);
-                  return (
-                    <motion.div
-                      key={item.href}
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{
-                        delay: (navItems.length + index) * 0.05,
-                        duration: 0.3,
-                        ease: "easeOut"
-                      }}
-                    >
-                      <Link
-                        href={item.href}
-                        onClick={onClose}
-                        className="group"
-                      >
-                        <motion.div
-                          whileHover={{ x: 4 }}
-                          whileTap={{ scale: 0.98 }}
-                          className={cn(
-                            "flex items-center gap-4 rounded-xl px-5 py-4 transition-colors",
-                            isActive
-                              ? "bg-sidebar-active text-primary-foreground"
-                              : "text-muted-foreground hover:bg-secondary hover:text-foreground"
-                          )}
-                        >
-                          <Icon className="h-6 w-6" />
-                          <span className="text-base font-medium">{item.labelKey}</span>
-                          {isActive && (
-                            <motion.div
-                              layoutId="mobile-active-indicator"
-                              className="ml-auto h-2 w-2 rounded-full bg-primary"
-                            />
-                          )}
-                        </motion.div>
+                        <div className="flex items-center gap-3">
+                          <Icon className="h-5 w-5 text-muted-foreground" />
+                          <span className="text-sm text-foreground">{item.labelKey}</span>
+                        </div>
+                        <ChevronRight className="h-5 w-5 text-muted-foreground" />
                       </Link>
                     </motion.div>
                   );
                 })}
               </div>
             </nav>
+
+            {/* 底部按钮组 */}
+            <div className="border-border/50 bg-background px-5 pb-2">
+              <div className="flex justify-start gap-2">
+                {bottomItems.map((item, index) => {
+                  const Icon = item.icon;
+                  return (
+                    <motion.div
+                      key={item.href}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{
+                        delay: (navItems.length + index) * 0.05,
+                        duration: 0.3,
+                        ease: "easeOut"
+                      }}
+                    >
+                      {item.external ? (
+                        <a
+                          href={item.href}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex flex-col items-center gap-1 p-2"
+                        >
+                          <Icon className="h-5 w-5 text-muted-foreground" />
+                          <span className="text-xs text-foreground text-center">{item.labelKey}</span>
+                        </a>
+                      ) : (
+                        <Link
+                          href={item.href}
+                          onClick={onClose}
+                          className="flex flex-col items-center gap-1 p-2"
+                        >
+                          <Icon className="h-5 w-5 text-muted-foreground" />
+                          <span className="text-xs text-foreground text-center">{item.labelKey}</span>
+                        </Link>
+                      )}
+                    </motion.div>
+                  );
+                })}
+              </div>
+            </div>
           </motion.div>
         </>
       )}
