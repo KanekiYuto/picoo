@@ -1,0 +1,14 @@
+{
+  "title": "History",
+  "description": "View and manage your generation history",
+  "empty": {
+    "title": "No History",
+    "description": "You haven't generated anything yet"
+  },
+  "download": "Download",
+  "delete": "Delete",
+  "pagination": {
+    "previous": "Previous",
+    "next": "Next"
+  }
+}

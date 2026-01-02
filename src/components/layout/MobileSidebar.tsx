@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 import {
   Home,
   Image as ImageIcon,
+  Clock,
   Settings,
   HelpCircle,
 } from "lucide-react";
@@ -23,6 +24,7 @@ interface NavItem {
 const navItemsConfig: Omit<NavItem, "labelKey">[] = [
   { icon: Home, href: "/" },
   { icon: ImageIcon, href: "/assets" },
+  { icon: Clock, href: "/history" },
   { icon: Settings, href: "/settings/profile" },
 ];
 
@@ -43,7 +45,8 @@ export function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
   const navItems: NavItem[] = [
     { ...navItemsConfig[0], labelKey: t("home") },
     { ...navItemsConfig[1], labelKey: t("assets") },
-    { ...navItemsConfig[2], labelKey: t("settings") },
+    { ...navItemsConfig[2], labelKey: t("history") },
+    { ...navItemsConfig[3], labelKey: t("settings") },
   ];
 
   const bottomItems: NavItem[] = [
