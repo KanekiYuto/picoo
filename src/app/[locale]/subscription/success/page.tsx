@@ -1,4 +1,5 @@
 import { Metadata } from 'next';
+import { Suspense } from 'react';
 import { getTranslations } from 'next-intl/server';
 import { generateAlternates } from '../../../../lib/metadata';
 import SubscriptionSuccessClient from './SubscriptionSuccessClient';
@@ -15,5 +16,9 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
 }
 
 export default function SubscriptionSuccessPage() {
-  return <SubscriptionSuccessClient />;
+  return (
+    <Suspense fallback={null}>
+      <SubscriptionSuccessClient />
+    </Suspense>
+  );
 }
