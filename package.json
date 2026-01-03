@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "pnpm merge:messages && next build && next-sitemap",
+    "sitemap": "next-sitemap",
     "start": "next start",
     "lint": "eslint",
     "merge:messages": "tsx scripts/merge-locale-messages.ts",

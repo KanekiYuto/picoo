@@ -1,42 +1,36 @@
-// 导入语言配置（与 i18n/config.ts 保持同步）
 const { locales, defaultLocale } = require('./config/locales');
 
-// 需要登录或不需要索引的路径
 const excludePaths = [
   '/api/*',
-  '/checkout',
-  '/portal/*',
-  '/settings/*',
-  '/subscription/*',
-  '/assets/*',
-  '/history/*',
-];
-
-// robots.txt 禁止爬取的路径
-const disallowPaths = [
-  '/api/',
   '/checkout/*',
   '/portal/*',
   '/settings/*',
   '/subscription/*',
+  '/assets',
+  '/history',
   '/assets/*',
   '/history/*',
 ];
 
-// 高价值语言配置（按消费能力和市场价值排序）
-const highValueLocales = {
-  en: 0.90,       // 英文 - 默认语言，全球消费能力最强
-  'zh-CN': 0.60,  // 简体中文 - 中国市场
-};
+// 从路径中提取基础路由（去除语言前缀）
+function getBaseRoute(path) {
+  const match = path.match(/^\/([a-z]{2}(?:-[A-Z]{2})?)(?:\/(.*))?$/);
+  if (match) {
+    return match[2] || '';
+  }
+  return path;
+}
 
-// 静态页面路由
-const staticRoutes = [
-  '', // 首页
-  '/legal/terms',
-  '/legal/privacy',
-  '/legal/refund',
-  '/pricing',
-];
+// 检查路由是否应该被排除
+function isExcludedPath(baseRoute) {
+  return excludePaths.some(pattern => {
+    const regexPattern = pattern
+      .replace(/[.+^${}()|[\]\\]/g, '\\$&') // 转义特殊字符
+      .replace(/\*/g, '.*');
+    const regex = new RegExp(`^${regexPattern}$`);
+    return regex.test('/' + baseRoute);
+  });
+}
 
 /** @type {import('next-sitemap').IConfig} */
 module.exports = {
@@ -44,84 +38,80 @@ module.exports = {
   generateRobotsTxt: true,
   generateIndexSitemap: false,
   exclude: excludePaths,
-
-  // 多语言 alternate refs
-  alternateRefs: locales.map((locale) => ({
-    href: locale === defaultLocale
-      ? process.env.NEXT_PUBLIC_SITE_URL
-      : `${process.env.NEXT_PUBLIC_SITE_URL}/${locale}`,
-    hreflang: locale,
-  })),
-
-  // 生成所有语言版本的路径
-  additionalPaths: async () => {
-    const paths = [];
-
-    // 静态页面生成所有语言版本
-    locales.forEach((locale) => {
-      staticRoutes.forEach((route) => {
-        const isHome = route === '';
-        const path = locale === defaultLocale
-          ? route || '/'
-          : `/${locale}${route}`;
-
-        // 根据语言获取对应的权重，默认为 0.6
-        const localePriority = highValueLocales[locale] || 0.6;
-
-        paths.push({
-          loc: path,
-          changefreq: isHome ? 'daily' : 'weekly',
-          priority: isHome ? 1.0 : localePriority,
-          lastmod: new Date().toISOString(),
-        });
-      });
-    });
-
-    return paths;
-  },
-
-  // 默认配置
   changefreq: 'weekly',
   priority: 0.7,
 
-  // robots.txt 配置
+  transform: async (_config, path) => {
+    const baseRoute = getBaseRoute(path);
+
+    // 检查是否应该排除此路由
+    if (isExcludedPath(baseRoute)) {
+      return null;
+    }
+
+    const defaultHref = baseRoute ? `${process.env.NEXT_PUBLIC_SITE_URL}/${baseRoute}` : process.env.NEXT_PUBLIC_SITE_URL;
+
+    // 为所有语言版本生成 alternateRefs
+    let alternateRefs = locales.filter((lang) => lang !== defaultLocale).map((lang) => {
+      const langHref = baseRoute ? `${process.env.NEXT_PUBLIC_SITE_URL}/${lang}/${baseRoute}` : `${process.env.NEXT_PUBLIC_SITE_URL}/${lang}`;
+
+      return {
+        href: langHref,
+        hreflang: lang,
+      };
+    });
+
+    // 为默认语言添加 x-default
+    alternateRefs.push({
+      href: defaultHref,
+      hreflang: 'x-default',
+    });
+
+    return {
+      loc: path,
+      changefreq: path === '/' || path === '' ? 'daily' : 'weekly',
+      priority: path === '/' || path === '' ? 1.0 : 0.7,
+      lastmod: new Date().toISOString(),
+      alternateRefs,
+    };
+  },
+
   robotsTxtOptions: {
     policies: [
       {
         userAgent: '*',
         allow: '/',
-        disallow: disallowPaths,
+        disallow: excludePaths,
       },
-      // AI 爬虫友好配置
       {
         userAgent: 'GPTBot',
         allow: '/',
-        disallow: disallowPaths,
+        disallow: excludePaths,
       },
       {
         userAgent: 'ChatGPT-User',
         allow: '/',
-        disallow: disallowPaths,
+        disallow: excludePaths,
       },
       {
         userAgent: 'Claude-Web',
         allow: '/',
-        disallow: disallowPaths,
+        disallow: excludePaths,
       },
       {
         userAgent: 'Anthropic-AI',
         allow: '/',
-        disallow: disallowPaths,
+        disallow: excludePaths,
       },
       {
         userAgent: 'Google-Extended',
         allow: '/',
-        disallow: disallowPaths,
+        disallow: excludePaths,
       },
       {
         userAgent: 'PerplexityBot',
         allow: '/',
-        disallow: disallowPaths,
+        disallow: excludePaths,
       },
     ],
   },
