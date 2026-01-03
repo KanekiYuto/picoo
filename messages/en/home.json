@@ -1,4 +1,8 @@
 {
+  "seo": {
+    "title": "Picoo - AI-Powered Creative Tools",
+    "description": "Transform your ideas into stunning AI-generated images and videos instantly with Picoo's advanced creative platform"
+  },
   "hero": {
     "title": "What do you want to create?",
     "description": "Enter your prompt—transform ideas into stunning AI-powered results instantly."

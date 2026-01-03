@@ -1,6 +1,7 @@
 import { DocumentLayout } from "@/components/document";
 import { siteConfig } from "@/config/site";
 import { getTranslations } from 'next-intl/server';
+import { generateAlternates } from '@/lib/metadata';
 import { generateRefundMarkdown } from '@/lib/legal-markdown';
 
 export async function generateMetadata({
@@ -14,6 +15,7 @@ export async function generateMetadata({
   return {
     title: t('meta.title', { siteName: siteConfig.name }),
     description: t('meta.description', { siteName: siteConfig.name }),
+    alternates: generateAlternates(locale, '/legal/refund'),
   };
 }
 

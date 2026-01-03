@@ -1,4 +1,8 @@
 {
+  "seo": {
+    "title": "帮助中心 - Picoo 文档和支持",
+    "description": "查找Picoo常见问题的答案，了解如何充分利用我们的AI创意工具"
+  },
   "title": "帮助中心",
   "subtitle": "查找常见问题的答案，了解如何充分利用 {name}",
   "faqTitle": "常见问题",

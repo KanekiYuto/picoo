@@ -1,4 +1,8 @@
 {
+  "seo": {
+    "title": "Picoo - AI创意工具平台",
+    "description": "使用Picoo先进的AI创意平台，瞬间将你的想法转化为精美的AI生成图像和视频"
+  },
   "hero": {
     "title": "你想创造什么？",
     "description": "输入您的提示——立即将想法转化为令人惊叹的AI驱动效果。"

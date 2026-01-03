@@ -1,7 +1,19 @@
-"use client";
+import type { Metadata } from 'next';
+import { generateAlternates } from '@/lib/metadata';
+import { getTranslations } from 'next-intl/server';
+import { HeroSection } from '@/components/home/HeroSection';
+import { WhatsNew } from '@/components/home/WhatsNew';
 
-import { HeroSection } from "@/components/home/HeroSection";
-import { WhatsNew } from "@/components/home/WhatsNew";
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: 'home' });
+
+  return {
+    title: t('seo.title'),
+    description: t('seo.description'),
+    alternates: generateAlternates(locale, '/'),
+  };
+}
 
 export default function Home() {
   return (

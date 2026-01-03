@@ -1,4 +1,8 @@
 {
+  "seo": {
+    "title": "Help Center - Picoo Support & Documentation",
+    "description": "Find answers to frequently asked questions about Picoo and learn how to get the most out of our AI creative tools"
+  },
   "title": "Help Center",
   "subtitle": "Find answers to common questions and learn how to get the most out of {name}",
   "faqTitle": "Frequently Asked Questions",

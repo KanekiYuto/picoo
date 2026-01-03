@@ -1,23 +1,19 @@
-"use client";
+import type { Metadata } from 'next';
+import { generateAlternates } from '@/lib/metadata';
+import { getTranslations } from 'next-intl/server';
+import PricingPageClient from './_components/PricingPageClient';
 
-import { Pricing } from "@/components/pricing";
-import { PaymentIcons } from "@/components/pricing/PaymentIcons";
-import { PricingFAQ } from "@/components/pricing/PricingFAQ";
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: 'pricing' });
+
+  return {
+    title: t('seo.title'),
+    description: t('seo.description'),
+    alternates: generateAlternates(locale, '/pricing'),
+  };
+}
 
 export default function PricingPage() {
-  return (
-    <div className="min-h-screen">
-      <Pricing />
-
-      {/* 支付方式图标 */}
-      <div className="py-8">
-        <div className="container mx-auto px-4">
-          <PaymentIcons />
-        </div>
-      </div>
-
-      {/* FAQ 部分 */}
-      <PricingFAQ />
-    </div>
-  );
+  return <PricingPageClient />;
 }
