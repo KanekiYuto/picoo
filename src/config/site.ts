@@ -44,7 +44,7 @@ export const siteConfig = {
   // 导航链接
   links: {
     models: [
-      { label: "Seedream 4.5", href: "/models/seedream/seedream-4.5" },
+      { label: "Seedream 4.5", href: "/models/seedream/seedream4_5" },
     ],
     resources: [
       { label: "Pricing", href: "/pricing" },
