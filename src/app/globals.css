@@ -140,7 +140,15 @@
 
 /* 工具类 - 主渐变色 */
 .bg-gradient-primary {
-  background: linear-gradient(to right, var(--primary), #c721ff);
+  background: linear-gradient(to right, #ff3466, #c721ff);
+}
+
+/* 渐变文本 */
+.text-gradient-primary {
+  background: linear-gradient(to right, #ff3466, #c721ff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 body {

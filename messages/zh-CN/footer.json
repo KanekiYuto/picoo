@@ -1,10 +1,19 @@
 {
   "sections": {
-    "product": "产品",
-    "tools": "工具",
+    "models": "模型",
     "resources": "资源",
     "community": "社区",
     "contact": "联系我们",
     "legal": "法律"
+  },
+  "links": {
+    "seedream45": "Seedream 4.5",
+    "pricing": "定价",
+    "helpCenter": "帮助中心",
+    "discord": "Discord",
+    "email": "邮箱",
+    "privacyPolicy": "隐私政策",
+    "termsOfService": "服务条款",
+    "refundPolicy": "退款政策"
   }
 }

@@ -1,10 +1,19 @@
 {
   "sections": {
-    "product": "Product",
-    "tools": "Tools",
+    "models": "Models",
     "resources": "Resources",
     "community": "Community",
     "contact": "Contact Us",
     "legal": "Legal"
+  },
+  "links": {
+    "seedream45": "Seedream 4.5",
+    "pricing": "Pricing",
+    "helpCenter": "Help Center",
+    "discord": "Discord",
+    "email": "Email",
+    "privacyPolicy": "Privacy Policy",
+    "termsOfService": "Terms of Service",
+    "refundPolicy": "Refund Policy"
   }
 }

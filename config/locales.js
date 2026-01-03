@@ -4,7 +4,7 @@
  */
 
 const locales = ['en', 'zh-CN'];
-const defaultLocale = 'zh-CN';
+const defaultLocale = 'en';
 
 const localeNames = {
   en: 'English',

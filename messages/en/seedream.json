@@ -1,0 +1,92 @@
+{
+  "hero": {
+    "title": "Seedream 4.5",
+    "description": "New High-Aesthetic ImageGen Model",
+    "features": [
+      "Generates realistic proportions, object placement, and scene layout.",
+      "Creates knowledge-based visuals with accurate scientific and technical reasoning.",
+      "Generating images at a maximum resolution of 4K",
+      "Maintains stable subjects, clear details, and coherent scenes across multiple images."
+    ],
+    "cta": {
+      "primary": "Start Free",
+      "secondary": "View Pricing"
+    },
+    "noImages": "No images"
+  },
+  "why": {
+    "title": "Why Choose Seedream 4.5",
+    "subtitle": "In multi-image combinations, precisely identify and stably lock the subject, maximize the preservation of original image features and detail quality, enhance the typography rendering capability of posters and dense text, and ensure high consistency and high-fidelity visual works.",
+    "items": [
+      {
+        "title": "Original Image Preservation",
+        "description": "Maximize the preservation of facial features, lighting, tone, and picture details of the original image with the texture of professional retouching software."
+      },
+      {
+        "title": "Poster & Logo Design Layout",
+        "description": "Professional composition and typography capabilities with clear small text, suitable for posters, brand visuals and various design scenarios."
+      },
+      {
+        "title": "Multi-Image Combination",
+        "description": "Accurately identify and stably lock the main subject in multiple input images, maintaining character continuity."
+      }
+    ],
+    "alts": {
+      "original": "Original image",
+      "generated": "Generated result",
+      "design": "Design work"
+    }
+  },
+  "how": {
+    "title": "How to Use Seedream 4.5",
+    "subtitle": "Four simple steps to easily generate high-quality artwork and design works",
+    "steps": [
+      {
+        "title": "Input Creative Description",
+        "description": "Describe your creative ideas in natural language and fully express your design concepts."
+      },
+      {
+        "title": "Model Intelligent Processing",
+        "description": "Uses advanced AI algorithms for processing, accurately understanding your creative intent."
+      },
+      {
+        "title": "Fine-tune and Perfect",
+        "description": "Supports parameter fine-tuning, style conversion and other functions to perfectly meet requirements."
+      },
+      {
+        "title": "Export High-Quality Works",
+        "description": "Supports multiple formats and resolutions, including 4K high-definition output."
+      }
+    ]
+  },
+  "faq": {
+    "title": "Frequently Asked Questions",
+    "items": [
+      {
+        "question": "What are the advantages of Seedream 4.5 compared to other models?",
+        "answer": "Seedream 4.5 is specialized in artistic and creative image generation with three major advantages: original image preservation (maximizes facial features, lighting and tone details), poster and design layout capabilities (professional composition, clear small text), and multi-image combination capabilities (accurately identifies and stably locks subjects across multiple input images)."
+      },
+      {
+        "question": "What is the maximum resolution for generating images with Seedream 4.5?",
+        "answer": "We support image generation at a maximum resolution of 4K. Seedream 4.5 generates high-quality images with realistic proportions, object placement and scene layout, while maintaining excellent detail clarity at 4K resolution."
+      },
+      {
+        "question": "What are the best use cases for Seedream 4.5?",
+        "answer": "This model is particularly suitable for artistic creation, design typography, brand visual creativity, poster design, and logo design. It can accurately understand your creative intent and generate visuals with high consistency and high fidelity."
+      },
+      {
+        "question": "Can Seedream 4.5 maintain consistency across multiple images?",
+        "answer": "Yes, Seedream 4.5 has excellent multi-image combination capabilities and can accurately identify and stably lock subjects across multiple input images, ensuring that generated images maintain high consistency and coherence with the original images."
+      }
+    ]
+  },
+  "cta": {
+    "title": "Ready to Experience Seedream 4.5?",
+    "description": "Start creating immediately and generate high-consistency, high-fidelity visual works. No credit card required, free trial.",
+    "buttons": {
+      "primary": "Start Free",
+      "secondary": "View Pricing"
+    },
+    "note": "Unlimited creative possibilities"
+  }
+}

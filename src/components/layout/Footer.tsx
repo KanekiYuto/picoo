@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { fadeInUp, staggerContainer } from "@/lib/animations";
 import { cn } from "@/lib/utils";
 import { siteConfig } from "@/config/site";
-import { Link } from "../../../i18n/routing";
+import { Link } from '@i18n/routing';
 import { useTranslations } from 'next-intl';
 
 interface FooterProps {
@@ -30,31 +30,44 @@ const socialLinks = [
 ];
 
 export function Footer({ className }: FooterProps) {
-  const t = useTranslations('footer.sections');
+  const t = useTranslations('footer');
+  const tSections = useTranslations('footer.sections');
+  const tLinks = useTranslations('footer.links');
+
+  // 链接标签翻译映射
+  const translateLabel = (label: string): string => {
+    const labelMap: Record<string, string> = {
+      'Seedream 4.5': tLinks('seedream45'),
+      'Pricing': tLinks('pricing'),
+      'Help Center': tLinks('helpCenter'),
+      'Discord': tLinks('discord'),
+      'Email': tLinks('email'),
+      'Privacy Policy': tLinks('privacyPolicy'),
+      'Terms of Service': tLinks('termsOfService'),
+      'Refund Policy': tLinks('refundPolicy'),
+    };
+    return labelMap[label] || label;
+  };
 
   const footerLinks = {
-    product: {
-      title: t('product'),
-      links: siteConfig.links.product,
-    },
-    tools: {
-      title: t('tools'),
-      links: siteConfig.links.tools,
+    models: {
+      title: tSections('models'),
+      links: siteConfig.links.models,
     },
     resources: {
-      title: t('resources'),
+      title: tSections('resources'),
       links: siteConfig.links.resources,
     },
     community: {
-      title: t('community'),
+      title: tSections('community'),
       links: siteConfig.links.community,
     },
     contact: {
-      title: t('contact'),
+      title: tSections('contact'),
       links: siteConfig.links.contact,
     },
     legal: {
-      title: t('legal'),
+      title: tSections('legal'),
       links: siteConfig.links.legal,
     },
   };
@@ -70,7 +83,7 @@ export function Footer({ className }: FooterProps) {
         className
       )}
     >
-      <div className="mx-auto max-w-7xl px-8 py-12">
+      <div className="mx-auto max-w-5xl px-8 py-12">
         {/* Navigation Links */}
         <motion.div
           variants={fadeInUp}
@@ -88,7 +101,7 @@ export function Footer({ className }: FooterProps) {
                       href={link.href}
                       className="text-foreground text-xs md:text-sm transition-colors hover:text-primary"
                     >
-                      {link.label}
+                      {translateLabel(link.label)}
                     </Link>
                   </li>
                 ))}

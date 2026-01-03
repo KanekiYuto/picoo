@@ -43,19 +43,12 @@ export const siteConfig = {
 
   // 导航链接
   links: {
-    product: [
-      { label: "登录", href: "/login" },
-    ],
-    tools: [
-      { label: "AI 图像", href: "/tools/image" },
-      { label: "AI 艺术", href: "/tools/art" },
-      { label: "AI 视频", href: "/tools/video" },
-      { label: "AI 音乐", href: "/tools/music" },
-      { label: "AI 配音", href: "/tools/voice" },
+    models: [
+      { label: "Seedream 4.5", href: "/models/seedream/seedream-4.5" },
     ],
     resources: [
-      { label: "定价", href: "/pricing" },
-      { label: "帮助中心", href: "/help" },
+      { label: "Pricing", href: "/pricing" },
+      { label: "Help Center", href: "/help" },
     ],
     community: [
       { label: "Discord", href: "https://discord.gg/sQT3rkAN28" },
@@ -65,9 +58,9 @@ export const siteConfig = {
       { label: "Email", href: "mailto:support@fluxreve.com" },
     ],
     legal: [
-      { label: "隐私政策", href: "/legal/privacy" },
-      { label: "服务条款", href: "/legal/terms" },
-      { label: "退款政策", href: "/legal/refund" },
+      { label: "Privacy Policy", href: "/legal/privacy" },
+      { label: "Terms of Service", href: "/legal/terms" },
+      { label: "Refund Policy", href: "/legal/refund" },
     ],
   },
 
