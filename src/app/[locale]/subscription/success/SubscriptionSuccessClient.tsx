@@ -65,7 +65,7 @@ export default function SubscriptionSuccessClient() {
   // 跳转到 Dashboard
   const handleRedirect = useCallback(() => {
     setIsRedirecting(true);
-    router.push('/dashboard');
+    router.push('/');
   }, [router]);
 
   // 倒计时自动跳转
