@@ -5,6 +5,7 @@ import { Check } from 'lucide-react';
 import Autoplay from 'embla-carousel-autoplay';
 import { useGeneratorStore } from '@/stores/generatorStore';
 import { Link } from '@i18n/routing';
+import { Button } from '@/components/ui/button';
 import {
   Carousel,
   CarouselContent,
@@ -56,12 +57,14 @@ export default function Hero({ title, description, images, features = [], primar
         )}
 
         <div className="flex gap-4 pt-4">
-          <button onClick={openGeneratorModal} className="px-6 py-3 bg-gradient-primary text-white rounded-lg transition font-medium cursor-pointer">
+          <Button onClick={openGeneratorModal} variant="gradient" size="lg">
             {primaryCta}
-          </button>
-          <Link href="/pricing" className="px-6 py-3 border border-border rounded-lg hover:bg-muted/20 bg-muted/20 font-medium cursor-pointer inline-flex items-center">
-            {secondaryCta}
-          </Link>
+          </Button>
+          <Button asChild variant="secondary" size="lg" className="bg-muted/20 hover:bg-muted/30">
+            <Link href="/pricing">
+              {secondaryCta}
+            </Link>
+          </Button>
         </div>
       </motion.div>
 
