@@ -49,10 +49,8 @@ module.exports = {
       return null;
     }
 
-    const defaultHref = baseRoute ? `${process.env.NEXT_PUBLIC_SITE_URL}/${baseRoute}` : process.env.NEXT_PUBLIC_SITE_URL;
-
-    // 为所有语言版本生成 alternateRefs
-    let alternateRefs = locales.filter((lang) => lang !== defaultLocale).map((lang) => {
+    // 所有语言版本都包含语言前缀
+    const alternateRefs = locales.map((lang) => {
       const langHref = baseRoute ? `${process.env.NEXT_PUBLIC_SITE_URL}/${lang}/${baseRoute}` : `${process.env.NEXT_PUBLIC_SITE_URL}/${lang}`;
 
       return {
@@ -61,7 +59,8 @@ module.exports = {
       };
     });
 
-    // 为默认语言添加 x-default
+    // x-default 指向不带语言前缀的路径
+    const defaultHref = baseRoute ? `${process.env.NEXT_PUBLIC_SITE_URL}/${baseRoute}` : process.env.NEXT_PUBLIC_SITE_URL;
     alternateRefs.push({
       href: defaultHref,
       hreflang: 'x-default',
