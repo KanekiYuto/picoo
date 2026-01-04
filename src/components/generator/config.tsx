@@ -18,7 +18,7 @@ import {
   FluxIcon,
   AliIcon,
 } from "./modelIcons";
-import { aspectRatioToString } from "@/lib/aspect-ratio-utils";
+import { aspectRatioToString, getDimensions } from "@/lib/aspect-ratio-utils";
 
 export type GeneratorMode = "text-to-image" | "upscale" | "edit-image" | "remove-watermark";
 
@@ -166,9 +166,11 @@ export const MODE_CONFIGS: Record<GeneratorMode, ModeConfig> = {
           size: "1:1",
         },
         requestConfig: createRequestConfig("wavespeed/seedream-v4.5/text-to-image", "webhook", (prompt, mode, settings, images) => {
+          // Seedream v4.5 需要最小 1920x1920，使用 2x 倍数转换
+          const { width, height } = getDimensions(settings.size);
           return {
             prompt,
-            size: aspectRatioToString(settings.size),
+            size: `${width * 2}*${height * 2}`,
           };
         }),
         getCreditsParams: (_settings) => ({}),

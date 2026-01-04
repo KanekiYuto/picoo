@@ -54,10 +54,11 @@ export function useAIGenerate(): UseAIGenerateReturn {
       });
 
       if (!result.success) {
+        const errorMsg = result.error || 'Generation failed';
         setResultImages((prev) =>
           prev.map(item =>
             item.type === 'loading' && item.id.startsWith(`${displayTaskId}-`)
-              ? { ...item, type: 'error', error: '' }
+              ? { ...item, type: 'error', error: errorMsg }
               : item
           ));
         return;
@@ -103,10 +104,12 @@ export function useAIGenerate(): UseAIGenerateReturn {
             });
           },
           (error) => {
+            // 确保 error 始终是字符串
+            const errorMessage = typeof error === 'string' ? error : (error as any)?.message || 'Generation failed';
             setResultImages((prev) =>
               prev.map(item =>
                 item.type === 'loading' && item.id.startsWith(`${displayTaskId}-`)
-                  ? { ...item, type: 'error', error }
+                  ? { ...item, type: 'error', error: errorMessage }
                   : item
               )
             );

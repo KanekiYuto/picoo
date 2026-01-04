@@ -83,11 +83,12 @@ export function startPolling(
       }
     } catch (error) {
       console.error("Polling status failed:", error);
+      const errorMsg = error instanceof Error ? error.message : 'Polling failed';
       if (retries < maxRetries) {
         retries++;
         setTimeout(pollStatus, 2000); // 错误时延长间隔
       } else {
-        onError('Polling failed');
+        onError(errorMsg);
       }
     }
   };

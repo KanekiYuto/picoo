@@ -88,32 +88,16 @@ export function ResultPanel({
                 >
                   {item.type === 'loading' && (
                     <motion.div
-                      className="w-full h-full rounded-lg bg-muted flex items-center justify-center relative overflow-hidden"
+                      className="w-full h-full rounded-lg bg-muted/20 flex items-center justify-center relative overflow-hidden shimmer-loading"
                       exit={{ opacity: 0 }}
                       transition={{ duration: 0.3 }}
                     >
-                      {/* 波浪闪烁背景 */}
-                      <div className="absolute inset-0">
-                        <div className="absolute inset-0 opacity-20 animate-pulse" style={{
-                          background: 'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.15) 25%, transparent 50%, rgba(255,255,255,0.15) 75%, transparent 100%)',
-                          backgroundSize: '200% 100%',
-                          animation: 'shimmer 2s infinite',
-                        }}></div>
-                      </div>
-
-                      <style jsx>{`
-                        @keyframes shimmer {
-                          0% { background-position: -200% 0; }
-                          100% { background-position: 200% 0; }
-                        }
-                      `}</style>
-
                       {/* 左上角内容 */}
                       <div className="absolute top-4 left-4 flex items-center gap-2 z-10">
                         <div className="relative w-4 h-4">
-                          <div className="absolute inset-0 rounded-full border-2 border-transparent border-t-foreground border-r-foreground animate-spin"></div>
+                          <div className="absolute inset-0 rounded-full border-2 border-transparent border-t-white border-r-white animate-spin"></div>
                         </div>
-                        <p className="text-sm text-foreground font-medium">{t("requestInProgress")}</p>
+                        <p className="text-sm text-white font-medium">{t("requestInProgress")}</p>
                       </div>
                     </motion.div>
                   )}
@@ -121,25 +105,12 @@ export function ResultPanel({
                   {item.type === 'success' && (
                     <>
                       {!loadedImages.has(item.id) && (
-                        <div className="w-full h-full rounded-lg bg-muted flex items-center justify-center relative overflow-hidden">
-                          <div className="absolute inset-0">
-                            <div className="absolute inset-0 opacity-20 animate-pulse" style={{
-                              background: 'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.15) 25%, transparent 50%, rgba(255,255,255,0.15) 75%, transparent 100%)',
-                              backgroundSize: '200% 100%',
-                              animation: 'shimmer 2s infinite',
-                            }}></div>
-                          </div>
-                          <style jsx>{`
-                            @keyframes shimmer {
-                              0% { background-position: -200% 0; }
-                              100% { background-position: 200% 0; }
-                            }
-                          `}</style>
+                        <div className="w-full h-full rounded-lg bg-muted flex items-center justify-center relative overflow-hidden shimmer-loading">
                           <div className="absolute top-4 left-4 flex items-center gap-2 z-10">
                             <div className="relative w-4 h-4">
-                              <div className="absolute inset-0 rounded-full border-2 border-transparent border-t-foreground border-r-foreground animate-spin"></div>
+                              <div className="absolute inset-0 rounded-full border-2 border-transparent border-t-white border-r-white animate-spin"></div>
                             </div>
-                            <p className="text-sm text-foreground font-medium">{t("loadingImage")}</p>
+                            <p className="text-sm text-white font-medium">{t("loadingImage")}</p>
                           </div>
                         </div>
                       )}
@@ -165,8 +136,8 @@ export function ResultPanel({
                               }}
                               className={cn(
                                 "flex items-center justify-center p-2 rounded-lg cursor-pointer",
-                                "bg-black/60 text-foreground transition-all",
-                                "hover:bg-black/80"
+                                "bg-muted/30 text-white transition-all",
+                                "hover:bg-muted/50"
                               )}
                               title={t("download")}
                             >
@@ -193,7 +164,9 @@ export function ResultPanel({
                     >
                       <div className="text-3xl font-bold text-red-500 mb-2">!</div>
                       <p className="text-xs text-muted-foreground text-center mb-3">
-                        {item.error}
+                        {typeof item.error === 'string'
+                          ? item.error
+                          : (item.error as any)?.message || 'Generation failed'}
                       </p>
                       <button
                         onClick={() => handleDeleteError(item.id)}

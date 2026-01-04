@@ -17,8 +17,8 @@ export default function SeedreamPageClient() {
           title={t('hero.title')}
           description={t('hero.description')}
           images={[
-            'https://d1q70pf5vjeyhc.cloudfront.net/predictions/8d08e36a1a7049379c25299e82eef019/1.jpeg',
-            'https://d1q70pf5vjeyhc.cloudfront.net/predictions/8d08e36a1a7049379c25299e82eef019/1.jpeg',
+            '/material/7d6004e4-4b06-4e95-8dc1-4e5500d3dfbd.webp',
+            '/material/efbb54c4-f034-4c13-afda-e061cf38ae0d.webp',
           ]}
           features={[
             t('hero.features.0'),

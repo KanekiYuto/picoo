@@ -43,6 +43,7 @@
   --sidebar-ring: oklch(0.708 0 0);
   --sidebar-hover: oklch(0.96 0 0);
   --sidebar-active: oklch(0.93 0 0);
+  --shimmer-color: rgba(255, 255, 255, 0.5);
 }
 
 .dark {
@@ -86,6 +87,7 @@
   --sidebar-ring: #4a4a4a;
   --sidebar-hover: #252525;
   --sidebar-active: #303030;
+  --shimmer-color: rgba(255, 255, 255, 0.35);
 }
 
 @theme inline {
@@ -345,6 +347,43 @@ code[class*="language-"] {
 .gradient-border-focusable:focus,
 .gradient-border-focusable:focus-visible {
   background-image: linear-gradient(var(--background), var(--background)), linear-gradient(144deg, #FF3466, #C721FF);
+}
+
+/* 加载动画 */
+@keyframes pulse-bg {
+  0%, 100% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+
+@keyframes sweep-light {
+  0% {
+    left: -100%;
+  }
+  100% {
+    left: 100%;
+  }
+}
+
+.shimmer-loading {
+  background-color: var(--muted);
+  animation: pulse-bg 2s ease-in-out infinite;
+  position: relative;
+  overflow: hidden;
+}
+
+.shimmer-loading::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent 0%, var(--shimmer-color) 50%, transparent 100%);
+  animation: sweep-light 1.5s ease-in-out infinite;
 }
 
 @layer base {
