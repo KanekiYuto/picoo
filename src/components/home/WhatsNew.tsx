@@ -105,7 +105,7 @@ export function WhatsNew() {
   return (
     <div className="relative w-full">
       {/* Header */}
-      <div className="mb-4 md:mb-6 text-lg md:text-2xl lg:text-3xl font-semibold text-foreground px-4 md:px-24 lg:px-36">{t("title")}</div>
+      <h2 className="mb-4 md:mb-6 text-lg md:text-2xl lg:text-3xl font-semibold text-foreground px-4 md:px-24 lg:px-36">{t("title")}</h2>
 
       {/* Navigation Buttons */}
       {canScrollLeft && (
@@ -158,7 +158,7 @@ export function WhatsNew() {
 
             {/* Title below image */}
             <div className="mt-2 md:mt-3">
-              <div className="text-sm md:text-base lg:text-lg font-semibold text-foreground leading-tight line-clamp-2">
+              <div className="text-sm md:text-base lg:text-base font-semibold text-foreground leading-tight line-clamp-2">
                 {item.title}
               </div>
             </div>

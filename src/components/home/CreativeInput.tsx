@@ -12,24 +12,17 @@ type MediaType = "image" | "video";
 
 // 随机提示词库
 const imagePrompts = [
-  "一只可爱的橘猫在阳光下打哈欠",
-  "赛博朋克风格的未来城市夜景",
-  "梦幻般的极光在雪山之巅舞动",
-  "古老的图书馆里漂浮着发光的书页",
-  "水晶般透明的蝴蝶在魔法森林中飞舞",
+  "Asian woman in yellow bikini enjoying sunny beach day, wearing round glasses, with clear turquoise water and blue sky in the background",
+  "Felicitar las navidades y próspero año nuevo con homer simsom",
 ];
 
 const videoPrompts = [
-  "镜头缓缓推进，展现宁静的湖面倒影",
-  "无人机俯拍城市灯光从白天到黑夜的转换",
-  "时光流逝，花朵从含苞到绽放的全过程",
-  "第一人称视角穿越霓虹灯闪烁的街道",
-  "慢动作捕捉雨滴落入水面的涟漪",
+  'Homer Simpson and his family celebrating Christmas',
 ];
 
 export function CreativeInput() {
   const t = useTranslations("home.creativeInput");
-  const { openGeneratorModal } = useGeneratorStore();
+  const { openGeneratorModalWithPrompt } = useGeneratorStore();
   const [inputValue, setInputValue] = useState("");
   const [selectedType, setSelectedType] = useState<MediaType>("image");
 
@@ -40,7 +33,7 @@ export function CreativeInput() {
   };
 
   const handleSubmit = () => {
-    openGeneratorModal();
+    openGeneratorModalWithPrompt(inputValue, selectedType);
   };
 
   return (

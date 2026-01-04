@@ -23,7 +23,7 @@ import {
  * 全局生成器模态框
  */
 export function GlobalGeneratorModal() {
-  const { isGeneratorModalOpen, closeGeneratorModal } = useGeneratorStore();
+  const { isGeneratorModalOpen, closeGeneratorModal, initialPrompt, initialMediaType } = useGeneratorStore();
 
   // 使用 Hooks 管理所有状态
   const {
@@ -221,6 +221,7 @@ export function GlobalGeneratorModal() {
                     onImageClick={handleImageClick}
                     settings={settings}
                     mode={mode}
+                    initialPrompt={initialPrompt}
                   />
                 </div>
               </div>

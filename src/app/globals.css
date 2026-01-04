@@ -12,7 +12,7 @@
   --scrollbar-color-active: oklch(0.45 0 0 / 1);
 
   --radius: 0.625rem;
-  --secondary-background: oklch(0.96 0 0);
+  --secondary-background: oklch(0.98 0 0);
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
@@ -57,7 +57,7 @@
 
   --background: #0f0f0f;
   --sidebar-bg: #0f0f0f;
-  --secondary-background: #1a1a1a;
+  --secondary-background: #151515;
   --foreground: oklch(1 0 0);
   --card: #1f1f1f;
   --card-foreground: oklch(1 0 0);

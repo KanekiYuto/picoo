@@ -26,6 +26,7 @@ interface GlobalGeneratorProps {
   settings: GeneratorSettings;
   onSettingsChange?: (settings: GeneratorSettings) => void;
   mode?: GeneratorMode;
+  initialPrompt?: string;
 }
 
 export function GlobalGenerator({
@@ -39,10 +40,11 @@ export function GlobalGenerator({
   onRemoveImage,
   onImageClick,
   settings,
-  mode = "text-to-image"
+  mode = "text-to-image",
+  initialPrompt = ""
 }: GlobalGeneratorProps) {
   const t = useTranslations("generator");
-  const [prompt, setPrompt] = useState("");
+  const [prompt, setPrompt] = useState(initialPrompt);
 
   // 从 MODE_CONFIGS 获取当前模型信息
   const currentModel = useMemo<ModelOption | undefined>(() => {
