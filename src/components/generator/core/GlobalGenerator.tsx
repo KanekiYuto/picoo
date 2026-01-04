@@ -121,7 +121,7 @@ export function GlobalGenerator({
     <div className={cn("w-full", className)}>
       <div className="flex flex-col md:flex-row gap-3 md:gap-4">
         {/* 桌面端图片上传区域 - 左侧 */}
-        <div className="hidden justify-end md:flex flex-col gap-3 bg-muted/10 rounded-xl border-1 border-dashed p-2">
+        <div className="hidden justify-end md:flex flex-col gap-3">
           <ImageUploadButton
             size="lg"
             uploadImages={uploadImages}

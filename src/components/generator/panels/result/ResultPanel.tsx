@@ -64,10 +64,9 @@ export function ResultPanel({
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.3 }}
-      className="fixed inset-0 bg-secondary-background"
-      style={{ zIndex: 0 }}
+      className="w-full h-full pb-32 md:pb-40"
     >
-      <div className="w-full h-full flex flex-col">
+      <div className="w-full flex flex-col">
         {/* 空状态 - 不显示任何内容 */}
         {isEmpty && (
           <div className="flex-1" />
@@ -77,7 +76,7 @@ export function ResultPanel({
         {!isEmpty && (
           <div
             ref={containerRef}
-            className="flex-1 overflow-auto p-2 custom-scrollbar"
+            className="flex-1 overflow-auto p-2"
           >
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-2">
               {images.map((item) => (

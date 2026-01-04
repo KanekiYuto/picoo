@@ -8,14 +8,11 @@ export interface UsePanelStateReturn {
   replaceIndex: number | undefined;
   openUploadPanel: () => void;
   openUploadPanelForReplace: (url: string, index: number) => void;
-  openSettingsPanel: () => void;
-  openModePanel: () => void;
   openMobileImagePanel: () => void;
   closePanel: () => void;
   togglePanel: (panel: 'upload' | 'settings' | 'mode') => void;
   setSelectedImageUrl: (url: string | undefined) => void;
   setReplaceIndex: (index: number | undefined) => void;
-  setActivePanel: (panel: PanelType) => void;
 }
 
 export function usePanelState(): UsePanelStateReturn {
@@ -33,14 +30,6 @@ export function usePanelState(): UsePanelStateReturn {
     setSelectedImageUrl(url);
     setReplaceIndex(index);
     setActivePanel('upload');
-  };
-
-  const openSettingsPanel = () => {
-    setActivePanel('settings');
-  };
-
-  const openModePanel = () => {
-    setActivePanel('mode');
   };
 
   const openMobileImagePanel = () => {
@@ -63,13 +52,10 @@ export function usePanelState(): UsePanelStateReturn {
     replaceIndex,
     openUploadPanel,
     openUploadPanelForReplace,
-    openSettingsPanel,
-    openModePanel,
     openMobileImagePanel,
     closePanel,
     togglePanel,
     setSelectedImageUrl,
     setReplaceIndex,
-    setActivePanel,
   };
 }

@@ -9,10 +9,10 @@ export const siteConfig = {
   fullName: "PicooAI.com",
 
   // 站点描述
-  description: "Building the future of AI-powered solutions.",
+  description: "One platform. Full creative power.",
 
   // 站点标语
-  tagline: "AI-Powered Solutions",
+  tagline: "AI. Powering Limitless Creativity.",
 
   // Logo 路径
   logo: "/dark-logo.webp",

@@ -140,7 +140,7 @@ export function UploadPanel({ isOpen, onClose, onImageSelect, onImageReplace, on
   };
 
   return (
-    <div className="h-full flex flex-col bg-background">
+    <div className="h-full flex flex-col bg-background border border-border rounded-xl">
       {/* 头部 */}
       <div className="flex items-center justify-between px-4 md:px-6 pt-3 md:pt-4 pb-0 flex-shrink-0">
         <h2 className="text-base md:text-lg font-semibold text-foreground">

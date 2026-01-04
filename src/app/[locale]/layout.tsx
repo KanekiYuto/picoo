@@ -27,8 +27,57 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: `${siteConfig.fullName} - ${siteConfig.tagline}`,
   description: siteConfig.description,
+  applicationName: siteConfig.name,
+  authors: [{ name: siteConfig.name }],
+  creator: siteConfig.name,
+  other: {
+    'google': 'notranslate',
+  },
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    url: siteConfig.url,
+    siteName: siteConfig.fullName,
+    title: `${siteConfig.fullName} - ${siteConfig.tagline}`,
+    description: siteConfig.description,
+    images: [
+      {
+        url: `${siteConfig.url}/og-image.webp`,
+        width: 1200,
+        height: 660,
+        alt: siteConfig.fullName,
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: `${siteConfig.fullName} - ${siteConfig.tagline}`,
+    description: siteConfig.description,
+    images: [`${siteConfig.url}/og-image.webp`],
+  },
   icons: {
-    icon: siteConfig.favicon,
+    icon: [
+      { url: siteConfig.favicon, sizes: "any" },
+      { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
+      { url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" },
+    ],
+    shortcut: "/favicon.ico",
+  },
+  manifest: "/site.webmanifest",
+  robots: {
+    index: true,
+    follow: true,
+    nocache: false,
+    googleBot: {
+      index: true,
+      follow: true,
+    },
+  },
+  viewport: {
+    width: "device-width",
+    initialScale: 1,
+    maximumScale: 5,
+    userScalable: true,
   },
 };
 
@@ -53,7 +102,7 @@ export default async function LocaleLayout({
   const dir = rtlLocales.includes(locale as any) ? 'rtl' : 'ltr';
 
   return (
-    <html lang={locale} dir={dir} suppressHydrationWarning>
+    <html lang={locale} dir={dir} suppressHydrationWarning translate="no">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background text-foreground`}>
         <ThemeProvider>
           <NextIntlClientProvider locale={locale} messages={messages}>

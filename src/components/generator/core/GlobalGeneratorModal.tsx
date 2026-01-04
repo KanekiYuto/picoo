@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X } from "lucide-react";
 import { useGeneratorStore } from "@/stores/generatorStore";
@@ -10,6 +11,7 @@ import { SettingsPanel } from "../panels/settings";
 import { ModeSelectorPanel } from "../panels/mode";
 import { ResultPanel } from "../panels/result/ResultPanel";
 import { MobileImagePanel } from "../panels/mobile/MobileImagePanel";
+import { GeneratorHeader } from "./GeneratorHeader";
 import {
   useImageUpload,
   useAIGenerate,
@@ -45,14 +47,11 @@ export function GlobalGeneratorModal() {
     replaceIndex,
     openUploadPanel,
     openUploadPanelForReplace,
-    openSettingsPanel,
-    openModePanel,
     openMobileImagePanel,
     closePanel,
     togglePanel,
     setSelectedImageUrl,
     setReplaceIndex,
-    setActivePanel,
   } = usePanelState();
 
   const {
@@ -104,38 +103,24 @@ export function GlobalGeneratorModal() {
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.3 }}
-          style={{ position: 'fixed', inset: 0, zIndex: 9999 }}
+          style={{ position: 'fixed', inset: 0, zIndex: 50 }}
+          className="bg-secondary-background custom-scrollbar flex flex-col"
         >
-          {/* 结果面板 - 全屏背景 */}
+          <GeneratorHeader onClose={closeGeneratorModal} activePanel={activePanel} />
+
+          {/* 结果面板 */}
           <ResultPanel
             images={resultImages}
             onDownload={handleResultDownload}
             onDeleteError={handleDeleteError}
           />
 
-          {/* 关闭按钮 - activePanel 为 null 时显示 */}
-          {activePanel === null && (
-            <motion.button
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.2 }}
-              onClick={closeGeneratorModal}
-              className="fixed top-4 right-4 flex h-9 w-9 items-center justify-center rounded-lg bg-background/80 text-foreground transition-colors backdrop-blur-sm hover:bg-sidebar-hover cursor-pointer"
-              style={{ zIndex: 60 }}
-              aria-label="关闭"
-            >
-              <X className="h-5 w-5" />
-            </motion.button>
-          )}
-
-          {/* 模态框内容 */}
-          <div className="fixed inset-0 flex flex-col items-center justify-end gap-4 p-4 pointer-events-none" style={{ zIndex: 50 }}>
+          {/* 固定底部区域 - 包含上方面板和控制区 */}
+          <div className="fixed inset-0 flex flex-col justify-end pointer-events-none" style={{ zIndex: 100 }}>
             {/* 上方面板区域 - 仅在settings或upload时显示 */}
             {(activePanel === "settings" || activePanel === "upload") && (
-              <div className="w-full max-w-7xl flex-1 min-h-0 overflow-y-auto pointer-events-auto flex flex-col gap-4 lg:flex-row">
-                {/* 左侧：上方面板 */}
-                <div className="flex-1 min-h-0 overflow-y-auto flex flex-col gap-4">
+              <div className="flex-1 min-h-0 flex justify-center p-4 pointer-events-auto">
+                <div className="w-full max-w-7xl h-full">
                   <AnimatePresence mode="wait">
                     {activePanel === "settings" && (
                       <motion.div
@@ -146,7 +131,7 @@ export function GlobalGeneratorModal() {
                         transition={{ duration: 0.3 }}
                         className="w-full h-full"
                       >
-                        <div className="bg-background rounded-2xl overflow-hidden h-full flex flex-col">
+                        <div className="h-full flex flex-col">
                           <SettingsPanel
                             onClose={closePanel}
                             settings={settings}
@@ -165,7 +150,7 @@ export function GlobalGeneratorModal() {
                         transition={{ duration: 0.3 }}
                         className="w-full h-full"
                       >
-                        <div className="rounded-2xl overflow-hidden h-full flex flex-col">
+                        <div className="h-full flex flex-col">
                           <UploadPanel
                             isOpen={true}
                             onClose={handleUploadPanelClose}
@@ -184,14 +169,9 @@ export function GlobalGeneratorModal() {
               </div>
             )}
 
-            {/* 底部区域 - 模式面板在上，生成器在下 */}
-            <motion.div
-              initial={{ opacity: 0, y: 100 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 100 }}
-              className="w-full max-w-7xl pointer-events-auto flex-shrink-0 flex flex-col gap-4"
-            >
-              {/* 模式选择面板 - 显示在生成器上方 */}
+            {/* 底部控制区域 */}
+            <div className="w-full flex flex-col gap-2 p-4 pt-0 bg-secondary-background pointer-events-auto">
+              {/* 模式选择面板 */}
               {activePanel === "mode" && (
                 <motion.div
                   key="mode-bottom"
@@ -199,43 +179,52 @@ export function GlobalGeneratorModal() {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -20 }}
                   transition={{ duration: 0.3 }}
+                  className="flex justify-center"
                 >
-                  <ModeSelectorPanel
-                    value={mode}
-                    onChange={handleModeChange}
-                    onClose={closePanel}
-                  />
+                  <div className="w-full max-w-7xl">
+                    <ModeSelectorPanel
+                      value={mode}
+                      onChange={handleModeChange}
+                      onClose={closePanel}
+                    />
+                  </div>
                 </motion.div>
               )}
 
               {/* 移动端图片管理面板 */}
               {activePanel === "mobile-images" && (
-                <MobileImagePanel
-                  uploadImages={uploadImages}
-                  mode={mode}
-                  onClose={closePanel}
-                  onOpenUploadPanel={openUploadPanel}
-                  onRemoveImage={handleRemoveImage}
-                  onImageClick={handleImageClick}
-                />
+                <div className="flex justify-center">
+                  <div className="w-full max-w-7xl">
+                    <MobileImagePanel
+                      uploadImages={uploadImages}
+                      mode={mode}
+                      onClose={closePanel}
+                      onOpenUploadPanel={openUploadPanel}
+                      onRemoveImage={handleRemoveImage}
+                      onImageClick={handleImageClick}
+                    />
+                  </div>
+                </div>
               )}
 
               {/* 生成器 */}
-              <div className="bg-background rounded-2xl p-4">
-                <GlobalGenerator
-                  onGenerate={handleGenerate}
-                  onOpenUploadPanel={handleUploadPanelToggle}
-                  onOpenSettingsPanel={handleSettingsPanelToggle}
-                  onOpenModePanel={handleModePanelToggle}
-                  onOpenMobileImagePanel={handleMobileImagePanelToggle}
-                  uploadImages={uploadImages}
-                  onRemoveImage={handleRemoveImage}
-                  onImageClick={handleImageClick}
-                  settings={settings}
-                  mode={mode}
-                />
+              <div className="flex justify-center">
+                <div className="w-full max-w-7xl bg-background rounded-2xl p-4 border border-border">
+                  <GlobalGenerator
+                    onGenerate={handleGenerate}
+                    onOpenUploadPanel={handleUploadPanelToggle}
+                    onOpenSettingsPanel={handleSettingsPanelToggle}
+                    onOpenModePanel={handleModePanelToggle}
+                    onOpenMobileImagePanel={handleMobileImagePanelToggle}
+                    uploadImages={uploadImages}
+                    onRemoveImage={handleRemoveImage}
+                    onImageClick={handleImageClick}
+                    settings={settings}
+                    mode={mode}
+                  />
+                </div>
               </div>
-            </motion.div>
+            </div>
           </div>
         </motion.div>
       )}
