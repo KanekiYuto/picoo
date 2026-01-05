@@ -6,8 +6,6 @@
   "userMenu": {
     "points": "剩余积分",
     "pointsDetails": "查看积分明细",
-    "upgrade": "升级",
-    "usageAnalysis": "使用情况分析",
     "settings": "设置",
     "manageSubscription": "管理订阅",
     "logout": "注销",

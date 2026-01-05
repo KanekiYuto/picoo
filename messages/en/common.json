@@ -6,8 +6,6 @@
   "userMenu": {
     "points": "Points",
     "pointsDetails": "View points details",
-    "upgrade": "Upgrade",
-    "usageAnalysis": "Usage analysis",
     "settings": "Settings",
     "manageSubscription": "Manage subscription",
     "logout": "Logout",

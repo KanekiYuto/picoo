@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   User,
@@ -21,6 +21,30 @@ export function UserButton() {
   const { user, clearUser } = useUserStore();
   const t = useTranslations("common.userMenu");
   const [isOpen, setIsOpen] = useState(false);
+  const [userPoints, setUserPoints] = useState(0);
+
+  // 获取积分信息
+  useEffect(() => {
+    const fetchCredits = async () => {
+      try {
+        const response = await fetch('/api/credit/balance');
+
+        if (!response.ok) {
+          throw new Error('Failed to fetch credits');
+        }
+
+        const data = await response.json();
+        setUserPoints(data.summary?.totalRemaining || 0);
+      } catch (error) {
+        console.error('Failed to fetch credits:', error);
+        setUserPoints(0);
+      }
+    };
+
+    if (user) {
+      fetchCredits();
+    }
+  }, [user]);
 
   // 未登录不显示
   if (!user) return null;
@@ -32,9 +56,6 @@ export function UserButton() {
   };
 
   const closeMenu = () => setIsOpen(false);
-
-  // TODO: 积分功能待实现
-  const userPoints = 100;
 
   return (
     <div className="relative">
@@ -111,7 +132,7 @@ export function UserButton() {
 
               {/* 积分和升级 */}
               <div className="p-3 border-b border-border">
-                <div className="flex items-center gap-1.5 mb-3">
+                <div className="flex items-center gap-1.5">
                   <Gem className="h-4 w-4 text-foreground" />
                   <span className="text-base font-semibold text-foreground">
                     {userPoints}
@@ -127,20 +148,12 @@ export function UserButton() {
                     <Info className="h-3.5 w-3.5 text-muted hover:text-foreground transition-colors cursor-pointer" />
                   </button>
                 </div>
-                <div className="flex gap-2">
-                  <button className="flex-1 px-3 py-2 bg-sidebar-active hover:bg-sidebar-active/80 text-xs font-medium text-foreground rounded-lg transition-colors">
-                    {t("upgrade")}
-                  </button>
-                  <button className="flex-1 px-3 py-2 bg-sidebar-hover hover:bg-sidebar-active border border-border text-xs font-medium text-foreground rounded-lg transition-colors">
-                    {t("usageAnalysis")}
-                  </button>
-                </div>
               </div>
 
               {/* 菜单项 */}
               <div className="py-2 px-2">
                 <Link
-                  href="/settings"
+                  href="/settings/profile"
                   onClick={closeMenu}
                   className="flex items-center justify-between px-3 py-2 rounded-lg text-sm text-foreground hover:bg-sidebar-hover transition-colors group"
                 >

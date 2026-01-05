@@ -1,8 +1,7 @@
 "use client";
 
-import { LoginModal, MediaPreviewModal } from "@/components/modals";
+import { LoginModal, MediaPreviewModal, LanguageModal } from "@/components/modals";
 import { PricingModal } from "@/components/modals/PricingModal";
-import { LanguageModal } from "@/components/layout/LanguageModal";
 import { GlobalGeneratorModal } from "@/components/generator";
 import { useModalStore } from "@/store/useModalStore";
 
