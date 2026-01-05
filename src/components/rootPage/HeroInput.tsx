@@ -82,7 +82,7 @@ export function HeroInput() {
                   />
                 )}
                 <ImageIcon className="relative z-10 h-4 w-4" />
-                <span className="relative z-10">{t("image")}</span>
+                <span className="relative z-10 hidden md:inline">{t("image")}</span>
               </motion.button>
               <motion.button
                 onClick={() => setSelectedType("video")}
@@ -101,7 +101,7 @@ export function HeroInput() {
                   />
                 )}
                 <Video className="relative z-10 h-4 w-4" />
-                <span className="relative z-10">{t("video")}</span>
+                <span className="relative z-10 hidden md:inline">{t("video")}</span>
               </motion.button>
             </div>
 

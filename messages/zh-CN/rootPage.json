@@ -1,4 +1,8 @@
 {
+  "seo": {
+    "title": "Picoo - AI创作，一站搞定",
+    "description": "集成Veo、Gemini等顶级AI模型，视频图像创作更快更专业。支持AI视频生成、AI图像生成，提供每日免费额度，无需信用卡即可开始创作。"
+  },
   "hero": {
     "title": {
       "prefix": "AI创作，",

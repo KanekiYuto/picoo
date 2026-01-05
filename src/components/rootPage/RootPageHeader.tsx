@@ -1,9 +1,10 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
-import { Moon, Sun } from "lucide-react";
+import { Moon, Sun, Menu, X } from "lucide-react";
 import { UserButton } from "@/components/auth/UserButton";
 import { useUserStore } from "@/stores/userStore";
 import { useThemeStore } from "@/stores/themeStore";
@@ -31,6 +32,7 @@ export function RootPageHeader({ className }: RootPageHeaderProps) {
   const { theme, toggleTheme } = useThemeStore();
   const { openLoginModal } = useModalStore();
   const { openGeneratorModal } = useGeneratorStore();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const navLinks = [
     { label: tSidebar("home"), href: "/home" },
@@ -52,22 +54,39 @@ export function RootPageHeader({ className }: RootPageHeaderProps) {
     >
       <div className="container mx-auto px-4 lg:px-6">
         <div className="h-16 flex items-center justify-between">
-          {/* 左侧：Logo 和站点名称 */}
-          <Link href="/" className="flex items-center gap-3 cursor-pointer group">
-            <div className="relative w-8 h-8 transition-transform group-hover:scale-105">
-              <Image
-                key={theme}
-                src={theme === 'light' ? siteConfig.logo.light : siteConfig.logo.dark}
-                alt={siteConfig.name}
-                fill
-                sizes="32px"
-                className="object-contain rounded-lg"
-              />
-            </div>
-            <span className="text-xl font-bold text-foreground">
-              {siteConfig.name}
-            </span>
-          </Link>
+          {/* 左侧：汉堡菜单按钮（移动端）+ Logo 和站点名称 */}
+          <div className="flex items-center gap-3">
+            {/* 汉堡菜单按钮（移动端） */}
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="md:hidden flex h-10 w-10 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground cursor-pointer"
+              aria-label="Toggle menu"
+            >
+              {mobileMenuOpen ? (
+                <X className="h-5 w-5" />
+              ) : (
+                <Menu className="h-5 w-5" />
+              )}
+            </motion.button>
+
+            <Link href="/" className="flex items-center gap-3 cursor-pointer group">
+              <div className="relative w-8 h-8 transition-transform group-hover:scale-105">
+                <Image
+                  key={theme}
+                  src={theme === 'light' ? siteConfig.logo.light : siteConfig.logo.dark}
+                  alt={`${siteConfig.name} Logo`}
+                  fill
+                  sizes="32px"
+                  className="object-contain rounded-lg"
+                />
+              </div>
+              <span className="hidden md:inline text-xl font-bold text-foreground">
+                {siteConfig.name}
+              </span>
+            </Link>
+          </div>
 
           {/* 中间：导航链接（桌面端显示） */}
           <nav className="hidden md:flex items-center gap-1">
@@ -120,6 +139,32 @@ export function RootPageHeader({ className }: RootPageHeaderProps) {
           </div>
         </div>
       </div>
+
+      {/* 移动端菜单 */}
+      <AnimatePresence>
+        {mobileMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.2 }}
+            className="md:hidden border-t border-border/50 bg-background/95 backdrop-blur-md"
+          >
+            <nav className="container mx-auto px-4 py-4 flex flex-col gap-2">
+              {navLinks.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="px-4 py-3 rounded-lg text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors cursor-pointer"
+                >
+                  {link.label}
+                </Link>
+              ))}
+            </nav>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </header>
   );
 }

@@ -79,7 +79,7 @@ export function Pricing({
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.2 }}
           viewport={{ once: true }}
-          className="flex justify-center mb-16"
+          className="flex justify-center mb-8 md:mb-12 lg:mb-16"
         >
           <div className="relative inline-flex gap-2 rounded-lg bg-muted/20 p-1">
             {billingCycles.map((cycle) => (

@@ -27,8 +27,7 @@ export default function PricingPageClient() {
             {t("header.description")}
           </p>
         </motion.div>
-
-
+        
         <Pricing />
       </div>
 

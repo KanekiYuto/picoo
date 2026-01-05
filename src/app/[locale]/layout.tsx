@@ -103,7 +103,7 @@ export default async function LocaleLayout({
   const dir = rtlLocales.includes(locale as any) ? 'rtl' : 'ltr';
 
   return (
-    <html lang={locale} dir={dir} suppressHydrationWarning translate="no">
+    <html lang={locale} dir={dir} className="dark" suppressHydrationWarning translate="no">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background text-foreground`}>
         <ThemeProvider>
           <NextIntlClientProvider locale={locale} messages={messages}>
