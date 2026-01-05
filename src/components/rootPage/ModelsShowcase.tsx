@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import { useTranslations } from "next-intl";
-import { useGeneratorStore } from "@/stores/generatorStore";
+import { useGeneratorStore } from "@/store/useGeneratorStore";
 import { requireAuth } from "@/lib/guards";
 
 /**

@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { X } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Input } from "@/components/ui/input";
-import type { User } from "@/stores/userStore";
+import type { User } from "@/store/useUserStore";
 
 interface EditProfileModalProps {
   isOpen: boolean;

@@ -3,7 +3,7 @@
 import { motion } from 'framer-motion';
 import { Check } from 'lucide-react';
 import Autoplay from 'embla-carousel-autoplay';
-import { useGeneratorStore } from '@/stores/generatorStore';
+import { useGeneratorStore } from '@/store/useGeneratorStore';
 import { Link } from '@i18n/routing';
 import { Button } from '@/components/ui/button';
 import {

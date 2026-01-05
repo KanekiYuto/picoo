@@ -5,7 +5,7 @@ import { useRouter, usePathname } from "../../../i18n/routing";
 import { locales, localeNames, type Locale } from "../../../i18n/config";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, ArrowRight } from "lucide-react";
-import { useLanguageStore } from "@/stores/languageStore";
+import { useLanguageStore } from "@/store/useLanguageStore";
 import { cn } from "@/lib/utils";
 
 /**

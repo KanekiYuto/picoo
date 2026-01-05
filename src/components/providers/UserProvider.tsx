@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { usePathname } from "next/navigation";
 import { oneTap } from "@/lib/auth-client";
 import { siteConfig } from "@/config/site";
-import { useUserStore } from "@/stores/userStore";
+import { useUserStore } from "@/store/useUserStore";
 
 export function UserProvider({ children }: { children: React.ReactNode }) {
   const { isAuthenticated, isLoading } = useUserStore();

@@ -2,9 +2,9 @@
 
 import { useState } from "react";
 import { useTranslations } from "next-intl";
-import type { User } from "@/stores/userStore";
+import type { User } from "@/store/useUserStore";
 import { EditProfileModal } from "./EditProfileModal";
-import { useUserStore } from "@/stores/userStore";
+import { useUserStore } from "@/store/useUserStore";
 
 interface UserProfileProps {
   user: User;

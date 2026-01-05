@@ -16,7 +16,7 @@ import { usePathname } from "next/navigation";
 import { useLocale } from "next-intl";
 import { useTranslations } from "next-intl";
 import { useEffect } from "react";
-import { useUserStore } from "@/stores/userStore";
+import { useUserStore } from "@/store/useUserStore";
 import Image from "next/image";
 import { siteConfig } from "@/config/site";
 

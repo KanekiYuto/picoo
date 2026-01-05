@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import { Menu, Gem, Clock, TrendingUp, Calendar } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useSettingsNav } from "../_components/SettingsNavContext";
-import { useUserStore } from "@/stores/userStore";
+import { useUserStore } from "@/store/useUserStore";
 import { getPlanInfo } from "@/lib/utils/plan";
 import { CreditsSkeleton } from "./CreditsSkeleton";
 

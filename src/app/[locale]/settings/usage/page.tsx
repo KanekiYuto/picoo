@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import { Menu, TrendingDown, Calendar, FileText, InboxIcon, ChevronLeft, ChevronRight } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useSettingsNav } from "../_components/SettingsNavContext";
-import { useUserStore } from "@/stores/userStore";
+import { useUserStore } from "@/store/useUserStore";
 import { UsageSkeleton } from "./UsageSkeleton";
 import {
   Table,

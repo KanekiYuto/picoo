@@ -1,4 +1,4 @@
-import { useUserStore } from "@/stores/userStore";
+import { useUserStore } from "@/store/useUserStore";
 import { useModalStore } from "@/store/useModalStore";
 
 /**

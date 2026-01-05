@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { useUserStore, type User } from "@/stores/userStore";
+import { useUserStore, type User } from "@/store/useUserStore";
 
 export function UserStoreProvider({
   children,

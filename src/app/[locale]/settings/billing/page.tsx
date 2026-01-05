@@ -6,7 +6,7 @@ import { useTranslations } from "next-intl";
 import { BillingInfo } from "../_components/BillingInfo";
 import { ProfileSkeleton } from "../_components/ProfileSkeleton";
 import { useSettingsNav } from "../_components/SettingsNavContext";
-import { useUserStore } from "@/stores/userStore";
+import { useUserStore } from "@/store/useUserStore";
 
 export default function BillingPage() {
   const t = useTranslations("settings.billing");

@@ -6,7 +6,7 @@ import { fadeInUp } from "@/lib/animations";
 import { Image as ImageIcon, Video, Dices } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useTranslations } from "next-intl";
-import { useGeneratorStore } from "@/stores/generatorStore";
+import { useGeneratorStore } from "@/store/useGeneratorStore";
 
 type MediaType = "image" | "video";
 

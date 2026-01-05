@@ -15,7 +15,7 @@ import { usePathname } from "next/navigation";
 import { useLocale } from "next-intl";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
-import { useThemeStore } from "@/stores/themeStore";
+import { useThemeStore } from "@/store/useThemeStore";
 
 interface NavItem {
   icon: React.ComponentType<{ className?: string }>;

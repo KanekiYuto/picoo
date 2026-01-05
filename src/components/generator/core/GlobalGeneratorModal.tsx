@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X } from "lucide-react";
-import { useGeneratorStore } from "@/stores/generatorStore";
+import { useGeneratorStore } from "@/store/useGeneratorStore";
 import { downloadImage } from "@/lib/image-utils";
 import { GlobalGenerator } from "./GlobalGenerator";
 import { UploadPanel } from "../panels/upload/UploadPanel";

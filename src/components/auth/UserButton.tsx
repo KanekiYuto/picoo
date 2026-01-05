@@ -14,7 +14,7 @@ import {
 import { signOut } from "@/lib/auth-client";
 import Link from "next/link";
 import Image from "next/image";
-import { useUserStore } from "@/stores/userStore";
+import { useUserStore } from "@/store/useUserStore";
 import { useTranslations } from "next-intl";
 
 export function UserButton() {

@@ -3,7 +3,7 @@
 import { motion } from "framer-motion";
 import { useTranslations } from "next-intl";
 import { Languages } from "lucide-react";
-import { useLanguageStore } from "@/stores/languageStore";
+import { useLanguageStore } from "@/store/useLanguageStore";
 
 /**
  * 语言切换触发按钮

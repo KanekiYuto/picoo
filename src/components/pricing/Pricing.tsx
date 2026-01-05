@@ -6,7 +6,7 @@ import { PricingCard } from "./PricingCard";
 import { createPricingPlans, createBillingCycles } from "./data";
 import { BillingCycle } from "./types";
 import { useTranslations } from "next-intl";
-import { useUserStore } from "@/stores/userStore";
+import { useUserStore } from "@/store/useUserStore";
 
 interface PricingProps {
   /** 自定义类名 */

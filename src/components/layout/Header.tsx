@@ -5,8 +5,8 @@ import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
 import { Bell, MessageSquare, Users, Menu, X, Moon, Sun } from "lucide-react";
 import { UserButton } from "@/components/auth/UserButton";
-import { useUserStore } from "@/stores/userStore";
-import { useThemeStore } from "@/stores/themeStore";
+import { useUserStore } from "@/store/useUserStore";
+import { useThemeStore } from "@/store/useThemeStore";
 import { useModalStore } from "@/store/useModalStore";
 import { LanguageSwitcher } from "./LanguageSwitcher";
 

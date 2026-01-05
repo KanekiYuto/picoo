@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import { Image as ImageIcon, Video, Dices } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useTranslations } from "next-intl";
-import { useGeneratorStore } from "@/stores/generatorStore";
+import { useGeneratorStore } from "@/store/useGeneratorStore";
 import { Textarea } from "@/components/ui/textarea";
 import { requireAuth } from "@/lib/guards";
 

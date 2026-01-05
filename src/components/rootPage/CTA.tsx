@@ -2,7 +2,7 @@
 
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
-import { useGeneratorStore } from '@/stores/generatorStore';
+import { useGeneratorStore } from '@/store/useGeneratorStore';
 import { useTranslations } from 'next-intl';
 import { Check } from 'lucide-react';
 import { requireAuth } from '@/lib/guards';

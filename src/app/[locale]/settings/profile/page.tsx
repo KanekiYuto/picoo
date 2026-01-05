@@ -6,7 +6,7 @@ import { useTranslations } from "next-intl";
 import { UserProfile } from "../_components/UserProfile";
 import { ProfileSkeleton } from "../_components/ProfileSkeleton";
 import { useSettingsNav } from "../_components/SettingsNavContext";
-import { useUserStore } from "@/stores/userStore";
+import { useUserStore } from "@/store/useUserStore";
 
 export default function ProfilePage() {
   const t = useTranslations("settings.profile");
