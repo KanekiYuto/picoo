@@ -24,7 +24,7 @@ interface NavItem {
 }
 
 const navItemsConfig: Omit<NavItem, "labelKey">[] = [
-  { icon: Home, href: "/" },
+  { icon: Home, href: "/home" },
   { icon: ImageIcon, href: "/assets" },
   { icon: Clock, href: "/history" },
   { icon: Settings, href: "/settings/profile" },

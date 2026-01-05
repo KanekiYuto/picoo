@@ -3,7 +3,6 @@
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeSlug from "rehype-slug";
-import rehypeAutolinkHeadings from "rehype-autolink-headings";
 import rehypePrism from "rehype-prism-plus";
 import { useEffect, useState } from "react";
 
@@ -63,51 +62,42 @@ export function DocumentViewer({
   }
 
   return (
-    <article className={`document-viewer prose prose-invert max-w-none ${className}`}>
-      <div className="document-content">
+    <article className={`document-viewer ${className}`}>
+      <div className="document-content space-y-4">
         <ReactMarkdown
           remarkPlugins={[remarkGfm]}
           rehypePlugins={[
             rehypeSlug,
-            [
-              rehypeAutolinkHeadings,
-              {
-                behavior: "wrap",
-                properties: {
-                  className: ["anchor-link"],
-                },
-              },
-            ],
             rehypePrism,
           ]}
           components={{
             // 自定义标题渲染
             h1: ({ node, ...props }) => (
-              <h1 className="text-4xl font-bold mt-10 mb-6 text-foreground scroll-mt-20" {...props} />
+              <h1 className="scroll-m-20 text-3xl font-semibold tracking-tight mt-8 mb-5" {...props} />
             ),
             h2: ({ node, ...props }) => (
-              <h2 className="text-3xl font-bold mt-8 mb-5 text-foreground scroll-mt-20 border-b border-muted-foreground/10 pb-3" {...props} />
+              <h2 className="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight mt-8 mb-5" {...props} />
             ),
             h3: ({ node, ...props }) => (
-              <h3 className="text-xl font-semibold mt-6 mb-3 text-muted-foreground scroll-mt-20" {...props} />
+              <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight mt-6 mb-3" {...props} />
             ),
             h4: ({ node, ...props }) => (
-              <h4 className="text-lg font-medium mt-5 mb-2 text-muted-foreground scroll-mt-20" {...props} />
+              <h4 className="scroll-m-20 text-xl font-semibold tracking-tight mt-5 mb-2" {...props} />
             ),
             // 自定义段落
-            p: ({ node, ...props }) => <p className="mb-4 leading-8 text-muted-foreground" {...props} />,
+            p: ({ node, ...props }) => <p className="leading-7 [&:not(:first-child)]:mt-6" {...props} />,
             // 自定义链接
             a: ({ node, ...props }) => (
               <a
-                className="text-primary hover:text-primary/80 underline underline-offset-2 transition-colors"
+                className="font-medium text-primary underline underline-offset-4 hover:text-primary/80 transition-colors"
                 target="_blank"
                 rel="noopener noreferrer"
                 {...props}
               />
             ),
             // 自定义列表
-            ul: ({ node, ...props }) => <ul className="list-disc list-outside mb-4 ml-6 space-y-2 text-muted-foreground" {...props} />,
-            ol: ({ node, ...props }) => <ol className="list-decimal list-outside mb-4 ml-6 space-y-2 text-muted-foreground" {...props} />,
+            ul: ({ node, ...props }) => <ul className="my-6 ml-6 list-disc [&>li]:mt-2" {...props} />,
+            ol: ({ node, ...props }) => <ol className="my-6 ml-6 list-decimal [&>li]:mt-2" {...props} />,
             li: ({ node, ...props }) => <li className="leading-7" {...props} />,
             // 自定义代码块
             code: ({ node, className, children, ...props }) => {
@@ -117,7 +107,7 @@ export function DocumentViewer({
               if (isInline) {
                 return (
                   <code
-                    className="px-2 py-1 rounded bg-muted/50 text-primary text-sm font-mono border border-muted-foreground/20"
+                    className="relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm font-semibold"
                     {...props}
                   >
                     {children}
@@ -133,32 +123,34 @@ export function DocumentViewer({
             },
             pre: ({ node, ...props }) => (
               <pre
-                className="bg-muted/30 rounded-lg p-4 overflow-x-auto mb-4 border border-muted-foreground/20"
+                className="mb-4 mt-6 overflow-x-auto rounded-lg border bg-black p-4"
                 {...props}
               />
             ),
             // 自定义引用块
             blockquote: ({ node, ...props }) => (
               <blockquote
-                className="border-l-4 border-primary/50 pl-4 italic text-muted-foreground my-6 bg-muted/20 py-2 pr-4 rounded-r"
+                className="mt-6 border-l-2 pl-6 italic"
                 {...props}
               />
             ),
             // 自定义表格
             table: ({ node, ...props }) => (
-              <div className="overflow-x-auto mb-4 rounded-lg border border-muted-foreground/20">
-                <table className="min-w-full divide-y divide-muted-foreground/20" {...props} />
+              <div className="my-6 w-full overflow-y-auto">
+                <table className="w-full" {...props} />
               </div>
             ),
-            thead: ({ node, ...props }) => <thead className="bg-muted/40" {...props} />,
-            tbody: ({ node, ...props }) => <tbody className="divide-y divide-muted-foreground/20" {...props} />,
-            tr: ({ node, ...props }) => <tr className="hover:bg-muted/20 transition-colors" {...props} />,
+            thead: ({ node, ...props }) => <thead {...props} />,
+            tbody: ({ node, ...props }) => <tbody {...props} />,
+            tr: ({ node, ...props }) => <tr className="m-0 border-t p-0 even:bg-muted" {...props} />,
             th: ({ node, ...props }) => (
-              <th className="px-4 py-3 text-left text-sm font-semibold text-foreground" {...props} />
+              <th className="border px-4 py-2 text-left font-bold [&[align=center]]:text-center [&[align=right]]:text-right" {...props} />
             ),
-            td: ({ node, ...props }) => <td className="px-4 py-3 text-sm text-muted-foreground" {...props} />,
+            td: ({ node, ...props }) => <td className="border px-4 py-2 text-left [&[align=center]]:text-center [&[align=right]]:text-right" {...props} />,
             // 自定义水平线
-            hr: ({ node, ...props }) => <hr className="my-8 border-muted-foreground/10" {...props} />,
+            hr: ({ node, ...props }) => <hr className="my-4 md:my-8" {...props} />,
+            // 加粗文本
+            strong: ({ node, ...props }) => <strong className="font-semibold" {...props} />,
           }}
         >
           {content}

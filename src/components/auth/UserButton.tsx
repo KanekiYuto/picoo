@@ -177,17 +177,17 @@ export function UserButton() {
               {/* 底部链接 */}
               <div className="p-3 border-t border-border bg-secondary/50">
                 <div className="flex items-center justify-center gap-4 text-xs text-muted-foreground">
-                  <Link href="/terms" onClick={closeMenu} className="hover:text-foreground transition-colors">
+                  <Link href="/legal/terms" onClick={closeMenu} className="hover:text-foreground transition-colors">
                     {t("terms")}
                   </Link>
                   <span>|</span>
-                  <Link href="/privacy" onClick={closeMenu} className="hover:text-foreground transition-colors">
+                  <Link href="/legal/privacy" onClick={closeMenu} className="hover:text-foreground transition-colors">
                     {t("privacy")}
                   </Link>
-                  <span>|</span>
-                  <Link href="/blog" onClick={closeMenu} className="hover:text-foreground transition-colors">
+                  {/* <span>|</span> */}
+                  {/* <Link href="/blog" onClick={closeMenu} className="hover:text-foreground transition-colors">
                     {t("blog")}
-                  </Link>
+                  </Link> */}
                 </div>
               </div>
             </motion.div>
