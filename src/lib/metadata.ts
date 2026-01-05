@@ -1,5 +1,4 @@
 import { siteConfig } from '@/config/site';
-import { defaultLocale } from '../../i18n/config';
 
 /**
  * 生成带语言前缀的路径

@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { motion } from "framer-motion";
 import { Shield } from "lucide-react";
 import {
   Tooltip,
@@ -31,7 +32,13 @@ export function PaymentIcons() {
   const t = useTranslations("pricing.payment");
 
   return (
-    <div className="text-center">
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6 }}
+      viewport={{ once: true }}
+      className="text-center"
+    >
       {/* 安全提示文字 */}
       <div className="flex items-center justify-center gap-2 mb-6">
         <Shield className="w-5 h-5 text-muted-foreground" />
@@ -75,6 +82,6 @@ export function PaymentIcons() {
           </a>
         </p>
       </div>
-    </div>
+    </motion.div>
   );
 }

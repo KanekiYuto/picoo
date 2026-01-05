@@ -14,6 +14,11 @@ interface ModalState {
   openLoginModal: () => void;
   closeLoginModal: () => void;
 
+  // 定价模态框
+  isPricingModalOpen: boolean;
+  openPricingModal: () => void;
+  closePricingModal: () => void;
+
   // 媒体预览模态框
   isMediaPreviewOpen: boolean;
   mediaPreviewItems: MediaItem[];
@@ -30,6 +35,11 @@ export const useModalStore = create<ModalState>((set) => ({
   isLoginModalOpen: false,
   openLoginModal: () => set({ isLoginModalOpen: true }),
   closeLoginModal: () => set({ isLoginModalOpen: false }),
+
+  // 定价模态框
+  isPricingModalOpen: false,
+  openPricingModal: () => set({ isPricingModalOpen: true }),
+  closePricingModal: () => set({ isPricingModalOpen: false }),
 
   // 媒体预览模态框
   isMediaPreviewOpen: false,

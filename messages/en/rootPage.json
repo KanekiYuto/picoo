@@ -1,0 +1,37 @@
+{
+  "hero": {
+    "title": {
+      "prefix": "AI Creation, ",
+      "highlight": "All in One"
+    },
+    "description": "Integrated with top AI models like <models>Veo, Gemini</models>, faster and more professional video and image creation"
+  },
+  "modelsShowcase": {
+    "title": {
+      "line1": "ALL the Great AI Video & Image",
+      "line2": "Models in ONE Place!"
+    },
+    "video": {
+      "title": "AI Video Generators",
+      "description": "All top video models integrated in one place",
+      "buttonText": "AI Video Generator"
+    },
+    "image": {
+      "title": "AI Image Generators",
+      "description": "Leading image models all in one",
+      "buttonText": "AI Image Generator"
+    }
+  },
+  "cta": {
+    "title": "Start Your AI Creation Journey",
+    "description": "Create your first masterpiece in 30 seconds. No credit card required",
+    "primaryButton": "Get Started Free",
+    "secondaryButton": "View Pricing",
+    "features": {
+      "free": "Daily free quota",
+      "noCard": "No credit card required",
+      "instant": "Start creating instantly"
+    },
+    "footer": "Cancel anytime · No hidden fees"
+  }
+}

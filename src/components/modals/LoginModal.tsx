@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Loader2 } from "lucide-react";
 import { useTranslations } from "next-intl";
@@ -18,6 +19,19 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
   const [loadingProvider, setLoadingProvider] = useState<"google" | "github" | null>(null);
   const pathname = usePathname();
 
+  // 禁用/启用 body 滚动
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isOpen]);
+
   const handleSocialSignIn = async (provider: "google" | "github") => {
     try {
       setLoadingProvider(provider);
@@ -32,7 +46,7 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
     }
   };
 
-  return (
+  return typeof window !== 'undefined' ? createPortal(
     <AnimatePresence>
       {isOpen && (
         <>
@@ -52,7 +66,7 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
               transition={{ type: "spring", duration: 0.5 }}
-              className="relative w-full max-w-md rounded-2xl bg-card border border-border p-8 shadow-2xl"
+              className="relative w-full max-w-md rounded-2xl bg-background border border-border p-8 shadow-2xl"
             >
               {/* 关闭按钮 */}
               <button
@@ -204,6 +218,7 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
           </div>
         </>
       )}
-    </AnimatePresence>
-  );
+    </AnimatePresence>,
+    document.body
+  ) : null;
 }

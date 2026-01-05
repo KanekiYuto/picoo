@@ -1,0 +1,37 @@
+{
+  "hero": {
+    "title": {
+      "prefix": "AI创作，",
+      "highlight": "一站搞定"
+    },
+    "description": "集成<models>Veo、Gemini</models>等顶级AI模型，视频图像创作更快更专业"
+  },
+  "modelsShowcase": {
+    "title": {
+      "line1": "所有顶级AI视频和图像",
+      "line2": "模型，尽在一处！"
+    },
+    "video": {
+      "title": "AI 视频生成器",
+      "description": "一站集成所有顶级视频模型",
+      "buttonText": "AI 视频生成器"
+    },
+    "image": {
+      "title": "AI 图像生成器",
+      "description": "领先的图像模型一应俱全",
+      "buttonText": "AI 图像生成器"
+    }
+  },
+  "cta": {
+    "title": "开启你的AI创作之旅",
+    "description": "30秒完成首个作品，无需信用卡，立即开始",
+    "primaryButton": "免费开始",
+    "secondaryButton": "查看定价",
+    "features": {
+      "free": "每日免费额度",
+      "noCard": "无需信用卡",
+      "instant": "即刻开始创作"
+    },
+    "footer": "随时取消 · 无隐藏费用"
+  }
+}

@@ -15,7 +15,10 @@ export const siteConfig = {
   tagline: "AI. Powering Limitless Creativity.",
 
   // Logo 路径
-  logo: "/dark-logo.webp",
+  logo: {
+    light: "/light-logo.webp",
+    dark: "/dark-logo.webp",
+  },
 
   // Favicon 路径
   favicon: "/favicon.ico",

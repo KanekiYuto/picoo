@@ -71,24 +71,20 @@ export function Pricing({
   const savePercent = currentCycle?.savePercent || 0;
 
   return (
-    <div className={`py-16 px-4 md:px-6 lg:px-8 ${className}`}>
+    <div className={`${className}`}>
       <div className="container mx-auto">
-        {/* 标题部分 */}
-        <div className="text-center mb-12">
-          <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
-            {t("header.title")}
-          </h1>
-          <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            {t("header.description")}
-          </p>
-        </div>
-
         {/* 计费周期切换器 */}
-        <div className="flex justify-center mb-16">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+          viewport={{ once: true }}
+          className="flex justify-center mb-16"
+        >
           <div className="relative inline-flex gap-2 rounded-lg bg-muted/20 p-1">
             {billingCycles.map((cycle) => (
               <motion.button
-                key={cycle.id}
+                key={cycle.id} 
                 onClick={() => setBillingCycle(cycle.id)}
                 className={`
                   relative px-8 py-2.5 rounded-md font-medium text-sm
@@ -119,11 +115,17 @@ export function Pricing({
               </motion.button>
             ))}
           </div>
-        </div>
+        </motion.div>
       </div>
 
       {/* 定价卡片网格和底部说明 - 共享背景色 */}
-      <div className="w-full bg-muted/20 p-4 rounded-2xl">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, delay: 0.4 }}
+        viewport={{ once: true }}
+        className="w-full bg-muted/20 p-4 rounded-2xl"
+      >
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 2xl:grid-cols-4 gap-6 mb-6">
           {pricingPlans.map((plan) => (
             <PricingCard
@@ -143,7 +145,7 @@ export function Pricing({
             {t("footer.guarantee")}
           </p>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 }

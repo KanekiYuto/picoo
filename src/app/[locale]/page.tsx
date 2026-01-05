@@ -1,23 +1,30 @@
-import type { Metadata } from 'next';
-import { generateAlternates } from '@/lib/metadata';
-import { getTranslations } from 'next-intl/server';
-import { HeroSection } from '@/components/home/HeroSection';
+'use client';
 
-export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
-  const { locale } = await params;
-  const t = await getTranslations({ locale, namespace: 'home' });
-
-  return {
-    title: t('seo.title'),
-    description: t('seo.description'),
-    alternates: generateAlternates(locale, '/'),
-  };
-}
+import { Hero } from '@/components/rootPage/Hero';
+import { ModelsShowcase } from '@/components/rootPage/ModelsShowcase';
+import { CTA } from '@/components/rootPage/CTA';
+import { Pricing } from '@/components/pricing/Pricing';
+import { Footer } from '@/components/layout';
+import { RootPageHeader } from '@/components/rootPage/RootPageHeader';
 
 export default function Home() {
   return (
-    <div className="space-y-12 md:space-y-16 py-8 md:py-12">
-      <HeroSection />
-    </div>
+    <>
+      {/* Fixed Header */}
+      <RootPageHeader />
+
+      <Hero />
+
+      {/* Main Content */}
+      <div className="flex flex-col gap-16 md:gap-32 lg:gap-48">
+        <ModelsShowcase />
+        <div className='px-4 md:px-6 lg:px-8'>
+          <Pricing />
+        </div>
+        <CTA />
+        <Footer />
+      </div>
+    </>
   );
 }
+

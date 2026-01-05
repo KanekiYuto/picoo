@@ -15,6 +15,7 @@ import { usePathname } from "next/navigation";
 import { useLocale } from "next-intl";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
+import { useThemeStore } from "@/stores/themeStore";
 
 interface NavItem {
   icon: React.ComponentType<{ className?: string }>;
@@ -41,6 +42,7 @@ export function Sidebar({ className }: SidebarProps) {
   const pathname = usePathname();
   const locale = useLocale();
   const t = useTranslations("sidebar");
+  const { theme } = useThemeStore();
 
   const navItems: NavItem[] = [
     { ...navItemsConfig[0], labelKey: t("home") },
@@ -80,7 +82,7 @@ export function Sidebar({ className }: SidebarProps) {
       <Link href="/" className="flex h-16 items-center justify-center">
         <div className="relative h-10 w-10 overflow-hidden rounded-lg">
           <Image
-            src={siteConfig.logo}
+            src={theme === 'light' ? siteConfig.logo.light : siteConfig.logo.dark}
             alt={`${siteConfig.name} Logo`}
             width={40}
             height={40}

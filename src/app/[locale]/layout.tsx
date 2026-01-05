@@ -1,6 +1,5 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import { AppLayout } from "@/components/layout";
 import { siteConfig } from "@/config/site";
 import { UserProvider } from "@/components/providers/UserProvider";
 import { UserStoreProvider } from "@/components/providers/UserStoreProvider";
@@ -9,9 +8,10 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { ModalProvider } from "@/components/providers/ModalProvider";
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, setRequestLocale } from 'next-intl/server';
-import { routing } from '../../../i18n/routing';
-import { rtlLocales } from '../../../i18n/config';
+import { routing } from '@i18n/routing';
+import { rtlLocales } from '@i18n/config';
 import { Toaster } from "sonner";
+import { LayoutWrapper } from "./LayoutWrapper";
 import "../globals.css";
 
 const geistSans = Geist({
@@ -73,12 +73,13 @@ export const metadata: Metadata = {
       follow: true,
     },
   },
-  viewport: {
-    width: "device-width",
-    initialScale: 1,
-    maximumScale: 5,
-    userScalable: true,
-  },
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+  userScalable: true,
 };
 
 export function generateStaticParams() {
@@ -109,11 +110,11 @@ export default async function LocaleLayout({
             <UserProvider>
               <UserStoreProvider>
                 <TooltipProvider>
-                  <AppLayout>{children}</AppLayout>
+                  <LayoutWrapper>{children}</LayoutWrapper>
+                  <ModalProvider />
                 </TooltipProvider>
               </UserStoreProvider>
             </UserProvider>
-            <ModalProvider />
           </NextIntlClientProvider>
           <Toaster position="top-center" richColors />
         </ThemeProvider>

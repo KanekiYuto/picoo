@@ -76,14 +76,26 @@ export function PricingFAQ() {
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-16">
           {/* 左侧标题 */}
-          <div className="lg:col-span-4 mb-2 lg:mb-0">
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.6 }}
+            viewport={{ once: true }}
+            className="lg:col-span-4 mb-2 lg:mb-0"
+          >
             <h2 className="text-2xl sm:text-3xl lg:text-5xl font-bold text-foreground leading-tight">
               {t("title")}
             </h2>
-          </div>
+          </motion.div>
 
           {/* 右侧FAQ列表 */}
-          <div className="lg:col-span-8">
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            viewport={{ once: true }}
+            className="lg:col-span-8"
+          >
             <div className="space-y-0">
               {faqItems.map((faq, index) => (
                 <FAQItemComponent
@@ -94,7 +106,7 @@ export function PricingFAQ() {
                 />
               ))}
             </div>
-          </div>
+          </motion.div>
         </div>
       </div>
     </div>
