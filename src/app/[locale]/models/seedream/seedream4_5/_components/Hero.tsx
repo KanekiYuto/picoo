@@ -99,6 +99,7 @@ export default function Hero({ title, description, images, features = [], primar
                       className="object-cover"
                       sizes="(max-width: 768px) 100vw, 50vw"
                       priority={index === 0}
+                      fetchPriority={index === 0 ? 'high' : 'auto'}
                     />
                   </div>
                 </CarouselItem>

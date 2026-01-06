@@ -96,20 +96,9 @@ export default async function LocaleLayout({
 }) {
   const { locale } = await params;
 
-  // 只加载布局层级需要的翻译命名空间
   const messages = await getMessages({
     locale,
   });
-
-  // 只传递布局相关的翻译
-  const layoutMessages = {
-    common: messages.common,
-    header: messages.header,
-    footer: messages.footer,
-    sidebar: messages.sidebar,
-    auth: messages.auth,
-    layout: messages.layout,
-  };
 
   const dir = rtlLocales.includes(locale as any) ? 'rtl' : 'ltr';
 
@@ -126,7 +115,7 @@ export default async function LocaleLayout({
           `}
         </Script>
         <ThemeProvider>
-          <NextIntlClientProvider locale={locale} messages={layoutMessages}>
+          <NextIntlClientProvider locale={locale} messages={messages}>
             <UserProvider>
               <UserStoreProvider>
                 <TooltipProvider>

@@ -2,11 +2,21 @@ import type { Metadata } from 'next';
 import { generateAlternates } from '@/lib/metadata';
 import { getTranslations } from 'next-intl/server';
 import { Suspense } from 'react';
+import dynamicImport from 'next/dynamic';
 import Hero from './_components/Hero';
-import Why from './_components/Why';
-import How from './_components/How';
-import FAQ from './_components/FAQ';
-import CTA from './_components/CTA';
+
+const Why = dynamicImport(() => import('./_components/Why'), {
+  loading: () => <div className="h-screen" />,
+});
+const How = dynamicImport(() => import('./_components/How'), {
+  loading: () => <div className="h-96" />,
+});
+const FAQ = dynamicImport(() => import('./_components/FAQ'), {
+  loading: () => <div className="h-96" />,
+});
+const CTA = dynamicImport(() => import('./_components/CTA'), {
+  loading: () => <div className="h-96" />,
+});
 
 export const dynamic = 'force-static';
 export const revalidate = 3600;
@@ -48,12 +58,8 @@ export default async function SeedreamPage({ params }: { params: Promise<{ local
       </div>
       <Why />
       <How />
-      <Suspense fallback={<div className="h-96" />}>
-        <FAQ />
-      </Suspense>
-      <Suspense fallback={<div className="h-96" />}>
-        <CTA />
-      </Suspense>
+      <FAQ />
+      <CTA />
     </>
   );
 }
