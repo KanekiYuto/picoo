@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import Script from "next/script";
 import { siteConfig } from "@/config/site";
 import { UserProvider } from "@/components/providers/UserProvider";
 import { UserStoreProvider } from "@/components/providers/UserStoreProvider";
@@ -105,6 +106,15 @@ export default async function LocaleLayout({
   return (
     <html lang={locale} dir={dir} className="dark" suppressHydrationWarning translate="no">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background text-foreground`}>
+        <Script src="https://www.googletagmanager.com/gtag/js?id=G-QTDWD789PQ" strategy="afterInteractive" />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-QTDWD789PQ');
+          `}
+        </Script>
         <ThemeProvider>
           <NextIntlClientProvider locale={locale} messages={messages}>
             <UserProvider>
