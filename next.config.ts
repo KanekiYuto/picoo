@@ -12,6 +12,14 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  compiler: {
+    removeConsole: process.env.NODE_ENV === 'production',
+  },
+  experimental: {
+    optimizePackageImports: ['framer-motion', 'lucide-react'],
+  },
+  // 使用现代 JavaScript
+  swcMinify: true,
 };
 
 export default withNextIntl(nextConfig);
