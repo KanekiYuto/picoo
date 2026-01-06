@@ -18,8 +18,6 @@ const nextConfig: NextConfig = {
   experimental: {
     optimizePackageImports: ['framer-motion', 'lucide-react'],
   },
-  // 使用现代 JavaScript
-  swcMinify: true,
 };
 
 export default withNextIntl(nextConfig);
