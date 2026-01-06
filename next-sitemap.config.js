@@ -49,29 +49,11 @@ module.exports = {
       return null;
     }
 
-    // 所有语言版本都包含语言前缀
-    const alternateRefs = locales.map((lang) => {
-      const langHref = baseRoute ? `${process.env.NEXT_PUBLIC_SITE_URL}/${lang}/${baseRoute}` : `${process.env.NEXT_PUBLIC_SITE_URL}/${lang}`;
-
-      return {
-        href: langHref,
-        hreflang: lang,
-      };
-    });
-
-    // x-default 指向不带语言前缀的路径
-    const defaultHref = baseRoute ? `${process.env.NEXT_PUBLIC_SITE_URL}/${baseRoute}` : process.env.NEXT_PUBLIC_SITE_URL;
-    alternateRefs.push({
-      href: defaultHref,
-      hreflang: 'x-default',
-    });
-
     return {
       loc: path,
       changefreq: path === '/' || path === '' ? 'daily' : 'weekly',
       priority: path === '/' || path === '' ? 1.0 : 0.7,
-      lastmod: new Date().toISOString(),
-      alternateRefs,
+      lastmod: new Date().toISOString()
     };
   },
 
