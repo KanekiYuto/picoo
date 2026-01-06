@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion';
 import { Check } from 'lucide-react';
+import Image from 'next/image';
 import Autoplay from 'embla-carousel-autoplay';
 import { useGeneratorStore } from '@/store/useGeneratorStore';
 import { Link } from '@i18n/routing';
@@ -90,11 +91,14 @@ export default function Hero({ title, description, images, features = [], primar
             <CarouselContent>
               {images.map((image, index) => (
                 <CarouselItem key={index}>
-                  <div className="aspect-video rounded-2xl overflow-hidden bg-gray-200 dark:bg-gray-800 shadow-lg">
-                    <img
+                  <div className="aspect-video rounded-2xl overflow-hidden bg-gray-200 dark:bg-gray-800 shadow-lg relative">
+                    <Image
                       src={image}
                       alt={`Image ${index + 1}`}
-                      className="w-full h-full object-cover"
+                      fill
+                      className="object-cover"
+                      sizes="(max-width: 768px) 100vw, 50vw"
+                      priority={index === 0}
                     />
                   </div>
                 </CarouselItem>
