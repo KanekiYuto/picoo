@@ -66,7 +66,8 @@ export async function proxy(request: NextRequest) {
 export const config = {
   matcher: [
     // i18n 路由
-    '/((?!_next|_vercel|\\.well-known|.*\\.[a-zA-Z0-9]+$|api).*)',
+    '/',
+    '/((?!_next/static|_next/image|_vercel|\\.well-known|api/|.*\\..*).+)',
     // 受保护的 API 路由
     '/api/asset',
     '/api/asset/:path*',
