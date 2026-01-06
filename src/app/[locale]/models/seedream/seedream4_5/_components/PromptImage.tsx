@@ -16,13 +16,14 @@ export default function PromptImage({ image, prompt, alt}: PromptImageProps) {
       whileInView={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
       viewport={{ once: true }}
-      className="relative w-full rounded-xl overflow-hidden group cursor-pointer aspect-video"
+      className="relative w-full rounded-xl overflow-hidden group cursor-pointer"
     >
       <Image
         src={image}
         alt={alt || ''}
-        fill
-        className="object-cover"
+        width={1280}
+        height={720}
+        className="object-cover w-full h-auto"
         sizes="(max-width: 768px) 100vw, 50vw"
         loading="lazy"
       />
