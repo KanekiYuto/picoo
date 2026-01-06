@@ -4,10 +4,9 @@ last 1 chrome version
 last 1 firefox version
 last 1 safari version
 
-# 生产环境 - 现代浏览器
+# 生产环境 - 只支持现代浏览器（支持 ES2022+）
 [production]
-> 0.5%
-last 2 versions
-not dead
-not IE 11
-not op_mini all
+chrome >= 94
+firefox >= 93
+safari >= 15
+edge >= 94

@@ -30,13 +30,8 @@ export default function Hero({ title, description, images, features = [], primar
 
   return (
     <div className="flex flex-col md:grid md:grid-cols-4 gap-8 lg:gap-16 items-center py-12 md:py-20">
-      {/* 左侧文本 */}
-      <motion.div
-        initial={{ opacity: 0, x: -20 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.6 }}
-        className="space-y-6 md:col-span-2"
-      >
+      {/* 左侧文本 - 移除动画以优化 LCP */}
+      <div className="space-y-6 md:col-span-2">
         <div>
           <h1 className="text-5xl md:text-6xl font-bold text-gradient-primary">
             {title}
@@ -67,7 +62,7 @@ export default function Hero({ title, description, images, features = [], primar
             </Link>
           </Button>
         </div>
-      </motion.div>
+      </div>
 
       {/* 右侧轮播图 */}
       <motion.div
