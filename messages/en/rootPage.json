@@ -26,6 +26,36 @@
       "buttonText": "AI Image Generator"
     }
   },
+  "faq": {
+    "title": "Frequently Asked Questions",
+    "subtitle": "Everything you need to know about our AI creation platform",
+    "items": {
+      "0": {
+        "question": "What is Picoo?",
+        "answer": "Picoo is an all-in-one AI creation platform that integrates top AI models like Veo and Gemini. We provide professional AI video generation and image generation services, making AI creation accessible to everyone."
+      },
+      "1": {
+        "question": "Is there a free trial?",
+        "answer": "Yes! We offer daily free quota for all users. You can start creating immediately without a credit card. No hidden fees or commitments required."
+      },
+      "2": {
+        "question": "Which AI models do you support?",
+        "answer": "We integrate leading AI models including Veo for video generation, Gemini for advanced AI capabilities, and various image generation models. We continuously add new models to provide the best creation experience."
+      },
+      "3": {
+        "question": "How long does it take to generate content?",
+        "answer": "Generation time varies by model and content type. Image generation typically takes 10-30 seconds, while video generation may take 1-5 minutes depending on length and complexity."
+      },
+      "4": {
+        "question": "Can I use generated content commercially?",
+        "answer": "Yes, content generated on our paid plans can be used for commercial purposes. Please check our Terms of Service for specific usage rights and licensing details."
+      },
+      "5": {
+        "question": "What payment methods do you accept?",
+        "answer": "We accept all major credit cards, debit cards, and various online payment methods. Your payment information is securely processed through industry-standard encryption."
+      }
+    }
+  },
   "cta": {
     "title": "Start Your AI Creation Journey",
     "description": "Create your first masterpiece in 30 seconds. No credit card required",

@@ -3,6 +3,7 @@ import { generateAlternates } from '@/lib/metadata';
 import { getTranslations } from 'next-intl/server';
 import { Hero } from '@/components/rootPage/Hero';
 import { ModelsShowcase } from '@/components/rootPage/ModelsShowcase';
+import { FAQ } from '@/components/rootPage/FAQ';
 import { CTA } from '@/components/rootPage/CTA';
 import { Pricing } from '@/components/pricing/Pricing';
 import { PricingHeader } from '@/components/pricing/PricingHeader';
@@ -35,6 +36,7 @@ export default function Home() {
           <PricingHeader />
           <Pricing />
         </div>
+        <FAQ />
         <CTA />
         <Footer />
       </div>
