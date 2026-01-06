@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "pnpm merge:messages && next build && next-sitemap",
-    "analyze": "cross-env ANALYZE=true pnpm merge:messages && next build",
+    "analyze": "set ANALYZE=true&& pnpm merge:messages && next build --webpack",
     "sitemap": "next-sitemap",
     "start": "next start",
     "lint": "eslint",

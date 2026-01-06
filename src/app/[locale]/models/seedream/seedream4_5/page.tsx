@@ -1,7 +1,6 @@
 import type { Metadata } from 'next';
 import { generateAlternates } from '@/lib/metadata';
 import { getTranslations } from 'next-intl/server';
-import { Suspense } from 'react';
 import dynamicImport from 'next/dynamic';
 import Hero from './_components/Hero';
 
