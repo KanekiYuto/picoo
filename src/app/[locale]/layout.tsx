@@ -8,7 +8,7 @@ import { ThemeProvider } from "@/components/providers/ThemeProvider";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { ModalProvider } from "@/components/providers/ModalProvider";
 import { NextIntlClientProvider } from 'next-intl';
-import { getMessages, setRequestLocale } from 'next-intl/server';
+import { getMessages } from 'next-intl/server';
 import { routing } from '@i18n/routing';
 import { rtlLocales } from '@i18n/config';
 import { Toaster } from "sonner";
@@ -96,11 +96,21 @@ export default async function LocaleLayout({
 }) {
   const { locale } = await params;
 
-  // 设置请求的 locale（这会影响 HTML lang 属性）
-  setRequestLocale(locale);
+  // 只加载布局层级需要的翻译命名空间
+  const messages = await getMessages({
+    locale,
+  });
 
-  // 获取当前语言的翻译消息
-  const messages = await getMessages();
+  // 只传递布局相关的翻译
+  const layoutMessages = {
+    common: messages.common,
+    header: messages.header,
+    footer: messages.footer,
+    sidebar: messages.sidebar,
+    auth: messages.auth,
+    layout: messages.layout,
+  };
+
   const dir = rtlLocales.includes(locale as any) ? 'rtl' : 'ltr';
 
   return (
@@ -116,7 +126,7 @@ export default async function LocaleLayout({
           `}
         </Script>
         <ThemeProvider>
-          <NextIntlClientProvider locale={locale} messages={messages}>
+          <NextIntlClientProvider locale={locale} messages={layoutMessages}>
             <UserProvider>
               <UserStoreProvider>
                 <TooltipProvider>
