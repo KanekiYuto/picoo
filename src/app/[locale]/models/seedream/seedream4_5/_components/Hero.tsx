@@ -1,6 +1,5 @@
 import { Check } from 'lucide-react';
 import HeroActions from './HeroActions';
-import HeroCarousel from './HeroCarousel';
 
 interface HeroProps {
   title: string;
@@ -13,6 +12,8 @@ interface HeroProps {
 }
 
 export default function Hero({ title, description, images, features = [], primaryCta, secondaryCta, noImages }: HeroProps) {
+  const firstImage = images[0];
+
   return (
     <div className="flex flex-col md:grid md:grid-cols-4 gap-8 lg:gap-16 items-center py-12 md:py-20">
       {/* 左侧文本 - 服务端渲染以优化 LCP */}
@@ -42,8 +43,27 @@ export default function Hero({ title, description, images, features = [], primar
         )}
       </div>
 
-      {/* 右侧轮播图 */}
-      <HeroCarousel images={images} noImages={noImages || ''} />
+      {/* 右侧图片 - 使用原生 img 标签优化 LCP */}
+      <div className="w-full md:col-span-2 overflow-hidden">
+        {firstImage ? (
+          <div className="aspect-video rounded-2xl overflow-hidden bg-gray-200 dark:bg-gray-800 shadow-lg">
+            <img
+              src={firstImage}
+              alt="Hero image"
+              width="1920"
+              height="1080"
+              className="w-full h-full object-cover"
+              loading="eager"
+              fetchPriority="high"
+              decoding="async"
+            />
+          </div>
+        ) : (
+          <div className="aspect-video rounded-2xl bg-gray-200 dark:bg-gray-800 flex items-center justify-center text-gray-400 shadow-lg">
+            {noImages}
+          </div>
+        )}
+      </div>
     </div>
   );
 }

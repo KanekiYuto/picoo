@@ -1,10 +1,7 @@
-"use client";
-
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeSlug from "rehype-slug";
 import rehypePrism from "rehype-prism-plus";
-import { useEffect, useState } from "react";
 
 interface DocumentViewerProps {
   /** Markdown 内容 */
@@ -13,54 +10,16 @@ interface DocumentViewerProps {
   showToc?: boolean;
   /** 自定义类名 */
   className?: string;
-  /** 标题点击回调 */
-  onHeadingClick?: (id: string) => void;
 }
 
 /**
- * 文档查看器组件
+ * 文档查看器组件 - 服务端渲染
  * 用于渲染和展示 Markdown 格式的文档内容
  */
 export function DocumentViewer({
   content,
-  showToc = false,
   className = "",
-  onHeadingClick,
 }: DocumentViewerProps) {
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  // 处理标题点击
-  useEffect(() => {
-    if (!mounted || !onHeadingClick) return;
-
-    const handleClick = (e: MouseEvent) => {
-      const target = e.target as HTMLElement;
-      const heading = target.closest("h1, h2, h3, h4, h5, h6");
-      if (heading?.id) {
-        onHeadingClick(heading.id);
-      }
-    };
-
-    document.addEventListener("click", handleClick);
-    return () => document.removeEventListener("click", handleClick);
-  }, [mounted, onHeadingClick]);
-
-  if (!mounted) {
-    return (
-      <div className={`document-viewer ${className}`}>
-        <div className="animate-pulse">
-          <div className="h-8 bg-gray-700 rounded w-3/4 mb-4"></div>
-          <div className="h-4 bg-gray-700 rounded w-full mb-2"></div>
-          <div className="h-4 bg-gray-700 rounded w-5/6"></div>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <article className={`document-viewer ${className}`}>
       <div className="document-content space-y-4">
@@ -92,8 +51,7 @@ export function DocumentViewer({
                 className="font-medium text-primary underline underline-offset-4 hover:text-primary/80 transition-colors"
                 target="_blank"
                 rel="noopener noreferrer"
-                {...props}
-              />
+                {...props} />
             ),
             // 自定义列表
             ul: ({ node, ...props }) => <ul className="my-6 ml-6 list-disc [&>li]:mt-2" {...props} />,

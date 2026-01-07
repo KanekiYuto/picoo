@@ -1,5 +1,3 @@
-"use client";
-
 import { DocumentViewer } from "./DocumentViewer";
 
 interface DocumentLayoutProps {
@@ -12,7 +10,7 @@ interface DocumentLayoutProps {
 }
 
 /**
- * 文档布局组件
+ * 文档布局组件 - 服务端渲染
  * 提供完整的文档阅读体验
  */
 export function DocumentLayout({
