@@ -5,7 +5,6 @@
   "model": "Model",
   "aspectRatio": "Aspect Ratio",
   "version": "Version",
-  "noImageRequired": "No image required",
   "uploadPanel": {
     "title": "Add image",
     "clickToUpload": "Click to upload",
@@ -14,62 +13,18 @@
     "uploads": "Uploads",
     "personalized": "Personalized",
     "recentUploads": "Recent Uploads",
-    "personalize": "Personalize",
-    "noRecentUploads": "No recent uploads yet",
-    "clickToAdd": "Click to add",
-    "selected": "Selected",
-    "close": "Close",
-    "clearImage": "Clear Image"
-  },
-  "modes": {
-    "prompt": "Prompt",
-    "promptDesc": "Use the elements of an image",
-    "upscale": "Upscale",
-    "upscaleDesc": "Upscale your assets",
-    "edit": "Edit",
-    "editDesc": "Edit using reference image",
-    "removeWatermark": "Remove Watermark",
-    "removeWatermarkDesc": "Remove watermarks from images",
-    "changeBackground": "Change Background",
-    "changeBackgroundDesc": "Change image background",
-    "aiFaceSwap": "AI Face Swap",
-    "aiFaceSwapDesc": "Swap faces with AI"
-  },
-  "resultPanel": {
-    "error": "Generation failed",
-    "download": "Download",
-    "regenerate": "Regenerate",
-    "close": "Close",
-    "requestInProgress": "Generating...",
-    "loadingImage": "Loading image...",
-    "delete": "Delete"
-  },
-  "mobileImagePanel": {
-    "title": "Manage Images"
-  },
-  "common": {
-    "credits": "credits",
-    "createWithCredits": "Create({credits}credits)"
+    "personalize": "Personalize"
   },
   "settingsPanel": {
     "title": "Settings",
     "selectModel": "Select model",
-    "aspectRatio": "Aspect Ratio",
+    "imageSize": "Image size",
     "reset": "Reset",
     "variations": "Variations",
     "moreOptions": "More options",
     "visibility": "Visibility",
     "public": "Public",
     "private": "Private",
-    "close": "Close",
-    "formFields": {
-      "size": "Size",
-      "quality": "Quality",
-      "outputFormat": "Output Format",
-      "background": "Background",
-      "resolution": "Resolution",
-      "imageFormat": "Image Format"
-    },
     "features": {
       "fast": "Fast",
       "highQuality": "High Quality",
@@ -103,14 +58,7 @@
       "flux-1-1-ultra": "Ultra high-definition model for detailed and precise outputs",
       "chatgpt": "Classic reliable model with proven stability",
       "nano-banana": "Simple and fast model for everyday use",
-      "imagen-4": "Advanced Google-powered model with cutting-edge technology",
-      "upscale": "Professional-grade upscaling model providing high-quality image enhancement",
-      "edit-image": "Model optimized for image editing with fine-grained control support",
-      "remove-watermark": "Professional watermark removal model that preserves image quality"
+      "imagen-4": "Advanced Google-powered model with cutting-edge technology"
     }
-  },
-  "modeSelector": {
-    "close": "Close",
-    "mode": "Mode"
   }
 }

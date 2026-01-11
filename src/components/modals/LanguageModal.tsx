@@ -5,7 +5,7 @@ import { useRouter, usePathname } from "../../../i18n/routing";
 import { locales, localeNames, type Locale } from "../../../i18n/config";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, ArrowRight } from "lucide-react";
-import { useLanguageStore } from "@/store/useLanguageStore";
+import { useLanguageStore } from "@/stores/languageStore";
 import { cn } from "@/lib/utils";
 
 /**
@@ -33,7 +33,7 @@ export function LanguageModal() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={closeLanguageModal}
-            className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm"
+            className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm"
           />
 
           {/* 模态框内容 */}
@@ -42,7 +42,7 @@ export function LanguageModal() {
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              className="relative w-full max-w-md rounded-2xl bg-background p-6 shadow-2xl border border-border"
+              className="relative w-full max-w-md rounded-2xl border border-border bg-card p-6 shadow-2xl"
             >
               {/* 头部 */}
               <div className="mb-6 flex items-center justify-between">
@@ -51,7 +51,7 @@ export function LanguageModal() {
                 </h2>
                 <motion.button
                   onClick={closeLanguageModal}
-                  className="flex h-8 w-8 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground cursor-pointer"
+                  className="flex h-8 w-8 items-center justify-center rounded-full text-muted transition-colors hover:bg-sidebar-hover hover:text-foreground"
                   aria-label={t("close")}
                 >
                   <X className="h-5 w-5" />
@@ -68,8 +68,8 @@ export function LanguageModal() {
                       "group w-full rounded-xl px-4 py-3 text-left relative border-2 cursor-pointer",
                       "transition-all duration-300 ease-out",
                       locale === loc
-                        ? "bg-foreground text-background border-foreground font-medium"
-                        : "border-border bg-background text-muted-foreground hover:border-foreground hover:text-foreground hover:bg-secondary"
+                        ? "bg-white text-black border-white font-medium"
+                        : "border-transparent bg-sidebar-hover text-muted hover:!border-white hover:text-white"
                     )}
                   >
                     <div className="flex items-center justify-between">
@@ -78,10 +78,10 @@ export function LanguageModal() {
                         <motion.div
                           initial={{ scale: 0 }}
                           animate={{ scale: 1 }}
-                          className="flex h-6 w-6 items-center justify-center rounded-full bg-background"
+                          className="flex h-6 w-6 items-center justify-center rounded-full bg-black"
                         >
                           <svg
-                            className="h-4 w-4 text-foreground"
+                            className="h-4 w-4 text-white"
                             fill="none"
                             viewBox="0 0 24 24"
                             stroke="currentColor"

@@ -2,45 +2,5 @@
   "languageModal": {
     "title": "选择语言",
     "close": "关闭"
-  },
-  "userMenu": {
-    "points": "剩余积分",
-    "pointsDetails": "查看积分明细",
-    "settings": "设置",
-    "manageSubscription": "管理订阅",
-    "logout": "注销",
-    "terms": "条款",
-    "privacy": "隐私",
-    "blog": "博客"
-  },
-  "plans": {
-    "free": "免费",
-    "basic": "基础",
-    "plus": "进阶",
-    "pro": "专业",
-    "monthly_basic": "基础 - 月度",
-    "yearly_basic": "基础 - 年度",
-    "monthly_plus": "进阶 - 月度",
-    "yearly_plus": "进阶 - 年度",
-    "monthly_pro": "专业 - 月度",
-    "yearly_pro": "专业 - 年度"
-  },
-  "download": {
-    "success": "下载成功",
-    "error": "下载失败",
-    "filesSuccess": "成功下载 {count} 个文件",
-    "filesError": "下载 {count} 个文件失败"
-  },
-  "mediaPreviewModal": {
-    "buttons": {
-      "download": "下载",
-      "closeEsc": "关闭 (Esc)",
-      "previous": "上一个 (←)",
-      "next": "下一个 (→)"
-    },
-    "download": {
-      "success": "下载成功",
-      "error": "下载失败"
-    }
   }
 }

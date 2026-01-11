@@ -5,7 +5,6 @@
   "model": "模型",
   "aspectRatio": "比例",
   "version": "版本",
-  "noImageRequired": "无需图片",
   "uploadPanel": {
     "title": "添加图片",
     "clickToUpload": "点击上传",
@@ -14,62 +13,18 @@
     "uploads": "上传记录",
     "personalized": "个性化",
     "recentUploads": "最近上传",
-    "personalize": "个性化",
-    "noRecentUploads": "暂无上传记录",
-    "clickToAdd": "点击添加",
-    "selected": "已选择",
-    "close": "关闭",
-    "clearImage": "清除图片"
-  },
-  "modes": {
-    "prompt": "文本生成",
-    "promptDesc": "使用图片元素",
-    "upscale": "放大",
-    "upscaleDesc": "放大你的图片",
-    "edit": "编辑",
-    "editDesc": "使用参考图片编辑",
-    "removeWatermark": "去水印",
-    "removeWatermarkDesc": "移除图片中的水印",
-    "changeBackground": "换背景",
-    "changeBackgroundDesc": "更换图片背景",
-    "aiFaceSwap": "AI换脸",
-    "aiFaceSwapDesc": "使用AI进行换脸处理"
-  },
-  "resultPanel": {
-    "error": "生成失败",
-    "download": "下载",
-    "regenerate": "重新生成",
-    "close": "关闭",
-    "requestInProgress": "生成中...",
-    "loadingImage": "加载图像...",
-    "delete": "删除"
-  },
-  "mobileImagePanel": {
-    "title": "图片管理"
-  },
-  "common": {
-    "credits": "积分",
-    "createWithCredits": "创建({credits}积分)"
+    "personalize": "个性化"
   },
   "settingsPanel": {
     "title": "设置",
     "selectModel": "选择模型",
-    "aspectRatio": "横纵比",
+    "imageSize": "图片尺寸",
     "reset": "重置",
     "variations": "生成数量",
     "moreOptions": "更多选项",
     "visibility": "可见性",
     "public": "公开",
     "private": "私密",
-    "close": "关闭",
-    "formFields": {
-      "size": "尺寸",
-      "quality": "质量",
-      "outputFormat": "输出格式",
-      "background": "背景",
-      "resolution": "分辨率",
-      "imageFormat": "图片格式"
-    },
     "features": {
       "fast": "快速",
       "highQuality": "高质量",
@@ -103,14 +58,7 @@
       "flux-1-1-ultra": "超高清模型，适用于详细和精确的输出",
       "chatgpt": "经典可靠模型，具有经过验证的稳定性",
       "nano-banana": "简单快速的模型，适用于日常使用",
-      "imagen-4": "先进的谷歌驱动模型，采用尖端技术",
-      "upscale": "专业级放大模型，提供高质量的图像增强",
-      "edit-image": "专为图像编辑优化的模型，支持细节控制",
-      "remove-watermark": "专业的水印去除模型，保留图像质量"
+      "imagen-4": "先进的谷歌驱动模型，采用尖端技术"
     }
-  },
-  "modeSelector": {
-    "close": "关闭",
-    "mode": "模式"
   }
 }

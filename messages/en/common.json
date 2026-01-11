@@ -2,45 +2,5 @@
   "languageModal": {
     "title": "Select Language",
     "close": "Close"
-  },
-  "userMenu": {
-    "points": "Points",
-    "pointsDetails": "View points details",
-    "settings": "Settings",
-    "manageSubscription": "Manage subscription",
-    "logout": "Logout",
-    "terms": "Terms",
-    "privacy": "Privacy",
-    "blog": "Blog"
-  },
-  "plans": {
-    "free": "Free",
-    "basic": "Basic",
-    "plus": "Plus",
-    "pro": "Professional",
-    "monthly_basic": "Basic - Monthly",
-    "yearly_basic": "Basic - Yearly",
-    "monthly_plus": "Plus - Monthly",
-    "yearly_plus": "Plus - Yearly",
-    "monthly_pro": "Professional - Monthly",
-    "yearly_pro": "Professional - Yearly"
-  },
-  "download": {
-    "success": "Downloaded successfully",
-    "error": "Failed to download image",
-    "filesSuccess": "Downloaded {count} file{count, plural, one {} other {s}}",
-    "filesError": "Failed to download {count} file{count, plural, one {} other {s}}"
-  },
-  "mediaPreviewModal": {
-    "buttons": {
-      "download": "Download",
-      "closeEsc": "Close (Esc)",
-      "previous": "Previous (←)",
-      "next": "Next (→)"
-    },
-    "download": {
-      "success": "Downloaded successfully",
-      "error": "Failed to download image"
-    }
   }
 }

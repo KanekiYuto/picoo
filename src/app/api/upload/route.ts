@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { auth } from "@/lib/auth";
 import { uploadToR2 } from "@/lib/storage/r2";
 import { FILE_LIMITS, formatFileSize, validateFile } from "@/lib/storage/validation";
 
@@ -6,9 +7,11 @@ export const runtime = "nodejs";
 
 export async function POST(request: NextRequest) {
   try {
-    const userId = request.headers.get('x-user-id');
+    const session = await auth.api.getSession({
+      headers: request.headers,
+    });
 
-    if (!userId) {
+    if (!session?.user?.id) {
       return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
     }
 
@@ -72,9 +75,11 @@ export async function POST(request: NextRequest) {
 
 export async function GET(request: NextRequest) {
   try {
-    const userId = request.headers.get('x-user-id');
+    const session = await auth.api.getSession({
+      headers: request.headers,
+    });
 
-    if (!userId) {
+    if (!session?.user?.id) {
       return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
     }
 
@@ -105,3 +110,4 @@ export async function GET(request: NextRequest) {
     );
   }
 }
+
