@@ -46,6 +46,7 @@
       "currentBalance": "Current Balance",
       "availableCredits": "Available Credits",
       "currentPlan": "Current Plan",
+      "totalConsumed": "Total Consumed",
       "todayUsage": "Today's Usage",
       "creditsUsed": "Credits Used"
     },

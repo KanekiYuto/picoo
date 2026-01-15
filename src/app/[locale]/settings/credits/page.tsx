@@ -106,7 +106,7 @@ export default function CreditsPage() {
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2 text-sm text-muted">
               <Calendar className="h-4 w-4" />
-              <span>Total consumed</span>
+              <span>{t("overview.totalConsumed")}</span>
             </div>
           </div>
           <div className="text-3xl font-bold text-foreground">

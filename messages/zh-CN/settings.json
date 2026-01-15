@@ -46,6 +46,7 @@
       "currentBalance": "当前积分",
       "availableCredits": "可用积分",
       "currentPlan": "当前套餐",
+      "totalConsumed": "总消耗",
       "todayUsage": "今日消耗",
       "creditsUsed": "积分已使用"
     },
