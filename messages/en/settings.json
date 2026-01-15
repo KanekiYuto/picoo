@@ -67,7 +67,8 @@
         "monthly_pro": "Pro Monthly Credits",
         "yearly_basic": "Basic Yearly Credits",
         "yearly_pro": "Pro Yearly Credits",
-        "quota_pack": "Credit Pack"
+        "monthly_plus": "Plus Monthly Credits",
+        "yearly_plus": "Plus Yearly Credits"
       },
       "consumed": "Consumed",
       "remaining": "Remaining"

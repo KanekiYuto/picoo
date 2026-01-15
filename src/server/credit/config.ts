@@ -12,7 +12,6 @@ export const creditConfig = {
     monthlyPro: 'monthly_pro', // 月度订阅-专业版
     yearlyBasic: 'yearly_basic', // 年度订阅-基础版
     yearlyPro: 'yearly_pro', // 年度订阅-专业版
-    quotaPack: 'quota_pack', // 配额包
   },
 
   // 用户类型

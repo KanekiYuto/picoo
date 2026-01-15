@@ -67,7 +67,8 @@
         "monthly_pro": "专业版月度积分",
         "yearly_basic": "基础版年度积分",
         "yearly_pro": "专业版年度积分",
-        "quota_pack": "积分包"
+        "monthly_plus": "进阶版月度积分",
+        "yearly_plus": "进阶版年度积分"
       },
       "consumed": "已消耗",
       "remaining": "剩余"
