@@ -14,6 +14,9 @@ export function UserProfile({ user }: UserProfileProps) {
   const t = useTranslations("settings.profile");
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const { updateUser } = useUserStore();
+  const displayName = user.name ?? "";
+  const displayInitial = displayName ? displayName.charAt(0).toUpperCase() : "?";
+  const avatarAlt = displayName || "User avatar";
 
   const handleSuccess = (updatedUser: User) => {
     // 更新用户状态
@@ -30,12 +33,12 @@ export function UserProfile({ user }: UserProfileProps) {
               {user.image ? (
                 <img
                   src={user.image}
-                  alt={user.name}
+                  alt={avatarAlt}
                   className="h-full w-full object-cover"
                 />
               ) : (
                 <div className="flex h-full w-full items-center justify-center text-xl md:text-2xl font-bold text-foreground">
-                  {user.name.charAt(0).toUpperCase()}
+                  {displayInitial}
                 </div>
               )}
             </div>
@@ -43,7 +46,7 @@ export function UserProfile({ user }: UserProfileProps) {
             {/* 用户信息 */}
             <div className="min-w-0">
               <div className="text-base md:text-lg font-semibold text-foreground truncate">
-                {user.name}
+                {displayName}
               </div>
               <div className="text-xs md:text-sm text-muted truncate">
                 {user.email}

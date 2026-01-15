@@ -17,7 +17,7 @@ interface EditProfileModalProps {
 
 export function EditProfileModal({ isOpen, onClose, user, onSuccess }: EditProfileModalProps) {
   const t = useTranslations("settings.profile.editModal");
-  const [name, setName] = useState(user.name);
+  const [name, setName] = useState(() => user.name ?? "");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -61,7 +61,7 @@ export function EditProfileModal({ isOpen, onClose, user, onSuccess }: EditProfi
 
   const handleClose = () => {
     if (!loading) {
-      setName(user.name);
+      setName(user.name ?? "");
       setError("");
       onClose();
     }

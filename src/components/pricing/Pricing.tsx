@@ -27,6 +27,7 @@ export function Pricing({
   // 从 store 获取用户信息和登录状态
   const user = useUserStore((state) => state.user);
   const isAuthenticated = useUserStore((state) => state.isAuthenticated);
+  const pricingUser = user ? { ...user, name: user.name ?? undefined } : null;
 
   // 获取当前订阅信息
   useEffect(() => {
@@ -134,7 +135,7 @@ export function Pricing({
               billingCycle={billingCycle}
               savePercent={savePercent}
               isCurrent={isCurrentPlan(plan.id)}
-              user={user}
+              user={pricingUser}
             />
           ))}
         </div>
