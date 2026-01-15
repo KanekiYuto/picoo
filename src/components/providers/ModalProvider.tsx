@@ -2,7 +2,7 @@
 
 import { LoginModal, MediaPreviewModal, LanguageModal } from "@/components/modals";
 import { PricingModal } from "@/components/modals/PricingModal";
-import { GlobalGeneratorModal } from "@/components/generator";
+import { GlobalGeneratorModal } from "@/features/generator";
 import { useModalStore } from "@/store/useModalStore";
 
 export function ModalProvider() {

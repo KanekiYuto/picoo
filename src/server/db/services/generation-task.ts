@@ -1,10 +1,10 @@
-import { db } from '@/lib/db';
+import { db } from '@/server/db';
 import {
   generationTask,
   generationResult,
   generationParameters,
   storage,
-} from '@/lib/db/schema';
+} from '@/server/db/schema';
 import { eq, desc, and, count, isNull } from 'drizzle-orm';
 
 /**

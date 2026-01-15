@@ -4,11 +4,11 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import { auth } from '@/lib/auth';
-import { getAvailableCredit, consumeCredit } from '@/lib/credit';
+import { auth } from '@/server/auth';
+import { getAvailableCredit, consumeCredit } from '@/server/credit';
 import { getRequiredCredits, TaskType } from '@/config/model-credit-cost';
-import { db } from '@/lib/db';
-import { generationTask } from '@/lib/db/schema';
+import { db } from '@/server/db';
+import { generationTask } from '@/server/db/schema';
 import { randomUUID } from 'crypto';
 import { generateShareId } from '@/lib/utils/generate-share-id';
 

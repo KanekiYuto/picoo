@@ -1,5 +1,5 @@
-import { db } from '@/lib/db';
-import { subscription } from '@/lib/db/schema';
+import { db } from '@/server/db';
+import { subscription } from '@/server/db/schema';
 import { eq } from 'drizzle-orm';
 
 /**

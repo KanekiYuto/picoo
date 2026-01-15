@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { handleWavespeedRequest } from '@/lib/ai-generator/handleWavespeedRequest';
-import { ProcessParamsResult } from '@/lib/ai-generator/handleRequest';
+import { handleWavespeedRequest } from '@/server/ai-generator/handleWavespeedRequest';
+import { ProcessParamsResult } from '@/server/ai-generator/handleRequest';
 
 // 请求参数接口
 interface SeedreamTextToImageRequest {

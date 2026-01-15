@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { db } from "@/lib/db";
-import { generationTask } from "@/lib/db/schema";
+import { db } from "@/server/db";
+import { generationTask } from "@/server/db/schema";
 import { eq, and } from "drizzle-orm";
 
 export const runtime = "nodejs";

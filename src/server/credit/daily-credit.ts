@@ -1,5 +1,5 @@
-import { db } from '@/lib/db';
-import { credit } from '@/lib/db/schema';
+import { db } from '@/server/db';
+import { credit } from '@/server/db/schema';
 import { eq, and, gte } from 'drizzle-orm';
 import { creditConfig, getDailyFreeCredit, type UserType } from './config';
 

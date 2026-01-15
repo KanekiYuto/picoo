@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { checkAndIssueDailyCredit } from '@/lib/credit/daily-credit';
-import { getUserType } from '@/lib/db/services/user';
+import { checkAndIssueDailyCredit } from '@/server/credit/daily-credit';
+import { getUserType } from '@/server/db/services/user';
 import type { UserType } from '@/lib/image/resource';
 
 export async function POST(request: NextRequest) {

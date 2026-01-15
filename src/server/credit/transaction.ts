@@ -3,8 +3,8 @@
  * 处理积分消费、退款等交易相关操作
  */
 
-import { db } from '@/lib/db';
-import { credit, creditTransaction } from '@/lib/db/schema';
+import { db } from '@/server/db';
+import { credit, creditTransaction } from '@/server/db/schema';
 import { eq, and, gt, or, isNull } from 'drizzle-orm';
 
 /**

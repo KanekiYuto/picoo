@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { handleWavespeedRequest } from '@/lib/ai-generator/handleWavespeedRequest';
-import { ProcessParamsResult } from '@/lib/ai-generator/handleRequest';
-import { validateImageUrls, filterValidImages } from '@/lib/ai-generator/utils';
+import { handleWavespeedRequest } from '@/server/ai-generator/handleWavespeedRequest';
+import { ProcessParamsResult } from '@/server/ai-generator/handleRequest';
+import { validateImageUrls, filterValidImages } from '@/server/ai-generator/utils';
 
 // 请求参数接口
 interface ImageToImageRequest {

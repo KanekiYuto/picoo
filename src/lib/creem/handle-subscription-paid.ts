@@ -1,8 +1,8 @@
-import { db } from '@/lib/db';
-import { subscription, transaction, credit } from '@/lib/db/schema';
+import { db } from '@/server/db';
+import { subscription, transaction, credit } from '@/server/db/schema';
 import { eq, and } from 'drizzle-orm';
 import { getPricingTierByProductId, getSubscriptionQuota } from '@/config/pricing';
-import { user } from '@/lib/db/schema';
+import { user } from '@/server/db/schema';
 /**
  * 订阅支付成功事件处理器
  * 当订阅支付成功时触发（首次支付、续费或升级）

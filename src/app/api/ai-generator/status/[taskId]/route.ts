@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { db } from '@/lib/db';
-import { generationTask, user } from '@/lib/db/schema';
+import { db } from '@/server/db';
+import { generationTask, user } from '@/server/db/schema';
 import { eq, and, sql } from 'drizzle-orm';
 import { processImageResults, UserType } from '@/lib/image/resource';
-import { getGenerationTaskWithResults } from '@/lib/db/services/generation-task';
+import { getGenerationTaskWithResults } from '@/server/db/services/generation-task';
 
 /**
  * GET /api/ai-generator/status/[taskId]

@@ -2,7 +2,7 @@ import createMiddleware from 'next-intl/middleware';
 import { locales, defaultLocale } from '../i18n/config';
 import { type NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
-import { auth } from './lib/auth';
+import { auth } from './server/auth';
 
 const intlMiddleware = createMiddleware({
   // 支持的所有语言

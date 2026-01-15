@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { uploadToR2 } from "@/lib/storage/r2";
-import { validateFile } from "@/lib/storage/validation";
-import { createAsset } from "@/lib/db/services/asset";
+import { uploadToR2 } from "@/server/storage/r2";
+import { validateFile } from "@/server/storage/validation";
+import { createAsset } from "@/server/db/services/asset";
 
 export const runtime = "nodejs";
 

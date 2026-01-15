@@ -1,13 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import path from 'path';
-import { db } from '@/lib/db';
-import { generationTask, storage } from '@/lib/db/schema';
+import { db } from '@/server/db';
+import { generationTask, storage } from '@/server/db/schema';
 import { eq, and } from 'drizzle-orm';
 import mime from 'mime-types';
-import { refundCredit } from '@/lib/credit/transaction';
-import { uploadToR2 } from '@/lib/storage/r2';
+import { refundCredit } from '@/server/credit/transaction';
+import { uploadToR2 } from '@/server/storage/r2';
 import { addWatermark } from '@/lib/image/watermark';
-import { saveGenerationResults, failGenerationTask, updateGenerationTaskStatus } from '@/lib/db/services/generation-task';
+import { saveGenerationResults, failGenerationTask, updateGenerationTaskStatus } from '@/server/db/services/generation-task';
 
 /**
  * Webhook 处理流程说明：

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { handleSyncDirect, ProcessSyncParamsResult } from '@/lib/ai-generator/handlers/sync-direct';
-import { standardizeResponse } from '@/lib/ai-generator/response-standardizer';
+import { handleSyncDirect, ProcessSyncParamsResult } from '@/server/ai-generator/handlers/sync-direct';
+import { standardizeResponse } from '@/server/ai-generator/response-standardizer';
 
 // 请求参数接口
 interface ImageUpscalerRequest {

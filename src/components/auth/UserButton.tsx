@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   User,
@@ -15,43 +15,25 @@ import { signOut } from "@/lib/auth-client";
 import Link from "next/link";
 import Image from "next/image";
 import { useUserStore } from "@/store/useUserStore";
+import { useCreditStore } from "@/store/useCreditStore";
 import { useTranslations } from "next-intl";
 
 export function UserButton() {
   const { user, clearUser } = useUserStore();
   const t = useTranslations("common.userMenu");
   const [isOpen, setIsOpen] = useState(false);
-  const [userPoints, setUserPoints] = useState(0);
+  const balance = useCreditStore((state) => state.balance);
+  const clear = useCreditStore((state) => state.clear);
 
   // 获取积分信息
-  useEffect(() => {
-    const fetchCredits = async () => {
-      try {
-        const response = await fetch('/api/credit/balance');
 
-        if (!response.ok) {
-          throw new Error('Failed to fetch credits');
-        }
-
-        const data = await response.json();
-        setUserPoints(data.summary?.totalRemaining || 0);
-      } catch (error) {
-        console.error('Failed to fetch credits:', error);
-        setUserPoints(0);
-      }
-    };
-
-    if (user) {
-      fetchCredits();
-    }
-  }, [user]);
-
-  // 未登录不显示
+// 未登录不显示
   if (!user) return null;
 
   const handleSignOut = async () => {
     await signOut();
     clearUser();
+    clear();
     setIsOpen(false);
   };
 
@@ -135,7 +117,7 @@ export function UserButton() {
                 <div className="flex items-center gap-1.5">
                   <Gem className="h-4 w-4 text-foreground" />
                   <span className="text-base font-semibold text-foreground">
-                    {userPoints}
+                    {balance}
                   </span>
                   <span className="text-xs text-muted-foreground">
                     {t("points")}

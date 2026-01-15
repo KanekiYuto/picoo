@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getAvailableCredit, getAllUserCredits } from "@/lib/credit/query";
+import { getAvailableCredit, getAllUserCredits } from "@/server/credit/query";
 
 export async function GET(request: NextRequest) {
   try {

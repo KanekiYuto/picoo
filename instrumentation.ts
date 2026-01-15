@@ -10,6 +10,6 @@ export async function register() {
   // 只在 Node.js 服务器环境中执行
   if (process.env.NEXT_RUNTIME === 'nodejs') {
     // 导入 fetch 配置，确保代理设置在应用启动时就被加载
-    await import('./src/lib/fetch-config');
+    await import('./src/server/fetch-config');
   }
 }

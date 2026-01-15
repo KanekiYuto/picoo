@@ -1,81 +1,88 @@
 /**
- * 同步直接 Handler
- * 处理直接返回结果、无需轮询的同步请求
- * 用于：image-upscaler 等快速完成的任务
+ * Wavespeed API 同步请求处理
+ * 用于处理需要直接返回结果的同步请求（如图片放大）
+ * 不存储任务到数据库，直接返回 API 响应
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import { auth } from '@/lib/auth';
-import { getAvailableCredit, consumeCredit } from '@/lib/credit';
+import { auth } from '@/server/auth';
+import { getAvailableCredit, consumeCredit } from '@/server/credit';
 import { getRequiredCredits, TaskType } from '@/config/model-credit-cost';
-import { standardizeAndRespond } from '../response-standardizer';
 
 // ==================== 类型定义 ====================
 
+/**
+ * 参数处理回调函数的返回结果
+ */
 export interface ProcessSyncParamsResult {
+  /** 用于积分计算的参数 */
   creditsParams: Record<string, any>;
+  /** 发送给第三方 API 的参数 */
   apiParams: Record<string, any>;
+  /** 配额消费描述 */
   description: string;
 }
 
-export interface SyncDirectConfig {
-  /** API 端点路径 */
+/**
+ * 参数处理回调函数
+ */
+export type ProcessSyncParamsCallback = (
+  body: any
+) => Promise<ProcessSyncParamsResult | NextResponse> | ProcessSyncParamsResult | NextResponse;
+
+/**
+ * API 响应处理回调函数
+ * 直接返回 API 响应内容
+ */
+export type HandleAPIResponseCallback = (
+  response: any
+) => NextResponse;
+
+/**
+ * Wavespeed 同步请求处理配置
+ */
+export interface HandleWavespeedSyncRequestConfig {
+  /** API 端点路径 (例如: 'wavespeed-ai/image-upscaler') */
   endpoint: string;
   /** 任务类型 */
   taskType: TaskType;
   /** 模型名称 */
   model: string;
   /** 参数处理回调函数 */
-  processParams: (body: any) => ProcessSyncParamsResult | NextResponse;
-  /** 可选：自定义响应处理 */
-  handleResponse?: (apiResponse: any) => NextResponse;
-  /** 可选：自定义错误处理 */
-  handleError?: (error: any) => NextResponse;
-  /** API Base URL */
-  apiBaseUrl?: string;
-  /** API Key */
-  apiKey?: string;
+  processParams: ProcessSyncParamsCallback;
+  /** API 响应处理回调函数 */
+  handleResponse?: HandleAPIResponseCallback;
 }
 
 // ==================== 主处理函数 ====================
 
 /**
- * 处理同步直接请求
+ * 处理 Wavespeed 同步 API 请求
  *
- * 流程：
- * 1. 验证参数
- * 2. 检查用户会话
- * 3. 检查配额
- * 4. 调用 API
- * 5. 消费配额
- * 6. 标准化并返回响应（无需创建任务记录）
+ * 处理流程:
+ * 1. 解析请求参数
+ * 2. 通过回调函数处理参数
+ * 3. 验证用户会话
+ * 4. 检查配额
+ * 5. 调用 API
+ * 6. 消费配额
+ * 7. 返回 API 响应
  *
  * @param request Next.js 请求对象
  * @param config 处理配置
  * @returns API 响应
  */
-export async function handleSyncDirect(
+export async function handleWavespeedSyncRequest(
   request: NextRequest,
-  config: SyncDirectConfig
+  config: HandleWavespeedSyncRequestConfig
 ): Promise<NextResponse> {
-  const {
-    endpoint,
-    taskType,
-    model,
-    processParams,
-    handleResponse,
-    handleError,
-    apiBaseUrl = 'https://api.wavespeed.ai/api/v3',
-    apiKey = process.env.WAVESPEED_API_KEY,
-  } = config;
+  const { endpoint, taskType, model, processParams, handleResponse } = config;
 
   try {
-    // ==================== 1. 解析请求参数 ====================
-
+    // 1. 解析请求参数
     const body = await request.json();
 
-    // ==================== 2. 参数处理 ====================
-
+    // 2. 通过回调函数处理参数
     const processResult = await processParams(body);
 
     // 如果回调返回错误响应，直接返回
@@ -85,8 +92,7 @@ export async function handleSyncDirect(
 
     const { creditsParams, apiParams, description } = processResult;
 
-    // ==================== 3. 验证用户会话 ====================
-
+    // 3. 验证用户会话
     const session = await auth.api.getSession({
       headers: request.headers,
     });
@@ -100,8 +106,7 @@ export async function handleSyncDirect(
 
     const userId = session.user.id;
 
-    // ==================== 4. 检查配额 ====================
-
+    // 4. 检查配额
     const requiredCredits = getRequiredCredits(taskType, model, creditsParams);
     const availableCredits = await getAvailableCredit(userId);
 
@@ -117,16 +122,17 @@ export async function handleSyncDirect(
       );
     }
 
-    // ==================== 5. 调用 API ====================
-
+    // 5. 调用 API
+    const apiKey = process.env.WAVESPEED_API_KEY;
     if (!apiKey) {
       return NextResponse.json(
-        { success: false, error: 'API key not configured' },
+        { success: false, error: 'Wavespeed API key not configured' },
         { status: 500 }
       );
     }
 
-    const apiUrl = `${apiBaseUrl}/${endpoint}`;
+    const baseUrl = 'https://api.wavespeed.ai/api/v3';
+    const apiUrl = `${baseUrl}/${endpoint}`;
 
     const apiResponse = await fetch(apiUrl, {
       method: 'POST',
@@ -137,19 +143,14 @@ export async function handleSyncDirect(
       body: JSON.stringify(apiParams),
     });
 
-    // API 调用失败
+    // 如果 API 调用失败，直接返回错误
     if (!apiResponse.ok) {
       const errorData = await apiResponse.json();
-      console.error('API error:', errorData);
-
-      if (handleError) {
-        return handleError(errorData);
-      }
-
+      console.error('Wavespeed API error:', errorData);
       return NextResponse.json(
         {
           success: false,
-          error: errorData.error?.message || 'API request failed',
+          error: errorData.error?.message || 'Wavespeed API request failed',
         },
         { status: apiResponse.status }
       );
@@ -157,8 +158,7 @@ export async function handleSyncDirect(
 
     const apiResponseData = await apiResponse.json();
 
-    // ==================== 6. 消费配额 ====================
-
+    // 6. 消费配额
     const consumeResult = await consumeCredit(userId, requiredCredits, description);
 
     if (!consumeResult.success) {
@@ -171,24 +171,18 @@ export async function handleSyncDirect(
       );
     }
 
-    // ==================== 7. 返回响应 ====================
-
+    // 7. 返回响应
     if (handleResponse) {
       return handleResponse(apiResponseData);
     }
 
-    // 默认：使用标准化响应
-    return standardizeAndRespond(apiResponseData, {
-      provider: 'wavespeed',
-      model,
+    // 默认响应处理
+    return NextResponse.json({
+      success: true,
+      data: apiResponseData,
     });
   } catch (error) {
-    console.error('Sync direct handler error:', error);
-
-    if (handleError) {
-      return handleError(error);
-    }
-
+    console.error('Sync request handling error:', error);
     return NextResponse.json(
       {
         success: false,
@@ -197,22 +191,4 @@ export async function handleSyncDirect(
       { status: 500 }
     );
   }
-}
-
-/**
- * 同步直接响应格式
- */
-export interface SyncDirectResponse {
-  success: true;
-  data: {
-    results: Array<{
-      url: string;
-      type: 'image';
-    }>;
-    metadata: {
-      task_id: string;
-      duration_ms?: number;
-      [key: string]: any;
-    };
-  };
 }

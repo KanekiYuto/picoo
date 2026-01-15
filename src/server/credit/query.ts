@@ -3,8 +3,8 @@
  * 处理积分查询相关操作
  */
 
-import { db } from '@/lib/db';
-import { credit } from '@/lib/db/schema';
+import { db } from '@/server/db';
+import { credit } from '@/server/db/schema';
 import { eq } from 'drizzle-orm';
 
 /**

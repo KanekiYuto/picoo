@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { handleFalRequest } from '@/lib/ai-generator/handleFalRequest';
-import { ProcessParamsResult } from '@/lib/ai-generator/handleRequest';
+import { handleFalRequest } from '@/server/ai-generator/handleFalRequest';
+import { ProcessParamsResult } from '@/server/ai-generator/handleRequest';
 
 // 请求参数接口
 interface ImageToImageRequest {

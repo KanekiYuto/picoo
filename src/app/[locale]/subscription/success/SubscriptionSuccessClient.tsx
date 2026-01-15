@@ -27,6 +27,7 @@ interface SubscriptionData {
 
 export default function SubscriptionSuccessClient() {
   const t = useTranslations('subscription-success');
+  const tPlans = useTranslations('common.plans');
   const router = useRouter();
   const searchParams = useSearchParams();
   const [countdown, setCountdown] = useState(10);
@@ -140,7 +141,9 @@ export default function SubscriptionSuccessClient() {
               <div>
                 <div className="text-xs md:text-sm text-white/50 mb-1 md:mb-1.5">{t('details.plan')}</div>
                 <div className="text-sm md:text-base text-white font-medium">
-                  {t(`planTypes.${subscriptionData.planType}`, { defaultValue: subscriptionData.planType })}
+                  {tPlans(subscriptionData.planType as any, {
+                    defaultValue: subscriptionData.planType,
+                  })}
                 </div>
               </div>
 

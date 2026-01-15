@@ -1,5 +1,5 @@
-import { db } from '@/lib/db';
-import { asset, storage } from '@/lib/db/schema';
+import { db } from '@/server/db';
+import { asset, storage } from '@/server/db/schema';
 import { eq, desc, and, count, isNull, inArray } from 'drizzle-orm';
 
 /**

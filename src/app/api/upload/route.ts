@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { uploadToR2 } from "@/lib/storage/r2";
-import { FILE_LIMITS, formatFileSize, validateFile } from "@/lib/storage/validation";
+import { uploadToR2 } from "@/server/storage/r2";
+import { FILE_LIMITS, formatFileSize, validateFile } from "@/server/storage/validation";
 
 export const runtime = "nodejs";
 

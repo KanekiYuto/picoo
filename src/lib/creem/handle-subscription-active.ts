@@ -1,5 +1,5 @@
-import { db } from '@/lib/db';
-import { user, subscription } from '@/lib/db/schema';
+import { db } from '@/server/db';
+import { user, subscription } from '@/server/db/schema';
 import { eq } from 'drizzle-orm';
 import { getPricingTierByProductId } from '@/config/pricing';
 

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getUserGenerationHistory } from "@/lib/db/services/generation-task";
+import { getUserGenerationHistory } from "@/server/db/services/generation-task";
 
 export const runtime = "nodejs";
 
