@@ -1,9 +1,15 @@
 import { siteConfig } from '@/config/site';
+import { defaultLocale } from '@i18n/config';
 
 /**
  * 生成带语言前缀的路径
  */
 function getLocalizedPath(locale: string, path: string, isRootPath: boolean): string {
+  // 默认语言不添加语言前缀
+  if (locale === defaultLocale) {
+    return isRootPath ? '/' : path;
+  }
+  
   if (isRootPath) {
     return `/${locale}`;
   }
