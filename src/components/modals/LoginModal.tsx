@@ -90,7 +90,7 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
                 <button
                   onClick={() => handleSocialSignIn("google")}
                   disabled={loadingProvider !== null}
-                  className="flex w-full items-center justify-center gap-3 rounded-xl bg-[#0f0f0f] dark:bg-white px-6 py-3 font-medium text-white dark:text-black transition-all hover:bg-[#1a1a1a] dark:hover:bg-white/90 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="flex w-full items-center justify-center gap-3 rounded-xl bg-muted/20 px-6 py-3 font-medium text-foreground transition-all hover:bg-muted/30 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                 <svg
                   className="h-5 w-5"
@@ -155,7 +155,7 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
                 <button
                   onClick={() => handleSocialSignIn("github")}
                   disabled={loadingProvider !== null}
-                  className="flex w-full items-center justify-center gap-3 rounded-xl bg-[#24292e] hover:bg-[#1a1e22] px-6 py-3 font-medium text-white transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="flex w-full items-center justify-center gap-3 rounded-xl bg-muted/20 px-6 py-3 font-medium text-foreground transition-all hover:bg-muted/30 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <svg
                     className="h-5 w-5"
