@@ -41,11 +41,51 @@ module.exports = {
   changefreq: 'weekly',
   priority: 0.7,
 
+  // 手动添加所有需要包含在 sitemap 中的路由
+  additionalPaths: async (config) => {
+    const result = [];
+
+    // 定义所有需要包含的路由（不包含语言前缀）
+    const routes = [
+      '/',
+      '/home',
+      '/pricing',
+      '/help',
+      '/legal/privacy',
+      '/legal/terms',
+      '/legal/refund',
+      '/models/seedream/seedream4_5',
+      // 如果有其他模型页面，在这里添加
+      // '/apps/image-editing/watermark-remover', // 如果需要的话
+    ];
+
+    // 为每个路由生成多语言版本
+    for (const route of routes) {
+      for (const locale of locales) {
+        const path = locale === defaultLocale ? route : `/${locale}${route}`;
+        result.push({
+          loc: path,
+          changefreq: route === '/' ? 'daily' : 'weekly',
+          priority: route === '/' ? 1.0 : 0.7,
+          lastmod: new Date().toISOString(),
+        });
+      }
+    }
+
+    return result;
+  },
+
   transform: async (_config, path) => {
     const baseRoute = getBaseRoute(path);
 
     // 检查是否应该排除此路由
     if (isExcludedPath(baseRoute)) {
+      return null;
+    }
+
+    // 过滤掉默认语言（en）的前缀路径，因为它们不应该出现在 sitemap 中
+    // 默认语言不使用前缀（localePrefix: 'as-needed'）
+    if (path.startsWith(`/${defaultLocale}/`) || path === `/${defaultLocale}`) {
       return null;
     }
 
