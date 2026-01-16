@@ -30,7 +30,7 @@ export const siteConfig = {
 
   // 联系方式
   contact: {
-    email: "support@fluxreve.com",
+    email: "kaneki.yuto.404@gmail.com",
   },
 
   // 法律信息
