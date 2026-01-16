@@ -30,7 +30,6 @@ const socialLinks = [
 ];
 
 export function Footer({ className }: FooterProps) {
-  const t = useTranslations('footer');
   const tSections = useTranslations('footer.sections');
   const tLinks = useTranslations('footer.links');
 
@@ -38,6 +37,7 @@ export function Footer({ className }: FooterProps) {
   const translateLabel = (label: string): string => {
     const labelMap: Record<string, string> = {
       'Seedream 4.5': tLinks('seedream45'),
+      'AI Hairstyle Changer': tLinks('aiHairstyleChanger'),
       'Pricing': tLinks('pricing'),
       'Help Center': tLinks('helpCenter'),
       'Discord': tLinks('discord'),
@@ -53,6 +53,10 @@ export function Footer({ className }: FooterProps) {
     models: {
       title: tSections('models'),
       links: siteConfig.links.models,
+    },
+    apps: {
+      title: tSections('apps'),
+      links: siteConfig.links.apps,
     },
     resources: {
       title: tSections('resources'),
@@ -83,11 +87,11 @@ export function Footer({ className }: FooterProps) {
         className
       )}
     >
-      <div className="mx-auto max-w-5xl px-8 py-12">
+      <div className="mx-auto max-w-6xl px-8 py-12">
         {/* Navigation Links */}
         <motion.div
           variants={fadeInUp}
-          className="grid grid-cols-2 gap-6 md:gap-8 md:grid-cols-3 lg:grid-cols-6 mb-12 md:mb-16 lg:mb-20"
+          className="mb-12 grid grid-cols-2 gap-6 md:mb-16 md:grid-cols-3 md:gap-8 lg:mb-20 lg:grid-cols-7"
         >
           {Object.values(footerLinks).map((section) => (
             <div key={section.title}>

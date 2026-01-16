@@ -55,6 +55,7 @@ module.exports = {
       '/legal/terms',
       '/legal/refund',
       '/models/seedream/seedream4_5',
+      '/apps/ai-hairstyle-changer',
       // 如果有其他模型页面，在这里添加
       // '/apps/image-editing/watermark-remover', // 如果需要的话
     ];

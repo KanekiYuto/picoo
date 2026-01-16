@@ -1,0 +1,154 @@
+{
+  "aiHairstyleChanger": {
+    "seo": {
+      "title": "Free AI Hairstyle Changer | Picoo",
+      "description": "Preview a new hairstyle in seconds. Upload a photo, describe your desired hairstyle, and get a realistic AI hairstyle result with Picoo."
+    },
+    "hero": {
+      "title": "Free AI Hairstyle Changer",
+      "description": "Wondering how you'd look with bangs, a pixie cut, or bold hair color? Picoo AI Hairstyle Changer creates realistic hairstyle previews before you change your look."
+    },
+    "form": {
+      "image": {
+        "label": "Upload Image",
+        "description": "PNG, JPG, WEBP"
+      },
+      "prompt": {
+        "label": "Add hairstyle",
+        "help": "Describe the style, length, bangs, and color you want."
+      },
+      "aspectRatio": {
+        "label": "Aspect Ratio",
+        "help": "Choose the output size for the generated preview."
+      },
+      "submit": "Generate"
+    },
+    "howItWorks": {
+      "title": "Use Picoo AI Hairstyle Changer In 3 Easy Steps",
+      "mediaAlt": {
+        "upload": "Example upload photo",
+        "prompt": "AI demo video",
+        "result": "AI result preview"
+      },
+      "steps": {
+        "0": {
+          "title": "Upload Your Picture",
+          "description": "Start with a clear, front-facing photo in good lighting. The better your image quality, the more accurate your AI preview will be."
+        },
+        "1": {
+          "title": "Describe Your Desired Hairstyle",
+          "description": "Type a hairstyle prompt in natural language. Be specific about style, length, bangs, and hair color for the best result."
+        },
+        "2": {
+          "title": "View Your New Hairstyle Instantly",
+          "description": "In seconds, get a realistic AI hairstyle preview. Save the result, share it for feedback, or try more ideas until it's perfect."
+        }
+      }
+    },
+    "featureComparisons": {
+      "cta": "Try Hairstyle Changer Now",
+      "items": {
+        "0": {
+          "title": "Hyper-Realistic AI Hairstyle Changer",
+          "description": "Unlike generic filters, Picoo AI Hairstyle Changer analyzes facial structure, skin tone, and features to generate a hyper-realistic preview that still looks like you. It considers face shape, undertones, and natural hair texture to create flattering styles with realistic proportions."
+        },
+        "1": {
+          "title": "Unlimited Hairstyle Experimentation",
+          "description": "Test hundreds of looks with Picoo AI Hairstyle Changer. From pixie cuts to bobs, shoulder-length styles, long hair, bangs, and men's fades—generate previews and iterate until you find your best match."
+        },
+        "2": {
+          "title": "Try Different Hair Colors",
+          "description": "Preview different hair colors with Picoo AI Hairstyle Changer before you dye. Try bold color changes, subtle highlights, or natural tones—then pick the look that fits your hairstyle vibe."
+        }
+      }
+    },
+    "testimonials": {
+      "title": "What users say",
+      "subtitle": "Testimonials"
+    },
+    "faq": {
+      "title": "FAQs",
+      "items": {
+        "0": {
+          "question": "Is the AI Hairstyle Changer free to use?",
+          "answer": "You can try it for free. Some advanced generations and downloads may require credits depending on your plan."
+        },
+        "1": {
+          "question": "What kind of photo works best?",
+          "answer": "Use a clear, front-facing image with good lighting and minimal blur. Avoid heavy filters for the most realistic preview."
+        },
+        "2": {
+          "question": "Can I try different hair colors too?",
+          "answer": "Yes. Describe the color in your prompt (e.g., ash brown, platinum blonde, vivid red) and the AI will preview it before you dye."
+        },
+        "3": {
+          "question": "How long does it take to generate a preview?",
+          "answer": "Most previews are ready in seconds, depending on image size and current server load."
+        },
+        "4": {
+          "question": "Will it look like me or a generic filter?",
+          "answer": "The model is designed to preserve your facial structure and overall likeness while applying style and color changes."
+        },
+        "5": {
+          "question": "Can I download and share results?",
+          "answer": "Yes—download your favorite results and share them with friends to get feedback or bring them to your stylist."
+        },
+        "6": {
+          "question": "How do I write better prompts for men's hairstyles?",
+          "answer": "Use barbering terms for clarity: fade (high/mid/low), taper, undercut, buzz/crew cut, quiff, pompadour, textured crop, slick back. Include lengths for top/sides/back (e.g., top 6–8cm, sides 3mm, tapered back) and mention parting, line-up, and texture for more accurate previews."
+        },
+        "7": {
+          "question": "How do I write better prompts for women's hairstyles?",
+          "answer": "Describe it as “length + layers + bangs + texture + color.” Specify length (bob/lob/shoulder-length/long), layering and face-framing, bang style (curtain/side-swept/airy), texture (straight/waves/curls) and volume, plus color details (dye, highlights, balayage). Add the part (middle/side) and finishing style to get a more precise preview."
+        }
+      }
+    }
+    ,
+    "promptExamples": {
+      "title": "Curated Community Examples",
+      "description": "Curated community examples that show prompt structure and key parameters for realistic hairstyle previews.",
+      "items": {
+        "0": {
+          "alt": "Example AI hairstyle result"
+        },
+        "1": {
+          "alt": "Example AI hairstyle result"
+        }
+      }
+    }
+  }
+  ,
+  "components": {
+    "howItWorks": {
+      "step": "Step {number}"
+    },
+    "featureComparisons": {
+      "before": "BEFORE",
+      "after": "AFTER",
+      "compare": "Compare before and after"
+    },
+    "faq": {
+      "expand": "Expand",
+      "collapse": "Collapse"
+    },
+    "testimonials": {
+      "ratingLabel": "{rating} out of 5 stars"
+    },
+    "imageUpload": {
+      "remove": "Remove",
+      "change": "Change",
+      "cta": "Click to upload or drag and drop",
+      "recommendation": "We recommend a clear, front-facing photo in good lighting.",
+      "previewAlt": "Selected image preview",
+      "maxSizeHint": "Up to {maxSizeMB}MB",
+      "errors": {
+        "invalidType": "Please upload an image file.",
+        "maxSize": "Max file size is {maxSizeMB} MB."
+      }
+    }
+    ,
+    "promptExamples": {
+      "promptLabel": "Prompt"
+    }
+  }
+}

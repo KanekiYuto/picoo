@@ -92,8 +92,6 @@
       "advanced": "先进"
     },
     "modelDescriptions": {
-      "imagineart-1-5": "最新一代模型，具有出色的速度和质量平衡",
-      "imagineart-studio": "专业级桌面模型，具有最大细节控制能力",
       "nano-banana-pro": "超快速生成，适用于快速原型设计和迭代",
       "chatgpt-1-5": "多功能模型，适用于各种创意任务和风格",
       "flux-2-max": "顶级质量模型，适用于最苛刻的专业工作",

@@ -9,7 +9,7 @@ export default async function NotFound() {
   const messages = await getMessages({ locale: 'en' });
 
   return (
-    <html lang="en">
+    <html lang="en" className="dark">
       <body>
         <NextIntlClientProvider locale="en" messages={messages}>
           <div className="w-full flex flex-col bg-background">
@@ -29,7 +29,7 @@ export default async function NotFound() {
               <div className="flex gap-4 mt-4">
                 <Link
                   href="/"
-                  className="flex h-12 items-center justify-center px-8 rounded-full bg-primary hover:bg-primary-hover text-primary-foreground font-medium transition-all cursor-pointer"
+                  className="flex h-12 items-center justify-center px-8 rounded-full bg-white text-primary-foreground font-medium transition-all cursor-pointer"
                 >
                   Back to Home
                 </Link>
