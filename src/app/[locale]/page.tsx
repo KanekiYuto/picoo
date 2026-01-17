@@ -49,6 +49,25 @@ export default function Home() {
               width: 224,
               height: 36,
             },
+            {
+              href: 'https://twelve.tools',
+              imgSrc: 'https://twelve.tools/badge0-white.svg',
+              imgAlt: 'Featured on Twelve Tools',
+              width: 200,
+              height: 54,
+            },
+            {
+              href: 'https://wired.business',
+              imgSrc: 'https://wired.business/badge0-white.svg',
+              imgAlt: 'Featured on Wired Business',
+              width: 200,
+              height: 54,
+            },
+            {
+              kind: 'text',
+              href: 'https://aitop10.tools/',
+              label: 'AiTop10 Tools Diresctory',
+            },
           ]}
         />
         <Footer />
