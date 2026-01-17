@@ -30,7 +30,7 @@ export const siteConfig = {
 
   // 联系方式
   contact: {
-    email: "support@fluxreve.com",
+    email: "support@picooai.com",
   },
 
   // 法律信息
