@@ -38,10 +38,7 @@ export default function Home() {
         </div>
         <FAQ />
         <CTA />
-        <Footer />
-
-        <div className="sr-only" aria-hidden="true">
-          <a
+        <a
             href="https://startupfa.me/s/picoo?utm_source=picooai.com"
             target="_blank"
             rel="noopener noreferrer"
@@ -55,7 +52,12 @@ export default function Home() {
               height="36"
             />
           </a>
-        </div>
+
+        <Footer />
+
+        {/* <div className="sr-only" aria-hidden="true">
+
+        </div> */}
       </div>
     </>
   );
