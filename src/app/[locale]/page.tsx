@@ -64,6 +64,13 @@ export default function Home() {
               height: 54,
             },
             {
+              href: 'https://goodaitools.com',
+              imgSrc: 'https://goodaitools.com/assets/images/badge.png',
+              imgAlt: 'Good AI Tools',
+              width: 207,
+              height: 54,
+            },
+            {
               href: 'https://wired.business',
               imgSrc: 'https://wired.business/badge0-white.svg',
               imgAlt: 'Featured on Wired Business',
