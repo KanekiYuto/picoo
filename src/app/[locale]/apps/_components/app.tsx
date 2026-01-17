@@ -28,7 +28,7 @@ export function App({ title, description, form }: AppProps) {
                 <div className="w-full overflow-hidden rounded-3xl border border-border bg-background">
                     <video
                         className="block h-auto w-full object-contain"
-                        src="https://cdn.web.imagine.art/imagine-one/imagine-apps/hairstyle-changer1-vid.mp4"
+                        src="/material/apps/ai-hairstyle-changer/hairstyle-changer1-vid.mp4"
                         autoPlay
                         loop
                         muted

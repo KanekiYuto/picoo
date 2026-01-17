@@ -4,6 +4,8 @@ import { cn } from "@/lib/utils";
 export interface PromptResultExampleItem {
   imageSrc: string;
   imageAlt: string;
+  imageWidth: number;
+  imageHeight: number;
   prompt: string;
 }
 
@@ -41,12 +43,13 @@ export function PromptResultExamples({
             key={`${item.imageSrc}-${item.prompt}`}
             className="overflow-hidden rounded-3xl border border-border bg-muted/10"
           >
-            <div className="relative aspect-square w-full bg-muted/10">
+            <div className="w-full bg-muted/10">
               <Image
                 src={item.imageSrc}
                 alt={item.imageAlt}
-                fill
-                className="object-contain"
+                width={item.imageWidth}
+                height={item.imageHeight}
+                className="h-auto w-full"
                 sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
               />
             </div>

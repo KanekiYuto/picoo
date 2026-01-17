@@ -153,24 +153,32 @@ export function getAiHairstyleChangerContent(t: TranslationFn, tc: TranslationFn
         {
           imageSrc: "/material/apps/1cf9b810-81b0-489a-8c80-3073013caac3.webp",
           imageAlt: t("promptExamples.items.0.alt"),
+          imageWidth: 1920,
+          imageHeight: 1088,
           prompt:
             "Change my hairstyle to short haircuts for men with a clean low fade haircut men finish. Keep it natural, realistic texture, and maintain my facial features.",
         },
         {
           imageSrc: "/material/apps/1cf9b810-81b0-489a-8c80-3073013caac3.webp",
           imageAlt: t("promptExamples.items.1.alt"),
+          imageWidth: 1920,
+          imageHeight: 1088,
           prompt:
             "Give me shoulder length layered hair with soft waves. Add warm brown color with light highlights and a natural finish (long hair cutting style for female).",
         },
         {
           imageSrc: "/material/apps/1cf9b810-81b0-489a-8c80-3073013caac3.webp",
           imageAlt: t("promptExamples.items.0.alt"),
+          imageWidth: 1920,
+          imageHeight: 1088,
           prompt:
             "Try hairstyles for curly hair men: mens medium curly hairstyles with defined curls, volume on top, and tapered sides. Keep it photoreal with soft lighting.",
         },
         {
           imageSrc: "/material/apps/1cf9b810-81b0-489a-8c80-3073013caac3.webp",
           imageAlt: t("promptExamples.items.0.alt"),
+          imageWidth: 1920,
+          imageHeight: 1088,
           prompt:
             "Haircuts for girls with long hair inspired by ms dhoni hairstyle: long, sleek long hair cut style with a middle part, subtle caramel highlights, photoreal finish.",
         },
