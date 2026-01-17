@@ -49,7 +49,10 @@ export const siteConfig = {
     models: [
       { label: "Seedream 4.5", href: "/models/seedream/seedream4_5" },
     ],
-    apps: [{ label: "AI Hairstyle Changer", href: "/apps/ai-hairstyle-changer" }],
+    apps: [
+      { label: "AI Hairstyle Changer", href: "/apps/ai-hairstyle-changer" },
+      { label: "AI Hair Color Changer", href: "/apps/ai-hair-color-changer" },
+    ],
     resources: [
       { label: "Pricing", href: "/pricing" },
       { label: "Help Center", href: "/help" },

@@ -118,6 +118,125 @@
     }
   }
   ,
+  "aiHairColorChanger": {
+    "seo": {
+      "title": "Free AI Hair Color Changer | AI Hair Color Preview | Picoo",
+      "description": "AI hair color changer: hair color changer for AI hair color. Upload a photo, choose a shade, and get an AI hair color preview. Fast hair color changer."
+    },
+    "hero": {
+      "title": "Free AI Hair Color Changer",
+      "description": "Preview AI hair color before you dye. Picoo AI Hair Color Changer is a realistic hair color changer for trying blonde, brunette, black, red, highlights, balayage, and bold AI hair color with your own photo."
+    },
+    "form": {
+      "image": {
+        "label": "Upload Image",
+        "description": "PNG, JPG, WEBP"
+      },
+      "prompt": {
+        "label": "Add hair color",
+        "help": "Describe the AI hair color you want: shade, tone (warm/cool), and finish (e.g., ash brown, copper, platinum blonde). For best results with this hair color changer, mention highlights, balayage, or ombré."
+      },
+      "aspectRatio": {
+        "label": "Aspect Ratio",
+        "help": "Choose the output size for the generated preview."
+      },
+      "submit": "Generate"
+    },
+    "howItWorks": {
+      "title": "Use Picoo AI Hair Color Changer In 3 Easy Steps",
+      "mediaAlt": {
+        "upload": "Example upload photo",
+        "prompt": "AI demo video",
+        "result": "AI result preview"
+      },
+      "steps": {
+        "0": {
+          "title": "Upload Your Picture",
+          "description": "Start with a clear, front-facing photo in good lighting. A better photo helps the AI hair color preview look more realistic in the hair color changer."
+        },
+        "1": {
+          "title": "Describe Your Desired Hair Color",
+          "description": "Type what AI hair color you want in natural language. Mention shade and tone (warm/cool), and add details like highlights, balayage, or ombré so the AI Hair Color Changer can match your target look."
+        },
+        "2": {
+          "title": "View Your New Color Instantly",
+          "description": "In seconds, get a realistic AI hair color preview. Save your favorites, share them for feedback, or iterate with the hair color changer until it’s perfect."
+        }
+      }
+    },
+    "featureComparisons": {
+      "cta": "Try Hair Color Changer Now",
+      "items": {
+        "0": {
+          "title": "Realistic Hair Color Preview",
+          "description": "Picoo AI Hair Color Changer preserves your face and hair texture while applying AI hair color that looks natural. This hair color changer balances lighting and undertones to keep your AI hair color preview consistent with your photo."
+        },
+        "1": {
+          "title": "From Natural Shades to Bold Colors",
+          "description": "Try AI hair color from black, brown, and blonde to vivid red, pink, or silver. This hair color changer supports highlights, balayage, and subtle tone shifts—so you can preview AI hair color without committing first."
+        },
+        "2": {
+          "title": "Better Prompts, Better Results",
+          "description": "Write better prompts for the AI Hair Color Changer: specify tone and finish (ash vs. warm, glossy vs. matte), and add technique (highlights/balayage/ombré). Small details help the hair color changer generate a better AI hair color preview."
+        }
+      }
+    },
+    "testimonials": {
+      "title": "What users say",
+      "subtitle": "Testimonials"
+    },
+    "faq": {
+      "title": "FAQs",
+      "items": {
+        "0": {
+          "question": "Is the AI Hair Color Changer free to use?",
+          "answer": "You can try it for free. Some advanced generations and downloads may require credits depending on your plan."
+        },
+        "1": {
+          "question": "What kind of photo works best?",
+          "answer": "Use a clear, front-facing image with good lighting and minimal blur. Avoid heavy filters for the most realistic AI hair color preview in the hair color changer."
+        },
+        "2": {
+          "question": "Can I try highlights or balayage?",
+          "answer": "Yes. Mention highlights, balayage, ombré, placement, and tone so the AI Hair Color Changer can generate a better AI hair color preview."
+        },
+        "3": {
+          "question": "How long does it take to generate a preview?",
+          "answer": "Most previews are ready in seconds, depending on image size and current server load."
+        },
+        "4": {
+          "question": "Will it keep my hairstyle the same?",
+          "answer": "The AI Hair Color Changer aims to preserve your original hairstyle, hair texture, and facial features while changing only the AI hair color."
+        },
+        "5": {
+          "question": "Can I download and share results?",
+          "answer": "Yes—download your favorite results and share them with friends or bring them to your stylist."
+        },
+        "6": {
+          "question": "How do I write better prompts for hair colors?",
+          "answer": "For this hair color changer, describe AI hair color as shade + tone + technique. Example: \"cool ash brown with subtle face-framing highlights\" or \"platinum blonde, neutral tone, no yellow\" for a cleaner AI hair color preview."
+        },
+        "7": {
+          "question": "Can I preview bold colors realistically?",
+          "answer": "Yes. Include the exact color and finish (e.g., vivid red, pastel pink, deep blue) and ask for a photorealistic result so the AI Hair Color Changer can produce a realistic AI hair color preview."
+        }
+      }
+    }
+    ,
+    "promptExamples": {
+      "title": "Curated Community Examples",
+      "description": "Curated community examples that show prompt structure and key parameters for realistic hair color previews.",
+      "items": {
+        "0": {
+          "alt": "Example AI hair color result"
+        },
+        "1": {
+          "alt": "Example AI hair color result"
+        }
+      }
+    }
+  }
+  ,
   "components": {
     "howItWorks": {
       "step": "Step {number}"

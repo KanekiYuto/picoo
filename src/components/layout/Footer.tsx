@@ -38,6 +38,7 @@ export function Footer({ className }: FooterProps) {
     const labelMap: Record<string, string> = {
       'Seedream 4.5': tLinks('seedream45'),
       'AI Hairstyle Changer': tLinks('aiHairstyleChanger'),
+      'AI Hair Color Changer': tLinks('aiHairColorChanger'),
       'Pricing': tLinks('pricing'),
       'Help Center': tLinks('helpCenter'),
       'Discord': tLinks('discord'),
