@@ -64,6 +64,13 @@ export default function Home() {
               height: 54,
             },
             {
+              href: 'https://findly.tools/picoo?utm_source=picoo',
+              imgSrc: 'https://findly.tools/badges/findly-tools-badge-light.svg',
+              imgAlt: 'Featured on findly.tools',
+              width: 150,
+              height: 48,
+            },
+            {
               kind: 'text',
               href: 'https://aitop10.tools/',
               label: 'AiTop10 Tools Diresctory',

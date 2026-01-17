@@ -34,7 +34,7 @@ export function ThirdPartyBadges({ items, className }: ThirdPartyBadgesProps) {
           className={cn(
             'group inline-flex items-center justify-center rounded-2xl border border-border/60',
             'bg-gradient-to-b from-background/70 to-background/40',
-            'px-4 py-3 shadow-sm backdrop-blur transition',
+            'h-16 min-w-[240px] px-5 shadow-sm backdrop-blur transition',
             'hover:border-border hover:from-background/80 hover:to-background/50 hover:shadow-md',
             'focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/60 focus-visible:ring-offset-2 focus-visible:ring-offset-background',
           )}
