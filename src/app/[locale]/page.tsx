@@ -39,6 +39,23 @@ export default function Home() {
         <FAQ />
         <CTA />
         <Footer />
+
+        <div className="sr-only" aria-hidden="true">
+          <a
+            href="https://startupfa.me/s/picoo?utm_source=picooai.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            tabIndex={-1}
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="https://startupfa.me/images/logo-dark.webp"
+              alt="Startup Fame"
+              width="208"
+              height="36"
+            />
+          </a>
+        </div>
       </div>
     </>
   );
