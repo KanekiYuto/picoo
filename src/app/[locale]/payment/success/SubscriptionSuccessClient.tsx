@@ -142,7 +142,7 @@ export default function SubscriptionSuccessClient() {
               {isCreditPackFlow ? t('creditNotFound') : t('notFound')}
             </p>
             <Button
-              onClick={() => router.push(isCreditPackFlow ? '/settings/credits' : '/subscription')}
+              onClick={() => router.push(isCreditPackFlow ? '/settings/home' : '/settings/billing')}
               variant="outline"
               className="border-white/30 text-white hover:bg-white/10"
             >
@@ -287,7 +287,7 @@ export default function SubscriptionSuccessClient() {
           </Button>
 
           <Button
-            onClick={() => router.push(creditPackData ? '/settings/credits' : '/subscription')}
+            onClick={() => router.push(creditPackData ? '/settings/home' : '/settings/billing')}
             disabled={isRedirecting}
             variant="ghost"
             className="w-full text-white/70 hover:text-white hover:bg-white/5 h-11 md:h-12 text-sm md:text-base"
