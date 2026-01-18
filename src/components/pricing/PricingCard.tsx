@@ -3,6 +3,7 @@
 import { Check, X, HelpCircle } from "lucide-react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { createPaymentCheckout } from "@/shared/payment/client";
 import { useTranslations } from "next-intl";
 import { PricingPlan, BillingCycle, PricingFeature } from "./types";
 
@@ -278,28 +279,20 @@ export function PricingCard({
       return;
     }
     setIsLoading(true);
-    fetch("/api/payment/checkout", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        productId: plan.creemPayProductId,
-        successUrl: `${window.location.origin}/subscription/success`,
-        metadata: {
-          userId: user.id,
-          planId: plan.id,
-          billingCycle,
-        },
-        customer: {
-          email: user.email,
-          name: user.name,
-        },
-      }),
+    createPaymentCheckout({
+      productId: plan.creemPayProductId,
+      type: "sub",
+      metadata: {
+        userId: user.id,
+        planId: plan.id,
+        billingCycle,
+      },
+      customer: {
+        email: user.email,
+        name: user.name ?? user.email,
+      },
     })
-      .then(async (response) => {
-        if (!response.ok) {
-          throw new Error("Failed to create checkout");
-        }
-        const data = (await response.json()) as { checkoutUrl?: string };
+      .then((data) => {
         if (data.checkoutUrl) {
           window.location.href = data.checkoutUrl;
         }

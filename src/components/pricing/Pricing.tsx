@@ -132,7 +132,7 @@ export function Pricing({
           viewport={{ once: true }}
           className="w-full bg-background-1 p-4 rounded-2xl border border-background-2"
         >
-          <CreditPacks user={pricingUser} i18nNamespace="pricing.packs" variant="pricing" />
+          <CreditPacks user={pricingUser} />
         </motion.div>
       ) : (
         <motion.div

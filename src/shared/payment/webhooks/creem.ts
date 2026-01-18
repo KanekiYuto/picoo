@@ -57,10 +57,19 @@ const subscriptionRepo = {
       .set(payload)
       .where(eq(subscription.paymentSubscriptionId, paymentSubscriptionId));
   },
+  async findByPaymentId(paymentSubscriptionId: string) {
+    const [record] = await db
+      .select()
+      .from(subscription)
+      .where(eq(subscription.paymentSubscriptionId, paymentSubscriptionId))
+      .limit(1);
+    return record;
+  },
   async create(payload: {
     userId: string;
     paymentSubscriptionId: string;
     paymentCustomerId: string;
+    productId: string;
     planType: string;
     amount: number;
     currency: string;
@@ -74,6 +83,7 @@ const subscriptionRepo = {
         paymentPlatform: 'creem',
         paymentSubscriptionId: payload.paymentSubscriptionId,
         paymentCustomerId: payload.paymentCustomerId,
+        productId: payload.productId,
         planType: payload.planType,
         status: 'active',
         amount: payload.amount,
@@ -110,6 +120,7 @@ const transactionRepo = {
   async createOneTimePayment(payload: {
     userId: string;
     paymentTransactionId: string;
+    productId: string;
     amount: number;
     currency: string;
   }) {
@@ -117,7 +128,9 @@ const transactionRepo = {
       .insert(transaction)
       .values({
         userId: payload.userId,
+        paymentPlatform: 'creem',
         paymentTransactionId: payload.paymentTransactionId,
+        productId: payload.productId,
         type: 'one_time_payment',
         amount: payload.amount,
         currency: payload.currency,
@@ -129,6 +142,7 @@ const transactionRepo = {
     userId: string;
     subscriptionId: string;
     paymentTransactionId: string;
+    productId: string;
     amount: number;
     currency: string;
   }) {
@@ -137,7 +151,9 @@ const transactionRepo = {
       .values({
         userId: payload.userId,
         subscriptionId: payload.subscriptionId,
+        paymentPlatform: 'creem',
         paymentTransactionId: payload.paymentTransactionId,
+        productId: payload.productId,
         type: 'subscription_payment',
         amount: payload.amount,
         currency: payload.currency,
@@ -200,12 +216,13 @@ async function handleCheckoutCompleted(data: any) {
   }
 
   const userId = getUserIdFromMetadata(metadata);
-  const creditPack = getCreditPackByProductId(product?.id || '');
+  const productId = product?.id;
+  const creditPack = getCreditPackByProductId(productId || '');
 
-  if (!userId || !creditPack) {
+  if (!userId || !productId || !creditPack) {
     console.error('✗ Checkout completed: Missing required data', {
       userId,
-      productId: product?.id,
+      productId,
       creditPack,
     });
     return;
@@ -229,6 +246,7 @@ async function handleCheckoutCompleted(data: any) {
     const transactionRecord = await transactionRepo.createOneTimePayment({
       userId,
       paymentTransactionId,
+      productId,
       amount,
       currency,
     });
@@ -290,6 +308,7 @@ async function handleSubscriptionActive(data: any) {
       userId,
       paymentSubscriptionId: id,
       paymentCustomerId: customer?.id || '',
+      productId: product.id,
       planType: pricingTier.subscriptionPlanType,
       amount: product.price,
       currency: product.currency || 'USD',
@@ -308,27 +327,32 @@ async function handleSubscriptionActive(data: any) {
 
 // 订阅支付成功：更新订阅 & 发放周期积分
 async function handleSubscriptionPaid(data: any) {
+  console.log('handleSubscriptionPaid', data);
+  const payload =
+    data && typeof data.object === 'object' && data.object !== null ? data.object : data;
   const {
     id,
-    last_transaction,
-    last_transaction_id,
     product,
     current_period_end_date,
     next_transaction_date,
     metadata,
-  } = data;
+  } = payload;
+  const lastTransaction = payload.last_transaction ?? payload.lastTransaction;
+  const lastTransactionId = payload.last_transaction_id ?? payload.lastTransactionId;
 
   const userId = getUserIdFromMetadata(metadata);
 
-  if (!product?.id) {
+  const resolvedProductId =
+    product?.id || payload?.items?.[0]?.product_id || payload?.items?.[0]?.productId;
+  if (!resolvedProductId) {
     console.error('✗ Subscription paid: Missing product ID');
     return;
   }
 
-  const pricingTier = getPricingTierByProductId(product.id);
+  const pricingTier = getPricingTierByProductId(resolvedProductId);
   if (!pricingTier) {
     console.error('✗ Subscription paid: Product ID not found in pricing config', {
-      productId: product.id,
+      productId: resolvedProductId,
     });
     return;
   }
@@ -336,7 +360,7 @@ async function handleSubscriptionPaid(data: any) {
   if (!userId || !pricingTier.subscriptionPlanType) {
     console.error('✗ Subscription paid: Missing required data', {
       userId,
-      productId: product.id,
+      productId: resolvedProductId,
       pricingTier,
     });
     return;
@@ -345,34 +369,42 @@ async function handleSubscriptionPaid(data: any) {
   const quotaAmount = getSubscriptionQuota(pricingTier.subscriptionPlanType);
 
   try {
-    const existingSubscription = await subscriptionRepo.findActiveByUserId(userId);
+    let existingSubscription = await subscriptionRepo.findByPaymentId(id);
+    if (!existingSubscription) {
+      existingSubscription = await subscriptionRepo.findActiveByUserId(userId);
+    }
 
     if (!existingSubscription) {
-      console.error(`✗ Active subscription not found for user: ${userId}`);
-      return;
+      const [subscriptionRecord] = await subscriptionRepo.create({
+        userId,
+        paymentSubscriptionId: id,
+        paymentCustomerId: payload.customer?.id || '',
+        productId: resolvedProductId,
+        planType: pricingTier.subscriptionPlanType,
+        amount: product.price,
+        currency: product.currency || 'USD',
+        expiresAt: current_period_end_date ? new Date(current_period_end_date) : null,
+        nextBillingAt: next_transaction_date ? new Date(next_transaction_date) : null,
+      });
+      existingSubscription = subscriptionRecord;
+      await userRepo.updateCurrentSubscription(userId, subscriptionRecord.id);
     }
 
-    const newNextBillingAt = next_transaction_date
-      ? new Date(next_transaction_date)
+    const paymentTransactionId = lastTransactionId || lastTransaction?.id;
+    const paidAmount = Number(
+      lastTransaction?.amount_paid ?? lastTransaction?.amountPaid ?? lastTransaction?.amount ?? 0,
+    );
+    const existingTransaction = paymentTransactionId
+      ? await transactionRepo.findByPaymentTransactionId(paymentTransactionId)
       : null;
 
-    if (
-      existingSubscription.nextBillingAt &&
-      newNextBillingAt &&
-      existingSubscription.nextBillingAt.getTime() === newNextBillingAt.getTime()
-    ) {
-      console.log(
-        `⚠ Duplicate webhook detected for subscription ${existingSubscription.id} - nextBillingAt already set to ${newNextBillingAt.toISOString()}`,
-      );
-      return;
-    }
-
     await subscriptionRepo.updateById(existingSubscription.id, {
+      productId: resolvedProductId,
       planType: pricingTier.subscriptionPlanType,
       amount: product.price,
       currency: product.currency,
       expiresAt: current_period_end_date ? new Date(current_period_end_date) : null,
-      nextBillingAt: newNextBillingAt,
+      nextBillingAt: next_transaction_date ? new Date(next_transaction_date) : null,
       updatedAt: new Date(),
     });
 
@@ -382,17 +414,24 @@ async function handleSubscriptionPaid(data: any) {
       `✓ Subscription updated: ${id} - Plan: ${pricingTier.subscriptionPlanType}, Quota: ${quotaAmount}`,
     );
 
-    if (last_transaction && last_transaction.amount_paid > 0) {
+    if (paidAmount > 0 && paymentTransactionId) {
+      if (existingTransaction) {
+        console.log(
+          `⚠ Duplicate transaction detected: ${paymentTransactionId}`,
+        );
+        return;
+      }
       const transactionRecord = await transactionRepo.createSubscriptionPayment({
         userId,
         subscriptionId: existingSubscription.id,
-        paymentTransactionId: last_transaction_id || last_transaction.id,
-        amount: last_transaction.amount_paid,
-        currency: last_transaction.currency || 'USD',
+        paymentTransactionId,
+        productId: resolvedProductId,
+        amount: paidAmount,
+        currency: lastTransaction?.currency || 'USD',
       });
 
       console.log(
-        `✓ Created transaction ${transactionRecord.id} - Amount paid: ${last_transaction.amount_paid} ${last_transaction.currency || 'USD'}`,
+        `✓ Created transaction ${transactionRecord.id} - Amount paid: ${paidAmount} ${lastTransaction?.currency || 'USD'}`,
       );
 
       await creditRepo.grantCredits({
@@ -408,7 +447,7 @@ async function handleSubscriptionPaid(data: any) {
       );
     } else {
       console.log(
-        `⚠ No quota granted: amount_paid is ${last_transaction?.amount_paid || 0}`,
+        `⚠ No quota granted: amount_paid is ${paidAmount}`,
       );
     }
   } catch (error) {

@@ -111,8 +111,12 @@ export const transaction = pgTable('transaction', {
     .references(() => user.id, { onDelete: 'cascade' }),
   // 关联的订阅ID (可选,一次性支付时为空)
   subscriptionId: uuid('subscription_id').references(() => subscription.id, { onDelete: 'cascade' }),
+  // 支付平台: creem, stripe, paypal 等
+  paymentPlatform: text('payment_platform').notNull(),
   // 支付平台的交易ID
   paymentTransactionId: text('payment_transaction_id').notNull().unique(),
+  // 支付平台的产品ID
+  productId: text('product_id').notNull(),
   // 交易类型: subscription_payment(订阅支付), one_time_payment(一次性支付), refund(退款)
   type: text('type').notNull(),
   // 交易金额(分/美分)
@@ -130,6 +134,8 @@ export const transaction = pgTable('transaction', {
   userIdTypeIdx: index('transaction_user_id_type_idx').on(table.userId, table.type),
   // 订阅ID查询
   subscriptionIdIdx: index('transaction_subscription_id_idx').on(table.subscriptionId),
+  // 支付平台产品ID查询
+  productIdIdx: index('transaction_product_id_idx').on(table.productId),
   // 支付平台交易ID快速查询（已设为 unique，自动创建索引）
   // 交易类型过滤
   typeIdx: index('transaction_type_idx').on(table.type),
@@ -149,6 +155,8 @@ export const subscription = pgTable('subscription', {
   paymentSubscriptionId: text('payment_subscription_id').notNull().unique(),
   // 支付平台的客户ID
   paymentCustomerId: text('payment_customer_id'),
+  // 支付平台的产品ID
+  productId: text('product_id').notNull(),
   // 订阅计划类型: monthly_basic, monthly_pro, yearly_basic, yearly_pro
   planType: text('plan_type').notNull(),
   // 下次计划类型: 用于计划升级/降级,在下次续费时生效
@@ -181,6 +189,8 @@ export const subscription = pgTable('subscription', {
   // 支付平台订阅ID快速查询（已设为 unique，自动创建索引）
   // 支付平台客户ID查询
   paymentCustomerIdIdx: index('subscription_payment_customer_id_idx').on(table.paymentCustomerId),
+  // 支付平台产品ID查询
+  productIdIdx: index('subscription_product_id_idx').on(table.productId),
   // 续费时间扫描（活跃订阅的续费提醒）
   nextBillingAtIdx: index('subscription_next_billing_at_idx').on(table.nextBillingAt),
   // 状态和续费时间复合查询

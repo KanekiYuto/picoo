@@ -1,11 +1,15 @@
 'use client';
 
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useMemo } from 'react';
 import { useTranslations } from 'next-intl';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { CheckCircle2, ArrowRight, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import {
+  getCreditPackByProductId,
+  getSubscriptionPlanByProductId,
+} from '@/shared/payment/config/payment';
 
 // 声明 gtag 函数类型
 declare global {
@@ -14,76 +18,97 @@ declare global {
   }
 }
 
-interface SubscriptionData {
-  id: string;
-  planType: string;
-  amount: number;
-  currency: string;
-  status: string;
-  startedAt: string | null;
-  expiresAt: string | null;
-  paymentTransactionId: string | null;
-}
-
-interface CreditPackData {
-  paymentTransactionId: string;
-  amount: number;
-  currency: string;
-  credits: number;
-  creditPackId: string | null;
-  expiresAt: string | null;
-}
-
 export default function SubscriptionSuccessClient() {
   const t = useTranslations('subscription-success');
   const tPlans = useTranslations('common.plans');
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [countdown, setCountdown] = useState(10);
+  const [countdown, setCountdown] = useState(10000);
   const [isRedirecting, setIsRedirecting] = useState(false);
-  const [subscriptionData, setSubscriptionData] = useState<SubscriptionData | null>(null);
-  const [creditPackData, setCreditPackData] = useState<CreditPackData | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
 
   // 从 URL 参数获取订阅/Checkout ID
-  const subscriptionId = searchParams.get('subscription_id');
-  const checkoutId = searchParams.get('checkout_id');
-  const isCreditPackFlow = !subscriptionId && Boolean(checkoutId);
+  const productId = searchParams.get('p_id');
+  const paymentType = searchParams.get('type');
+  
+  const isOneTime = paymentType === 'one-time';
+  const isSubscription = paymentType === 'sub';
+  const productCreditPack = productId ? getCreditPackByProductId(productId) : null;
+  const subscriptionPlan = productId ? getSubscriptionPlanByProductId(productId) : null;
 
-  // 从数据库获取订阅信息
-  useEffect(() => {
-    if (!subscriptionId && !checkoutId) {
-      setIsLoading(false);
-      return;
+  const { subscriptionData, creditPackData } = useMemo(() => {
+    if (!productId) {
+      return { subscriptionData: null, creditPackData: null };
     }
 
-    const fetchData = async () => {
-      try {
-        if (subscriptionId) {
-          const response = await fetch(`/api/subscription/${subscriptionId}`);
-          const result = await response.json();
-          if (result.success && result.data) {
-            setSubscriptionData(result.data);
-            return;
-          }
-        }
+    if (isOneTime) {
+      return {
+        subscriptionData: null,
+        creditPackData: productCreditPack
+          ? {
+              paymentTransactionId: 'config',
+              amount: Math.round(productCreditPack.price * 100),
+              currency: 'USD',
+              credits: productCreditPack.credits,
+              creditPackId: productCreditPack.id,
+              expiresAt: null,
+            }
+          : null,
+      };
+    }
 
-        if (checkoutId) {
-          const response = await fetch(`/api/checkout/${checkoutId}`);
-          const result = await response.json();
-          if (result.success && result.data) {
-            setCreditPackData(result.data);
-          }
-        }
-      } catch (error) {
-        console.error('Failed to fetch checkout:', error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
+    if (isSubscription) {
+      return {
+        subscriptionData: subscriptionPlan
+          ? {
+              id: subscriptionPlan.subscriptionPlanType,
+              planType: subscriptionPlan.planType,
+              amount: Math.round(subscriptionPlan.price * 100),
+              currency: 'USD',
+              status: 'active',
+              startedAt: null,
+              expiresAt: null,
+              paymentTransactionId: null,
+            }
+          : null,
+        creditPackData: null,
+      };
+    }
 
-    fetchData();
-  }, [subscriptionId, checkoutId]);
+    if (subscriptionPlan && !productCreditPack) {
+      return {
+        subscriptionData: {
+          id: subscriptionPlan.subscriptionPlanType,
+          planType: subscriptionPlan.planType,
+          amount: Math.round(subscriptionPlan.price * 100),
+          currency: 'USD',
+          status: 'active',
+          startedAt: null,
+          expiresAt: null,
+          paymentTransactionId: null,
+        },
+        creditPackData: null,
+      };
+    }
+
+    if (productCreditPack) {
+      return {
+        subscriptionData: null,
+        creditPackData: {
+          paymentTransactionId: 'config',
+          amount: Math.round(productCreditPack.price * 100),
+          currency: 'USD',
+          credits: productCreditPack.credits,
+          creditPackId: productCreditPack.id,
+          expiresAt: null,
+        },
+      };
+    }
+
+    return { subscriptionData: null, creditPackData: null };
+  }, [productId, isOneTime, isSubscription, productCreditPack, subscriptionPlan]);
+
+  const isCreditPackFlow =
+    isOneTime || Boolean(productCreditPack) || (!subscriptionPlan && Boolean(productId));
 
   // 跳转到积分页面
   const handleRedirect = useCallback(() => {
@@ -106,18 +131,6 @@ export default function SubscriptionSuccessClient() {
 
     return () => clearInterval(timer);
   }, [handleRedirect]);
-
-  // 加载中状态
-  if (isLoading) {
-    return (
-      <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center p-4">
-        <div className="text-center">
-          <Loader2 className="w-8 h-8 md:w-10 md:h-10 text-white/50 animate-spin mx-auto mb-4" />
-          <p className="text-sm text-white/60">{t('loading')}</p>
-        </div>
-      </div>
-    );
-  }
 
   // 如果没有任何数据，显示错误
   if (!subscriptionData && !creditPackData) {

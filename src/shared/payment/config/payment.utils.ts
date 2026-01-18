@@ -2,7 +2,7 @@
  * 定价工具函数（仅函数与计算逻辑）
  */
 import { PAYMENT_CONFIG } from './index';
-import type { CreditPack, PlanType, PricingTier } from './payment.types';
+import type { CreditPack, PlanType, PricingTier, SubscriptionDefinition } from './payment.types';
 import {
   CREEM_PAY_CREDIT_PACK_PRODUCT_IDS,
   CREEM_PAY_PRODUCT_IDS,
@@ -109,6 +109,19 @@ function buildPricingTierByProductId(): Record<string, PricingTier> {
  */
 export function getPricingTierByProductId(productId: string): PricingTier | null {
   return PRODUCT_ID_TO_PRICING_TIER[productId] || null;
+}
+
+/**
+ * 根据产品 ID 获取订阅方案详情，供回调/订单处理使用。
+ */
+export function getSubscriptionPlanByProductId(
+  productId: string,
+): (SubscriptionDefinition & { subscriptionPlanType: string }) | null {
+  const pricingTier = getPricingTierByProductId(productId);
+  if (!pricingTier) return null;
+  const plan = SUBSCRIPTION_DEFINITIONS[pricingTier.subscriptionPlanType];
+  if (!plan) return null;
+  return { ...plan, subscriptionPlanType: pricingTier.subscriptionPlanType };
 }
 
 /**

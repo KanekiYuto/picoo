@@ -2,10 +2,9 @@ const { locales, defaultLocale } = require('./config/locales');
 
 const excludePaths = [
   '/api/*',
-  '/checkout/*',
   '/portal/*',
   '/settings/*',
-  '/subscription/*',
+  '/payment/*',
   '/assets',
   '/history',
   '/assets/*',

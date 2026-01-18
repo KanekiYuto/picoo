@@ -7,7 +7,7 @@ import {
   getCreemPayCreditPackProductId,
 } from "@/shared/payment/config/payment";
 import { CREDIT_PACK_ACCENT_COLORS_BY_NAME } from "@/shared/payment/config/payment.constants";
-import { createPaymentCheckout } from "@/shared/payment/client";
+import { createPaymentCheckout } from "../../shared/payment/client";
 
 type CreditPackWithProduct = (typeof CREDIT_PACKS)[number] & {
   productId: ReturnType<typeof getCreemPayCreditPackProductId>;
@@ -16,18 +16,11 @@ type CreditPackWithProduct = (typeof CREDIT_PACKS)[number] & {
 
 interface CreditPacksProps {
   user?: { id: string; email: string; name?: string } | null;
-  i18nNamespace?: string;
-  variant?: "settings" | "pricing";
 }
 
-export function CreditPacks({
-  user,
-  i18nNamespace = "settings.credits.packs",
-  variant = "settings",
-}: CreditPacksProps) {
-  const t = useTranslations(i18nNamespace);
+export function CreditPacks({ user }: CreditPacksProps) {
+  const t = useTranslations("pricing.packs");
   const [loadingPackId, setLoadingPackId] = useState<string | null>(null);
-  const isPricingVariant = variant === "pricing";
 
   const packs = useMemo<CreditPackWithProduct[]>(
     () =>
@@ -38,18 +31,11 @@ export function CreditPacks({
     [],
   );
 
-  const gridClassName = isPricingVariant
-    ? "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 2xl:grid-cols-4 gap-4"
-    : "grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4";
-  const headerClassName = isPricingVariant
-    ? "flex items-center justify-between px-1"
-    : "flex items-center justify-between";
-  const headerTitleClass = isPricingVariant
-    ? "text-sm font-semibold text-foreground"
-    : "text-sm font-medium text-foreground/90";
-  const headerHintClass = isPricingVariant
-    ? "text-xs text-muted-foreground"
-    : "text-xs text-foreground/70";
+  const gridClassName =
+    "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 2xl:grid-cols-4 gap-4";
+  const headerClassName = "flex items-center justify-between px-1";
+  const headerTitleClass = "text-sm font-semibold text-foreground";
+  const headerHintClass = "text-xs text-muted-foreground";
 
   const groupedPacks = useMemo(() => {
     const groups = new Map<number, CreditPackWithProduct[]>();
@@ -73,17 +59,11 @@ export function CreditPacks({
   };
 
   const getButtonClassName = (disabled: boolean) =>
-    isPricingVariant
-      ? `w-full py-3 px-6 rounded-lg font-semibold transition-all duration-200 ${
-          disabled
-            ? "bg-white/20 text-white cursor-not-allowed"
-            : "bg-white text-black hover:bg-white/90 cursor-pointer"
-        }`
-      : `w-full rounded-lg px-4 py-2 text-sm font-semibold transition-colors ${
-          disabled
-            ? "bg-muted text-muted-foreground cursor-not-allowed"
-            : "bg-primary text-primary-foreground hover:bg-primary/90"
-        }`;
+    `w-full py-3 px-6 rounded-lg font-semibold transition-all duration-200 ${
+      disabled
+        ? "bg-white/20 text-white cursor-not-allowed"
+        : "bg-white text-black hover:bg-white/90 cursor-pointer"
+    }`;
 
   const getBonusLabel = (pack: CreditPackWithProduct) =>
     t("bonusRate", { percent: Math.round((pack.bonusRate ?? 0) * 100) });
@@ -135,15 +115,15 @@ export function CreditPacks({
     try {
       const { checkoutUrl } = await createPaymentCheckout({
         productId: pack.productId,
-        successUrl: `${window.location.origin}/subscription/success`,
+        type: "one-time",
         metadata: {
           userId: user.id,
           packId: pack.id,
-          source: variant,
+          source: "pricing",
         },
         customer: {
           email: user.email,
-          name: user.name,
+          name: user.name ?? user.email,
         },
       });
       if (checkoutUrl) {
@@ -160,101 +140,54 @@ export function CreditPacks({
     const bonusPercent = Math.round((pack.bonusRate ?? 0) * 100);
     const shouldShowBonus = bonusPercent > 0;
 
-    if (isPricingVariant) {
-      return (
-        <div className="rounded-xl overflow-hidden bg-[#0F0F0F] bg-[linear-gradient(180deg,rgba(255,255,255,0.06)_0%,rgba(255,255,255,0.0)_100%)] flex flex-col flex-1">
-          <div className="p-4 md:p-6 lg:p-8 flex flex-col h-full">
-            <div className="flex items-center justify-between gap-3 mb-4">
-              <h3 className="text-xl md:text-2xl lg:text-3xl font-bold text-white">
-                {pack.name}
-              </h3>
-              {shouldShowBonus && (
-                <span className="inline-flex items-center px-2 py-0.5 rounded bg-white/20 text-white font-semibold text-xs md:text-xs lg:text-sm whitespace-nowrap">
-                  {t("bonusRate", { percent: bonusPercent })}
-                </span>
+    return (
+      <div className="rounded-xl overflow-hidden bg-[#0F0F0F] bg-[linear-gradient(180deg,rgba(255,255,255,0.06)_0%,rgba(255,255,255,0.0)_100%)] flex flex-col flex-1">
+        <div className="p-4 md:p-6 lg:p-8 flex flex-col h-full">
+          <div className="flex items-center justify-between gap-3 mb-4">
+            <h3 className="text-xl md:text-2xl lg:text-3xl font-bold text-white">
+              {pack.name}
+            </h3>
+            {shouldShowBonus && (
+              <span className="inline-flex items-center px-2 py-0.5 rounded bg-white/20 text-white font-semibold text-xs md:text-xs lg:text-sm whitespace-nowrap">
+                {t("bonusRate", { percent: bonusPercent })}
+              </span>
+            )}
+          </div>
+          <div className="flex items-baseline justify-between gap-3 mb-4">
+            <div className="text-3xl md:text-4xl lg:text-5xl font-bold text-white">
+              ${formatPrice(pack.price)}
+            </div>
+            <div className="text-xs md:text-sm lg:text-lg text-white/70">
+              {getTotalCreditsLabel(pack)}
+            </div>
+          </div>
+          {shouldShowBonus ? (
+            <div className="mb-6 text-xs md:text-sm lg:text-base text-white/70">
+              {getPromoLabel(
+                Math.round(pack.credits / (1 + (pack.bonusRate ?? 0))),
+                Math.max(
+                  0,
+                  pack.credits - Math.round(pack.credits / (1 + (pack.bonusRate ?? 0))),
+                ),
+                true,
               )}
             </div>
-            <div className="flex items-baseline justify-between gap-3 mb-4">
-              <div className="text-3xl md:text-4xl lg:text-5xl font-bold text-white">
-                ${formatPrice(pack.price)}
-              </div>
-              <div className="text-xs md:text-sm lg:text-lg text-white/70">
-                {getTotalCreditsLabel(pack)}
-              </div>
+          ) : pack.name.toLowerCase() === "mini" ? (
+            <div className="mb-6 text-xs md:text-sm lg:text-base text-white/70">
+              {getMiniMarketingLabel(
+                Math.round(pack.credits / (1 + (pack.bonusRate ?? 0))),
+              )}
             </div>
-            {shouldShowBonus ? (
-              <div className="mb-6 text-xs md:text-sm lg:text-base text-white/70">
-                {getPromoLabel(
-                  Math.round(pack.credits / (1 + (pack.bonusRate ?? 0))),
-                  Math.max(
-                    0,
-                    pack.credits - Math.round(pack.credits / (1 + (pack.bonusRate ?? 0))),
-                  ),
-                  true,
-                )}
-              </div>
-            ) : pack.name.toLowerCase() === "mini" ? (
-              <div className="mb-6 text-xs md:text-sm lg:text-base text-white/70">
-                {getMiniMarketingLabel(
-                  Math.round(pack.credits / (1 + (pack.bonusRate ?? 0))),
-                )}
-              </div>
-            ) : null}
-            <button
-              type="button"
-              onClick={() => startCheckout(pack)}
-              disabled={buttonDisabled}
-              className={`${getButtonClassName(buttonDisabled)} mt-auto`}
-            >
-              {buttonLabel}
-            </button>
-          </div>
+          ) : null}
+          <button
+            type="button"
+            onClick={() => startCheckout(pack)}
+            disabled={buttonDisabled}
+            className={`${getButtonClassName(buttonDisabled)} mt-auto`}
+          >
+            {buttonLabel}
+          </button>
         </div>
-      );
-    }
-
-    return (
-      <div className="rounded-xl border border-muted-foreground/10 bg-background p-4 flex flex-col gap-3 h-full">
-        <div className="flex items-center justify-between gap-2">
-          <div className="text-lg font-semibold">{pack.name}</div>
-          {shouldShowBonus && (
-            <span className="inline-flex items-center px-2 py-0.5 rounded bg-primary/15 text-primary font-semibold text-xs md:text-xs lg:text-sm whitespace-nowrap">
-              {t("bonusRate", { percent: bonusPercent })}
-            </span>
-          )}
-        </div>
-        <div className="flex items-baseline justify-between gap-2">
-          <div className="text-lg font-bold text-foreground">${formatPrice(pack.price)}</div>
-          <div className="text-xs text-muted-foreground">
-            {getTotalCreditsLabel(pack)}
-          </div>
-        </div>
-        {shouldShowBonus ? (
-          <div className="text-xs text-muted-foreground">
-            {getPromoLabel(
-              Math.round(pack.credits / (1 + (pack.bonusRate ?? 0))),
-              Math.max(
-                0,
-                pack.credits - Math.round(pack.credits / (1 + (pack.bonusRate ?? 0))),
-              ),
-              false,
-            )}
-          </div>
-        ) : pack.name.toLowerCase() === "mini" ? (
-          <div className="text-xs text-muted-foreground">
-            {getMiniMarketingLabel(
-              Math.round(pack.credits / (1 + (pack.bonusRate ?? 0))),
-            )}
-          </div>
-        ) : null}
-        <button
-          type="button"
-          onClick={() => startCheckout(pack)}
-          disabled={buttonDisabled}
-          className={`${getButtonClassName(buttonDisabled)} mt-auto`}
-        >
-          {buttonLabel}
-        </button>
       </div>
     );
   };
@@ -262,12 +195,10 @@ export function CreditPacks({
   const renderPackCard = (pack: CreditPackWithProduct) => {
     const isLoading = loadingPackId === pack.id;
     const cardContent = renderCardContent(pack, isLoading);
-    const cardWrapper = isPricingVariant ? (
+    const cardWrapper = (
       <div className={`relative h-full rounded-2xl p-[3px] flex flex-col ${getAccentColor(pack)}`}>
         {cardContent}
       </div>
-    ) : (
-      cardContent
     );
 
     return <div key={pack.id}>{cardWrapper}</div>;
@@ -280,20 +211,16 @@ export function CreditPacks({
         <span className={headerHintClass}>{t("hint")}</span>
       </div>
 
-      <div className={isPricingVariant ? "space-y-5" : "space-y-4"}>
+      <div className="space-y-5">
         {groupedPacks.map(([days, items]) => (
           <div key={days} className="space-y-3">
             <div className="flex items-center gap-3">
               <span
-                className={
-                  isPricingVariant
-                    ? "rounded-md border border-muted/30 bg-transparent px-3 py-1.5 text-sm font-medium text-foreground/80"
-                    : "text-xs font-medium text-muted-foreground"
-                }
+                className="rounded-md border border-muted/30 bg-transparent px-3 py-1.5 text-sm font-medium text-foreground/80"
               >
                 {t("groupTitle", { days })}
               </span>
-              {isPricingVariant && <div className="h-px flex-1 border-t-2 border-dashed border-muted/30" />}
+              <div className="h-px flex-1 border-t-2 border-dashed border-muted/30" />
             </div>
             <div className={gridClassName}>
               {items.map((pack) => renderPackCard(pack))}

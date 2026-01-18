@@ -1,16 +1,12 @@
 import { NextRequest } from 'next/server';
 import { DEFAULT_PAYMENT_PROVIDER } from '@/shared/payment/config';
 import { getPaymentProvider } from '@/shared/payment/providers';
-import { siteConfig } from '@/config/site';
-import type { PaymentProvider } from '@/shared/payment/config/payment.types';
 
 type CheckoutRequest = {
   productId: string;
-  successUrl?: string;
-  metadata?: Record<string, string | number | null>;
-  customer?: { email?: string; name?: string };
-  units?: number;
-  provider?: PaymentProvider;
+  successUrl: string;
+  metadata: Record<string, string | number | null>;
+  customer: { email: string; name: string };
 };
 
 export async function POST(request: NextRequest) {
@@ -20,9 +16,13 @@ export async function POST(request: NextRequest) {
     return Response.json({ error: 'Missing productId' }, { status: 400 });
   }
 
-  const origin = siteConfig.url ?? request.nextUrl.origin;
-  const successUrl = body.successUrl ?? `${origin}/subscription/success`;
-  const provider = body.provider ?? DEFAULT_PAYMENT_PROVIDER;
+  const successUrl = body.successUrl;
+
+  if (!successUrl) {
+    return Response.json({ error: 'Missing successUrl' }, { status: 400 });
+  }
+
+  const provider = DEFAULT_PAYMENT_PROVIDER;
 
   try {
     const adapter = getPaymentProvider(provider);
@@ -31,7 +31,7 @@ export async function POST(request: NextRequest) {
       successUrl,
       metadata: body.metadata,
       customer: body.customer,
-      units: body.units,
+      units: 1,
     });
 
     return Response.json({ checkoutUrl });
