@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useState } from "react";
 import { useTranslations } from "next-intl";
@@ -9,8 +9,10 @@ import { getPlanInfo } from "@/lib/utils/plan";
 import { CreditsSkeleton } from "./_components/CreditsSkeleton";
 import { CreditsHeader } from "./_components/CreditsHeader";
 import { CreditsOverview } from "./_components/CreditsOverview";
+import { CreditPacks } from "@/components/pricing/CreditPacks";
 import { CreditsFilter } from "./_components/CreditsFilter";
 import { CreditsList } from "./_components/CreditsList";
+import { CREDIT_PACKS } from "@/shared/payment/config/payment";
 
 export default function CreditsPage() {
   const t = useTranslations("settings.credits");
@@ -22,6 +24,13 @@ export default function CreditsPage() {
   const [filter, setFilter] = useState<"all" | "active" | "expired">("active");
 
   const planInfo = user ? getPlanInfo(user.type, (key) => tPlans(key)) : null;
+  const checkoutUser = user
+    ? {
+        id: user.id,
+        email: user.email,
+        name: user.name ?? undefined,
+      }
+    : null;
 
   const filteredCredits = credits.filter((credit) => {
     if (filter === "all") return true;
@@ -44,10 +53,6 @@ export default function CreditsPage() {
     );
   }
 
-  if (isLoading) {
-    return <CreditsSkeleton />;
-  }
-
   return (
     <div className="space-y-6 md:space-y-8">
       <CreditsHeader
@@ -57,17 +62,21 @@ export default function CreditsPage() {
         onOpenMenu={openMenu}
       />
 
-      <CreditsOverview
-        summary={summary}
-        planInfo={planInfo}
-        currentBalanceLabel={t("overview.currentBalance")}
-        availableCreditsLabel={t("overview.availableCredits")}
-        currentPlanLabel={t("overview.currentPlan")}
-        consumedLabel={t("overview.totalConsumed")}
-        creditsUsedLabel={t("overview.creditsUsed")}
-      />
+      {!isLoading && (
+        <CreditsOverview
+          summary={summary}
+          planInfo={planInfo}
+          currentBalanceLabel={t("overview.currentBalance")}
+          availableCreditsLabel={t("overview.availableCredits")}
+          currentPlanLabel={t("overview.currentPlan")}
+          consumedLabel={t("overview.totalConsumed")}
+          creditsUsedLabel={t("overview.creditsUsed")}
+        />
+      )}
 
-      <div className="space-y-3">
+      <CreditPacks user={checkoutUser} />
+
+      {!isLoading && <div className="space-y-3">
         <div className="flex items-center justify-between">
           <h2 className="text-sm font-medium text-muted">
             {t("details.title")}
@@ -82,7 +91,7 @@ export default function CreditsPage() {
           />
         </div>
 
-        <CreditsList
+      <CreditsList
           credits={credits}
           filteredCredits={filteredCredits}
           noCreditsLabel={t("details.noCredits")}
@@ -92,9 +101,21 @@ export default function CreditsPage() {
           statusActiveLabel={t("details.active")}
           statusExpiringLabel={t("details.expiringSoon")}
           statusExpiredLabel={t("details.expired")}
-          typeLabel={(type) => t(`details.types.${type}`)}
+        typeLabel={(type) => {
+          if (type.startsWith("credit_pack_")) {
+            const packId = type.replace("credit_pack_", "");
+            const pack = CREDIT_PACKS.find((item) => item.id === packId);
+            if (pack) {
+              return t("details.types.credit_pack", {
+                name: pack.name,
+                days: pack.validDays,
+              });
+            }
+          }
+          return t(`details.types.${type}`);
+        }}
         />
-      </div>
+      </div>}
     </div>
   );
 }

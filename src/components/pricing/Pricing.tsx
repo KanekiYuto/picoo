@@ -7,6 +7,7 @@ import { createPricingPlans, createBillingCycles } from "./data";
 import { BillingCycle } from "./types";
 import { useTranslations } from "next-intl";
 import { useUserStore } from "@/store/useUserStore";
+import { CreditPacks } from "@/components/pricing/CreditPacks";
 
 interface PricingProps {
   /** 自定义类名 */
@@ -57,7 +58,10 @@ export function Pricing({
 
   // 使用 useMemo 缓存国际化数据
   const billingCycles = useMemo(() => createBillingCycles(t), [t]);
-  const pricingPlans = useMemo(() => createPricingPlans(t, billingCycle as 'monthly' | 'yearly'), [t, billingCycle]);
+  const pricingPlans = useMemo(() => {
+    if (billingCycle === "onetime") return [];
+    return createPricingPlans(t, billingCycle as "monthly" | "yearly");
+  }, [t, billingCycle]);
 
   // 检查指定计划是否为当前订阅（需要同时匹配 billingCycle 和计划 ID）
   const isCurrentPlan = (planId: string): boolean => {
@@ -82,10 +86,10 @@ export function Pricing({
           viewport={{ once: true }}
           className="flex justify-center mb-8 md:mb-12 lg:mb-16"
         >
-          <div className="relative inline-flex gap-2 rounded-lg bg-muted/20 p-1">
+          <div className="relative inline-flex gap-2 rounded-lg bg-background-1 p-1 border border-background-2">
             {billingCycles.map((cycle) => (
               <motion.button
-                key={cycle.id} 
+                key={cycle.id}
                 onClick={() => setBillingCycle(cycle.id)}
                 className={`
                   relative px-8 py-2.5 rounded-md font-medium text-sm
@@ -107,7 +111,7 @@ export function Pricing({
                 {billingCycle === cycle.id && (
                   <motion.div
                     layoutId="billing-cycle-tab"
-                    className="absolute inset-0 rounded-md bg-background shadow-lg z-0"
+                    className="absolute inset-0 rounded-md bg-background border border-background-2"
                     transition={{ type: "spring", duration: 0.5, bounce: 0.2 }}
                   />
                 )}
@@ -120,33 +124,45 @@ export function Pricing({
       </div>
 
       {/* 定价卡片网格和底部说明 - 共享背景色 */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, delay: 0.4 }}
-        viewport={{ once: true }}
-        className="w-full bg-muted/20 p-4 rounded-2xl"
-      >
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 2xl:grid-cols-4 gap-6 mb-6">
-          {pricingPlans.map((plan) => (
-            <PricingCard
-              key={plan.id}
-              plan={plan}
-              billingCycle={billingCycle}
-              savePercent={savePercent}
-              isCurrent={isCurrentPlan(plan.id)}
-              user={pricingUser}
-            />
-          ))}
-        </div>
+      {billingCycle === "onetime" ? (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.4 }}
+          viewport={{ once: true }}
+          className="w-full bg-background-1 p-4 rounded-2xl border border-background-2"
+        >
+          <CreditPacks user={pricingUser} i18nNamespace="pricing.packs" variant="pricing" />
+        </motion.div>
+      ) : (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.4 }}
+          viewport={{ once: true }}
+          className="w-full bg-background-1 p-4 rounded-2xl border border-background-2"
+        >
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 2xl:grid-cols-4 gap-6 mb-6">
+            {pricingPlans.map((plan) => (
+              <PricingCard
+                key={plan.id}
+                plan={plan}
+                billingCycle={billingCycle}
+                savePercent={savePercent}
+                isCurrent={isCurrentPlan(plan.id)}
+                user={pricingUser}
+              />
+            ))}
+          </div>
 
-        {/* 底部说明 */}
-        <div className="text-center">
-          <p className="inline-block px-4 py-2 rounded-lg border border-muted-foreground/20 text-muted-foreground text-xs font-medium tracking-wide bg-background">
-            {t("footer.guarantee")}
-          </p>
-        </div>
-      </motion.div>
+          {/* 底部说明 */}
+          <div className="text-center">
+            <p className="inline-block px-4 py-2 rounded-lg border border-muted-foreground/20 text-muted-foreground text-xs font-medium tracking-wide bg-background">
+              {t("footer.guarantee")}
+            </p>
+          </div>
+        </motion.div>
+      )}
     </div>
   );
 }

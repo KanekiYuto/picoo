@@ -42,6 +42,24 @@
     "title": "Credits Management",
     "description": "View and manage your credit balance",
     "openMenu": "Open settings menu",
+    "packs": {
+      "title": "Credit Packs",
+      "hint": "One-time purchase, credits delivered automatically",
+      "cta": "Buy now",
+      "processing": "Processing...",
+      "configuring": "Configuring",
+      "loginRequired": "Please sign in",
+      "credits": "{credits} credits",
+      "creditsBreakdown": "{base} + {bonus} credits",
+      "creditsBreakdownWithTotal": "{total} ({base} + {bonus}) credits",
+      "creditsPromo": "Get <tag>{base}</tag> credits, plus <tag>{bonus}</tag> bonus credits",
+      "bonusRate": "Bonus {percent}% credits",
+      "marketing": {
+        "mini": "Get {base} credits, no bonus credits."
+      },
+      "validDays": "Valid for {days} days",
+      "groupTitle": "Credit pack (valid {days} days)"
+    },
     "overview": {
       "currentBalance": "Current Balance",
       "availableCredits": "Available Credits",
@@ -69,7 +87,8 @@
         "yearly_basic": "Basic Yearly Credits",
         "yearly_pro": "Pro Yearly Credits",
         "monthly_plus": "Plus Monthly Credits",
-        "yearly_plus": "Plus Yearly Credits"
+        "yearly_plus": "Plus Yearly Credits",
+        "credit_pack": "Credit pack {name} ({days} days)"
       },
       "consumed": "Consumed",
       "remaining": "Remaining"

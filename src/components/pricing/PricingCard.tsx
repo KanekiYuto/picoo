@@ -4,7 +4,6 @@ import { Check, X, HelpCircle } from "lucide-react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { CreemCheckout } from "@creem_io/nextjs";
 import { PricingPlan, BillingCycle, PricingFeature } from "./types";
 
 interface PricingCardProps {
@@ -159,24 +158,17 @@ function CTAButton({
   }
 
   return (
-    <CreemCheckout
-      productId={plan.creemPayProductId}
-      referenceId={user.id}
-      customer={{ email: user.email, name: user.name }}
-      metadata={{}}
+    <button
+      onClick={onPaymentClick}
+      disabled={isLoading}
+      className={`${baseClassName} ${
+        isLoading
+          ? "bg-white/20 text-white cursor-not-allowed opacity-70"
+          : "bg-white text-black hover:bg-white/90 cursor-pointer"
+      }`}
     >
-      <button
-        onClick={onPaymentClick}
-        disabled={isLoading}
-        className={`${baseClassName} ${
-          isLoading
-            ? "bg-white/20 text-white cursor-not-allowed opacity-70"
-            : "bg-white text-black hover:bg-white/90 cursor-pointer"
-        }`}
-      >
-        {isLoading ? t("processing") : plan.ctaText}
-      </button>
-    </CreemCheckout>
+      {isLoading ? t("processing") : plan.ctaText}
+    </button>
   );
 }
 
@@ -276,12 +268,45 @@ export function PricingCard({
 
   // 计算折扣比例
   const discountRate = savePercent / 100;
-  const yearlyPrice = plan.monthlyPrice * 12 * (1 - discountRate);
+  const fallbackYearlyPrice = plan.monthlyPrice * 12 * (1 - discountRate);
+  const yearlyPrice = plan.yearlyPrice ?? fallbackYearlyPrice;
   const price = billingCycle === "monthly" ? plan.monthlyPrice : yearlyPrice;
   const originalPrice = billingCycle === "yearly" ? plan.monthlyPrice * 12 : 0;
 
   const handlePaymentClick = () => {
+    if (!plan.creemPayProductId || !user) {
+      return;
+    }
     setIsLoading(true);
+    fetch("/api/payment/checkout", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        productId: plan.creemPayProductId,
+        successUrl: `${window.location.origin}/subscription/success`,
+        metadata: {
+          userId: user.id,
+          planId: plan.id,
+          billingCycle,
+        },
+        customer: {
+          email: user.email,
+          name: user.name,
+        },
+      }),
+    })
+      .then(async (response) => {
+        if (!response.ok) {
+          throw new Error("Failed to create checkout");
+        }
+        const data = (await response.json()) as { checkoutUrl?: string };
+        if (data.checkoutUrl) {
+          window.location.href = data.checkoutUrl;
+        }
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
   };
 
   const cardInnerContent = (

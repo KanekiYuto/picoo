@@ -1,5 +1,6 @@
 import { PricingPlan, BillingCycleConfig } from "./types";
-import { PRICING_PLANS_METADATA, YEARLY_DISCOUNT_PERCENT, SUBSCRIPTION_PLANS, getSubscriptionCreditsConfig, getCreemPayProductId } from "@/config/pricing";
+import { PRICING_PLANS_METADATA, YEARLY_DISCOUNT_PERCENT, SUBSCRIPTION_PLANS, getSubscriptionCreditsConfig, getCreemPayProductId, calculateYearlyPrice } from "@/shared/payment/config/payment";
+import { PAYMENT_CONFIG } from "@/shared/payment/config";
 
 /**
  * 创建计费周期配置
@@ -9,6 +10,7 @@ export function createBillingCycles(t: (key: string) => string): BillingCycleCon
   return [
     { id: "monthly", label: t("billingCycle.monthly") },
     { id: "yearly", label: t("billingCycle.yearly"), savePercent: YEARLY_DISCOUNT_PERCENT },
+    { id: "onetime", label: t("billingCycle.onetime") },
   ];
 }
 
@@ -32,11 +34,18 @@ export function createPricingPlans(t: (key: string, values?: Record<string, stri
     return getCreemPayProductId(key as any);
   };
 
+  const getYearlyPrice = (planId: string, monthlyPrice: number) => {
+    const yearlyKey = `yearly_${planId}`;
+    const yearlyPrice = PAYMENT_CONFIG.subscriptions[yearlyKey]?.price;
+    return typeof yearlyPrice === 'number' ? yearlyPrice : calculateYearlyPrice(monthlyPrice);
+  };
+
   return [
     {
       id: "free",
       name: t("plans.free.name"),
       monthlyPrice: plansMetadata.free.monthlyPrice,
+      yearlyPrice: 0,
       ctaText: t("plans.free.ctaText"),
       colorClass: plansMetadata.free.colorClass,
       features: [
@@ -53,6 +62,7 @@ export function createPricingPlans(t: (key: string, values?: Record<string, stri
       id: "basic",
       name: t("plans.basic.name"),
       monthlyPrice: plansMetadata.basic.monthlyPrice,
+      yearlyPrice: getYearlyPrice("basic", plansMetadata.basic.monthlyPrice),
       ctaText: t("plans.basic.ctaText"),
       isPopular: plansMetadata.basic.isPopular,
       colorClass: plansMetadata.basic.colorClass,
@@ -76,6 +86,7 @@ export function createPricingPlans(t: (key: string, values?: Record<string, stri
       id: "plus",
       name: t("plans.plus.name"),
       monthlyPrice: plansMetadata.plus.monthlyPrice,
+      yearlyPrice: getYearlyPrice("plus", plansMetadata.plus.monthlyPrice),
       ctaText: t("plans.plus.ctaText"),
       colorClass: plansMetadata.plus.colorClass,
       creemPayProductId: getProductId('plus'),
@@ -97,6 +108,7 @@ export function createPricingPlans(t: (key: string, values?: Record<string, stri
       id: "pro",
       name: t("plans.pro.name"),
       monthlyPrice: plansMetadata.pro.monthlyPrice,
+      yearlyPrice: getYearlyPrice("pro", plansMetadata.pro.monthlyPrice),
       ctaText: t("plans.pro.ctaText"),
       isSpecialOffer: true,
       colorClass: plansMetadata.pro.colorClass,

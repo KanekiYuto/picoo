@@ -61,6 +61,7 @@
   "billingCycle": {
     "monthly": "monthly",
     "yearly": "yearly",
+    "onetime": "one-time",
     "save": "SAVE"
   },
   "footer": {
@@ -75,8 +76,27 @@
     "bestValue": "BEST VALUE",
     "billingCycle": {
       "monthly": "monthly",
-      "yearly": "yearly"
+      "yearly": "yearly",
+      "onetime": "one-time"
     }
+  },
+  "packs": {
+    "title": "One-time Credit Packs",
+    "hint": "Credits are added instantly and expire by validity period",
+    "cta": "Buy now",
+    "processing": "Processing...",
+    "configuring": "Configuring",
+    "loginRequired": "Please log in",
+    "credits": "{credits} credits",
+    "creditsBreakdown": "{base} + {bonus} credits",
+    "creditsBreakdownWithTotal": "{total} ({base} + {bonus}) credits",
+    "creditsPromo": "Get <tag>{base}</tag> credits, plus <tag>{bonus}</tag> bonus credits",
+    "bonusRate": "Bonus {percent}% credits",
+    "marketing": {
+      "mini": "Get {base} credits, no bonus credits."
+    },
+    "validDays": "Valid for {days} days",
+    "groupTitle": "Credit pack (valid {days} days)"
   },
   "plans": {
     "free": {

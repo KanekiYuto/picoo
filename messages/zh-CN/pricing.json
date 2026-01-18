@@ -61,6 +61,7 @@
   "billingCycle": {
     "monthly": "月付",
     "yearly": "年付",
+    "onetime": "一次性",
     "save": "节省"
   },
   "footer": {
@@ -75,8 +76,27 @@
     "bestValue": "最具性价比",
     "billingCycle": {
       "monthly": "月付",
-      "yearly": "年付"
+      "yearly": "年付",
+      "onetime": "一次性"
     }
+  },
+  "packs": {
+    "title": "一次性付费产品",
+    "hint": "购买后立即到账，有效期内使用",
+    "cta": "立即购买",
+    "processing": "处理中...",
+    "configuring": "配置中",
+    "loginRequired": "请先登录",
+    "credits": "{credits} 积分",
+    "creditsBreakdown": "{base} + {bonus} 积分",
+    "creditsBreakdownWithTotal": "{total}（{base} + {bonus}）积分",
+    "creditsPromo": "购买即得 <tag>{base}</tag> 积分，另赠 <tag>{bonus}</tag> 积分",
+    "bonusRate": "额外送 {percent}% 积分",
+    "marketing": {
+      "mini": "购买即得 {base} 积分，无另赠积分"
+    },
+    "validDays": "有效期 {days} 天",
+    "groupTitle": "积分包（有效期 {days} 天）"
   },
   "plans": {
     "free": {

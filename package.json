@@ -10,6 +10,7 @@
     "start": "next start",
     "lint": "eslint",
     "merge:messages": "tsx scripts/merge-locale-messages.ts",
+    "creem:sync-products": "tsx src/shared/payment/scripts/creem-sync-products.ts",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:push": "drizzle-kit push",

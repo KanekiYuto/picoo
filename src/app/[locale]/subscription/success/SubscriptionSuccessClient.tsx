@@ -25,6 +25,15 @@ interface SubscriptionData {
   paymentTransactionId: string | null;
 }
 
+interface CreditPackData {
+  paymentTransactionId: string;
+  amount: number;
+  currency: string;
+  credits: number;
+  creditPackId: string | null;
+  expiresAt: string | null;
+}
+
 export default function SubscriptionSuccessClient() {
   const t = useTranslations('subscription-success');
   const tPlans = useTranslations('common.plans');
@@ -33,40 +42,53 @@ export default function SubscriptionSuccessClient() {
   const [countdown, setCountdown] = useState(10);
   const [isRedirecting, setIsRedirecting] = useState(false);
   const [subscriptionData, setSubscriptionData] = useState<SubscriptionData | null>(null);
+  const [creditPackData, setCreditPackData] = useState<CreditPackData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  // 从 URL 参数获取订阅 ID（必需参数）
-  const subscriptionId = searchParams.get('subscription_id') || searchParams.get('checkout_id');
+  // 从 URL 参数获取订阅/Checkout ID
+  const subscriptionId = searchParams.get('subscription_id');
+  const checkoutId = searchParams.get('checkout_id');
+  const isCreditPackFlow = !subscriptionId && Boolean(checkoutId);
 
   // 从数据库获取订阅信息
   useEffect(() => {
-    if (!subscriptionId) {
+    if (!subscriptionId && !checkoutId) {
       setIsLoading(false);
       return;
     }
 
-    const fetchSubscription = async () => {
+    const fetchData = async () => {
       try {
-        const response = await fetch(`/api/subscription/${subscriptionId}`);
-        const result = await response.json();
+        if (subscriptionId) {
+          const response = await fetch(`/api/subscription/${subscriptionId}`);
+          const result = await response.json();
+          if (result.success && result.data) {
+            setSubscriptionData(result.data);
+            return;
+          }
+        }
 
-        if (result.success && result.data) {
-          setSubscriptionData(result.data);
+        if (checkoutId) {
+          const response = await fetch(`/api/checkout/${checkoutId}`);
+          const result = await response.json();
+          if (result.success && result.data) {
+            setCreditPackData(result.data);
+          }
         }
       } catch (error) {
-        console.error('Failed to fetch subscription:', error);
+        console.error('Failed to fetch checkout:', error);
       } finally {
         setIsLoading(false);
       }
     };
 
-    fetchSubscription();
-  }, [subscriptionId]);
+    fetchData();
+  }, [subscriptionId, checkoutId]);
 
-  // 跳转到 Dashboard
+  // 跳转到积分页面
   const handleRedirect = useCallback(() => {
     setIsRedirecting(true);
-    router.push('/');
+    router.push('/settings/credits');
   }, [router]);
 
   // 倒计时自动跳转
@@ -97,19 +119,21 @@ export default function SubscriptionSuccessClient() {
     );
   }
 
-  // 如果没有订阅数据，显示错误
-  if (!subscriptionData) {
+  // 如果没有任何数据，显示错误
+  if (!subscriptionData && !creditPackData) {
     return (
       <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center p-4">
         <Card className="border-border bg-bg-elevated w-full max-w-md">
           <CardContent className="pt-8 pb-8 text-center">
-            <p className="text-white/60 mb-4">{t('notFound')}</p>
+            <p className="text-white/60 mb-4">
+              {isCreditPackFlow ? t('creditNotFound') : t('notFound')}
+            </p>
             <Button
-              onClick={() => router.push('/subscription')}
+              onClick={() => router.push(isCreditPackFlow ? '/settings/credits' : '/subscription')}
               variant="outline"
               className="border-white/30 text-white hover:bg-white/10"
             >
-              {t('actions.viewSubscription')}
+              {isCreditPackFlow ? t('actions.viewCredits') : t('actions.viewSubscription')}
             </Button>
           </CardContent>
         </Card>
@@ -126,48 +150,84 @@ export default function SubscriptionSuccessClient() {
             <CheckCircle2 className="w-8 h-8 md:w-10 md:h-10 text-primary" />
           </div>
           <h1 className="text-2xl md:text-3xl font-bold text-white mb-2">
-            {t('title')}
+            {creditPackData ? t('creditPackTitle') : t('title')}
           </h1>
           <p className="text-sm md:text-base text-white/60">
-            {t('description')}
+            {creditPackData ? t('creditPackDescription') : t('description')}
           </p>
         </div>
 
-        {/* 订阅信息卡片 */}
+        {/* 订阅/积分信息卡片 */}
         <Card className="border-white/10 bg-white/5 backdrop-blur-sm mb-5 md:mb-6 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-100">
           <CardContent className="pt-5 md:pt-7">
             <div className="space-y-4 md:space-y-5">
-              {/* 订阅方案 */}
-              <div>
-                <div className="text-xs md:text-sm text-white/50 mb-1 md:mb-1.5">{t('details.plan')}</div>
-                <div className="text-sm md:text-base text-white font-medium">
-                  {tPlans(subscriptionData.planType as any, {
-                    defaultValue: subscriptionData.planType,
-                  })}
-                </div>
-              </div>
+              {creditPackData ? (
+                <>
+                  <div>
+                    <div className="text-xs md:text-sm text-white/50 mb-1 md:mb-1.5">
+                      {t('details.credits')}
+                    </div>
+                    <div className="text-sm md:text-base text-white font-medium">
+                      {creditPackData.credits}
+                    </div>
+                  </div>
 
-              {/* 订阅金额 */}
-              <div className="border-t border-white/10" />
-              <div>
-                <div className="text-xs md:text-sm text-white/50 mb-1 md:mb-1.5">{t('details.amount')}</div>
-                <div className="text-sm md:text-base text-white font-medium">
-                  {subscriptionData.currency === 'CNY' ? '¥' : '$'}
-                  {(subscriptionData.amount / 100).toFixed(2)}
-                </div>
-              </div>
+                  <div className="border-t border-white/10" />
+                  <div>
+                    <div className="text-xs md:text-sm text-white/50 mb-1 md:mb-1.5">
+                      {t('details.amount')}
+                    </div>
+                    <div className="text-sm md:text-base text-white font-medium">
+                      {creditPackData.currency === 'CNY' ? '¥' : '$'}
+                      {(creditPackData.amount / 100).toFixed(2)}
+                    </div>
+                  </div>
 
-              {/* 状态 */}
-              <div className="border-t border-white/10" />
-              <div>
-                <div className="text-xs md:text-sm text-white/50 mb-1 md:mb-1.5">{t('details.status')}</div>
-                <div className="inline-flex items-center gap-1.5 md:gap-2">
-                  <div className="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-primary" />
-                  <span className="text-sm md:text-base font-medium text-primary">
-                    {t('details.statusActive')}
-                  </span>
-                </div>
-              </div>
+                  <div className="border-t border-white/10" />
+                  <div>
+                    <div className="text-xs md:text-sm text-white/50 mb-1 md:mb-1.5">
+                      {t('details.status')}
+                    </div>
+                    <div className="inline-flex items-center gap-1.5 md:gap-2">
+                      <div className="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-primary" />
+                      <span className="text-sm md:text-base font-medium text-primary">
+                        {t('details.statusCompleted')}
+                      </span>
+                    </div>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div>
+                    <div className="text-xs md:text-sm text-white/50 mb-1 md:mb-1.5">{t('details.plan')}</div>
+                    <div className="text-sm md:text-base text-white font-medium">
+                      {tPlans((subscriptionData?.planType ?? 'unknown') as any, {
+                        defaultValue: subscriptionData?.planType ?? 'unknown',
+                      })}
+                    </div>
+                  </div>
+
+                  <div className="border-t border-white/10" />
+                  <div>
+                    <div className="text-xs md:text-sm text-white/50 mb-1 md:mb-1.5">{t('details.amount')}</div>
+                    <div className="text-sm md:text-base text-white font-medium">
+                      {subscriptionData?.currency === 'CNY' ? '¥' : '$'}
+                      {((subscriptionData?.amount || 0) / 100).toFixed(2)}
+                    </div>
+                  </div>
+
+                  <div className="border-t border-white/10" />
+                  <div>
+                    <div className="text-xs md:text-sm text-white/50 mb-1 md:mb-1.5">{t('details.status')}</div>
+                    <div className="inline-flex items-center gap-1.5 md:gap-2">
+                      <div className="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-primary" />
+                      <span className="text-sm md:text-base font-medium text-primary">
+                        {t('details.statusActive')}
+                      </span>
+                    </div>
+                  </div>
+                </>
+              )}
             </div>
           </CardContent>
         </Card>
@@ -179,15 +239,15 @@ export default function SubscriptionSuccessClient() {
             <ul className="space-y-2.5 md:space-y-3">
               <li className="flex items-start gap-2.5 md:gap-3 text-sm md:text-base text-white/70">
                 <div className="w-1 h-1 md:w-1.5 md:h-1.5 rounded-full mt-1.5 md:mt-2 flex-shrink-0 bg-primary" />
-                <span>{t('nextSteps.step1')}</span>
+                <span>{creditPackData ? t('nextSteps.creditStep1') : t('nextSteps.step1')}</span>
               </li>
               <li className="flex items-start gap-2.5 md:gap-3 text-sm md:text-base text-white/70">
                 <div className="w-1 h-1 md:w-1.5 md:h-1.5 rounded-full mt-1.5 md:mt-2 flex-shrink-0 bg-primary" />
-                <span>{t('nextSteps.step2')}</span>
+                <span>{creditPackData ? t('nextSteps.creditStep2') : t('nextSteps.step2')}</span>
               </li>
               <li className="flex items-start gap-2.5 md:gap-3 text-sm md:text-base text-white/70">
                 <div className="w-1 h-1 md:w-1.5 md:h-1.5 rounded-full mt-1.5 md:mt-2 flex-shrink-0 bg-primary" />
-                <span>{t('nextSteps.step3')}</span>
+                <span>{creditPackData ? t('nextSteps.creditStep3') : t('nextSteps.step3')}</span>
               </li>
             </ul>
           </CardContent>
@@ -214,12 +274,12 @@ export default function SubscriptionSuccessClient() {
           </Button>
 
           <Button
-            onClick={() => router.push('/subscription')}
+            onClick={() => router.push(creditPackData ? '/settings/credits' : '/subscription')}
             disabled={isRedirecting}
             variant="ghost"
             className="w-full text-white/70 hover:text-white hover:bg-white/5 h-11 md:h-12 text-sm md:text-base"
           >
-            {t('actions.viewSubscription')}
+            {creditPackData ? t('actions.viewCredits') : t('actions.viewSubscription')}
           </Button>
         </div>
 

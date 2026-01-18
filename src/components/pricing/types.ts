@@ -10,6 +10,8 @@ export interface PricingPlan {
   description?: string;
   /** 月度价格（美元） */
   monthlyPrice: number;
+  /** 年度价格（美元） */
+  yearlyPrice?: number;
   /** 功能列表 */
   features: PricingFeature[];
   /** 是否推荐 */
@@ -47,7 +49,7 @@ export interface PricingFeature {
 /**
  * 计费周期类型
  */
-export type BillingCycle = "monthly" | "yearly";
+export type BillingCycle = "monthly" | "yearly" | "onetime";
 
 /**
  * 计费周期配置

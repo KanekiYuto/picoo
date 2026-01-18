@@ -42,6 +42,24 @@
     "title": "积分管理",
     "description": "查看和管理您的积分余额",
     "openMenu": "打开设置菜单",
+    "packs": {
+      "title": "积分包购买",
+      "hint": "一次性购买，自动发放积分",
+      "cta": "立即购买",
+      "processing": "处理中...",
+      "configuring": "配置中",
+      "loginRequired": "请先登录",
+      "credits": "{credits} 积分",
+      "creditsBreakdown": "{base} + {bonus} 积分",
+      "creditsBreakdownWithTotal": "{total}（{base} + {bonus}）积分",
+      "creditsPromo": "购买即得 <tag>{base}</tag> 积分，另赠 <tag>{bonus}</tag> 积分",
+      "bonusRate": "额外送 {percent}% 积分",
+      "marketing": {
+        "mini": "购买即得 {base} 积分，无另赠积分"
+      },
+      "validDays": "有效期 {days} 天",
+      "groupTitle": "积分包（有效期 {days} 天）"
+    },
     "overview": {
       "currentBalance": "当前积分",
       "availableCredits": "可用积分",
@@ -69,7 +87,8 @@
         "yearly_basic": "基础版年度积分",
         "yearly_pro": "专业版年度积分",
         "monthly_plus": "进阶版月度积分",
-        "yearly_plus": "进阶版年度积分"
+        "yearly_plus": "进阶版年度积分",
+        "credit_pack": "积分包 {name}（{days}天）"
       },
       "consumed": "已消耗",
       "remaining": "剩余"
