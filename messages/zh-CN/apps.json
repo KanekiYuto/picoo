@@ -236,6 +236,26 @@
     }
   }
   ,
+  "index": {
+    "seo": {
+      "title": "AI 应用 | Picoo",
+      "description": "浏览 Picoo AI 应用：AI 换发色、AI 发型更换器。"
+    },
+    "sectionTitle": "现在热门",
+    "viewAll": "查看全部",
+    "title": "AI 应用",
+    "description": "在这里快速找到 Picoo 的 AI 工具，一键打开你需要的应用。",
+    "open": "打开应用",
+    "apps": {
+      "aiHairColorChanger": {
+        "previewAria": "AI 换发色预览视频"
+      },
+      "aiHairstyleChanger": {
+        "previewAria": "AI 发型更换器预览视频"
+      }
+    }
+  }
+  ,
   "components": {
     "howItWorks": {
       "step": "第 {number} 步"

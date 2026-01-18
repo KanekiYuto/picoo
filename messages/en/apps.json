@@ -237,6 +237,26 @@
     }
   }
   ,
+  "index": {
+    "seo": {
+      "title": "AI Apps | Picoo",
+      "description": "Browse Picoo AI apps: AI Hair Color Changer and AI Hairstyle Changer."
+    },
+    "sectionTitle": "Trending now",
+    "viewAll": "View all",
+    "title": "AI Apps",
+    "description": "Explore Picoo AI apps and open the tool you need in one click.",
+    "open": "Open app",
+    "apps": {
+      "aiHairColorChanger": {
+        "previewAria": "AI hair color changer preview video"
+      },
+      "aiHairstyleChanger": {
+        "previewAria": "AI hairstyle changer preview video"
+      }
+    }
+  }
+  ,
   "components": {
     "howItWorks": {
       "step": "Step {number}"

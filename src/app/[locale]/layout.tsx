@@ -26,6 +26,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: siteConfig.url ? new URL(siteConfig.url) : undefined,
   title: `${siteConfig.fullName} - ${siteConfig.tagline}`,
   description: siteConfig.description,
   applicationName: siteConfig.name,
@@ -101,9 +102,36 @@ export default async function LocaleLayout({
   });
 
   const dir = rtlLocales.includes(locale as any) ? 'rtl' : 'ltr';
+  const siteUrl = siteConfig.url ?? "";
+  const normalizedSiteUrl =
+    siteUrl.length > 0 && siteUrl.endsWith("/") ? siteUrl.slice(0, -1) : siteUrl;
+  const websiteStructuredData =
+    siteUrl.length > 0
+      ? {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        name: siteConfig.name,
+        url: siteUrl,
+        potentialAction: {
+          "@type": "SearchAction",
+          target: `${normalizedSiteUrl}/search?q={search_term_string}`,
+          "query-input": "required name=search_term_string",
+        },
+      }
+      : null;
 
   return (
     <html lang={locale} dir={dir} className="dark" suppressHydrationWarning translate="no">
+      <head>
+        {websiteStructuredData ? (
+          <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{
+              __html: JSON.stringify(websiteStructuredData),
+            }}
+          />
+        ) : null}
+      </head>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background text-foreground`}>
         <Script src="https://www.googletagmanager.com/gtag/js?id=G-QTDWD789PQ" strategy="afterInteractive" />
         <Script id="google-analytics" strategy="afterInteractive">
