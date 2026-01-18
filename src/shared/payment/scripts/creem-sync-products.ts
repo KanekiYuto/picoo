@@ -29,7 +29,7 @@ const PRODUCTS_PATH = (envKey: EnvKey) =>
   path.join(process.cwd(), 'src', 'shared', 'payment', 'config', 'products', 'creem', `creem.${envKey}.ts`);
 const ENV_FILES_BY_TARGET: Record<EnvKey, string[]> = {
   local: ['.env.local'],
-  prod: ['.env.production'],
+  prod: ['.env'],
 };
 
 const parseArgs = (argv: string[]) => {

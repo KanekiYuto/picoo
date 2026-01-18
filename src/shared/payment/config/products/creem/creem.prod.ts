@@ -1,68 +1,98 @@
 export const creemProducts = {
   "creditPacks": [
     {
-      "id": "credits_1000_30d",
+      "id": "mini_30d",
       "name": "mini",
       "price": 10,
-      "credits": 1000,
+      "bonusRate": 0,
+      "credits": 800,
       "validDays": 30,
       "ids": {
-        "current": "",
+        "current": "prod_7Cb8jUGrCqerriwDa4DxnJ",
         "historical": []
       }
     },
     {
-      "id": "credits_5000_30d",
+      "id": "standard_30d",
       "name": "standard",
       "price": 50,
-      "credits": 5000,
+      "bonusRate": 0.15,
+      "credits": 4600,
       "validDays": 30,
       "ids": {
-        "current": "",
+        "current": "prod_2FGuXCKcXZBw4NiviDEDy1",
         "historical": []
       }
     },
     {
-      "id": "credits_20000_30d",
+      "id": "pro_30d",
       "name": "pro",
       "price": 200,
-      "credits": 20000,
+      "bonusRate": 0.3,
+      "credits": 20800,
       "validDays": 30,
       "ids": {
-        "current": "",
+        "current": "prod_2Z9VyZCqs1tXGxCZr2LUJH",
         "historical": []
       }
     },
     {
-      "id": "credits_1000_365d",
+      "id": "max_30d",
+      "name": "max",
+      "price": 1000,
+      "bonusRate": 0.45,
+      "credits": 116000,
+      "validDays": 30,
+      "ids": {
+        "current": "prod_pYK7P3NawhNCtmd8XsFcA",
+        "historical": []
+      }
+    },
+    {
+      "id": "mini_365d",
       "name": "mini",
-      "price": 10,
-      "credits": 1000,
+      "price": 12,
+      "bonusRate": 0,
+      "credits": 800,
       "validDays": 365,
       "ids": {
-        "current": "",
+        "current": "prod_4xsoA2mSamC2nP4FDTWDYF",
         "historical": []
       }
     },
     {
-      "id": "credits_5000_365d",
+      "id": "standard_365d",
       "name": "standard",
-      "price": 50,
-      "credits": 5000,
+      "price": 60,
+      "bonusRate": 0.15,
+      "credits": 4600,
       "validDays": 365,
       "ids": {
-        "current": "",
+        "current": "prod_XlSY0U6JHkCJtZtj4nRem",
         "historical": []
       }
     },
     {
-      "id": "credits_20000_365d",
+      "id": "pro_365d",
       "name": "pro",
-      "price": 200,
-      "credits": 20000,
+      "price": 240,
+      "bonusRate": 0.3,
+      "credits": 20800,
       "validDays": 365,
       "ids": {
-        "current": "",
+        "current": "prod_2Xo774NcjvbQUrR3qqkNUr",
+        "historical": []
+      }
+    },
+    {
+      "id": "max_365d",
+      "name": "max",
+      "price": 1200,
+      "bonusRate": 0.45,
+      "credits": 116000,
+      "validDays": 365,
+      "ids": {
+        "current": "prod_2nVd4C15ioa1gxe04ueBYm",
         "historical": []
       }
     }
@@ -79,7 +109,7 @@ export const creemProducts = {
         "video": 2
       },
       "ids": {
-        "current": "",
+        "current": "prod_8eCp318WnAdyqWBpnrE7g",
         "historical": []
       }
     },
@@ -94,7 +124,7 @@ export const creemProducts = {
         "video": 2
       },
       "ids": {
-        "current": "",
+        "current": "prod_6EvVZICyFbuCDlOTL1QPj0",
         "historical": []
       }
     },
@@ -109,7 +139,7 @@ export const creemProducts = {
         "video": 4
       },
       "ids": {
-        "current": "",
+        "current": "prod_i94XIMZpHVTzcgFT11qSU",
         "historical": []
       }
     },
@@ -124,7 +154,7 @@ export const creemProducts = {
         "video": 4
       },
       "ids": {
-        "current": "",
+        "current": "prod_1AWX48gzZyMWbjIWr8aW8N",
         "historical": []
       }
     },
@@ -139,7 +169,7 @@ export const creemProducts = {
         "video": 20
       },
       "ids": {
-        "current": "",
+        "current": "prod_786I7rgWifOjRLjDFTRejk",
         "historical": []
       }
     },
@@ -154,7 +184,7 @@ export const creemProducts = {
         "video": 20
       },
       "ids": {
-        "current": "",
+        "current": "prod_2fzMGebZTCceTY6QeO0Iwo",
         "historical": []
       }
     }
