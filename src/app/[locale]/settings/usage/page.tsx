@@ -122,7 +122,7 @@ export default function UsagePage() {
   return (
     <div className="space-y-6 md:space-y-8">
       {/* Header */}
-      <div className="bg-sidebar-bg border border-border rounded-2xl p-5 md:p-6">
+      <div className="bg-background-1 border border-background-2 rounded-2xl p-5 md:p-6">
         <div className="space-y-3">
           <div className="flex items-center gap-3">
             <button
@@ -144,7 +144,7 @@ export default function UsagePage() {
 
       {/* 统计卡片 */}
       <div className="grid gap-4 md:grid-cols-3">
-        <div className="bg-sidebar-bg border border-border rounded-2xl p-5">
+        <div className="bg-background-1 border border-background-2 rounded-2xl p-5">
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2 text-sm text-muted">
               <TrendingDown className="h-4 w-4" />
@@ -154,7 +154,7 @@ export default function UsagePage() {
           <div className="text-3xl font-bold text-foreground">{stats.totalConsumed.toLocaleString()}</div>
         </div>
 
-        <div className="bg-sidebar-bg border border-border rounded-2xl p-5">
+        <div className="bg-background-1 border border-background-2 rounded-2xl p-5">
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2 text-sm text-muted">
               <Calendar className="h-4 w-4" />
@@ -164,7 +164,7 @@ export default function UsagePage() {
           <div className="text-3xl font-bold text-foreground">{stats.totalRecords}</div>
         </div>
 
-        <div className="bg-sidebar-bg border border-border rounded-2xl p-5">
+        <div className="bg-background-1 border border-background-2 rounded-2xl p-5">
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2 text-sm text-muted">
               <FileText className="h-4 w-4" />
@@ -183,7 +183,7 @@ export default function UsagePage() {
           <h2 className="text-sm font-medium text-muted">{t("table.title")}</h2>
 
           {/* 筛选按钮 */}
-          <div className="relative flex gap-1 bg-sidebar-bg border border-border rounded-lg p-1">
+          <div className="relative flex gap-1 bg-background-1 border border-background-2 rounded-lg p-1">
             <motion.button
               onClick={() => handleFilterChange('all')}
               className={`relative px-3 py-1.5 text-xs font-medium rounded transition-colors cursor-pointer ${

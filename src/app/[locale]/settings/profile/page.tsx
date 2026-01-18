@@ -3,8 +3,8 @@
 import { useEffect, useRef, useState } from "react";
 import { Menu } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { UserProfile } from "../_components/UserProfile";
-import { ProfileSkeleton } from "../_components/ProfileSkeleton";
+import { UserProfile } from "./_components/UserProfile";
+import { ProfileSkeleton } from "./_components/ProfileSkeleton";
 import { useSettingsNav } from "../_components/SettingsNavContext";
 import { useUserStore } from "@/store/useUserStore";
 
@@ -50,7 +50,7 @@ export default function ProfilePage() {
   return (
     <div className="space-y-6 md:space-y-8">
       {/* Header */}
-      <div className="bg-sidebar-bg border border-border rounded-2xl p-5 md:p-6">
+      <div className="bg-background-1 border border-background-2 rounded-2xl p-5 md:p-6">
         <div className="space-y-3">
           <div className="flex items-center gap-3">
             <button

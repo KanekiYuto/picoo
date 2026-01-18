@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { User, CreditCard, Receipt, X, Gem, BarChart3 } from "lucide-react";
+import { User, CreditCard, X, Gem, BarChart3 } from "lucide-react";
 import { SettingsNavProvider } from "./SettingsNavContext";
 import { useTranslations } from "next-intl";
 
@@ -67,7 +67,7 @@ export default function SettingsLayoutClient({
         closeMenu: closeMobileMenu,
       }}
     >
-      <div className="flex min-h-screen bg-background text-foreground">
+      <div className="flex min-h-screen text-foreground">
       {/* 移动端遮罩 */}
       {mobileMenuOpen && (
         <div
@@ -79,7 +79,7 @@ export default function SettingsLayoutClient({
       {/* 侧边栏 */}
       <aside
         className={cn(
-          "fixed left-0 top-16 bottom-0 z-50 w-[min(20rem,85vw)] bg-background transition-transform lg:static lg:translate-x-0 lg:w-64",
+          "fixed left-0 top-16 bottom-0 z-50 w-[min(20rem,85vw)] bg-background border-t border-dashed border-background-2 transition-transform lg:static lg:translate-x-0 lg:w-64 lg:border-t-0",
           mobileMenuOpen ? "translate-x-0" : "-translate-x-full"
         )}
       >
@@ -89,7 +89,7 @@ export default function SettingsLayoutClient({
             <div className="text-sm font-medium text-muted">{t("title")}</div>
             <button
               onClick={closeMobileMenu}
-              className="flex items-center justify-center h-8 w-8 rounded-lg text-foreground hover:bg-sidebar-hover transition-colors"
+              className="flex items-center justify-center h-8 w-8 rounded-lg text-foreground hover:bg-background-2 transition-colors"
               aria-label={t("closeMenu")}
             >
               <X className="h-5 w-5" />
@@ -115,8 +115,8 @@ export default function SettingsLayoutClient({
                           className={cn(
                             "flex items-center gap-3 px-3 py-2 rounded-xl text-sm transition-colors",
                             isActive
-                              ? "bg-sidebar-active text-foreground font-medium"
-                              : "text-muted hover:bg-sidebar-hover hover:text-foreground"
+                              ? "bg-background-2 text-foreground font-medium"
+                              : "text-muted hover:bg-background-2 hover:text-foreground"
                           )}
                         >
                           <Icon className="h-4 w-4" />

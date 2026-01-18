@@ -69,7 +69,7 @@ export function BillingInfo() {
   }, []);
 
   return (
-    <div className="bg-background border border-border rounded-2xl p-5 md:p-6">
+    <div className="bg-background-1 border border-background-2 rounded-2xl p-5 md:p-6">
       {/* 标题部分 */}
       <div className="flex items-center justify-between gap-4 mb-6">
         <h3 className="text-base md:text-lg font-semibold text-foreground">

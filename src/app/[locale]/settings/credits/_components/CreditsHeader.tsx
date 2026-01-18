@@ -16,7 +16,7 @@ export function CreditsHeader({
   onOpenMenu,
 }: CreditsHeaderProps) {
   return (
-    <div className="bg-sidebar-bg border border-border rounded-2xl p-5 md:p-6">
+    <div className="bg-background-1 border border-background-2 rounded-2xl p-5 md:p-6">
       <div className="space-y-3">
         <div className="flex items-center gap-3">
           <button

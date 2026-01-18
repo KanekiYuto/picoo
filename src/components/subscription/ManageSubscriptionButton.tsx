@@ -16,7 +16,7 @@ export function ManageSubscriptionButton({ customerId }: ManageSubscriptionButto
 
   return (
     <CreemPortal customerId={customerId}>
-      <button className="px-4 py-2 bg-sidebar-hover hover:bg-sidebar-active border border-border text-foreground text-sm font-medium rounded-xl transition-colors cursor-pointer">
+      <button className="px-4 py-2 bg-background-2 hover:bg-background-3 border border-background-4 text-foreground text-sm font-medium rounded-xl transition-colors cursor-pointer">
         {t('manageSubscription')}
       </button>
     </CreemPortal>

@@ -20,7 +20,7 @@ export function CreditsFilter({
   expiredLabel,
 }: CreditsFilterProps) {
   return (
-    <div className="relative flex gap-1 bg-sidebar-bg border border-border rounded-lg p-1">
+    <div className="relative flex gap-1 bg-background-1 border border-background-2 rounded-lg p-1">
       <motion.button
         onClick={() => onChange("all")}
         className={`relative px-3 py-1.5 text-xs font-medium rounded transition-colors cursor-pointer ${

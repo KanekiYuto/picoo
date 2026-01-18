@@ -33,7 +33,7 @@ export function CreditsOverview({
 }: CreditsOverviewProps) {
   return (
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-      <div className="bg-sidebar-bg border border-border rounded-2xl p-5">
+      <div className="bg-background-1 border border-background-2 rounded-2xl p-5">
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2 text-sm text-muted">
             <Gem className="h-4 w-4" />
@@ -48,7 +48,7 @@ export function CreditsOverview({
         </div>
       </div>
 
-      <div className="bg-sidebar-bg border border-border rounded-2xl p-5">
+      <div className="bg-background-1 border border-background-2 rounded-2xl p-5">
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2 text-sm text-muted">
             <TrendingUp className="h-4 w-4" />
@@ -64,7 +64,7 @@ export function CreditsOverview({
         )}
       </div>
 
-      <div className="bg-sidebar-bg border border-border rounded-2xl p-5">
+      <div className="bg-background-1 border border-background-2 rounded-2xl p-5">
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2 text-sm text-muted">
             <Calendar className="h-4 w-4" />

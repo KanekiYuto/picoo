@@ -88,7 +88,7 @@ export function EditProfileModal({ isOpen, onClose, user, onSuccess }: EditProfi
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.9, y: 30 }}
               transition={{ type: "spring", duration: 0.4, bounce: 0.3 }}
-              className="relative w-full max-w-lg bg-card border border-border rounded-3xl shadow-2xl overflow-hidden"
+              className="relative w-full max-w-lg bg-background-1 border border-background-2 rounded-3xl shadow-2xl overflow-hidden"
               onClick={(e) => e.stopPropagation()}
             >
               {/* 装饰性渐变背景 */}
@@ -108,7 +108,7 @@ export function EditProfileModal({ isOpen, onClose, user, onSuccess }: EditProfi
                   <button
                     onClick={handleClose}
                     disabled={loading}
-                    className="flex items-center justify-center h-9 w-9 rounded-full bg-sidebar-bg/80 backdrop-blur-sm border border-border text-muted hover:bg-sidebar-hover hover:text-foreground transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="flex items-center justify-center h-9 w-9 rounded-full bg-background-2 hover:bg-background-3/80 backdrop-blur-sm border border-background-4 text-muted hover:bg-background-2 hover:text-foreground transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                     aria-label={t("close")}
                   >
                     <X className="h-4.5 w-4.5" />
@@ -179,7 +179,7 @@ export function EditProfileModal({ isOpen, onClose, user, onSuccess }: EditProfi
                     type="button"
                     onClick={handleClose}
                     disabled={loading}
-                    className="flex-1 px-5 py-3.5 bg-sidebar-bg hover:bg-sidebar-hover border border-border text-foreground text-sm font-semibold rounded-xl transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="flex-1 px-5 py-3.5 bg-background-2 hover:bg-background-3 border border-background-4 text-foreground text-sm font-semibold rounded-xl transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {t("cancel")}
                   </button>

@@ -39,7 +39,7 @@ export function CreditsList({
 }: CreditsListProps) {
   if (filteredCredits.length === 0) {
     return (
-      <div className="bg-sidebar-bg border border-border rounded-2xl p-6 text-center text-muted-foreground">
+      <div className="bg-background-1 border border-background-2 rounded-2xl p-6 text-center text-muted-foreground">
         {credits.length === 0 ? noCreditsLabel : noMatchingLabel}
       </div>
     );
@@ -72,7 +72,7 @@ export function CreditsList({
         return (
           <div
             key={credit.id}
-            className="bg-sidebar-bg border border-border rounded-2xl p-5 md:p-6"
+            className="bg-background-1 border border-background-2 rounded-2xl p-5 md:p-6"
           >
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-base font-semibold text-foreground">
@@ -96,7 +96,7 @@ export function CreditsList({
             </div>
 
             {credit.expiresAt && (
-              <div className="flex items-center gap-2 text-sm text-muted-foreground mb-5 bg-sidebar-hover/50 px-3 py-2 rounded-lg">
+              <div className="flex items-center gap-2 text-sm text-muted-foreground mb-5 bg-background-2 hover:bg-background-3/50 border border-background-4/50 px-3 py-2 rounded-lg">
                 <Clock className="h-4 w-4" />
                 <span>
                   {new Date(credit.issuedAt).toLocaleDateString()}{" "}
@@ -120,7 +120,7 @@ export function CreditsList({
             </div>
 
             <div className="mb-5">
-              <div className="h-3 bg-sidebar-hover rounded-full overflow-hidden">
+              <div className="h-3 bg-background-2 hover:bg-background-3 rounded-full overflow-hidden">
                 <div
                   className={`h-full rounded-full transition-all duration-300 ${progressColor}`}
                   style={{ width: `${percentage}%` }}
@@ -129,7 +129,7 @@ export function CreditsList({
             </div>
 
             <div className="grid grid-cols-2 gap-4">
-              <div className="bg-sidebar-hover/50 rounded-xl p-3 border border-border/50">
+              <div className="bg-background-2 hover:bg-background-3/50 rounded-xl p-3 border border-background-4/50">
                 <div className="text-xs text-muted-foreground mb-1">
                   {consumedLabel}
                 </div>
@@ -137,7 +137,7 @@ export function CreditsList({
                   {credit.consumed.toLocaleString()}
                 </div>
               </div>
-              <div className="bg-sidebar-hover/50 rounded-xl p-3 border border-border/50">
+              <div className="bg-background-2 hover:bg-background-3/50 rounded-xl p-3 border border-background-4/50">
                 <div className="text-xs text-muted-foreground mb-1">
                   {remainingLabel}
                 </div>

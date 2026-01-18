@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useTranslations } from "next-intl";
 import type { User } from "@/store/useUserStore";
-import { EditProfileModal } from "./EditProfileModal";
+import { EditProfileModal } from "../../_components/EditProfileModal";
 import { useUserStore } from "@/store/useUserStore";
 
 interface UserProfileProps {
@@ -25,7 +25,7 @@ export function UserProfile({ user }: UserProfileProps) {
 
   return (
     <>
-      <div className="bg-background border border-border rounded-2xl p-4">
+      <div className="bg-background-1 border border-background-2 rounded-2xl p-4">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div className="flex items-center gap-3 md:gap-4">
             {/* 用户头像 */}
@@ -57,7 +57,7 @@ export function UserProfile({ user }: UserProfileProps) {
           {/* 编辑按钮 */}
           <button
             onClick={() => setIsEditModalOpen(true)}
-            className="w-full sm:w-auto px-4 py-2 bg-sidebar-hover hover:bg-sidebar-active border border-border text-foreground text-sm font-medium rounded-xl transition-colors whitespace-nowrap"
+            className="w-full sm:w-auto px-4 py-2 bg-background-2 hover:bg-background-3 border border-background-4 text-foreground text-sm font-medium rounded-xl transition-colors whitespace-nowrap cursor-pointer"
           >
             {t("editProfile")}
           </button>
