@@ -6,7 +6,7 @@ export const siteConfig = {
   name: "Picoo",
 
   // 站点完整名称
-  fullName: "PicooAI.com",
+  fullName: "Picoo",
 
   // 站点描述
   description: "One platform. Full creative power.",

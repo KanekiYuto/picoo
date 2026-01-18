@@ -11,6 +11,9 @@ export const authClient = createAuthClient({
       autoSelect: false,
       cancelOnTapOutside: true,
       context: 'signin',
+      promptOptions: {
+        fedCM: false,
+      },
     }),
   ],
 });
