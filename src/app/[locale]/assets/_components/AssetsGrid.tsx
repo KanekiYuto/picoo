@@ -22,8 +22,8 @@ export function AssetsGrid({ assets, isLoading, filter, onAssetClick }: AssetsGr
 
   if (assets.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center rounded-2xl border border-border bg-sidebar-bg py-16">
-        <div className="mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-sidebar-bg">
+      <div className="flex flex-col items-center justify-center rounded-2xl border border-background-2 bg-background-1 py-16">
+        <div className="mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-background-2/60">
           {filter === "image" ? (
             <Image className="h-10 w-10 text-muted-foreground" />
           ) : filter === "video" ? (

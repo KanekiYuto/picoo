@@ -42,7 +42,7 @@ export function FAQ({
                 <details
                   key={`${item.question}-${index}`}
                   open={isDefaultOpen}
-                  className="group border-b border-border"
+                  className="group border-b border-background-2"
                 >
                   <summary className="flex w-full cursor-pointer list-none items-center justify-between py-4 text-left sm:py-6">
                     <span
@@ -53,7 +53,7 @@ export function FAQ({
                     >
                       {item.question}
                     </span>
-                    <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-border bg-muted/10 text-foreground/70">
+                    <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-background-2 bg-background-2/40 text-foreground/70">
                       <Plus
                         className="h-4 w-4 text-current group-open:hidden"
                         aria-hidden

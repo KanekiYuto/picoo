@@ -42,7 +42,7 @@ export function App({ title, description, form, previewMedia }: AppProps) {
     };
 
     return (
-        <section className="grid w-full grid-cols-1 gap-10 rounded-3xl border border-border bg-secondary-background p-6 text-foreground sm:gap-12 md:grid-cols-[1fr_1.15fr] md:gap-16 md:p-10">
+        <section className="grid w-full grid-cols-1 gap-10 rounded-3xl border border-background-2 bg-background-1 p-6 text-foreground sm:gap-12 md:grid-cols-[1fr_1.15fr] md:gap-16 md:p-10">
             <div className="order-2 flex flex-col gap-6 md:order-1">
                 <header className="space-y-3">
                     <h1 className="text-3xl font-semibold tracking-tight md:text-4xl">
@@ -59,7 +59,7 @@ export function App({ title, description, form, previewMedia }: AppProps) {
             </div>
 
             <div className="order-1 flex items-start justify-center md:order-2">
-                <div className="w-full overflow-hidden rounded-3xl border border-border bg-background">
+                <div className="w-full overflow-hidden rounded-3xl border border-background-2 bg-background-1">
                     {resolvedPreviewMedia.kind === "video" ? (
                         <video
                             className="block h-auto w-full object-contain"

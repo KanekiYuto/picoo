@@ -88,7 +88,7 @@ export function AiHairColorChangerFormClient({
               <FormControl className="mt-3">
                 <Textarea
                   {...field}
-                  className="min-h-[120px] rounded-3xl border-border bg-muted/10 hover:bg-muted/20"
+                  className="min-h-[120px] rounded-3xl border-background-2 bg-background-1 hover:bg-background-2/40"
                 />
               </FormControl>
             </FormItem>
@@ -107,7 +107,7 @@ export function AiHairColorChangerFormClient({
               </div>
               <Select defaultValue={field.value} onValueChange={field.onChange}>
                 <FormControl>
-                  <SelectTrigger className="mt-3 w-full cursor-pointer rounded-3xl border-border bg-muted/10 hover:bg-muted/20 dark:bg-muted/10 dark:hover:bg-muted/20">
+                  <SelectTrigger className="mt-3 w-full cursor-pointer rounded-3xl border-background-2 bg-background-1 hover:bg-background-2/40">
                     <SelectValue />
                   </SelectTrigger>
                 </FormControl>

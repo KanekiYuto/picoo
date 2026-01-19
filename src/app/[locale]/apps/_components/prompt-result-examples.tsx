@@ -41,9 +41,9 @@ export function PromptResultExamples({
         {items.map((item) => (
           <article
             key={`${item.imageSrc}-${item.prompt}`}
-            className="overflow-hidden rounded-3xl border border-border bg-muted/10"
+            className="overflow-hidden rounded-3xl border border-background-2 bg-background-1"
           >
-            <div className="w-full bg-muted/10">
+            <div className="w-full bg-background-2/40">
               <Image
                 src={item.imageSrc}
                 alt={item.imageAlt}
@@ -55,9 +55,9 @@ export function PromptResultExamples({
             </div>
 
             <div className="p-4">
-              <div className="relative rounded-2xl border border-border bg-background/40 p-4 pt-10">
+              <div className="relative rounded-2xl border border-background-2 bg-background-1 p-4 pt-10">
                 {promptLabel ? (
-                  <div className="absolute left-3 top-3 rounded-full border border-border bg-background/80 px-3 py-1 text-[11px] font-semibold tracking-wide text-foreground backdrop-blur">
+                  <div className="absolute left-3 top-3 rounded-full border border-background-2 bg-background-1/80 px-3 py-1 text-[11px] font-semibold tracking-wide text-foreground backdrop-blur">
                     {promptLabel}
                   </div>
                 ) : null}

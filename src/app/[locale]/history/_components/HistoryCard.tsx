@@ -27,7 +27,7 @@ export function HistoryCard({ item, onDelete }: HistoryCardProps) {
       key={item.id}
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      className="group rounded-lg border border-border bg-sidebar-bg p-4 transition-all hover:border-foreground/20 hover:shadow-md"
+      className="group rounded-lg border border-background-2 bg-background-1 p-4 transition-all hover:border-foreground/20 cursor-pointer"
     >
       {/* 上方：标题、日期、操作按钮 */}
       <div className="flex items-start justify-between gap-4 mb-4">
@@ -45,7 +45,7 @@ export function HistoryCard({ item, onDelete }: HistoryCardProps) {
           {item.results && item.results.length > 0 && (
             <button
               onClick={handleDownload}
-              className="flex items-center gap-1 rounded-lg border border-border bg-muted/10 px-3 py-2 text-xs font-medium text-foreground transition-colors hover:bg-muted/20 cursor-pointer"
+              className="flex items-center gap-1 rounded-lg border border-background-2 bg-background-2/40 px-3 py-2 text-xs font-medium text-foreground transition-colors hover:bg-background-2/60 cursor-pointer"
               title={t("download")}
             >
               <Download className="h-4 w-4" />
@@ -53,7 +53,7 @@ export function HistoryCard({ item, onDelete }: HistoryCardProps) {
           )}
           <button
             onClick={() => onDelete(item.id)}
-            className="flex items-center gap-1 rounded-lg border border-border bg-muted/10 px-3 py-2 text-xs font-medium text-foreground transition-colors hover:border-red-500/50 hover:bg-muted/20 hover:text-red-500 cursor-pointer"
+            className="flex items-center gap-1 rounded-lg border border-background-2 bg-background-2/40 px-3 py-2 text-xs font-medium text-foreground transition-colors hover:border-red-500/50 hover:bg-background-2/60 hover:text-red-500 cursor-pointer"
             title={t("delete")}
           >
             <Trash2 className="h-4 w-4" />
@@ -75,7 +75,7 @@ export function HistoryCard({ item, onDelete }: HistoryCardProps) {
                 })),
                 idx
               )}
-              className="aspect-square rounded-lg overflow-hidden bg-muted border border-border hover:border-foreground/30 transition-colors cursor-pointer"
+              className="aspect-square rounded-lg overflow-hidden bg-background-2/60 border border-background-2 hover:border-foreground/30 transition-colors cursor-pointer"
             >
               {result.type === "image" ? (
                 <img
@@ -93,7 +93,7 @@ export function HistoryCard({ item, onDelete }: HistoryCardProps) {
           ))}
         </div>
       ) : (
-        <div className="h-24 rounded-lg bg-muted border border-border flex items-center justify-center">
+        <div className="h-24 rounded-lg bg-background-2/60 border border-background-2 flex items-center justify-center">
           <p className="text-xs text-muted-foreground">No media</p>
         </div>
       )}

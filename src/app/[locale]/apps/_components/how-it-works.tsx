@@ -39,9 +39,9 @@ function StepCard({
 }) {
   return (
     <article className="flex flex-col gap-6">
-      <div className="group relative overflow-hidden rounded-3xl border border-border bg-card">
+      <div className="group relative overflow-hidden rounded-3xl border border-background-2 bg-background-1">
         <div className="relative">
-          <div className="relative overflow-hidden rounded-2xl bg-muted/10">
+          <div className="relative overflow-hidden rounded-2xl bg-background-2/40">
             {step.media.kind === "image" ? (
               <div className="relative aspect-[16/9] w-full">
                 <Image
@@ -72,7 +72,7 @@ function StepCard({
         </div>
 
         {stepLabel ? (
-          <div className="absolute left-2 top-2 rounded-full border border-border bg-background/80 px-3 py-1 text-xs font-semibold text-foreground backdrop-blur">
+          <div className="absolute left-2 top-2 rounded-full border border-background-2 bg-background-1/80 px-3 py-1 text-xs font-semibold text-foreground backdrop-blur">
             {stepLabel.replace("{n}", String(index + 1))}
           </div>
         ) : null}

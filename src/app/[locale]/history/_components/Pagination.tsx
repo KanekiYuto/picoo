@@ -28,7 +28,7 @@ export function Pagination({
       <button
         onClick={() => onPageChange(Math.max(1, currentPage - 1))}
         disabled={currentPage === 1 || isLoading}
-        className="flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-lg border border-border transition-colors hover:bg-muted/20 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+        className="flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-lg border border-background-2 transition-colors hover:bg-background-2/50 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
         title={t("pagination.previous")}
       >
         <span className="text-xs sm:text-sm font-medium">‹</span>
@@ -41,8 +41,8 @@ export function Pagination({
           disabled={isLoading}
           className={`flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-lg text-xs sm:text-sm font-medium transition-colors cursor-pointer ${
             currentPage === page
-              ? "border border-foreground/20 bg-muted/20 text-foreground"
-              : "border border-border hover:bg-muted/20 disabled:opacity-50 disabled:cursor-not-allowed"
+              ? "border border-foreground/20 bg-background-2/60 text-foreground"
+              : "border border-background-2 hover:bg-background-2/50 disabled:opacity-50 disabled:cursor-not-allowed"
           }`}
         >
           {page}
@@ -52,7 +52,7 @@ export function Pagination({
       <button
         onClick={() => onPageChange(Math.min(totalPages, currentPage + 1))}
         disabled={currentPage === totalPages || isLoading}
-        className="flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-lg border border-border transition-colors hover:bg-muted/20 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+        className="flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-lg border border-background-2 transition-colors hover:bg-background-2/50 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
         title={t("pagination.next")}
       >
         <span className="text-xs sm:text-sm font-medium">›</span>

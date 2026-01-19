@@ -37,20 +37,20 @@ export function AssetDetail({ asset, onClose }: AssetDetailProps) {
         initial={{ scale: 0.9, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         exit={{ scale: 0.9, opacity: 0 }}
-        className="relative max-h-[90vh] w-full max-w-4xl overflow-hidden rounded-xl bg-background shadow-2xl"
+        className="relative max-h-[90vh] w-full max-w-4xl overflow-hidden rounded-xl border border-background-2 bg-background-1 shadow-2xl"
         onClick={(e) => e.stopPropagation()}
       >
         {/* 关闭按钮 */}
         <button
           onClick={onClose}
-          className="absolute right-4 top-4 z-10 flex h-9 w-9 items-center justify-center rounded-full bg-muted/30 transition-colors hover:bg-muted/20 cursor-pointer"
+          className="absolute right-4 top-4 z-10 flex h-9 w-9 items-center justify-center rounded-full bg-background-2/60 transition-colors hover:bg-background-2 cursor-pointer"
         >
           <X className="h-5 w-5 text-foreground" />
         </button>
 
         <div className="grid grid-cols-1 md:grid-cols-2">
           {/* 左侧：素材预览 */}
-          <div className="flex items-center justify-center bg-muted/30 p-8">
+          <div className="flex items-center justify-center bg-background-2/40 p-8">
             {asset.type === "image" ? (
               <img
                 src={asset.url}
@@ -78,7 +78,7 @@ export function AssetDetail({ asset, onClose }: AssetDetailProps) {
             </div>
 
             {/* 详细信息列表 */}
-            <div className="space-y-0 divide-y divide-border">
+            <div className="space-y-0 divide-y divide-background-2">
               <div className="flex justify-between py-3 first:pt-0 last:pb-0">
                 <span className="text-sm text-muted-foreground">{t("detail.type")}</span>
                 <span className="text-sm font-medium text-foreground">
@@ -115,7 +115,7 @@ export function AssetDetail({ asset, onClose }: AssetDetailProps) {
                     {asset.tags.map((tag, index) => (
                       <span
                         key={index}
-                        className="rounded-full border border-border bg-muted/50 px-3 py-1.5 text-xs font-medium text-foreground transition-colors hover:bg-muted"
+                        className="rounded-full border border-background-2 bg-background-2/60 px-3 py-1.5 text-xs font-medium text-foreground transition-colors hover:bg-background-2"
                       >
                         {tag}
                       </span>
@@ -135,13 +135,13 @@ export function AssetDetail({ asset, onClose }: AssetDetailProps) {
                     type: asset.type,
                   }
                 ])}
-                className="flex-1 rounded-lg border border-border bg-muted/10 px-4 py-2.5 text-center text-sm font-medium text-foreground transition-colors hover:bg-muted/20 cursor-pointer"
+                className="flex-1 rounded-lg border border-background-2 bg-background-2/40 px-4 py-2.5 text-center text-sm font-medium text-foreground transition-colors hover:bg-background-2/60 cursor-pointer"
               >
                 {t("detail.viewOriginal")}
               </button>
               <button
                 onClick={handleDownload}
-                className="flex-1 rounded-lg border border-border bg-muted/10 px-4 py-2.5 text-center text-sm font-medium text-foreground transition-colors hover:bg-muted/20 cursor-pointer"
+                className="flex-1 rounded-lg border border-background-2 bg-background-2/40 px-4 py-2.5 text-center text-sm font-medium text-foreground transition-colors hover:bg-background-2/60 cursor-pointer"
               >
                 {t("detail.download")}
               </button>

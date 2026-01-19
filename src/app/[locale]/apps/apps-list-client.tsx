@@ -85,10 +85,10 @@ export function AppsListClient({
             aria-label={`${openLabel}: ${app.title}`}
             onPointerEnter={() => setHoveredHref(app.href)}
             onPointerLeave={() => setHoveredHref(null)}
-            className="group relative w-full overflow-hidden rounded-3xl border border-border bg-muted/10 p-2.5 transition-colors hover:bg-muted/20"
+            className="group relative w-full overflow-hidden rounded-3xl border border-background-2 bg-background-1 p-2.5 transition-colors hover:bg-background-2/40"
           >
             <div className="flex h-full flex-col gap-3">
-              <div className="relative overflow-hidden rounded-2xl border border-border bg-background">
+              <div className="relative overflow-hidden rounded-2xl border border-background-2 bg-background-1">
                 <div className="relative aspect-square w-full">
                   <video
                     className="absolute inset-0 h-full w-full object-cover"

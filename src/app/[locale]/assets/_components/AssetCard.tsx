@@ -18,7 +18,7 @@ export function AssetCard({ asset, onClick }: AssetCardProps) {
     <motion.div
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
-      className="group relative aspect-square cursor-pointer overflow-hidden rounded-lg border border-border bg-muted transition-all hover:border-foreground/20 hover:shadow-md"
+      className="group relative aspect-square cursor-pointer overflow-hidden rounded-lg border border-background-2 bg-background-1 transition-all hover:border-foreground/20 hover:shadow-md"
       onClick={onClick}
     >
       {/* 素材预览 */}

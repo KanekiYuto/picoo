@@ -14,7 +14,7 @@ export function FilterTabs({ filter, onFilterChange }: FilterTabsProps) {
   const t = useTranslations("assets");
 
   return (
-    <div className="relative flex gap-1 rounded-lg border border-border bg-sidebar-bg p-1">
+    <div className="relative flex gap-1 rounded-lg border border-background-2 bg-background-1 p-1">
       {/* 全部 */}
       <motion.button
         onClick={() => onFilterChange("all")}

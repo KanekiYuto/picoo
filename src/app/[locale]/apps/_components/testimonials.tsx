@@ -57,7 +57,7 @@ function RatingStars({
 function Avatar({ name, src }: { name: string; src?: string }) {
   if (src) {
     return (
-      <div className="relative h-10 w-10 overflow-hidden rounded-full border border-border bg-muted/10">
+      <div className="relative h-10 w-10 overflow-hidden rounded-full border border-background-2 bg-background-2/40">
         <Image
           src={src}
           alt={name}
@@ -70,7 +70,7 @@ function Avatar({ name, src }: { name: string; src?: string }) {
   }
 
   return (
-    <div className="grid h-10 w-10 place-items-center rounded-full border border-border bg-muted/10 text-sm font-semibold text-foreground">
+    <div className="grid h-10 w-10 place-items-center rounded-full border border-background-2 bg-background-2/40 text-sm font-semibold text-foreground">
       <span aria-hidden>{getInitials(name)}</span>
       <span className="sr-only">{name}</span>
     </div>
@@ -103,7 +103,7 @@ export function Testimonials({
         {visibleItems.map((item) => (
           <figure
             key={`${item.name}-${item.quote}`}
-            className="rounded-3xl border border-border bg-muted/10 p-6"
+            className="rounded-3xl border border-background-2 bg-background-1 p-6"
           >
             <RatingStars rating={item.rating ?? 5} ratingLabel={ratingLabel} />
             <blockquote className="mt-4 text-sm leading-relaxed text-muted-foreground md:text-base">

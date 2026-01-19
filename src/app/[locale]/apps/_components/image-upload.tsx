@@ -128,7 +128,7 @@ export function ImageUpload({
               type="button"
               onClick={() => validateAndSet(null)}
               disabled={disabled}
-              className="inline-flex items-center gap-2 rounded-full border border-border bg-muted/10 px-3 py-1 text-xs font-semibold text-muted-foreground transition-colors hover:bg-muted/20 disabled:cursor-not-allowed disabled:opacity-60"
+              className="inline-flex items-center gap-2 rounded-full border border-background-2 bg-background-2/40 px-3 py-1 text-xs font-semibold text-muted-foreground transition-colors hover:bg-background-2/60 disabled:cursor-not-allowed disabled:opacity-60"
             >
               <X className="h-4 w-4" aria-hidden />
               {strings?.remove ?? "Remove"}
@@ -139,11 +139,11 @@ export function ImageUpload({
 
       <div
         className={cn(
-          "relative overflow-hidden rounded-3xl border border-dashed border-border bg-muted/10",
+          "relative overflow-hidden rounded-3xl border border-dashed border-background-2 bg-background-1",
           disabled
             ? "opacity-70"
-            : "cursor-pointer transition-colors hover:bg-muted/20",
-          isDragging ? "border-primary bg-muted/20" : null,
+            : "cursor-pointer transition-colors hover:bg-background-2/40",
+          isDragging ? "border-primary bg-background-2/60" : null,
         )}
         onClick={() => {
           if (!disabled) openPicker();
@@ -202,7 +202,7 @@ export function ImageUpload({
 
         {file && previewUrl ? (
           <div className="grid gap-4 p-4 sm:grid-cols-[140px_1fr] sm:items-center sm:p-5">
-            <div className="relative aspect-square w-full overflow-hidden rounded-2xl border border-border bg-muted/30">
+            <div className="relative aspect-square w-full overflow-hidden rounded-2xl border border-background-2 bg-background-2/40">
               <Image
                 src={previewUrl}
                 alt={strings?.previewAlt ?? "Selected image preview"}
@@ -244,7 +244,7 @@ export function ImageUpload({
           </div>
         ) : (
           <div className="flex min-h-48 flex-col items-center justify-center gap-3 p-6 text-center sm:min-h-56">
-            <span className="grid h-12 w-12 place-items-center rounded-full border border-border bg-muted/20 text-muted-foreground">
+            <span className="grid h-12 w-12 place-items-center rounded-full border border-background-2 bg-background-2/40 text-muted-foreground">
               <ImageIcon className="h-5 w-5" aria-hidden />
             </span>
             <div className="space-y-1">

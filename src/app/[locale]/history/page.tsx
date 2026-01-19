@@ -76,9 +76,9 @@ export default function HistoryPage() {
 
         {/* 历史列表 */}
         {histories.length === 0 && !isLoading ? (
-          <Empty className="border border-border rounded-2xl bg-sidebar-bg py-16 border-solid">
+          <Empty className="border border-background-2 rounded-2xl bg-background-1 py-16 border-solid">
             <EmptyHeader>
-              <EmptyMedia variant="icon" className="bg-sidebar-bg">
+              <EmptyMedia variant="icon" className="bg-background-2/60">
                 <Clock className="h-6 w-6" />
               </EmptyMedia>
               <EmptyTitle>{t("empty.title")}</EmptyTitle>

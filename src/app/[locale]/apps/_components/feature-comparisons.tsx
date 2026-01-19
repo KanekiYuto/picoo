@@ -58,7 +58,7 @@ interface FeatureComparisonsProps {
 function MediaPane({ media }: { media: Media }) {
   if (media.kind === "image") {
     return (
-      <div className="relative aspect-[3/4] w-full overflow-hidden rounded-3xl bg-muted/10">
+      <div className="relative aspect-[3/4] w-full overflow-hidden rounded-3xl bg-background-2/40">
         <Image
           src={media.src}
           alt={media.alt}
@@ -72,7 +72,7 @@ function MediaPane({ media }: { media: Media }) {
   }
 
   return (
-    <div className="relative aspect-[3/4] w-full overflow-hidden rounded-3xl bg-muted/10">
+    <div className="relative aspect-[3/4] w-full overflow-hidden rounded-3xl bg-background-2/40">
       <video
         className="absolute inset-0 h-full w-full object-cover"
         src={media.src}
@@ -138,17 +138,17 @@ function CompareCard({
     after.kind === "image" ? { ...after, priority } : after;
 
   return (
-    <div className="relative w-full overflow-hidden rounded-[28px] border border-border bg-card p-5">
+    <div className="relative w-full overflow-hidden rounded-[28px] border border-background-2 bg-background-1 p-5">
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-[1fr_auto_1fr] sm:items-center">
         <div className="relative">
-          <div className="absolute left-3 top-3 z-10 rounded-full border border-border bg-background/80 px-3 py-1 text-[11px] font-semibold tracking-wide text-foreground backdrop-blur">
+          <div className="absolute left-3 top-3 z-10 rounded-full border border-background-2 bg-background-1/80 px-3 py-1 text-[11px] font-semibold tracking-wide text-foreground backdrop-blur">
             {labels?.before}
           </div>
           <MediaPane media={beforeWithPriority} />
         </div>
 
         <div className="flex items-center justify-center">
-          <div className="grid h-10 w-10 place-items-center rounded-full border border-border bg-muted/10 text-muted-foreground">
+          <div className="grid h-10 w-10 place-items-center rounded-full border border-background-2 bg-background-2/40 text-muted-foreground">
             <ChevronRight
               className="h-5 w-5 rotate-90 text-muted-foreground sm:rotate-0"
               aria-hidden
@@ -158,7 +158,7 @@ function CompareCard({
         </div>
 
         <div className="relative">
-          <div className="absolute left-3 top-3 z-10 rounded-full border border-border bg-background/80 px-3 py-1 text-[11px] font-semibold tracking-wide text-foreground backdrop-blur">
+          <div className="absolute left-3 top-3 z-10 rounded-full border border-background-2 bg-background-1/80 px-3 py-1 text-[11px] font-semibold tracking-wide text-foreground backdrop-blur">
             {labels?.after}
           </div>
           <MediaPane media={afterWithPriority} />
@@ -179,7 +179,7 @@ function SingleMediaCard({
     media.kind === "image" ? { ...media, priority } : media;
 
   return (
-    <div className="relative w-full overflow-hidden rounded-[28px] border border-border bg-muted/10">
+    <div className="relative w-full overflow-hidden rounded-[28px] border border-background-2 bg-background-1">
       <SingleMediaPane media={mediaWithPriority} />
     </div>
   );

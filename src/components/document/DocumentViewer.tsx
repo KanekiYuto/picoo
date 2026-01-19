@@ -35,7 +35,7 @@ export function DocumentViewer({
               <h1 className="scroll-m-20 text-3xl font-semibold tracking-tight mt-8 mb-5" {...props} />
             ),
             h2: ({ node, ...props }) => (
-              <h2 className="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight mt-8 mb-5" {...props} />
+              <h2 className="scroll-m-20 border-b border-background-2 pb-2 text-3xl font-semibold tracking-tight mt-8 mb-5" {...props} />
             ),
             h3: ({ node, ...props }) => (
               <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight mt-6 mb-3" {...props} />
@@ -65,7 +65,7 @@ export function DocumentViewer({
               if (isInline) {
                 return (
                   <code
-                    className="relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm font-semibold"
+                    className="relative rounded bg-background-2/60 px-[0.3rem] py-[0.2rem] font-mono text-sm font-semibold"
                     {...props}
                   >
                     {children}
@@ -81,14 +81,14 @@ export function DocumentViewer({
             },
             pre: ({ node, ...props }) => (
               <pre
-                className="mb-4 mt-6 overflow-x-auto rounded-lg border bg-black p-4"
+                className="mb-4 mt-6 overflow-x-auto rounded-lg border border-background-2 bg-background-1 p-4"
                 {...props}
               />
             ),
             // 自定义引用块
             blockquote: ({ node, ...props }) => (
               <blockquote
-                className="mt-6 border-l-2 pl-6 italic"
+                className="mt-6 border-l-2 border-background-2 pl-6 italic"
                 {...props}
               />
             ),
@@ -100,13 +100,13 @@ export function DocumentViewer({
             ),
             thead: ({ node, ...props }) => <thead {...props} />,
             tbody: ({ node, ...props }) => <tbody {...props} />,
-            tr: ({ node, ...props }) => <tr className="m-0 border-t p-0 even:bg-muted" {...props} />,
+            tr: ({ node, ...props }) => <tr className="m-0 border-t border-background-2 p-0 even:bg-background-2/40" {...props} />,
             th: ({ node, ...props }) => (
-              <th className="border px-4 py-2 text-left font-bold [&[align=center]]:text-center [&[align=right]]:text-right" {...props} />
+              <th className="border border-background-2 px-4 py-2 text-left font-bold [&[align=center]]:text-center [&[align=right]]:text-right" {...props} />
             ),
-            td: ({ node, ...props }) => <td className="border px-4 py-2 text-left [&[align=center]]:text-center [&[align=right]]:text-right" {...props} />,
+            td: ({ node, ...props }) => <td className="border border-background-2 px-4 py-2 text-left [&[align=center]]:text-center [&[align=right]]:text-right" {...props} />,
             // 自定义水平线
-            hr: ({ node, ...props }) => <hr className="my-4 md:my-8" {...props} />,
+            hr: ({ node, ...props }) => <hr className="my-4 md:my-8 border-background-2" {...props} />,
             // 加粗文本
             strong: ({ node, ...props }) => <strong className="font-semibold" {...props} />,
           }}
