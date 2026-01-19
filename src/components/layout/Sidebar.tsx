@@ -29,10 +29,10 @@ const navItemsConfig: Omit<NavItem, "labelKey">[] = [
   { icon: LayoutGrid, href: "/apps" },
   { icon: ImageIcon, href: "/assets" },
   { icon: Clock, href: "/history" },
-  { icon: Settings, href: "/settings/profile" },
 ];
 
 const bottomItemsConfig: Omit<NavItem, "labelKey">[] = [
+  { icon: Settings, href: "/settings/profile" },
   { icon: HelpCircle, href: "/help" },
 ];
 
@@ -51,11 +51,11 @@ export function Sidebar({ className }: SidebarProps) {
     { ...navItemsConfig[1], labelKey: t("apps") },
     { ...navItemsConfig[2], labelKey: t("assets") },
     { ...navItemsConfig[3], labelKey: t("history") },
-    { ...navItemsConfig[4], labelKey: t("settings") },
   ];
 
   const bottomItems: NavItem[] = [
-    { ...bottomItemsConfig[0], labelKey: t("help") },
+    { ...bottomItemsConfig[0], labelKey: t("settings") },
+    { ...bottomItemsConfig[1], labelKey: t("help") },
   ];
 
   // 判断是否激活的辅助函数（处理国际化路由）
@@ -77,7 +77,7 @@ export function Sidebar({ className }: SidebarProps) {
   return (
     <aside
       className={cn(
-        "hidden lg:flex lg:flex-col lg:w-16 flex-shrink-0 bg-sidebar-bg",
+        "hidden lg:flex lg:flex-col lg:w-16 flex-shrink-0 bg-background",
         className
       )}
     >
@@ -95,7 +95,7 @@ export function Sidebar({ className }: SidebarProps) {
         </div>
       </Link>
 
-      {/* Main Navigation */}
+      {/* 主导航 */}
       <nav className="flex flex-1 flex-col py-4">
         <div className="flex flex-col gap-1 px-2">
           {navItems.map((item) => {
@@ -108,13 +108,11 @@ export function Sidebar({ className }: SidebarProps) {
                 className="group relative flex flex-col items-center gap-1"
               >
                 <motion.div
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
                   className={cn(
                     "flex h-12 w-12 items-center justify-center rounded-xl transition-colors relative",
                     isActive
-                      ? "bg-sidebar-active text-foreground before:absolute before:left-0 before:top-1/2 before:-translate-y-1/2 before:h-8 before:w-1 before:rounded-r before:bg-primary"
-                      : "text-muted-foreground hover:bg-secondary hover:text-foreground"
+                      ? "bg-background-2 text-foreground before:absolute before:left-0 before:top-1/2 before:-translate-y-1/2 before:h-8 before:w-1 before:rounded-r before:bg-primary"
+                      : "text-muted-foreground hover:bg-background-2 hover:text-foreground"
                   )}
                 >
                   <Icon className="h-5 w-5" />
@@ -128,7 +126,7 @@ export function Sidebar({ className }: SidebarProps) {
           })}
         </div>
 
-        {/* Bottom Navigation */}
+        {/* 底部导航 */}
         <div className="mt-auto flex flex-col gap-1 px-2 pt-4">
           {bottomItems.map((item) => {
             const Icon = item.icon;
@@ -140,13 +138,11 @@ export function Sidebar({ className }: SidebarProps) {
                 className="group relative flex flex-col items-center gap-1"
               >
                 <motion.div
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
                   className={cn(
                     "flex h-12 w-12 items-center justify-center rounded-xl transition-colors relative",
                     isActive
-                      ? "bg-sidebar-active text-foreground before:absolute before:left-0 before:top-1/2 before:-translate-y-1/2 before:h-8 before:w-1 before:rounded-r before:bg-primary"
-                      : "text-muted-foreground hover:bg-secondary hover:text-foreground"
+                      ? "bg-background-2 text-foreground before:absolute before:left-0 before:top-1/2 before:-translate-y-1/2 before:h-8 before:w-1 before:rounded-r before:bg-primary"
+                      : "text-muted-foreground hover:bg-background-2 hover:text-foreground"
                   )}
                 >
                   <Icon className="h-5 w-5" />

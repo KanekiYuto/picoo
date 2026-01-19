@@ -19,7 +19,6 @@ import { useTranslations } from "next-intl";
 import { useEffect } from "react";
 import { useUserStore } from "@/store/useUserStore";
 import Image from "next/image";
-import { siteConfig } from "@/config/site";
 
 interface NavItem {
   icon: React.ComponentType<{ className?: string }>;
@@ -107,7 +106,7 @@ export function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
             <div className="flex items-center justify-end px-4 py-3">
               <button
                 onClick={onClose}
-                className="flex h-8 w-8 items-center justify-center rounded-md bg-muted/10"
+                className="flex h-8 w-8 items-center justify-center rounded-md bg-background-1 border border-background-2"
               >
                 <X className="h-5 w-5 text-foreground" />
               </button>
@@ -115,7 +114,7 @@ export function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
 
             {/* 用户信息卡片 */}
             {user && (
-              <div className="mx-4 mb-6 rounded-lg border border-border bg-muted/10 p-5">
+              <div className="mx-4 mb-6 rounded-lg border border-border bg-background-1 p-5">
                 <div className="flex items-start gap-3">
                   <div className="h-12 w-12 flex-shrink-0 rounded-full overflow-hidden bg-gradient-to-br from-primary to-primary-hover ring-2 ring-border">
                     {user.image ? (

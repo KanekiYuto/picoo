@@ -3,7 +3,7 @@
 import { motion } from "framer-motion";
 import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
-import { Bell, MessageSquare, Users, Menu, X, Moon, Sun } from "lucide-react";
+import { Menu, X, Moon, Sun } from "lucide-react";
 import { UserButton } from "@/components/auth/UserButton";
 import { useUserStore } from "@/store/useUserStore";
 import { useThemeStore } from "@/store/useThemeStore";

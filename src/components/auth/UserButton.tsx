@@ -27,7 +27,7 @@ export function UserButton() {
 
   // 获取积分信息
 
-// 未登录不显示
+  // 未登录不显示
   if (!user) return null;
 
   const handleSignOut = async () => {
@@ -77,13 +77,13 @@ export function UserButton() {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: -10, scale: 0.95 }}
               transition={{ duration: 0.2 }}
-              className="absolute right-0 top-12 z-50 w-80 rounded-2xl bg-card border border-border shadow-2xl overflow-hidden"
+              className="absolute right-0 top-12 z-50 w-80 rounded-2xl bg-background-1 border border-background-2 shadow-2xl overflow-hidden"
             >
               {/* 用户信息区域 - 可点击跳转 */}
               <Link
                 href="/settings/profile"
                 onClick={closeMenu}
-                className="block p-4 border-b border-border bg-secondary hover:bg-secondary/80 transition-colors cursor-pointer"
+                className="block p-4 border-b border-background-3 bg-background-2 hover:bg-background-3 transition-colors cursor-pointer"
               >
                 <div className="flex items-center gap-3">
                   <div className="h-12 w-12 rounded-full overflow-hidden bg-gradient-to-br from-primary to-primary-hover flex-shrink-0 ring-2 ring-border">
@@ -113,7 +113,7 @@ export function UserButton() {
               </Link>
 
               {/* 积分和升级 */}
-              <div className="p-3 border-b border-border">
+              <div className="p-3 border-b border-background-3">
                 <div className="flex items-center gap-1.5">
                   <Gem className="h-4 w-4 text-foreground" />
                   <span className="text-base font-semibold text-foreground">
@@ -137,7 +137,7 @@ export function UserButton() {
                 <Link
                   href="/settings/profile"
                   onClick={closeMenu}
-                  className="flex items-center justify-between px-3 py-2 rounded-lg text-sm text-foreground hover:bg-sidebar-hover transition-colors group"
+                  className="flex items-center justify-between px-3 py-2 rounded-lg text-sm text-foreground hover:bg-background-2 transition-colors group cursor-pointer"
                 >
                   <div className="flex items-center gap-3">
                     <Settings className="h-4 w-4 text-muted group-hover:text-foreground" />
@@ -149,7 +149,7 @@ export function UserButton() {
                 <Link
                   href="/settings/billing"
                   onClick={closeMenu}
-                  className="flex items-center justify-between px-3 py-2 rounded-lg text-sm text-foreground hover:bg-sidebar-hover transition-colors group"
+                  className="flex items-center justify-between px-3 py-2 rounded-lg text-sm text-foreground hover:bg-background-2 transition-colors group"
                 >
                   <div className="flex items-center gap-3">
                     <CreditCard className="h-4 w-4 text-muted group-hover:text-foreground" />
@@ -160,7 +160,7 @@ export function UserButton() {
 
                 <button
                   onClick={handleSignOut}
-                  className="w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm text-foreground hover:bg-sidebar-hover transition-colors group"
+                  className="w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm text-foreground hover:bg-background-2 transition-colors group cursor-pointer"
                 >
                   <div className="flex items-center gap-3">
                     <LogOut className="h-4 w-4 text-muted group-hover:text-foreground" />
@@ -170,7 +170,7 @@ export function UserButton() {
               </div>
 
               {/* 底部链接 */}
-              <div className="p-3 border-t border-border bg-secondary/50">
+              <div className="p-3 border-t border-background-3 bg-background-2/50">
                 <div className="flex items-center justify-center gap-4 text-xs text-muted-foreground">
                   <Link href="/legal/terms" onClick={closeMenu} className="hover:text-foreground transition-colors">
                     {t("terms")}
