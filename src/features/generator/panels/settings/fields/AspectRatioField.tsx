@@ -15,7 +15,7 @@ export function AspectRatioField({ options }: AspectRatioFieldProps) {
   const { field } = useFormField();
 
   return (
-    <SectionCard title={t("aspectRatio")} className="bg-muted/10">
+    <SectionCard title={t("aspectRatio")} className="bg-background-1">
       <FormControl>
         <RatioControls options={options} value={field.value as AspectRatio} onChange={field.onChange} />
       </FormControl>

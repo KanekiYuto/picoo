@@ -20,14 +20,14 @@ export function GeneratorHeader({ onClose, activePanel }: GeneratorHeaderProps) 
   const [sessionType, setSessionType] = useState("current");
 
   return (
-    <div className="flex justify-between bg-background items-center p-2 pointer-events-auto relative m-2 rounded-xl flex-1 border border-border" style={{ zIndex: 60 }}>
+    <div className="flex justify-between bg-background-1 items-center p-2 pointer-events-auto relative m-2 rounded-xl flex-1 border border-background-2" style={{ zIndex: 60 }}>
       <Select value={sessionType} onValueChange={setSessionType}>
-        <SelectTrigger className="h-9 !bg-sidebar-hover hover:!bg-sidebar-active border border-border rounded-xl">
+        <SelectTrigger className="h-9 !bg-background-1 hover:!bg-background-2 border border-background-3 rounded-xl cursor-pointer">
           <SelectValue />
         </SelectTrigger>
-        <SelectContent className="z-[51] !bg-background !border-border rounded-xl">
-          <SelectItem value="current" className="hover:!bg-sidebar-active focus:!bg-sidebar-active cursor-pointer">当前会话</SelectItem>
-          <SelectItem value="history" className="hover:!bg-sidebar-active focus:!bg-sidebar-active cursor-pointer">历史记录</SelectItem>
+        <SelectContent className="z-[51] !bg-background-1 !border-background-2 rounded-xl">
+          <SelectItem value="current" className="hover:!bg-background-1 focus:!bg-background-2 cursor-pointer">当前会话</SelectItem>
+          <SelectItem value="history" className="hover:!bg-background-1 focus:!bg-background-2 cursor-pointer">历史记录</SelectItem>
         </SelectContent>
       </Select>
 
@@ -39,7 +39,7 @@ export function GeneratorHeader({ onClose, activePanel }: GeneratorHeaderProps) 
           exit={{ opacity: 0 }}
           transition={{ duration: 0.2 }}
           onClick={onClose}
-          className="flex h-9 w-9 items-center justify-center rounded-xl bg-sidebar-hover hover:bg-sidebar-active border border-border text-foreground transition-colors backdrop-blur-sm cursor-pointer"
+          className="flex h-9 w-9 items-center justify-center rounded-xl bg-background-1 hover:bg-background-2 border border-background-2 text-foreground transition-colors backdrop-blur-sm cursor-pointer"
           aria-label="Close Generator Modal"
         >
           <X className="h-5 w-5" />

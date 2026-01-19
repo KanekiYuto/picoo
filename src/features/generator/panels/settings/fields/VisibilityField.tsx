@@ -15,11 +15,11 @@ export function VisibilityField({}: VisibilityFieldProps) {
   const { field } = useFormField();
 
   return (
-    <div className="rounded-2xl border border-border/60 bg-muted/10 px-3 py-3 sm:px-4 sm:py-3.5">
+    <div className="rounded-2xl border border-background-2 bg-background-1 px-3 py-3 sm:px-4 sm:py-3.5">
       <div className="flex items-center justify-between gap-3">
         <p className="text-sm font-medium text-foreground">{t("visibility")}</p>
         <FormControl>
-          <div className="relative flex gap-1 rounded-lg bg-muted/10 p-1">
+          <div className="relative flex gap-1 rounded-lg bg-background-2/40 p-1">
             {VISIBILITY_OPTIONS.map((option) => (
               <motion.button
                 key={option}
@@ -36,7 +36,7 @@ export function VisibilityField({}: VisibilityFieldProps) {
                 {field.value === option && (
                   <motion.div
                     layoutId="visibility-bg"
-                    className="absolute inset-0 rounded-md bg-muted/15"
+                    className="absolute inset-0 rounded-md bg-background-2/60"
                     transition={{ type: "spring", duration: 0.5, bounce: 0.2 }}
                   />
                 )}

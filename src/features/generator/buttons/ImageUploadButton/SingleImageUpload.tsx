@@ -52,8 +52,8 @@ export function SingleImageUpload({
               </div>
             </motion.div>
           </TooltipTrigger>
-          <TooltipContent side="top" className="p-0 !bg-background border-0 shadow-lg">
-            <div className="p-2 rounded-lg bg-card">
+          <TooltipContent side="top" className="p-0 !bg-background-1 border-0">
+            <div className="p-2 rounded-lg bg-background-1 border border-background-2">
               <img
                 src={imageUrl}
                 alt="Preview"
@@ -67,7 +67,7 @@ export function SingleImageUpload({
           onClick={onClick}
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
-          className="flex items-center justify-center flex-shrink-0 cursor-pointer w-24 h-24 rounded-xl border-2 border-dashed border-border bg-sidebar-hover hover:bg-sidebar-active transition-all duration-300"
+          className="flex items-center justify-center flex-shrink-0 cursor-pointer w-24 h-24 rounded-xl border-2 border-dashed border-background-2 bg-background-2/40 hover:bg-background-2/60 transition-all duration-300"
         >
           <Plus className="h-7 w-7 text-muted-foreground" />
         </motion.button>

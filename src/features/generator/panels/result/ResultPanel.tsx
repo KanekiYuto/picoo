@@ -87,7 +87,7 @@ export function ResultPanel({
                 >
                   {item.type === 'loading' && (
                     <motion.div
-                      className="w-full h-full rounded-lg bg-muted/20 flex items-center justify-center relative overflow-hidden shimmer-loading"
+                      className="w-full h-full rounded-lg bg-background-2/60 flex items-center justify-center relative overflow-hidden shimmer-loading"
                       exit={{ opacity: 0 }}
                       transition={{ duration: 0.3 }}
                     >
@@ -104,7 +104,7 @@ export function ResultPanel({
                   {item.type === 'success' && (
                     <>
                       {!loadedImages.has(item.id) && (
-                        <div className="w-full h-full rounded-lg bg-muted flex items-center justify-center relative overflow-hidden shimmer-loading">
+                        <div className="w-full h-full rounded-lg bg-background-2/60 flex items-center justify-center relative overflow-hidden shimmer-loading">
                           <div className="absolute top-4 left-4 flex items-center gap-2 z-10">
                             <div className="relative w-4 h-4">
                               <div className="absolute inset-0 rounded-full border-2 border-transparent border-t-white border-r-white animate-spin"></div>
@@ -135,8 +135,8 @@ export function ResultPanel({
                               }}
                               className={cn(
                                 "flex items-center justify-center p-2 rounded-lg cursor-pointer",
-                                "bg-muted/30 text-white transition-all",
-                                "hover:bg-muted/50"
+                                "bg-background-2/60 text-white transition-all",
+                                "hover:bg-background-2/80"
                               )}
                               title={t("download")}
                             >

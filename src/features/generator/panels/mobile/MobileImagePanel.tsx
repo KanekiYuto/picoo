@@ -34,12 +34,12 @@ export function MobileImagePanel({
       transition={{ duration: 0.3 }}
       className="w-full"
     >
-      <div className="bg-background rounded-2xl p-4 md:p-6">
+      <div className="bg-background-1 rounded-2xl p-4 md:p-6 border border-background-2">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-lg font-semibold text-foreground">{t("mobileImagePanel.title")}</h2>
           <button
             onClick={onClose}
-            className="flex h-8 w-8 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-sidebar-hover hover:text-foreground cursor-pointer"
+            className="flex h-8 w-8 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-background-2/40 hover:text-foreground cursor-pointer"
             aria-label={t("resultPanel.close")}
             title={t("resultPanel.close")}
           >

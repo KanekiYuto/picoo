@@ -202,7 +202,7 @@ export function GlobalGenerator({
                 "text-sm md:text-base text-white font-medium whitespace-nowrap",
                 "disabled:opacity-50 disabled:cursor-not-allowed",
                 "transition-all duration-300",
-                "hover:shadow-lg hover:shadow-primary/20 cursor-pointer"
+                "cursor-pointer"
               )}
             >
               {t("common.createWithCredits", { credits: requiredCredits ?? 0 })}

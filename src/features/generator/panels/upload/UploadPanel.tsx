@@ -140,7 +140,7 @@ export function UploadPanel({ isOpen, onClose, onImageSelect, onImageReplace, on
   };
 
   return (
-    <div className="h-full flex flex-col bg-background border border-border rounded-xl">
+    <div className="h-full flex flex-col bg-background-1 border border-background-2 rounded-xl">
       {/* 头部 */}
       <div className="flex items-center justify-between px-4 md:px-6 pt-3 md:pt-4 pb-0 flex-shrink-0">
         <h2 className="text-base md:text-lg font-semibold text-foreground">
@@ -148,7 +148,7 @@ export function UploadPanel({ isOpen, onClose, onImageSelect, onImageReplace, on
         </h2>
         <motion.button
           onClick={onClose}
-          className="flex h-8 w-8 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-sidebar-hover hover:text-foreground cursor-pointer"
+          className="flex h-8 w-8 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-background-2/40 hover:text-foreground cursor-pointer"
           aria-label={t("close")}
           title={t("close")}
         >
@@ -169,7 +169,7 @@ export function UploadPanel({ isOpen, onClose, onImageSelect, onImageReplace, on
           />
           {selectedImage ? (
             /* 图片预览区域 */
-            <div className="relative w-full rounded-2xl overflow-hidden bg-muted/10 border-2 border-dashed backdrop-blur-sm">
+            <div className="relative w-full rounded-2xl overflow-hidden bg-background-2/40 border-2 border-dashed border-background-2 backdrop-blur-sm">
               <div className="flex items-center justify-center p-8 min-h-[300px]">
                 <img
                   src={selectedImage}
@@ -201,11 +201,11 @@ export function UploadPanel({ isOpen, onClose, onImageSelect, onImageReplace, on
                 "border-2 border-dashed transition-all duration-300",
                 isDragging
                   ? "border-primary bg-primary/10"
-                  : "border-border hover:border-primary/50"
+                  : "border-background-2 hover:border-primary/50"
               )}
             >
               {/* 上传图标圆形背景 */}
-              <div className="flex items-center justify-center w-16 h-16 md:w-20 md:h-20 rounded-full bg-sidebar-hover border border-border">
+              <div className="flex items-center justify-center w-16 h-16 md:w-20 md:h-20 rounded-full bg-background-2/40 border border-background-2">
                 <Upload className="h-8 w-8 md:h-10 md:w-10 text-foreground" />
               </div>
 
@@ -224,7 +224,7 @@ export function UploadPanel({ isOpen, onClose, onImageSelect, onImageReplace, on
                 {["JPG", "PNG", "WebP", "GIF"].map((format) => (
                   <span
                     key={format}
-                    className="px-2.5 py-1 rounded-lg text-xs font-medium bg-sidebar-hover border border-border text-muted-foreground hover:border-primary/50 transition-colors"
+                    className="px-2.5 py-1 rounded-lg text-xs font-medium bg-background-2/40 border border-background-2 text-muted-foreground hover:border-primary/50 transition-colors"
                   >
                     {format}
                   </span>
@@ -244,7 +244,7 @@ export function UploadPanel({ isOpen, onClose, onImageSelect, onImageReplace, on
               {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((i) => (
                 <div
                   key={i}
-                  className="aspect-square rounded-lg bg-sidebar-hover border border-border animate-pulse"
+                  className="aspect-square rounded-lg bg-background-2/40 border border-background-2 animate-pulse"
                 />
               ))}
             </div>
@@ -260,8 +260,8 @@ export function UploadPanel({ isOpen, onClose, onImageSelect, onImageReplace, on
                     className={cn(
                       "aspect-square rounded-lg border transition-colors relative group cursor-pointer",
                       isSelected
-                        ? "border-muted/10"
-                        : "border-border"
+                        ? "border-background-2/30"
+                        : "border-background-2"
                     )}
                   >
                     <div className="w-full h-full overflow-hidden rounded-lg">
@@ -299,8 +299,8 @@ export function UploadPanel({ isOpen, onClose, onImageSelect, onImageReplace, on
             </div>
           ) : (
             <div className="flex items-center justify-center">
-              <div className="text-center w-full py-12 md:py-16 px-6 md:px-8 rounded-lg border border-border bg-sidebar-hover/30">
-                <div className="flex items-center justify-center w-12 h-12 mx-auto mb-4 rounded-lg bg-sidebar-hover border border-border">
+              <div className="text-center w-full py-12 md:py-16 px-6 md:px-8 rounded-lg border border-background-2 bg-background-2/30">
+                <div className="flex items-center justify-center w-12 h-12 mx-auto mb-4 rounded-lg bg-background-2/40 border border-background-2">
                   <ImageOff className="w-6 h-6 text-muted-foreground" />
                 </div>
                 <p className="text-sm text-muted-foreground">{t("noRecentUploads")}</p>

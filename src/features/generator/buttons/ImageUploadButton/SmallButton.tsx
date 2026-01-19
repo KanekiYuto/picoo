@@ -33,8 +33,8 @@ export function SmallButton({
       className={cn(
         "relative flex items-center justify-center flex-shrink-0 cursor-pointer",
         "w-10 h-10 rounded-xl",
-        "border-2 border-dashed border-border",
-        "bg-sidebar-hover hover:bg-sidebar-active",
+        "border-2 border-dashed border-background-2",
+        "bg-background-2/40 hover:bg-background-2/60",
         "transition-all duration-300",
         className
       )}

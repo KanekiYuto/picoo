@@ -74,8 +74,8 @@ export function RatioControls({
                   BUTTON_TRANSITION_CLASSES,
                   FOCUS_RING_CLASSES,
                   isActive
-                    ? "border-muted/30 bg-muted/20 text-foreground"
-                    : "border-border/60 bg-muted/10 text-muted-foreground/80 hover:text-foreground hover:bg-sidebar-hover/60 hover:border-border/80"
+                    ? "border-background-2/60 bg-background-2/60 text-foreground"
+                    : "border-background-2 bg-background-2/40 text-muted-foreground/80 hover:text-foreground hover:bg-background-2/60 hover:border-background-2"
                 )}
               >
                 {/* 显示比例的形状预览 */}

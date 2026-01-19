@@ -60,8 +60,8 @@ export function ModelDisplay({
           onClick={onClick}
           className={cn(
             "flex items-center justify-center w-10 h-10 rounded-xl",
-            "bg-sidebar-active text-foreground",
-            "hover:bg-sidebar-hover",
+            "bg-background-2/60 text-foreground",
+            "hover:bg-background-2/40",
             "transition-colors duration-200",
             "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary",
             "flex-shrink-0",
@@ -79,7 +79,7 @@ export function ModelDisplay({
         className={cn(
           "flex items-center gap-1 md:gap-1.5 px-2 md:px-3 py-2 rounded-lg",
           "text-xs md:text-sm text-foreground",
-          "hover:bg-sidebar-hover",
+          "hover:bg-background-2/40",
           "transition-colors duration-200",
           "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary",
           "min-w-0 max-w-full",
