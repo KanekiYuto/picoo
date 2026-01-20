@@ -13,6 +13,7 @@
   --neutral-70: 61 61 61;
   --neutral-80: 41 41 41;
   --neutral-90: 26 26 26;
+  --neutral-95: 20 20 20;
   --neutral-100: 15 15 15;
   --neutral-white: 255 255 255;
   --neutral-black: 0 0 0;
@@ -31,6 +32,8 @@
   --background-3: rgb(var(--neutral-30));
   --background-4: rgb(var(--neutral-40));
   --background-5: rgb(var(--neutral-50));
+
+  --background-generator: rgb(var(--neutral-white));
 
   --radius: 0.625rem;
   --secondary-background: oklch(0.98 0 0);
@@ -82,6 +85,8 @@
   --background-4: rgb(var(--neutral-60));
   --background-5: rgb(var(--neutral-50));
 
+  --background-generator: rgb(var(--neutral-95));
+
   --sidebar-bg: #0f0f0f;
   --secondary-background: #151515;
   --foreground: oklch(1 0 0);
@@ -117,6 +122,8 @@
 }
 
 @theme inline {
+  --color-background-generator: var(--background-generator);
+
   --color-background: var(--background);
   --color-secondary-background: var(--secondary-background);
   --color-background-1: var(--background-1);

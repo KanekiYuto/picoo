@@ -38,7 +38,7 @@ export function ModelGrid({
                     "relative flex h-[80px] w-full shrink-0 items-center justify-center rounded-2xl border transition-colors",
                     "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60 focus-visible:ring-offset-2 focus-visible:ring-offset-background",
                     isSelected
-                      ? "border-background-2/60 bg-background-2/60"
+                      ? "border-background-2/60 bg-background-1"
                       : "border-background-2 bg-background-1",
                     isLocked
                       ? "cursor-not-allowed opacity-60"

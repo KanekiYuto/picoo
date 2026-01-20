@@ -120,10 +120,10 @@ export function GlobalGenerator({
   };
 
   return (
-    <div className={cn("w-full", className)}>
-      <div className="flex flex-col md:flex-row gap-3 md:gap-4">
+    <div className={cn("w-full rounded-2xl border border-background-2 bg-background-generator overflow-hidden", className)}>
+      <div className="flex flex-col md:flex-row gap-3">
         {/* 桌面端图片上传区域 - 左侧 */}
-        <div className="hidden justify-end md:flex flex-col gap-3">
+        <div className="hidden md:flex flex-col gap-3 border-r border-background-2 p-3 md:p-4">
           <ImageUploadButton
             size="lg"
             uploadImages={uploadImages}
@@ -133,13 +133,13 @@ export function GlobalGenerator({
             mode={mode}
           />
           {/* 模式切换按钮 */}
-          <ModeSelectorButton value={mode} onClick={onOpenModePanel || (() => {})} />
+          <ModeSelectorButton value={mode} onClick={onOpenModePanel || (() => { })} />
         </div>
 
         {/* 移动端和桌面端共用的输入区域 - 右侧 */}
-        <div className="flex-1 flex flex-col min-w-0 gap-2 justify-between">
+        <div className="flex-1 flex flex-col min-w-0 gap-0 justify-between">
           {/* 文本输入框容器 */}
-          <div className="relative py-2 md:py-3 px-2 md:px-3">
+          <div className="relative px-3 py-3 md:px-4 md:py-4">
             <textarea
               value={prompt}
               onChange={(e) => setPrompt(e.target.value)}
@@ -154,14 +154,14 @@ export function GlobalGenerator({
           </div>
 
           {/* 底部控制栏 */}
-          <div className="flex items-end justify-between gap-2">
+          <div className="flex items-end justify-between items-center gap-3 p-3 py-2 md:p-4 md:py-3">
             {/* 左侧：模式选择、图片上传和模型信息 */}
             <div className="flex items-center gap-2 md:gap-3 min-w-0 flex-1">
               {/* 移动端模式切换按钮 - 始终显示 */}
               <ModeSelectorButton
                 className="md:hidden flex-shrink-0"
                 value={mode}
-                onClick={onOpenModePanel || (() => {})}
+                onClick={onOpenModePanel || (() => { })}
                 iconOnly={true}
               />
 
@@ -197,7 +197,7 @@ export function GlobalGenerator({
               onClick={handleCreate}
               disabled={requiresPrompt() && !prompt.trim()}
               className={cn(
-                "px-4 md:px-8 py-2.5 md:py-3 rounded-xl flex-shrink-0",
+                "px-4 md:px-6 py-2.5 md:py-3 rounded-full flex-shrink-0",
                 "bg-gradient-primary",
                 "text-sm md:text-base text-white font-medium whitespace-nowrap",
                 "disabled:opacity-50 disabled:cursor-not-allowed",

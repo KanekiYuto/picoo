@@ -32,7 +32,7 @@ export function RatioControls({
             type="button"
             onClick={() => onChange(pairedRatio)}
             className={cn(
-              "absolute flex items-center justify-center rounded-lg border-2 border-dashed border-foreground/30 bg-transparent text-muted-foreground transition-opacity hover:opacity-80",
+              "absolute flex items-center justify-center rounded-lg border-2 border-dashed border-background-2 bg-background-1 text-muted-foreground transition-opacity hover:opacity-80",
               FOCUS_RING_CLASSES
             )}
             style={{
@@ -43,7 +43,7 @@ export function RatioControls({
         )}
 
         <div
-          className="relative z-10 flex items-center justify-center rounded-lg border-2 border-foreground bg-transparent"
+          className="relative z-10 flex items-center justify-center rounded-lg border-2 border-background-2 bg-background-1"
           style={{
             width: `${currentPreviewSize.width}px`,
             height: `${currentPreviewSize.height}px`,
@@ -74,8 +74,8 @@ export function RatioControls({
                   BUTTON_TRANSITION_CLASSES,
                   FOCUS_RING_CLASSES,
                   isActive
-                    ? "border-background-2/60 bg-background-2/60 text-foreground"
-                    : "border-background-2 bg-background-2/40 text-muted-foreground/80 hover:text-foreground hover:bg-background-2/60 hover:border-background-2"
+                    ? "border-background-2/60 bg-background-1 text-foreground"
+                    : "border-background-2 bg-background-1 text-muted-foreground/80 hover:text-foreground hover:bg-background-2/60 hover:border-background-2"
                 )}
               >
                 {/* 显示比例的形状预览 */}
@@ -96,7 +96,7 @@ export function RatioControls({
 
                     return (
                       <div
-                        className="rounded-sm bg-foreground/60"
+                        className="rounded-sm bg-background-generator"
                         style={{
                           width: `${width}px`,
                           height: `${baseHeight}px`,

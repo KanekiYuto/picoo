@@ -1,7 +1,15 @@
 "use client";
 
+import { Fragment } from "react";
 import { cn } from "@/lib/utils";
 import { SlidersHorizontal } from "lucide-react";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
 import type { ModelOption } from "./types";
 import type { GeneratorSettings } from ".";
 import { MODE_CONFIGS, type GeneratorMode } from "../../config";
@@ -51,8 +59,6 @@ export function ModelDisplay({
       return null;
     }
 
-    const displayText = displayParts.join(" / ");
-
     // iconOnly 模式：只显示设置图标
     if (iconOnly) {
       return (
@@ -77,7 +83,7 @@ export function ModelDisplay({
       <button
         onClick={onClick}
         className={cn(
-          "flex items-center gap-1 md:gap-1.5 px-2 md:px-3 py-2 rounded-lg",
+          "flex items-center px-2 md:px-3 py-2 rounded-lg",
           "text-xs md:text-sm text-foreground",
           "hover:bg-background-2/40",
           "transition-colors duration-200",
@@ -86,9 +92,27 @@ export function ModelDisplay({
           className
         )}
       >
-        <span className={cn("truncate", model?.name && "font-medium")}>
-          {displayText}
-        </span>
+        <Breadcrumb className="min-w-0">
+          <BreadcrumbList className="min-w-0">
+            {displayParts.map((part, index) => (
+              <Fragment key={`${part}-${index}`}>
+                <BreadcrumbItem className="min-w-0">
+                  <BreadcrumbPage
+                    className={cn(
+                      "truncate",
+                      index === 0 && model?.name ? "font-medium" : undefined
+                    )}
+                  >
+                    {part}
+                  </BreadcrumbPage>
+                </BreadcrumbItem>
+                {index < displayParts.length - 1 && (
+                  <BreadcrumbSeparator className="text-muted-foreground">/</BreadcrumbSeparator>
+                )}
+              </Fragment>
+            ))}
+          </BreadcrumbList>
+        </Breadcrumb>
       </button>
     );
   }

@@ -102,7 +102,7 @@ export function GlobalGeneratorModal() {
           exit={{ opacity: 0 }}
           transition={{ duration: 0.3 }}
           style={{ position: 'fixed', inset: 0, zIndex: 50 }}
-          className="bg-background custom-scrollbar flex flex-col"
+          className="bg-background-1 custom-scrollbar flex flex-col"
         >
           <GeneratorHeader onClose={closeGeneratorModal} activePanel={activePanel} />
 
@@ -207,7 +207,7 @@ export function GlobalGeneratorModal() {
 
               {/* 生成器 */}
               <div className="flex justify-center">
-                <div className="w-full max-w-7xl bg-background-1 rounded-2xl p-4 border border-background-2">
+                <div className="w-full max-w-7xl">
                   <GlobalGenerator
                     onGenerate={handleGenerate}
                     onOpenUploadPanel={handleUploadPanelToggle}

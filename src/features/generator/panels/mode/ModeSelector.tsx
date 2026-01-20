@@ -19,10 +19,10 @@ export function ModeSelectorPanel({ value, onChange, onClose }: ModeSelectorPane
   const tMode = useTranslations("generator.modeSelector");
 
   return (
-    <div className="w-full rounded-2xl bg-background-1">
+    <div className="w-full rounded-2xl bg-background-generator">
       {/* 头部 - 标题和关闭按钮 */}
       <div className="flex items-center justify-between px-4 md:px-6 pt-3 md:pt-4 pb-0 flex-shrink-0">
-        <h2 className="text-base md:text-lg font-semibold text-foreground">
+        <h2 className="text-base md:text-lg font-semibold leading-tight tracking-tight text-foreground">
           {t("prompt")} {tMode("mode")}
         </h2>
         <motion.button
@@ -49,13 +49,11 @@ export function ModeSelectorPanel({ value, onChange, onClose }: ModeSelectorPane
                   onChange(mode.id);
                   onClose();
                 }}
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
                 className={cn(
                   "flex flex-col items-start gap-2 p-3 md:p-4 rounded-xl border transition-all cursor-pointer",
                   isSelected
-                    ? "border-background-2/60 bg-background-2/60 text-foreground"
-                    : "border-background-2 bg-background-1 hover:border-background-2 text-foreground"
+                    ? "border-background-2/60 bg-background-1 text-foreground"
+                    : "border-background-2 bg-background-1 hover:bg-background-2 text-foreground"
                 )}
               >
                 <div className="flex items-center gap-2">
@@ -91,7 +89,7 @@ export function ModeSelectorButton({ value, onClick, className, iconOnly = false
       whileHover={{ scale: 1.02 }}
       whileTap={{ scale: 0.98 }}
       className={cn(
-        "flex items-center justify-center gap-2 rounded-lg bg-background-2/40 text-foreground text-sm font-medium transition-all duration-200 cursor-pointer",
+        "flex items-center justify-center gap-2 rounded-lg bg-background-1 border border-background-2 text-foreground text-sm font-medium transition-all duration-200 cursor-pointer",
         iconOnly
           ? "w-10 h-10 rounded-xl"
           : "px-3 py-2 whitespace-nowrap",

@@ -140,7 +140,7 @@ export function UploadPanel({ isOpen, onClose, onImageSelect, onImageReplace, on
   };
 
   return (
-    <div className="h-full flex flex-col bg-background-1 border border-background-2 rounded-xl">
+    <div className="h-full flex flex-col bg-background-generator border border-background-2 rounded-xl">
       {/* 头部 */}
       <div className="flex items-center justify-between px-4 md:px-6 pt-3 md:pt-4 pb-0 flex-shrink-0">
         <h2 className="text-base md:text-lg font-semibold text-foreground">
@@ -169,7 +169,7 @@ export function UploadPanel({ isOpen, onClose, onImageSelect, onImageReplace, on
           />
           {selectedImage ? (
             /* 图片预览区域 */
-            <div className="relative w-full rounded-2xl overflow-hidden bg-background-2/40 border-2 border-dashed border-background-2 backdrop-blur-sm">
+            <div className="relative w-full rounded-2xl overflow-hidden bg-background-1 border-2 border-dashed border-background-2 backdrop-blur-sm">
               <div className="flex items-center justify-center p-8 min-h-[300px]">
                 <img
                   src={selectedImage}
@@ -205,7 +205,7 @@ export function UploadPanel({ isOpen, onClose, onImageSelect, onImageReplace, on
               )}
             >
               {/* 上传图标圆形背景 */}
-              <div className="flex items-center justify-center w-16 h-16 md:w-20 md:h-20 rounded-full bg-background-2/40 border border-background-2">
+              <div className="flex items-center justify-center w-16 h-16 md:w-20 md:h-20 rounded-full bg-background-1 border border-background-2">
                 <Upload className="h-8 w-8 md:h-10 md:w-10 text-foreground" />
               </div>
 
