@@ -180,56 +180,6 @@ export async function updateGenerationTaskStatus(
 }
 
 /**
- * 标记任务完成并保存结果
- */
-export async function completeGenerationTask(
-  taskId: string,
-  results: Array<{
-    url: string;
-    watermarkUrl?: string;
-    type: string;
-  }>,
-  durationMs?: number
-) {
-  // 获取任务 ID
-  const tasks = await db
-    .select({ id: generationTask.id })
-    .from(generationTask)
-    .where(eq(generationTask.taskId, taskId))
-    .limit(1);
-
-  if (tasks.length === 0) {
-    throw new Error('Task not found');
-  }
-
-  const task = tasks[0];
-
-  // 首先创建 storage 记录和 generationResult 关联
-  for (let i = 0; i < results.length; i++) {
-    const result = results[i];
-
-    // 创建 storage 记录（如果需要）
-    // 注意：这里假设 URL 和文件信息已经在上传时保存到 storage 表
-    // 实际使用时可能需要根据业务逻辑调整
-
-    // 为简化起见，这里假设只需创建 generationResult 关联
-    // 实际实现中应该先查询或创建 storage 记录
-  }
-
-  // 更新任务状态为完成
-  return db
-    .update(generationTask)
-    .set({
-      status: 'completed',
-      progress: 100,
-      completedAt: new Date(),
-      durationMs,
-      updatedAt: new Date(),
-    })
-    .where(eq(generationTask.taskId, taskId));
-}
-
-/**
  * 标记任务失败
  */
 export async function failGenerationTask(
