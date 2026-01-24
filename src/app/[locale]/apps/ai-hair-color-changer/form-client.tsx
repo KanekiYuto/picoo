@@ -60,7 +60,7 @@ export function AiHairColorChangerFormClient({
 
   return (
     <Form {...form}>
-      <form className="space-y-6" onSubmit={form.handleSubmit(() => {})}>
+      <form className="space-y-6" onSubmit={form.handleSubmit(() => { })}>
         <Field
           name="image"
           render={({ field }) => (
@@ -88,7 +88,7 @@ export function AiHairColorChangerFormClient({
               <FormControl className="mt-3">
                 <Textarea
                   {...field}
-                  className="min-h-[120px] rounded-3xl border-background-2 bg-background-1 hover:bg-background-2/40"
+                  className="min-h-[120px] rounded-lg border-background-2 bg-background-generator hover:bg-background-generator/40"
                 />
               </FormControl>
             </FormItem>
@@ -107,7 +107,7 @@ export function AiHairColorChangerFormClient({
               </div>
               <Select defaultValue={field.value} onValueChange={field.onChange}>
                 <FormControl>
-                  <SelectTrigger className="mt-3 w-full cursor-pointer rounded-3xl border-background-2 bg-background-1 hover:bg-background-2/40">
+                <SelectTrigger className="mt-3 w-full cursor-pointer rounded-lg border-background-2 bg-background hover:bg-background-generator">
                     <SelectValue />
                   </SelectTrigger>
                 </FormControl>

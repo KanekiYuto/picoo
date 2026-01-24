@@ -128,7 +128,7 @@ export function ImageUpload({
               type="button"
               onClick={() => validateAndSet(null)}
               disabled={disabled}
-              className="inline-flex items-center gap-2 rounded-full border border-background-2 bg-background-2/40 px-3 py-1 text-xs font-semibold text-muted-foreground transition-colors hover:bg-background-2/60 disabled:cursor-not-allowed disabled:opacity-60"
+              className="inline-flex items-center gap-2 rounded-full border border-background-2 bg-background-generator hover:bg-background-generator/40 px-3 py-1 text-xs font-semibold text-muted-foreground transition-colors hover:bg-background-generator/60 disabled:cursor-not-allowed disabled:opacity-60"
             >
               <X className="h-4 w-4" aria-hidden />
               {strings?.remove ?? "Remove"}
@@ -139,11 +139,11 @@ export function ImageUpload({
 
       <div
         className={cn(
-          "relative overflow-hidden rounded-3xl border border-dashed border-background-2 bg-background-1",
+          "relative overflow-hidden rounded-lg border border-dashed border-background-2 bg-background-generator",
           disabled
             ? "opacity-70"
-            : "cursor-pointer transition-colors hover:bg-background-2/40",
-          isDragging ? "border-primary bg-background-2/60" : null,
+            : "cursor-pointer transition-colors hover:bg-background-generator/40",
+          isDragging ? "border-primary bg-background-generator/60" : null,
         )}
         onClick={() => {
           if (!disabled) openPicker();
@@ -202,7 +202,7 @@ export function ImageUpload({
 
         {file && previewUrl ? (
           <div className="grid gap-4 p-4 sm:grid-cols-[140px_1fr] sm:items-center sm:p-5">
-            <div className="relative aspect-square w-full overflow-hidden rounded-2xl border border-background-2 bg-background-2/40">
+            <div className="relative aspect-square w-full overflow-hidden rounded-lg border border-background-2 bg-background-generator">
               <Image
                 src={previewUrl}
                 alt={strings?.previewAlt ?? "Selected image preview"}

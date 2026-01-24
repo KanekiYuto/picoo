@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import { useUserStore, type User } from "@/store/useUserStore";
-import { useCreditStore } from "@/store/useCreditStore";
+import { useCreditStore, type CreditItem, type CreditSummary } from "@/store/useCreditStore";
 
 export function UserStoreProvider({
   children,
@@ -22,22 +22,88 @@ export function UserStoreProvider({
     const fetchCreditBalance = async () => {
       setCreditLoading(true);
       try {
-        const response = await fetch("/api/credit/balance");
+        const fetchJson = async (url: string) => {
+          const response = await fetch(url);
+          if (response.status === 401) throw new Error("Unauthorized");
+          if (!response.ok) throw new Error(`Failed to fetch ${url}`);
+          return response.json();
+        };
 
-        if (!response.ok) {
+        const [statsResult, recordsResult] = await Promise.allSettled([
+          fetchJson("/api/credit/balance/stats"),
+          fetchJson("/api/credit/balance/records"),
+        ]);
+
+        const credits =
+          recordsResult.status === "fulfilled"
+            ? (recordsResult.value?.credits || []) as CreditItem[]
+            : [];
+
+        const isUnauthorized =
+          (statsResult.status === "rejected" &&
+            statsResult.reason instanceof Error &&
+            statsResult.reason.message === "Unauthorized") ||
+          (recordsResult.status === "rejected" &&
+            recordsResult.reason instanceof Error &&
+            recordsResult.reason.message === "Unauthorized");
+
+        if (isUnauthorized) {
+          clearCredits();
+          return;
+        }
+
+        let summary: CreditSummary | null =
+          statsResult.status === "fulfilled"
+            ? {
+                totalRemaining: statsResult.value?.totalRemaining || 0,
+                totalConsumed: statsResult.value?.totalConsumed || 0,
+                activeCreditsCount: statsResult.value?.activeCreditsCount || 0,
+              }
+            : null;
+
+        if (!summary && credits.length > 0) {
+          const now = Date.now();
+          const totalRemaining = credits.reduce((sum: number, c: CreditItem) => {
+            const expiresAtMs =
+              c.expiresAt === null ? null : new Date(c.expiresAt).getTime();
+            const isValid = expiresAtMs === null || expiresAtMs >= now;
+            return sum + (isValid ? Number(c.remaining) : 0);
+          }, 0);
+          const totalConsumed = credits.reduce(
+            (sum: number, c: CreditItem) => sum + Number(c.consumed),
+            0
+          );
+          const activeCreditsCount = credits.filter((c: CreditItem) => {
+            const expiresAtMs =
+              c.expiresAt === null ? null : new Date(c.expiresAt).getTime();
+            const isValid = expiresAtMs === null || expiresAtMs >= now;
+            return isValid && Number(c.remaining) > 0;
+          }).length;
+          summary = { totalRemaining, totalConsumed, activeCreditsCount };
+        }
+
+        if (statsResult.status === "rejected" && recordsResult.status === "rejected") {
           throw new Error("Failed to fetch credits");
         }
 
-        const data = await response.json();
-        const summary = data.summary || null;
+        if (statsResult.status === "rejected") {
+          console.error("Failed to fetch credit stats:", statsResult.reason);
+        }
+        if (recordsResult.status === "rejected") {
+          console.error("Failed to fetch credit records:", recordsResult.reason);
+        }
 
         setCredits({
-          credits: data.credits || [],
+          credits,
           summary,
           balance: summary?.totalRemaining || 0,
         });
       } catch (error) {
         console.error("Failed to fetch credits:", error);
+        if (error instanceof Error && error.message === "Unauthorized") {
+          clearCredits();
+          return;
+        }
         setCreditError("Failed to fetch credits");
       } finally {
         setCreditLoading(false);

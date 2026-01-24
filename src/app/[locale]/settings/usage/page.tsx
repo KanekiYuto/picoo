@@ -6,7 +6,8 @@ import { Menu, TrendingDown, Calendar, FileText, InboxIcon, ChevronLeft, Chevron
 import { useTranslations } from "next-intl";
 import { useSettingsNav } from "../_components/SettingsNavContext";
 import { useUserStore } from "@/store/useUserStore";
-import { UsageSkeleton } from "./UsageSkeleton";
+import { UsageStatsSkeleton } from "./_components/UsageStatsSkeleton";
+import { UsageTableSkeleton } from "./_components/UsageTableSkeleton";
 import {
   Table,
   TableBody,
@@ -17,8 +18,6 @@ import {
 } from "@/components/ui/table";
 import {
   Empty,
-  EmptyContent,
-  EmptyDescription,
   EmptyHeader,
   EmptyMedia,
   EmptyTitle,
@@ -43,7 +42,8 @@ export default function UsagePage() {
   const { user, isLoading: userLoading } = useUserStore();
   const [records, setRecords] = useState<UsageRecord[]>([]);
   const [stats, setStats] = useState({ totalConsumed: 0, totalRecords: 0, avgPerRecord: 0 });
-  const [isLoading, setIsLoading] = useState(true);
+  const [isStatsLoading, setIsStatsLoading] = useState(true);
+  const [isRecordsLoading, setIsRecordsLoading] = useState(true);
   const [filter, setFilter] = useState<'all' | 'consume' | 'refund'>('all');
   const [page, setPage] = useState(1);
   const [pageSize] = useState(20);
@@ -51,26 +51,49 @@ export default function UsagePage() {
 
   // 获取统计数据
   useEffect(() => {
+    if (!user) {
+      setStats({ totalConsumed: 0, totalRecords: 0, avgPerRecord: 0 });
+      setIsStatsLoading(false);
+      return;
+    }
+
+    const controller = new AbortController();
+
     const fetchStats = async () => {
       try {
-        const response = await fetch('/api/credit/usage/stats');
+        setIsStatsLoading(true);
+        const response = await fetch('/api/credit/usage/stats', {
+          signal: controller.signal,
+        });
         if (!response.ok) throw new Error('Failed to fetch stats');
         const data = await response.json();
         setStats(data);
       } catch (error) {
+        if (controller.signal.aborted) return;
         console.error('Failed to fetch stats:', error);
+      } finally {
+        if (controller.signal.aborted) return;
+        setIsStatsLoading(false);
       }
     };
 
-    if (user) {
-      fetchStats();
-    }
+    fetchStats();
+    return () => controller.abort();
   }, [user]);
 
   // 获取分页记录
   useEffect(() => {
+    if (!user) {
+      setRecords([]);
+      setTotalPages(1);
+      setIsRecordsLoading(false);
+      return;
+    }
+
+    const controller = new AbortController();
+
     const fetchRecords = async () => {
-      setIsLoading(true);
+      setIsRecordsLoading(true);
       const minLoadingTime = new Promise((resolve) => setTimeout(resolve, 300));
 
       try {
@@ -79,7 +102,9 @@ export default function UsagePage() {
           pageSize: pageSize.toString(),
           type: filter,
         });
-        const response = await fetch(`/api/credit/usage/records?${params}`);
+        const response = await fetch(`/api/credit/usage/records?${params}`, {
+          signal: controller.signal,
+        });
 
         if (!response.ok) throw new Error('Failed to fetch records');
 
@@ -87,18 +112,19 @@ export default function UsagePage() {
         setRecords(data.records || []);
         setTotalPages(data.totalPages || 1);
       } catch (error) {
+        if (controller.signal.aborted) return;
         console.error('Failed to fetch records:', error);
         setRecords([]);
         setTotalPages(1);
       } finally {
         await minLoadingTime;
-        setIsLoading(false);
+        if (controller.signal.aborted) return;
+        setIsRecordsLoading(false);
       }
     };
 
-    if (user) {
-      fetchRecords();
-    }
+    fetchRecords();
+    return () => controller.abort();
   }, [user, page, pageSize, filter]);
 
   // 筛选条件改变时重置页码
@@ -107,16 +133,15 @@ export default function UsagePage() {
     setPage(1);
   };
 
-  if (!user) {
+  const showStatsSkeleton = userLoading || isStatsLoading;
+  const showRecordsSkeleton = userLoading || isRecordsLoading;
+
+  if (!user && !userLoading) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
         <div className="text-muted">未登录</div>
       </div>
     );
-  }
-
-  if (isLoading) {
-    return <UsageSkeleton />;
   }
 
   return (
@@ -143,6 +168,9 @@ export default function UsagePage() {
       </div>
 
       {/* 统计卡片 */}
+      {showStatsSkeleton ? (
+        <UsageStatsSkeleton />
+      ) : (
       <div className="grid gap-4 md:grid-cols-3">
         <div className="bg-background-1 border border-background-2 rounded-2xl p-5">
           <div className="flex items-center justify-between mb-3">
@@ -176,6 +204,7 @@ export default function UsagePage() {
           </div>
         </div>
       </div>
+      )}
 
       {/* 用量明细表格 */}
       <div className="space-y-3">
@@ -244,13 +273,15 @@ export default function UsagePage() {
           </div>
         </div>
 
-        {records.length === 0 ? (
+        {showRecordsSkeleton ? (
+          <UsageTableSkeleton />
+        ) : records.length === 0 ? (
           <Empty className="border border-border rounded-2xl bg-sidebar-bg">
             <EmptyHeader>
               <EmptyMedia variant="icon" className="bg-sidebar-hover text-muted-foreground">
                 <InboxIcon className="h-6 w-6" />
               </EmptyMedia>
-              <EmptyTitle className="text-foreground">
+              <EmptyTitle className="text-foreground text-sm font-medium">
                 {t("table.noRecords")}
               </EmptyTitle>
             </EmptyHeader>
