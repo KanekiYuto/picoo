@@ -131,6 +131,8 @@
     "expiryDate": "有效期",
     "renewalDate": "下一次续费日期",
     "manageSubscription": "管理订阅",
-    "active": "活跃"
+    "active": "活跃",
+    "noSubscription": "暂无有效订阅",
+    "noSubscriptionDescription": "你当前为免费版套餐。如需管理订阅和账单，请升级套餐。"
   }
 }

@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Menu } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { BillingInfo } from "../_components/BillingInfo";
+import { BillingInfo } from "./_components/BillingInfo";
 import { ProfileSkeleton } from "../profile/_components/ProfileSkeleton";
 import { useSettingsNav } from "../_components/SettingsNavContext";
 import { useUserStore } from "@/store/useUserStore";

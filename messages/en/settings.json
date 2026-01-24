@@ -131,6 +131,8 @@
     "expiryDate": "Expiry Date",
     "renewalDate": "Next Renewal Date",
     "manageSubscription": "Manage Subscription",
-    "active": "Active"
+    "active": "Active",
+    "noSubscription": "No active subscription",
+    "noSubscriptionDescription": "You're currently on the Free plan. Upgrade to manage billing and unlock more features."
   }
 }
