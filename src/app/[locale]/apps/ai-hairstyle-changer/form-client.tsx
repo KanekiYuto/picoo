@@ -20,10 +20,12 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { useForm } from "react-hook-form";
 
+type AspectRation = "1:1" | "4:5" | "5:4" | "3:4" | "4:3" | "9:16" | "16:9" | "21:9";
+
 type HairstyleChangerFormValues = {
   image: File | null;
   prompt: string;
-  aspectRatio: "1:1" | "4:5" | "3:4" | "9:16";
+  aspectRatio: AspectRation;
 };
 
 export function AiHairstyleChangerFormClient({
@@ -36,7 +38,7 @@ export function AiHairstyleChangerFormClient({
     aspectRatio: {
       label: string;
       help: string;
-      options: readonly { value: "1:1" | "4:5" | "3:4" | "9:16"; label: string }[];
+      options: readonly { value: AspectRation; label: string }[];
     };
     submit: string;
   };
@@ -60,7 +62,7 @@ export function AiHairstyleChangerFormClient({
 
   return (
     <Form {...form}>
-      <form className="space-y-6" onSubmit={form.handleSubmit(() => {})}>
+      <form className="space-y-6" onSubmit={form.handleSubmit(() => { })}>
         <Field
           name="image"
           render={({ field }) => (
@@ -125,7 +127,8 @@ export function AiHairstyleChangerFormClient({
 
         <Button
           type="submit"
-          className="w-full rounded-2xl bg-primary text-white hover:bg-primary-hover"
+          variant="gradient"
+          className="w-full h-12 rounded-lg text-base font-semibold"
         >
           {formContent.submit}
         </Button>
@@ -133,4 +136,3 @@ export function AiHairstyleChangerFormClient({
     </Form>
   );
 }
-

@@ -125,7 +125,8 @@ export function AiHairColorChangerFormClient({
 
         <Button
           type="submit"
-          className="w-full rounded-2xl bg-primary text-white hover:bg-primary-hover"
+          variant="gradient"
+          className="w-full h-12 rounded-2xl text-base font-semibold"
         >
           {formContent.submit}
         </Button>
@@ -133,4 +134,3 @@ export function AiHairColorChangerFormClient({
     </Form>
   );
 }
-
