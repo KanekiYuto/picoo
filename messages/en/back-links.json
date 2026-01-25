@@ -1,0 +1,15 @@
+{
+  "seo": {
+    "title": "Back Links | {siteName}",
+    "description": "A list of external pages that mention or link to {siteName}."
+  },
+  "title": "Back Links",
+  "description": "External pages that mention or link to {siteName}.",
+  "table": {
+    "header": "URL",
+    "caption": "External pages referencing {siteName}"
+  },
+  "link": {
+    "opensInNewTab": "Opens in a new tab"
+  }
+}
