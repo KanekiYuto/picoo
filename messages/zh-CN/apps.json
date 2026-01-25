@@ -272,6 +272,14 @@
     "testimonials": {
       "ratingLabel": "评分：{rating}/5"
     },
+    "preview": {
+      "generating": "生成中…",
+      "generatingHint": "通常需要几秒钟。",
+      "progress": "{percent}%",
+      "resultAlt": "生成结果",
+      "download": "下载",
+      "reset": "返回预览"
+    },
     "imageUpload": {
       "remove": "移除",
       "change": "更换",

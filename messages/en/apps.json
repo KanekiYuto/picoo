@@ -273,6 +273,14 @@
     "testimonials": {
       "ratingLabel": "{rating} out of 5 stars"
     },
+    "preview": {
+      "generating": "Generating...",
+      "generatingHint": "This usually takes a few seconds.",
+      "progress": "{percent}%",
+      "resultAlt": "Generated result",
+      "download": "Download",
+      "reset": "Back to preview"
+    },
     "imageUpload": {
       "remove": "Remove",
       "change": "Change",

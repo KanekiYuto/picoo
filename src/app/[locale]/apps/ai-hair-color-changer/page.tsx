@@ -45,7 +45,7 @@ export default async function AiHairColorChangerPage({
   );
 
   return (
-    <div className="grid gap-24 px-4 py-8 sm:px-6 lg:px-10 xl:px-40 xl:py-16">
+    <div className="grid gap-24 px-4 py-8 sm:px-6 lg:px-10 xl:px-48 xl:py-16">
       <App
         title={content.hero.title}
         description={content.hero.description}

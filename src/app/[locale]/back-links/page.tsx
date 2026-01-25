@@ -3,6 +3,8 @@ import { getTranslations } from 'next-intl/server';
 import { siteConfig } from '@/config/site';
 import { generateAlternates } from '@/lib/metadata';
 
+export const dynamic = 'force-static';
+
 const BACK_LINKS: string[] = [
   'https://www.saashub.com/list?q=picooai',
   'https://www.bing.com/search?q=picooai.com&form=QBLH&sp=-1&ghc=1&lq=0&pq=picooai.com&sc=0-11&qs=n&sk=&cvid=E4DD8ABD875C4AB085BAADF515DFF414',
@@ -28,23 +30,11 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: 'back-links' });
-  const title = t('seo.title', { siteName: siteConfig.name });
-  const description = t('seo.description', { siteName: siteConfig.name });
-  const alternates = generateAlternates(locale, '/back-links');
 
   return {
-    title,
-    description,
-    alternates,
-    openGraph: {
-      title,
-      description,
-      url: alternates.canonical,
-    },
-    twitter: {
-      title,
-      description,
-    },
+    title: t('seo.title', { siteName: siteConfig.name }),
+    description: t('seo.description', { siteName: siteConfig.name }),
+    alternates: generateAlternates(locale, '/back-links'),
   };
 }
 
@@ -55,33 +45,9 @@ export default async function BackLinksPage({
 }) {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: 'back-links' });
-  const alternates = generateAlternates(locale, '/back-links');
-
-  const pageStructuredData =
-    siteConfig.url
-      ? {
-          '@context': 'https://schema.org',
-          '@type': 'WebPage',
-          name: t('seo.title', { siteName: siteConfig.name }),
-          description: t('seo.description', { siteName: siteConfig.name }),
-          url: alternates.canonical,
-          isPartOf: {
-            '@type': 'WebSite',
-            name: siteConfig.name,
-            url: siteConfig.url,
-          },
-        }
-      : null;
 
   return (
     <main className="px-4 py-8 sm:px-6 lg:px-10 xl:px-40 xl:py-16">
-      {pageStructuredData ? (
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(pageStructuredData) }}
-        />
-      ) : null}
-
       <header className="max-w-4xl">
         <h1 className="text-2xl md:text-3xl font-semibold tracking-tight text-foreground">
           {t('title')}
@@ -108,40 +74,40 @@ export default async function BackLinksPage({
               {BACK_LINKS.map((link) => {
                 const hostname = getHostname(link);
                 return (
-                <tr
-                  key={link}
-                  className="hover:bg-muted/50 border-b transition-colors"
-                >
-                  <td className="p-2 align-middle whitespace-normal">
-                    <a
-                      href={link}
-                      target="_blank"
-                      rel="nofollow noopener noreferrer"
-                      className="min-w-0 text-muted-foreground hover:text-primary transition-colors text-sm inline-flex items-center gap-1.5 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:ring-offset-2 focus-visible:ring-offset-background rounded-md px-1 -mx-1 break-all"
-                    >
-                      <span className="min-w-0">{link}</span>
-                      <span className="sr-only">
-                        {t('link.opensInNewTab')}
-                        {hostname ? ` (${hostname})` : ''}
-                      </span>
-                      <svg
-                        aria-hidden="true"
-                        focusable="false"
-                        className="w-3 h-3 flex-shrink-0 opacity-70 group-hover:opacity-100 transition-opacity"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
+                  <tr
+                    key={link}
+                    className="hover:bg-muted/50 border-b transition-colors"
+                  >
+                    <td className="p-2 align-middle whitespace-normal">
+                      <a
+                        href={link}
+                        target="_blank"
+                        rel="nofollow noopener noreferrer"
+                        className="min-w-0 text-muted-foreground hover:text-primary transition-colors text-sm inline-flex items-center gap-1.5 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:ring-offset-2 focus-visible:ring-offset-background rounded-md px-1 -mx-1 break-all"
                       >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
-                        />
-                      </svg>
-                    </a>
-                  </td>
-                </tr>
+                        <span className="min-w-0">{link}</span>
+                        <span className="sr-only">
+                          {t('link.opensInNewTab')}
+                          {hostname ? ` (${hostname})` : ''}
+                        </span>
+                        <svg
+                          aria-hidden="true"
+                          focusable="false"
+                          className="w-3 h-3 flex-shrink-0 opacity-70 group-hover:opacity-100 transition-opacity"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                          />
+                        </svg>
+                      </a>
+                    </td>
+                  </tr>
                 );
               })}
             </tbody>
