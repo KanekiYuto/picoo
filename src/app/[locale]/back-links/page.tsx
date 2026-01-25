@@ -31,12 +31,13 @@ export default async function BackLinksPage({ params }: { params: Promise<{ loca
         'https://blog.csdn.net/qq_44894205/article/details/157065677',
         'https://2048ai.net/696b4e427c1d88441d8d7fc6.html',
         'https://github.com/SouthWan/Picoo',
-        'https://sg.search.yahoo.com/search?p=picooai.com&fr=yfp-t&fr2=p%3Afp%2Cm%3Asb&fp=1'
+        'https://sg.search.yahoo.com/search?p=picooai.com&fr=yfp-t&fr2=p%3Afp%2Cm%3Asb&fp=1',
+        'https://duckduckgo.com/?ia=web&origin=funnel_home_website&t=h_&q=picooai.com&chip-select=search'
     ];
 
     const table = (links: string[]) => {
-        return links.map((link: string) => (
-            <TableRow>
+        return links.map((link: string, index: number) => (
+            <TableRow key={index}>
                 <TableCell>
                     <a
                         href={link}

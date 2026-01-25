@@ -89,6 +89,13 @@ export default function Home() {
               href: 'https://aitop10.tools/',
               label: 'AiTop10 Tools Diresctory',
             },
+            {
+              href: 'https://aidirs.org/item/picoo',
+              imgSrc: 'https://aidirs.org/badges/badge-listed-dark.svg',
+              imgAlt: 'Listed on AIDirs',
+              width: 207,
+              height: 54,
+            },
           ]}
         />
         <Footer />
