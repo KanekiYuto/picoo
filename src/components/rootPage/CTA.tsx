@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
+import HoverArrowButton from "@/components/hover-arrow-button";
 import { useGeneratorStore } from '@/store/useGeneratorStore';
 import { useTranslations } from 'next-intl';
 import { Check } from 'lucide-react';
@@ -79,14 +80,21 @@ export function CTA() {
             viewport={{ once: true }}
             className="flex justify-center"
           >
-            <Button
+            {/* <Button
               onClick={handleStart}
               variant="default"
-              size="lg"
+              size="payment"
               className="text-xl font-semibold px-12 py-6 h-auto"
             >
               {t('primaryButton')}
-            </Button>
+            </Button> */}
+            <HoverArrowButton
+              text={t('primaryButton')}
+              duration={0.3}
+              iconSize={20}
+              className="bg-black text-white dark:bg-white dark:text-black"
+              onClick={() => console.log("Clicked!")}
+            />
           </motion.div>
 
           {/* 底部提示 */}
