@@ -47,7 +47,7 @@ interface MobileSidebarProps {
 export function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
   const pathname = usePathname();
   const locale = useLocale();
-  const t = useTranslations("sidebar");
+  const t = useTranslations("layout.sidebar");
   const { user } = useUserStore();
 
   const navItems: NavItem[] = [

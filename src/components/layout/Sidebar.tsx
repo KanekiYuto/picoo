@@ -43,7 +43,7 @@ interface SidebarProps {
 export function Sidebar({ className }: SidebarProps) {
   const pathname = usePathname();
   const locale = useLocale();
-  const t = useTranslations("sidebar");
+  const t = useTranslations("layout.sidebar");
   const { theme } = useThemeStore();
 
   const navItems: NavItem[] = [

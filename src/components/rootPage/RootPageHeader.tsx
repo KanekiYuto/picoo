@@ -25,9 +25,9 @@ interface RootPageHeaderProps {
  * 简洁透明设计，固定在页面顶部
  */
 export function RootPageHeader({ className }: RootPageHeaderProps) {
-  const t = useTranslations("header");
-  const tSidebar = useTranslations("sidebar");
-  const tFooter = useTranslations("footer.links");
+  const t = useTranslations("layout.header");
+  const tSidebar = useTranslations("layout.sidebar");
+  const tFooter = useTranslations("layout.footer.links");
   const { user, isLoading } = useUserStore();
   const { theme, toggleTheme } = useThemeStore();
   const { openLoginModal } = useModalStore();

@@ -1,3 +1,41 @@
 {
-  "switchLanguage": "Switch Language"
+  "switchLanguage": "Switch Language",
+  "header": {
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu",
+    "toggleTheme": "Toggle theme",
+    "signIn": "Sign In"
+  },
+  "sidebar": {
+    "home": "Home",
+    "apps": "Apps",
+    "assets": "Assets",
+    "history": "History",
+    "settings": "Settings",
+    "help": "Help",
+    "upgradePlan": "Upgrade Plan"
+  },
+  "footer": {
+    "sections": {
+      "models": "Models",
+      "apps": "Apps",
+      "resources": "Resources",
+      "community": "Community",
+      "contact": "Contact Us",
+      "legal": "Legal"
+    },
+    "links": {
+      "seedream45": "Seedream 4.5",
+      "aiHairstyleChanger": "AI Hairstyle Changer",
+      "aiHairColorChanger": "AI Hair Color Changer",
+      "pricing": "Pricing",
+      "helpCenter": "Help Center",
+      "backLinks": "Back Links",
+      "discord": "Discord",
+      "email": "Email",
+      "privacyPolicy": "Privacy Policy",
+      "termsOfService": "Terms of Service",
+      "refundPolicy": "Refund Policy"
+    }
+  }
 }

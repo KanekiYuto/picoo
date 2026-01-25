@@ -1,3 +1,41 @@
 {
-  "switchLanguage": "切换语言"
+  "switchLanguage": "切换语言",
+  "header": {
+    "openMenu": "打开菜单",
+    "closeMenu": "关闭菜单",
+    "toggleTheme": "切换主题",
+    "signIn": "登录"
+  },
+  "sidebar": {
+    "home": "首页",
+    "apps": "应用",
+    "assets": "素材",
+    "history": "历史",
+    "settings": "设置",
+    "help": "帮助",
+    "upgradePlan": "升级方案"
+  },
+  "footer": {
+    "sections": {
+      "models": "模型",
+      "apps": "应用",
+      "resources": "资源",
+      "community": "社区",
+      "contact": "联系我们",
+      "legal": "法律"
+    },
+    "links": {
+      "seedream45": "Seedream 4.5",
+      "aiHairColorChanger": "AI 换发色",
+      "aiHairstyleChanger": "AI 发型更换器",
+      "pricing": "定价",
+      "helpCenter": "帮助中心",
+      "discord": "Discord",
+      "backLinks": "反向链接",
+      "email": "邮箱",
+      "privacyPolicy": "隐私政策",
+      "termsOfService": "服务条款",
+      "refundPolicy": "退款政策"
+    }
+  }
 }

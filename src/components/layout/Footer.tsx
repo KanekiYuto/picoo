@@ -30,8 +30,8 @@ const socialLinks = [
 ];
 
 export function Footer({ className }: FooterProps) {
-  const tSections = useTranslations('footer.sections');
-  const tLinks = useTranslations('footer.links');
+  const tSections = useTranslations('layout.footer.sections');
+  const tLinks = useTranslations('layout.footer.links');
 
   // 链接标签翻译映射
   const translateLabel = (label: string): string => {

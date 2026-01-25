@@ -17,7 +17,7 @@ interface HeaderProps {
 }
 
 export function Header({ className, onMenuClick, isMobileMenuOpen }: HeaderProps) {
-  const t = useTranslations("header");
+  const t = useTranslations("layout.header");
   const { user, isLoading } = useUserStore();
   const { theme, toggleTheme } = useThemeStore();
   const { openLoginModal } = useModalStore();
