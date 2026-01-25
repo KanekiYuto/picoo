@@ -81,7 +81,7 @@ export function CTA() {
           >
             <Button
               onClick={handleStart}
-              variant="gradient"
+              variant="default"
               size="lg"
               className="text-xl font-semibold px-12 py-6 h-auto"
             >

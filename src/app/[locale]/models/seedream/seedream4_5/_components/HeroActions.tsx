@@ -14,7 +14,7 @@ export default function HeroActions({ primaryCta, secondaryCta }: HeroActionsPro
 
   return (
     <div className="flex gap-4 pt-4">
-      <Button onClick={openGeneratorModal} variant="gradient" size="lg">
+      <Button onClick={openGeneratorModal} variant="default" size="lg">
         {primaryCta}
       </Button>
       <Button asChild variant="secondary" size="lg" className="bg-muted/20 hover:bg-muted/30">

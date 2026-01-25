@@ -127,7 +127,7 @@ export function AiHairstyleChangerFormClient({
 
         <Button
           type="submit"
-          variant="gradient"
+          variant="default"
           className="w-full h-12 rounded-lg text-base font-semibold"
         >
           {formContent.submit}

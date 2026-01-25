@@ -112,7 +112,7 @@ export function BillingInfo() {
           {t("noSubscriptionDescription")}
         </p>
 
-        <Button asChild variant="gradient">
+        <Button asChild variant="default">
           <Link href="/pricing">
             {t("upgradePlan")}
           </Link>

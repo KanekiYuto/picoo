@@ -53,7 +53,7 @@ export default function CTA() {
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
               <Button
                 onClick={openGeneratorModal}
-                variant="gradient"
+                variant="default"
                 size="lg"
                 className="w-full sm:w-auto"
               >
