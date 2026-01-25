@@ -2,25 +2,25 @@ import type { ReactNode } from "react";
 import Image from "next/image";
 
 type AppPreviewMedia =
-  | {
-      kind: "video";
-      src: string;
-      poster?: string;
-      ariaLabel?: string;
-      autoPlay?: boolean;
-      loop?: boolean;
-      muted?: boolean;
-      playsInline?: boolean;
-      preload?: "none" | "metadata" | "auto";
+    | {
+        kind: "video";
+        src: string;
+        poster?: string;
+        ariaLabel?: string;
+        autoPlay?: boolean;
+        loop?: boolean;
+        muted?: boolean;
+        playsInline?: boolean;
+        preload?: "none" | "metadata" | "auto";
     }
-  | {
-      kind: "image";
-      src: string;
-      alt: string;
-      width?: number;
-      height?: number;
-      priority?: boolean;
-      sizes?: string;
+    | {
+        kind: "image";
+        src: string;
+        alt: string;
+        width?: number;
+        height?: number;
+        priority?: boolean;
+        sizes?: string;
     };
 
 interface AppProps {
