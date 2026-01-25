@@ -42,6 +42,7 @@ export function Footer({ className }: FooterProps) {
       'Pricing': tLinks('pricing'),
       'Help Center': tLinks('helpCenter'),
       'Discord': tLinks('discord'),
+      'Back Links': tLinks('backLinks'),
       'Email': tLinks('email'),
       'Privacy Policy': tLinks('privacyPolicy'),
       'Terms of Service': tLinks('termsOfService'),

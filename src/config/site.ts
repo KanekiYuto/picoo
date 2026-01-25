@@ -56,6 +56,7 @@ export const siteConfig = {
     resources: [
       { label: "Pricing", href: "/pricing" },
       { label: "Help Center", href: "/help" },
+      { label: 'Back Links', href: '/back-links' }
     ],
     community: [
       { label: "Discord", href: "https://discord.gg/sQT3rkAN28" },
@@ -80,7 +81,7 @@ export const siteConfig = {
   // 认证配置
   auth: {
     // 登录后默认重定向地址
-    defaultRedirectAfterLogin: "/dashboard",
+    defaultRedirectAfterLogin: "/home",
   },
 } as const;
 
