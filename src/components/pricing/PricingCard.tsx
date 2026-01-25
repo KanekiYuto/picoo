@@ -6,6 +6,8 @@ import { useRouter } from "next/navigation";
 import { createPaymentCheckout } from "@/shared/payment/client";
 import { useTranslations } from "next-intl";
 import { PricingPlan, BillingCycle, PricingFeature } from "./types";
+import { Button } from "../ui/button";
+import { Spinner } from "@/components/ui/spinner"
 
 interface PricingCardProps {
   /** 定价方案 */
@@ -120,56 +122,69 @@ function CTAButton({
 
   if (plan.id === "free") {
     return (
-      <button
+      <Button
+        variant="payment"
         onClick={() => !isCurrent && router.push("/")}
         disabled={isCurrent}
-        className={`${baseClassName} text-xs md:text-sm lg:text-base ${
-          isCurrent
-            ? "bg-white/20 text-white cursor-not-allowed"
-            : "bg-white text-black hover:bg-white/90 cursor-pointer"
-        }`}
+        size="payment"
+        className="mb-8"
       >
         {isCurrent ? t("currentPlan") : plan.ctaText}
-      </button>
+      </Button>
     );
   }
 
   if (!user) {
     return (
-      <button disabled className={`${baseClassName} text-xs md:text-sm lg:text-base bg-white/20 text-white cursor-not-allowed`}>
+      <Button
+        variant="payment"
+        size="payment"
+        className="mb-8"
+        disabled
+      >
         {t("loginRequired")}
-      </button>
+      </Button>
     );
   }
 
   if (isCurrent) {
     return (
-      <button disabled className={`${baseClassName} bg-white/20 text-white cursor-not-allowed`}>
+      <Button
+        variant="payment"
+        size="payment"
+        className="mb-8"
+        disabled
+      >
         {t("currentPlan")}
-      </button>
+      </Button>
     );
   }
 
   if (!plan.creemPayProductId) {
     return (
-      <button disabled className={`${baseClassName} bg-white/20 text-white cursor-not-allowed`}>
+      <Button
+        variant="payment"
+        size="payment"
+        className="mb-8"
+        disabled
+      >
         {t("configuring")}
-      </button>
+      </Button>
     );
   }
 
   return (
-    <button
-      onClick={onPaymentClick}
+    <Button
+      variant="payment"
+      size="payment"
+      className="mb-8"
       disabled={isLoading}
-      className={`${baseClassName} ${
-        isLoading
-          ? "bg-white/20 text-white cursor-not-allowed opacity-70"
-          : "bg-white text-black hover:bg-white/90 cursor-pointer"
-      }`}
+      onClick={onPaymentClick}
     >
+
+      {isLoading ? <Spinner /> : null}
       {isLoading ? t("processing") : plan.ctaText}
-    </button>
+    </Button>
   );
 }
 

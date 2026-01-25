@@ -19,7 +19,6 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { useForm } from "react-hook-form";
-
 type HairColorChangerFormValues = {
   image: File | null;
   prompt: string;
@@ -107,7 +106,7 @@ export function AiHairColorChangerFormClient({
               </div>
               <Select defaultValue={field.value} onValueChange={field.onChange}>
                 <FormControl>
-                <SelectTrigger className="mt-3 w-full cursor-pointer rounded-lg border-background-2 bg-background hover:bg-background-generator">
+                  <SelectTrigger className="mt-3 w-full cursor-pointer rounded-lg border-background-2 bg-background hover:bg-background-generator">
                     <SelectValue />
                   </SelectTrigger>
                 </FormControl>
@@ -125,8 +124,8 @@ export function AiHairColorChangerFormClient({
 
         <Button
           type="submit"
-          variant="gradient"
-          className="w-full h-12 rounded-2xl text-base font-semibold"
+          variant="default"
+          className="w-full h-12 rounded-lg text-base font-semibold"
         >
           {formContent.submit}
         </Button>

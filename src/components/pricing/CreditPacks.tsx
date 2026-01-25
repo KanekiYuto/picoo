@@ -8,6 +8,7 @@ import {
 } from "@/shared/payment/config/payment";
 import { CREDIT_PACK_ACCENT_COLORS_BY_NAME } from "@/shared/payment/config/payment.constants";
 import { createPaymentCheckout } from "../../shared/payment/client";
+import { Button } from "../ui/button";
 
 type CreditPackWithProduct = (typeof CREDIT_PACKS)[number] & {
   productId: ReturnType<typeof getCreemPayCreditPackProductId>;
@@ -57,13 +58,6 @@ export function CreditPacks({ user }: CreditPacksProps) {
     if (isLoading) return t("processing");
     return t("cta");
   };
-
-  const getButtonClassName = (disabled: boolean) =>
-    `w-full py-3 px-6 rounded-lg font-semibold transition-all duration-200 ${
-      disabled
-        ? "bg-white/20 text-white cursor-not-allowed"
-        : "bg-white text-black hover:bg-white/90 cursor-pointer"
-    }`;
 
   const getBonusLabel = (pack: CreditPackWithProduct) =>
     t("bonusRate", { percent: Math.round((pack.bonusRate ?? 0) * 100) });
@@ -179,14 +173,16 @@ export function CreditPacks({ user }: CreditPacksProps) {
               )}
             </div>
           ) : null}
-          <button
-            type="button"
+
+          {/* 按钮 */}
+          <Button
+            variant="payment"
             onClick={() => startCheckout(pack)}
             disabled={buttonDisabled}
-            className={`${getButtonClassName(buttonDisabled)} mt-auto`}
+            size="payment"
           >
             {buttonLabel}
-          </button>
+          </Button>
         </div>
       </div>
     );
