@@ -1,7 +1,7 @@
 type CheckoutRequest = {
   productId: string;
   metadata: Record<string, string | number | null>;
-  customer: { email: string; name: string };
+  customer: { email: string;};
   type: 'sub' | 'one-time';
   successUrl?: string;
 };

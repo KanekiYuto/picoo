@@ -6,7 +6,7 @@ type CheckoutRequest = {
   productId: string;
   successUrl: string;
   metadata: Record<string, string | number | null>;
-  customer: { email: string; name: string };
+  customer: { email: string; };
 };
 
 export async function POST(request: NextRequest) {

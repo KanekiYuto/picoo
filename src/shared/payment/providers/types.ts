@@ -1,6 +1,5 @@
 export interface CheckoutCustomer {
   email?: string;
-  name?: string;
 }
 
 export interface CreateCheckoutParams {

@@ -117,7 +117,6 @@ export function CreditPacks({ user }: CreditPacksProps) {
         },
         customer: {
           email: user.email,
-          name: user.name ?? user.email,
         },
       });
       if (checkoutUrl) {

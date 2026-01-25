@@ -304,7 +304,6 @@ export function PricingCard({
       },
       customer: {
         email: user.email,
-        name: user.name ?? user.email,
       },
     })
       .then((data) => {
