@@ -20,6 +20,9 @@ const BACK_LINKS: string[] = [
   'https://stackshare.io/picoo',
   'https://viesearch.com/25tc7/ai-creation-all-in-one',
   'https://viesearch.com/newest',
+  'https://navs.site/',
+  'https://navs.site/latest-ai-tools',
+  'https://navs.site/website/picooai',
 ];
 
 function getHostname(link: string) {
