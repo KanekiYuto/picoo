@@ -101,6 +101,13 @@ export default function Home() {
               width: 207,
               height: 54,
             },
+            {
+              href: 'https://acidtools.com',
+              imgSrc: 'https://acidtools.com/assets/images/badge-dark.png',
+              imgAlt: 'Acid Tools',
+              width: 207,
+              height: 54,
+            }
           ]}
         />
         <Footer />
