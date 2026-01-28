@@ -18,6 +18,8 @@ const BACK_LINKS: string[] = [
   'https://www.brownbook.net/business/54743828/picoo',
   'https://www.callupcontact.com/b/businessprofile/Picoo/9952577',
   'https://stackshare.io/picoo',
+  'https://viesearch.com/25tc7/ai-creation-all-in-one',
+  'https://viesearch.com/newest',
 ];
 
 function getHostname(link: string) {
