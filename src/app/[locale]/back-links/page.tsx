@@ -13,6 +13,11 @@ const BACK_LINKS: string[] = [
   'https://github.com/SouthWan/Picoo',
   'https://sg.search.yahoo.com/search?p=picooai.com&fr=yfp-t&fr2=p%3Afp%2Cm%3Asb&fp=1',
   'https://duckduckgo.com/?ia=web&origin=funnel_home_website&t=h_&q=picooai.com&chip-select=search',
+  'https://yandex.ru/search?text=picooai.com&lr=10636&promo=',
+  'https://www.crunchbase.com/person/picoo-picoo',
+  'https://www.brownbook.net/business/54743828/picoo',
+  'https://www.callupcontact.com/b/businessprofile/Picoo/9952577',
+  'https://stackshare.io/picoo',
 ];
 
 function getHostname(link: string) {
