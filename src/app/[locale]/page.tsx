@@ -90,6 +90,11 @@ export default function Home() {
               label: 'AiTop10 Tools Diresctory',
             },
             {
+              kind: 'text',
+              href: 'https://navs.site',
+              label: 'AI Nav Site',
+            },
+            {
               href: 'https://aidirs.org/item/picoo',
               imgSrc: 'https://aidirs.org/badges/badge-listed-dark.svg',
               imgAlt: 'Listed on AIDirs',
