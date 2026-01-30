@@ -23,6 +23,7 @@ const BACK_LINKS: string[] = [
   'https://navs.site/',
   'https://navs.site/latest-ai-tools',
   'https://navs.site/website/picooai',
+  'https://www.speedrun.com/users/kanekiyuto'
 ];
 
 function getHostname(link: string) {
