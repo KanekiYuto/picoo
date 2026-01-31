@@ -110,6 +110,7 @@ export default function Home() {
             }
           ]}
         />
+        <a href="https://z-image.net/">Z-Image</a>
         <Footer />
       </div>
     </>
