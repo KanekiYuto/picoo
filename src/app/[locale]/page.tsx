@@ -42,78 +42,17 @@ export default function Home() {
         <ThirdPartyBadges
           className="px-4 md:px-6 lg:px-8"
           items={[
-            {
-              href: 'https://startupfa.me/s/picoo?utm_source=picooai.com',
-              imgSrc: 'https://startupfa.me/badges/featured-badge.webp',
-              imgAlt: 'Picoo - Featured on Startup Fame',
-              width: 171,
-              height: 54,
-            },
-            {
-              href: 'https://twelve.tools',
-              imgSrc: 'https://twelve.tools/badge0-white.svg',
-              imgAlt: 'Featured on Twelve Tools',
-              width: 200,
-              height: 54,
-            },
-            {
-              href: 'https://turbo0.com/item/picoo',
-              imgSrc: 'https://img.turbo0.com/badge-listed-light.svg',
-              imgAlt: '在 Turbo0 上列出',
-              width: 162,
-              height: 54,
-            },
-            {
-              href: 'https://goodaitools.com',
-              imgSrc: 'https://goodaitools.com/assets/images/badge.png',
-              imgAlt: 'Good AI Tools',
-              width: 207,
-              height: 54,
-            },
-            {
-              href: 'https://wired.business',
-              imgSrc: 'https://wired.business/badge0-white.svg',
-              imgAlt: 'Featured on Wired Business',
-              width: 200,
-              height: 54,
-            },
-            {
-              href: 'https://findly.tools/picoo?utm_source=picoo',
-              imgSrc: 'https://findly.tools/badges/findly-tools-badge-light.svg',
-              imgAlt: 'Featured on findly.tools',
-              width: 150,
-              height: 48,
-            },
-            {
-              kind: 'text',
-              href: 'https://aitop10.tools/',
-              label: 'AiTop10 Tools Diresctory',
-            },
-            {
-              kind: 'text',
-              href: 'https://navs.site',
-              label: 'AI Nav Site',
-            },
-            {
-              href: 'https://aidirs.org/item/picoo',
-              imgSrc: 'https://aidirs.org/badges/badge-listed-dark.svg',
-              imgAlt: 'Listed on AIDirs',
-              width: 207,
-              height: 54,
-            },
-            {
-              href: 'https://acidtools.com',
-              imgSrc: 'https://acidtools.com/assets/images/badge-dark.png',
-              imgAlt: 'Acid Tools',
-              width: 207,
-              height: 54,
-            }
+            <a
+              key="startupfame"
+              href="https://startupfa.me/s/picoo?utm_source=picooai.com"
+              target="_blank"
+              rel="noopener noreferrer"
+            ></a>,
+            <a href="https://turbo0.com/item/picoo" target="_blank" rel="noopener noreferrer"></a>,
           ]}
         />
-        <a href="https://z-image.net/">Z-Image</a>
         <Footer />
       </div>
     </>
   );
 }
-

@@ -1,21 +1,10 @@
-'use client';
+import type { ReactNode } from 'react';
 
 import { cn } from '@/lib/utils';
+import { Badge } from '@/components/ui/badge';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 
-export type ThirdPartyBadgeItem =
-  | {
-      kind?: 'image';
-      href: string;
-      imgSrc: string;
-      imgAlt: string;
-      width: number;
-      height: number;
-    }
-  | {
-      kind: 'text';
-      href: string;
-      label: string;
-    };
+export type ThirdPartyBadgeItem = ReactNode;
 
 export interface ThirdPartyBadgesProps {
   items: ThirdPartyBadgeItem[];
@@ -24,41 +13,39 @@ export interface ThirdPartyBadgesProps {
 
 export function ThirdPartyBadges({ items, className }: ThirdPartyBadgesProps) {
   return (
-    <div className={cn('flex flex-wrap items-center justify-center gap-3', className)}>
-      {items.map((item) => (
-        <a
-          key={`${item.href}-${item.kind === 'text' ? item.label : item.imgSrc}`}
-          href={item.href}
-          target="_blank"
-          rel="noopener noreferrer"
-          className={cn(
-            'group inline-flex items-center justify-center rounded-2xl border border-border/60',
-            'bg-gradient-to-b from-background/70 to-background/40',
-            'h-16 min-w-[240px] px-5 shadow-sm backdrop-blur transition',
-            'hover:border-border hover:from-background/80 hover:to-background/50 hover:shadow-md',
-            'focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/60 focus-visible:ring-offset-2 focus-visible:ring-offset-background',
-          )}
-        >
-          {item.kind === 'text' ? (
-            <span className="text-sm font-semibold text-foreground/90 transition-colors group-hover:text-foreground">
-              {item.label}
-            </span>
-          ) : (
-            <>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={item.imgSrc}
-                alt={item.imgAlt}
-                width={item.width}
-                height={item.height}
-                loading="lazy"
-                decoding="async"
-                className="h-auto w-auto max-h-14 opacity-90 transition group-hover:opacity-100"
-              />
-            </>
-          )}
-        </a>
-      ))}
+    <div className={cn('mx-auto w-full max-w-4xl', className)}>
+      <div className="overflow-hidden rounded-lg border bg-background">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead className="px-6 text-muted-foreground">Badges</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {items.map((item, index) => (
+              <TableRow key={index}>
+                <TableCell
+                  className={cn(
+                    'px-6 py-3 text-left',
+                    '[&_a]:inline-flex [&_a]:items-center [&_a]:justify-center [&_a]:rounded-md [&_a]:p-1',
+                    '[&_a:hover]:bg-muted/40',
+                    '[&_a:focus-visible]:outline-none [&_a:focus-visible]:ring-2 [&_a:focus-visible]:ring-primary/60',
+                    '[&_a:focus-visible]:ring-offset-2 [&_a:focus-visible]:ring-offset-background',
+                    '[&_img]:max-h-10 [&_img]:h-auto [&_img]:w-auto',
+                  )}
+                >
+                  <div className="flex items-center justify-between gap-3">
+                    <div className="min-w-0">{item}</div>
+                    <Badge variant="outline" className="shrink-0 text-muted-foreground">
+                      AD
+                    </Badge>
+                  </div>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
     </div>
   );
 }
