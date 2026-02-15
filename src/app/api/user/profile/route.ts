@@ -28,6 +28,8 @@ export async function GET(request: NextRequest) {
       emailVerified: userData.emailVerified,
       image: userData.image,
       type: userData.type,
+      ip: userData.ip,
+      country: userData.country,
       createdAt: userData.createdAt,
       updatedAt: userData.updatedAt,
     });

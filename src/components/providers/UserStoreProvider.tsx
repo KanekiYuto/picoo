@@ -138,12 +138,43 @@ export function UserStoreProvider({
           emailVerified: data.emailVerified || false,
           image: data.image,
           type: data.type,
+          ip: data.ip,
+          country: data.country,
           createdAt: data.createdAt || new Date().toISOString(),
           updatedAt: data.updatedAt || new Date().toISOString(),
         };
 
         setUser(user);
         await fetchCreditBalance();
+
+        // 上报用户位置信息（IP和国家）- 仅在尚未记录时上报
+        if (!data.ip || !data.country) {
+          try {
+            // 获取用户的IP和国家信息
+            const locationResponse = await fetch('https://ipapi.co/json/', {
+              cache: 'no-store',
+            });
+            
+            if (locationResponse.ok) {
+              const locationData = await locationResponse.json();
+              
+              // 上报到后端
+              await fetch('/api/user/report-location', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                  ip: locationData.ip,
+                  country: locationData.country_code || locationData.country,
+                }),
+              });
+            }
+          } catch (error) {
+            console.error('Failed to report location:', error);
+            // 静默失败，不影响用户体验
+          }
+        }
 
         // 获取用户信息成功后，根据用户类型请求刷新每日积分
         if (user.type === 'free') {

@@ -3,7 +3,7 @@ import { db } from "@/server/db";
 import { user } from "@/server/db/schema";
 import { eq } from "drizzle-orm";
 
-export async function PUT(request: Request) {
+export async function POST(request: Request) {
   try {
     const userId = request.headers.get('x-user-id');
 
@@ -15,22 +15,33 @@ export async function PUT(request: Request) {
     }
 
     const body = await request.json();
-    const { name } = body;
+    const { ip, country } = body;
 
-    if (!name) {
+    // 至少需要提供一个字段
+    if (!ip && !country) {
       return NextResponse.json(
-        { error: "Name is required" },
+        { error: "At least one of ip or country is required" },
         { status: 400 }
       );
     }
 
-    // 更新用户昵称
+    // 构建更新数据
+    const updateData: { ip?: string; country?: string; updatedAt: Date } = {
+      updatedAt: new Date(),
+    };
+
+    if (ip) {
+      updateData.ip = ip;
+    }
+
+    if (country) {
+      updateData.country = country;
+    }
+
+    // 更新用户位置信息
     const [updatedUser] = await db
       .update(user)
-      .set({
-        name,
-        updatedAt: new Date(),
-      })
+      .set(updateData)
       .where(eq(user.id, userId))
       .returning();
 
@@ -42,23 +53,18 @@ export async function PUT(request: Request) {
     }
 
     return NextResponse.json({
-      id: updatedUser.id,
-      name: updatedUser.name,
-      email: updatedUser.email,
-      emailVerified: updatedUser.emailVerified,
-      image: updatedUser.image,
-      type: updatedUser.type,
-      ip: updatedUser.ip,
-      country: updatedUser.country,
-      createdAt: updatedUser.createdAt,
-      updatedAt: updatedUser.updatedAt,
+      success: true,
+      data: {
+        ip: updatedUser.ip,
+        country: updatedUser.country,
+        updatedAt: updatedUser.updatedAt,
+      }
     });
   } catch (error) {
-    console.error("Failed to update user profile:", error);
+    console.error("Failed to report user location:", error);
     return NextResponse.json(
-      { error: "Failed to update user profile" },
+      { error: "Failed to report user location" },
       { status: 500 }
     );
   }
 }
-

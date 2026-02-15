@@ -12,6 +12,8 @@ export interface User {
   emailVerified: boolean;
   image?: string | null;
   type: UserType;
+  ip?: string | null;
+  country?: string | null;
   createdAt: string;
   updatedAt: string;
 }
