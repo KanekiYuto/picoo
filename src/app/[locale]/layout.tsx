@@ -7,6 +7,7 @@ import { UserStoreProvider } from "@/components/providers/UserStoreProvider";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { ModalProvider } from "@/components/providers/ModalProvider";
+import { ClarityProvider } from "@/components/providers/ClarityProvider";
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
 import { routing } from '@i18n/routing';
@@ -143,6 +144,7 @@ export default async function LocaleLayout({
           `}
         </Script>
         <ThemeProvider>
+          <ClarityProvider />
           <NextIntlClientProvider locale={locale} messages={messages}>
             <UserProvider>
               <UserStoreProvider>
