@@ -2,7 +2,7 @@
 export const creditConfig = {
   // 每日免费积分数量
   dailyFreeCredit: {
-    default: 10, // 默认每日10积分
+    default: 90, // 默认每日10积分
   },
 
   // 积分类型

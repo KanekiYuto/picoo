@@ -17,14 +17,14 @@ export const user = pgTable('user', {
   country: text('country'),
   createdAt: timestamp('created_at').notNull().defaultNow(),
   updatedAt: timestamp('updated_at').notNull().defaultNow(),
-}, (table) => ({
+}, (table) => [
   // 邮箱登录查询
-  emailIdx: index('user_email_idx').on(table.email),
+  index('user_email_idx').on(table.email),
   // 用户创建时间查询
-  createdAtIdx: index('user_created_at_idx').on(table.createdAt),
+  index('user_created_at_idx').on(table.createdAt),
   // 用户类型查询
-  typeIdx: index('user_type_idx').on(table.type),
-}));
+  index('user_type_idx').on(table.type),
+]);
 
 // 积分信息表
 export const credit = pgTable('credit', {
@@ -50,18 +50,18 @@ export const credit = pgTable('credit', {
   createdAt: timestamp('created_at').notNull().defaultNow(),
   // 更新时间
   updatedAt: timestamp('updated_at').notNull().defaultNow(),
-}, (table) => ({
+}, (table) => [
   // 查询用户配额
-  userIdIdx: index('credit_user_id_idx').on(table.userId),
+  index('credit_user_id_idx').on(table.userId),
   // 有效配额查询（未过期或永不过期）
-  userIdExpiresAtIdx: index('credit_user_id_expires_at_idx').on(table.userId, table.expiresAt),
+  index('credit_user_id_expires_at_idx').on(table.userId, table.expiresAt),
   // 用户配额类型复合查询
-  userIdTypeIdx: index('credit_user_id_type_idx').on(table.userId, table.type),
+  index('credit_user_id_type_idx').on(table.userId, table.type),
   // 配额类型过滤
-  typeIdx: index('credit_type_idx').on(table.type),
+  index('credit_type_idx').on(table.type),
   // 交易ID查询
-  transactionIdIdx: index('credit_transaction_id_idx').on(table.transactionId),
-}));
+  index('credit_transaction_id_idx').on(table.transactionId),
+]);
 
 
 // 积分交易记录表
@@ -90,20 +90,20 @@ export const creditTransaction = pgTable('credit_transaction', {
   note: text('note'),
   // 创建时间
   createdAt: timestamp('created_at').notNull().defaultNow(),
-}, (table) => ({
+}, (table) => [
   // 用户配额交易查询
-  userIdIdx: index('credit_transaction_user_id_idx').on(table.userId),
+  index('credit_transaction_user_id_idx').on(table.userId),
   // 用户时间范围查询（倒序）
-  userIdCreatedAtIdx: index('credit_transaction_user_id_created_at_idx').on(table.userId, table.createdAt.desc()),
+  index('credit_transaction_user_id_created_at_idx').on(table.userId, table.createdAt.desc()),
   // 用户交易类型查询
-  userIdTypeIdx: index('credit_transaction_user_id_type_idx').on(table.userId, table.type),
+  index('credit_transaction_user_id_type_idx').on(table.userId, table.type),
   // 配额ID查询
-  creditIdIdx: index('credit_transaction_credit_id_idx').on(table.creditId),
+  index('credit_transaction_credit_id_idx').on(table.creditId),
   // 配额交易类型过滤
-  typeIdx: index('credit_transaction_type_idx').on(table.type),
+  index('credit_transaction_type_idx').on(table.type),
   // 关联交易查询（用于追踪退款）
-  relatedTransactionIdIdx: index('credit_transaction_related_transaction_id_idx').on(table.relatedTransactionId),
-}));
+  index('credit_transaction_related_transaction_id_idx').on(table.relatedTransactionId),
+]);
 
 // 交易记录表
 export const transaction = pgTable('transaction', {
@@ -129,21 +129,21 @@ export const transaction = pgTable('transaction', {
   currency: text('currency').notNull().default('USD'),
   // 创建时间
   createdAt: timestamp('created_at').notNull().defaultNow(),
-}, (table) => ({
+}, (table) => [
   // 用户交易查询
-  userIdIdx: index('transaction_user_id_idx').on(table.userId),
+  index('transaction_user_id_idx').on(table.userId),
   // 用户时间范围查询（倒序）
-  userIdCreatedAtIdx: index('transaction_user_id_created_at_idx').on(table.userId, table.createdAt.desc()),
+  index('transaction_user_id_created_at_idx').on(table.userId, table.createdAt.desc()),
   // 用户交易类型查询
-  userIdTypeIdx: index('transaction_user_id_type_idx').on(table.userId, table.type),
+  index('transaction_user_id_type_idx').on(table.userId, table.type),
   // 订阅ID查询
-  subscriptionIdIdx: index('transaction_subscription_id_idx').on(table.subscriptionId),
+  index('transaction_subscription_id_idx').on(table.subscriptionId),
   // 支付平台产品ID查询
-  productIdIdx: index('transaction_product_id_idx').on(table.productId),
+  index('transaction_product_id_idx').on(table.productId),
   // 支付平台交易ID快速查询（已设为 unique，自动创建索引）
   // 交易类型过滤
-  typeIdx: index('transaction_type_idx').on(table.type),
-}));
+  index('transaction_type_idx').on(table.type),
+]);
 
 // 订阅信息表
 export const subscription = pgTable('subscription', {
@@ -183,27 +183,27 @@ export const subscription = pgTable('subscription', {
   createdAt: timestamp('created_at').notNull().defaultNow(),
   // 更新时间
   updatedAt: timestamp('updated_at').notNull().defaultNow(),
-}, (table) => ({
+}, (table) => [
   // 用户订阅查询
-  userIdIdx: index('subscription_user_id_idx').on(table.userId),
+  index('subscription_user_id_idx').on(table.userId),
   // 用户订阅状态查询
-  userIdStatusIdx: index('subscription_user_id_status_idx').on(table.userId, table.status),
+  index('subscription_user_id_status_idx').on(table.userId, table.status),
   // 用户计划类型查询
-  userIdPlanTypeIdx: index('subscription_user_id_plan_type_idx').on(table.userId, table.planType),
+  index('subscription_user_id_plan_type_idx').on(table.userId, table.planType),
   // 支付平台订阅ID快速查询（已设为 unique，自动创建索引）
   // 支付平台客户ID查询
-  paymentCustomerIdIdx: index('subscription_payment_customer_id_idx').on(table.paymentCustomerId),
+  index('subscription_payment_customer_id_idx').on(table.paymentCustomerId),
   // 支付平台产品ID查询
-  productIdIdx: index('subscription_product_id_idx').on(table.productId),
+  index('subscription_product_id_idx').on(table.productId),
   // 续费时间扫描（活跃订阅的续费提醒）
-  nextBillingAtIdx: index('subscription_next_billing_at_idx').on(table.nextBillingAt),
+  index('subscription_next_billing_at_idx').on(table.nextBillingAt),
   // 状态和续费时间复合查询
-  statusNextBillingAtIdx: index('subscription_status_next_billing_at_idx').on(table.status, table.nextBillingAt),
+  index('subscription_status_next_billing_at_idx').on(table.status, table.nextBillingAt),
   // 订阅状态过滤
-  statusIdx: index('subscription_status_idx').on(table.status),
+  index('subscription_status_idx').on(table.status),
   // 过期时间查询（用于清理过期订阅）
-  expiresAtIdx: index('subscription_expires_at_idx').on(table.expiresAt),
-}));
+  index('subscription_expires_at_idx').on(table.expiresAt),
+]);
 
 // 存储表 - S3资源管理
 export const storage = pgTable('storage', {
@@ -227,13 +227,13 @@ export const storage = pgTable('storage', {
   metadata: jsonb('metadata'),
   // 创建时间
   createdAt: timestamp('created_at').notNull().defaultNow(),
-}, (table) => ({
+}, (table) => [
   // S3 key 快速查询（已设为 unique，自动创建索引）
   // 资源类型过滤
-  typeIdx: index('storage_type_idx').on(table.type),
+  index('storage_type_idx').on(table.type),
   // 创建时间查询
-  createdAtIdx: index('storage_created_at_idx').on(table.createdAt),
-}));
+  index('storage_created_at_idx').on(table.createdAt),
+]);
 
 // 素材表
 export const asset = pgTable('asset', {
@@ -257,18 +257,18 @@ export const asset = pgTable('asset', {
   updatedAt: timestamp('updated_at').notNull().defaultNow(),
   // 删除时间 (软删除标记)
   deletedAt: timestamp('deleted_at'),
-}, (table) => ({
+}, (table) => [
   // 用户素材查询
-  userIdIdx: index('asset_user_id_idx').on(table.userId),
+  index('asset_user_id_idx').on(table.userId),
   // 用户时间范围查询（倒序）
-  userIdCreatedAtIdx: index('asset_user_id_created_at_idx').on(table.userId, table.createdAt.desc()),
+  index('asset_user_id_created_at_idx').on(table.userId, table.createdAt.desc()),
   // 存储资源ID查询
-  storageIdIdx: index('asset_storage_id_idx').on(table.storageId),
+  index('asset_storage_id_idx').on(table.storageId),
   // 软删除逻辑查询
-  deletedAtIdx: index('asset_deleted_at_idx').on(table.deletedAt),
+  index('asset_deleted_at_idx').on(table.deletedAt),
   // 用户未删除的素材查询
-  userIdDeletedAtIdx: index('asset_user_id_deleted_at_idx').on(table.userId, table.deletedAt),
-}));
+  index('asset_user_id_deleted_at_idx').on(table.userId, table.deletedAt),
+]);
 
 // 生成任务表
 export const generationTask = pgTable('generation_task', {
@@ -322,24 +322,24 @@ export const generationTask = pgTable('generation_task', {
   isNsfw: boolean('is_nsfw').notNull().default(false),
   // NSFW 内容审核详情 (JSON 格式: {harassment, hate, sexual, sexual/minors, violence})
   nsfwDetails: jsonb('nsfw_details'),
-}, (table) => ({
+}, (table) => [
   // 用户任务查询、状态过滤
-  userIdIdx: index('generation_task_user_id_idx').on(table.userId),
-  userIdStatusIdx: index('generation_task_user_id_status_idx').on(table.userId, table.status),
+  index('generation_task_user_id_idx').on(table.userId),
+  index('generation_task_user_id_status_idx').on(table.userId, table.status),
   // 任务状态过滤、处理中任务扫描
-  statusIdx: index('generation_task_status_idx').on(table.status),
+  index('generation_task_status_idx').on(table.status),
   // 公开分享任务查询 (用于 sitemap 生成)
-  isPrivateDeletedAtIdx: index('generation_task_is_private_deleted_at_idx').on(table.isPrivate, table.deletedAt),
-  isNsfwDeletedAtIdx: index('generation_task_is_nsfw_deleted_at_idx').on(table.isNsfw, table.deletedAt),
+  index('generation_task_is_private_deleted_at_idx').on(table.isPrivate, table.deletedAt),
+  index('generation_task_is_nsfw_deleted_at_idx').on(table.isNsfw, table.deletedAt),
   // 软删除逻辑查询
-  deletedAtIdx: index('generation_task_deleted_at_idx').on(table.deletedAt),
+  index('generation_task_deleted_at_idx').on(table.deletedAt),
   // 创建时间范围查询、分页
-  createdAtIdx: index('generation_task_created_at_idx').on(table.createdAt),
+  index('generation_task_created_at_idx').on(table.createdAt),
   // 任务类型统计
-  taskTypeIdx: index('generation_task_task_type_idx').on(table.taskType),
+  index('generation_task_task_type_idx').on(table.taskType),
   // webhook 回调查询
-  providerRequestIdIdx: index('generation_task_provider_request_id_idx').on(table.providerRequestId),
-}));
+  index('generation_task_provider_request_id_idx').on(table.providerRequestId),
+]);
 
 // 生成任务结果表 - 关联任务和存储资源
 export const generationResult = pgTable('generation_result', {
@@ -359,16 +359,16 @@ export const generationResult = pgTable('generation_result', {
   orderIndex: integer('order_index').notNull(),
   // 创建时间
   createdAt: timestamp('created_at').notNull().defaultNow(),
-}, (table) => ({
+}, (table) => [
   // 任务结果查询
-  taskIdIdx: index('generation_result_task_id_idx').on(table.taskId),
+  index('generation_result_task_id_idx').on(table.taskId),
   // 存储资源ID查询
-  storageIdIdx: index('generation_result_storage_id_idx').on(table.storageId),
+  index('generation_result_storage_id_idx').on(table.storageId),
   // 水印资源ID查询
-  watermarkStorageIdIdx: index('generation_result_watermark_storage_id_idx').on(table.watermarkStorageId),
+  index('generation_result_watermark_storage_id_idx').on(table.watermarkStorageId),
   // 任务和序号的复合查询
-  taskIdOrderIdx: index('generation_result_task_id_order_idx').on(table.taskId, table.orderIndex),
-}));
+  index('generation_result_task_id_order_idx').on(table.taskId, table.orderIndex),
+]);
 
 // 生成任务参数表 - 存储生成参数中的资源（如图生图的输入图片）
 export const generationParameters = pgTable('generation_parameters', {
@@ -386,14 +386,14 @@ export const generationParameters = pgTable('generation_parameters', {
   paramType: text('param_type').notNull(),
   // 创建时间
   createdAt: timestamp('created_at').notNull().defaultNow(),
-}, (table) => ({
+}, (table) => [
   // 任务参数查询
-  taskIdIdx: index('generation_parameters_task_id_idx').on(table.taskId),
+  index('generation_parameters_task_id_idx').on(table.taskId),
   // 存储资源ID查询
-  storageIdIdx: index('generation_parameters_storage_id_idx').on(table.storageId),
+  index('generation_parameters_storage_id_idx').on(table.storageId),
   // 任务和参数类型的复合查询
-  taskIdParamTypeIdx: index('generation_parameters_task_id_param_type_idx').on(table.taskId, table.paramType),
-}));
+  index('generation_parameters_task_id_param_type_idx').on(table.taskId, table.paramType),
+]);
 
 // 文章表
 export const article = pgTable('article', {
@@ -413,14 +413,14 @@ export const article = pgTable('article', {
   updatedAt: timestamp('updated_at').notNull().defaultNow(),
   // 删除时间 (软删除标记)
   deletedAt: timestamp('deleted_at'),
-}, (table) => ({
+}, (table) => [
   // 封面存储资源ID查询
-  coverStorageIdIdx: index('article_cover_storage_id_idx').on(table.coverStorageId),
+  index('article_cover_storage_id_idx').on(table.coverStorageId),
   // 软删除逻辑查询
-  deletedAtIdx: index('article_deleted_at_idx').on(table.deletedAt),
+  index('article_deleted_at_idx').on(table.deletedAt),
   // 创建时间范围查询（倒序）
-  createdAtIdx: index('article_created_at_idx').on(table.createdAt.desc()),
-}));
+  index('article_created_at_idx').on(table.createdAt.desc()),
+]);
 
 // Better Auth 会话表
 export const session = pgTable('session', {
