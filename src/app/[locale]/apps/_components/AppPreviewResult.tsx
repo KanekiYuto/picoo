@@ -3,7 +3,7 @@
 import { Download, RotateCcw } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
-import { downloadImage } from "@/lib/image-utils";
+import { useImageDownload } from "@/hooks/useImageDownload";
 import { useAppPreviewStore } from "./app-preview-store";
 
 export function AppPreviewResult() {
@@ -11,6 +11,7 @@ export function AppPreviewResult() {
   const status = useAppPreviewStore((s) => s.status);
   const result = useAppPreviewStore((s) => s.result);
   const reset = useAppPreviewStore((s) => s.reset);
+  const { downloadImage } = useImageDownload();
 
   if (status !== "success" || !result) return null;
 

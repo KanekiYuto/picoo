@@ -1,7 +1,6 @@
 import type { ReactNode } from "react";
 import Image from "next/image";
 import { AppPreviewStage } from "./AppPreviewStage";
-import { AppPreviewMockGenerate } from "./AppPreviewMockGenerate";
 
 type AppPreviewMedia =
     | {
@@ -56,7 +55,7 @@ export function App({ title, description, form, previewMedia }: AppProps) {
                 </header>
 
                 <div className="space-y-4">
-                    <AppPreviewMockGenerate>{form}</AppPreviewMockGenerate>
+                    {form}
                 </div>
             </div>
 

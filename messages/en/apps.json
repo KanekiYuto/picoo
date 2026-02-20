@@ -274,12 +274,24 @@
       "ratingLabel": "{rating} out of 5 stars"
     },
     "preview": {
+      "uploading": "Uploading...",
       "generating": "Generating...",
       "generatingHint": "This usually takes a few seconds.",
       "progress": "{percent}%",
       "resultAlt": "Generated result",
       "download": "Download",
-      "reset": "Back to preview"
+      "reset": "Back to preview",
+      "successToast": "Generation complete!",
+      "errorToast": "Generation failed. Please try again.",
+      "error": {
+        "title": "Generation Failed",
+        "description": "Something went wrong. Please try again.",
+        "insufficientCredits": {
+          "title": "Not Enough Credits",
+          "description": "You don't have enough credits to generate this image. Upgrade your plan to continue.",
+          "cta": "Get Credits"
+        }
+      }
     },
     "imageUpload": {
       "remove": "Remove",

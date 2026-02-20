@@ -273,12 +273,24 @@
       "ratingLabel": "评分：{rating}/5"
     },
     "preview": {
+      "uploading": "上传中…",
       "generating": "生成中…",
       "generatingHint": "通常需要几秒钟。",
       "progress": "{percent}%",
       "resultAlt": "生成结果",
       "download": "下载",
-      "reset": "返回预览"
+      "reset": "返回预览",
+      "successToast": "生成完成！",
+      "errorToast": "生成失败，请重试。",
+      "error": {
+        "title": "生成失败",
+        "description": "出现了一些问题，请重试。",
+        "insufficientCredits": {
+          "title": "积分不足",
+          "description": "您的积分不足以生成此图片，请升级套餐后继续。",
+          "cta": "获取积分"
+        }
+      }
     },
     "imageUpload": {
       "remove": "移除",

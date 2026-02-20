@@ -1,7 +1,6 @@
-export type TranslationFn = (
-  key: string,
-  values?: Record<string, unknown>,
-) => string;
+import type { TranslationFn } from "../_components/content-types";
+
+export type { TranslationFn };
 
 export function getAiHairColorChangerContent(t: TranslationFn, tc: TranslationFn) {
   return {
@@ -18,6 +17,7 @@ export function getAiHairColorChangerContent(t: TranslationFn, tc: TranslationFn
         label: t("form.prompt.label"),
         help: t("form.prompt.help"),
       },
+      defaultPrompt: "Change my hair color to chestnut brown",
       aspectRatio: {
         label: t("form.aspectRatio.label"),
         help: t("form.aspectRatio.help"),
@@ -32,7 +32,6 @@ export function getAiHairColorChangerContent(t: TranslationFn, tc: TranslationFn
     },
     howItWorks: {
       title: t("howItWorks.title"),
-      stepLabel: (index: number) => tc("howItWorks.step", { number: index + 1 }),
       steps: [
         {
           title: t("howItWorks.steps.0.title"),
@@ -62,14 +61,20 @@ export function getAiHairColorChangerContent(t: TranslationFn, tc: TranslationFn
         {
           title: t("featureComparisons.items.0.title"),
           description: t("featureComparisons.items.0.description"),
+          mediaSrc: "/material/apps/ai-hairstyle-changer/ai_hairstyle_1_f09bca678b.webp",
+          mediaAlt: "AI hair color example",
         },
         {
           title: t("featureComparisons.items.1.title"),
           description: t("featureComparisons.items.1.description"),
+          mediaSrc: "/material/apps/ai-hairstyle-changer/ai_hairstyle_2_022a75da4d.webp",
+          mediaAlt: "AI hair color example",
         },
         {
           title: t("featureComparisons.items.2.title"),
           description: t("featureComparisons.items.2.description"),
+          mediaSrc: "/material/apps/ai-hairstyle-changer/ai_hairstyle_3_668eed9f89.webp",
+          mediaAlt: "AI hair color example",
         },
       ],
     },
@@ -111,38 +116,14 @@ export function getAiHairColorChangerContent(t: TranslationFn, tc: TranslationFn
         collapse: tc("faq.collapse"),
       },
       items: [
-        {
-          question: t("faq.items.0.question"),
-          answer: t("faq.items.0.answer"),
-        },
-        {
-          question: t("faq.items.1.question"),
-          answer: t("faq.items.1.answer"),
-        },
-        {
-          question: t("faq.items.2.question"),
-          answer: t("faq.items.2.answer"),
-        },
-        {
-          question: t("faq.items.3.question"),
-          answer: t("faq.items.3.answer"),
-        },
-        {
-          question: t("faq.items.4.question"),
-          answer: t("faq.items.4.answer"),
-        },
-        {
-          question: t("faq.items.5.question"),
-          answer: t("faq.items.5.answer"),
-        },
-        {
-          question: t("faq.items.6.question"),
-          answer: t("faq.items.6.answer"),
-        },
-        {
-          question: t("faq.items.7.question"),
-          answer: t("faq.items.7.answer"),
-        },
+        { question: t("faq.items.0.question"), answer: t("faq.items.0.answer") },
+        { question: t("faq.items.1.question"), answer: t("faq.items.1.answer") },
+        { question: t("faq.items.2.question"), answer: t("faq.items.2.answer") },
+        { question: t("faq.items.3.question"), answer: t("faq.items.3.answer") },
+        { question: t("faq.items.4.question"), answer: t("faq.items.4.answer") },
+        { question: t("faq.items.5.question"), answer: t("faq.items.5.answer") },
+        { question: t("faq.items.6.question"), answer: t("faq.items.6.answer") },
+        { question: t("faq.items.7.question"), answer: t("faq.items.7.answer") },
       ],
     },
     promptExamples: {
@@ -200,4 +181,3 @@ export function getAiHairColorChangerContent(t: TranslationFn, tc: TranslationFn
     },
   };
 }
-

@@ -2,13 +2,13 @@ import type { Metadata } from "next";
 import { generateAlternates } from "@/lib/metadata";
 import { getTranslations } from "next-intl/server";
 import { App } from "../_components/app";
+import { AppFormClient } from "../_components/AppFormClient";
 import { FeatureComparisons } from "../_components/feature-comparisons";
 import { FAQ } from "../_components/faq";
 import { HowItWorks } from "../_components/how-it-works";
 import { PromptResultExamples } from "../_components/prompt-result-examples";
 import { Testimonials } from "../_components/testimonials";
 import { getAiHairColorChangerContent, type TranslationFn } from "./content";
-import { AiHairColorChangerFormClient } from "./form-client";
 
 export const dynamic = "force-static";
 export const revalidate = 3600;
@@ -60,7 +60,7 @@ export default async function AiHairColorChangerPage({
           preload: "metadata",
         }}
         form={
-          <AiHairColorChangerFormClient
+          <AppFormClient
             formContent={content.form}
             imageUploadStrings={content.imageUpload.strings}
           />
@@ -70,103 +70,34 @@ export default async function AiHairColorChangerPage({
       <HowItWorks
         title={content.howItWorks.title}
         stepLabel={tc("howItWorks.step", { number: "{n}" })}
-        steps={[
-          {
-            title: content.howItWorks.steps[0].title,
-            description: content.howItWorks.steps[0].description,
-            media: {
-              kind: "image",
-              src: "/material/apps/1cf9b810-81b0-489a-8c80-3073013caac3.webp",
-              alt: content.howItWorks.steps[0].mediaAlt,
-              priority: true,
-            },
+        steps={content.howItWorks.steps.map((step, i) => ({
+          title: step.title,
+          description: step.description,
+          media: {
+            kind: "image" as const,
+            src: "/material/apps/1cf9b810-81b0-489a-8c80-3073013caac3.webp",
+            alt: step.mediaAlt,
+            ...(i === 0 && { priority: true }),
           },
-          {
-            title: content.howItWorks.steps[1].title,
-            description: content.howItWorks.steps[1].description,
-            media: {
-              kind: "image",
-              src: "/material/apps/1cf9b810-81b0-489a-8c80-3073013caac3.webp",
-              alt: content.howItWorks.steps[0].mediaAlt,
-            },
-          },
-          {
-            title: content.howItWorks.steps[2].title,
-            description: content.howItWorks.steps[2].description,
-            media: {
-              kind: "image",
-              src: "/material/apps/1cf9b810-81b0-489a-8c80-3073013caac3.webp",
-              alt: content.howItWorks.steps[2].mediaAlt,
-            },
-          },
-        ]}
+        }))}
       />
 
       <FeatureComparisons
         ctaLabel={content.featureComparisons.cta}
         ctaHref="#"
         labels={content.featureComparisons.labels}
-        items={[
-          {
-            title: content.featureComparisons.items[0].title,
-            description: content.featureComparisons.items[0].description,
-            media: {
-              kind: "image",
-              src: "/material/apps/ai-hairstyle-changer/ai_hairstyle_1_f09bca678b.webp",
-              alt: "AI hair color example",
-            },
-          },
-          {
-            title: content.featureComparisons.items[1].title,
-            description: content.featureComparisons.items[1].description,
-            media: {
-              kind: "image",
-              src: "/material/apps/ai-hairstyle-changer/ai_hairstyle_2_022a75da4d.webp",
-              alt: "AI hair color example",
-            },
-          },
-          {
-            title: content.featureComparisons.items[2].title,
-            description: content.featureComparisons.items[2].description,
-            media: {
-              kind: "image",
-              src: "/material/apps/ai-hairstyle-changer/ai_hairstyle_3_668eed9f89.webp",
-              alt: "AI hair color example",
-            },
-          },
-        ]}
+        items={content.featureComparisons.items.map((item) => ({
+          title: item.title,
+          description: item.description,
+          media: { kind: "image" as const, src: item.mediaSrc, alt: item.mediaAlt },
+        }))}
       />
 
       <Testimonials
         title={content.testimonials.title}
         subtitle={content.testimonials.subtitle}
         ratingLabel={content.testimonials.ratingLabel}
-        items={[
-          {
-            quote: content.testimonials.items[0].quote,
-            name: content.testimonials.items[0].name,
-            title: content.testimonials.items[0].title,
-            rating: 5,
-          },
-          {
-            quote: content.testimonials.items[1].quote,
-            name: content.testimonials.items[1].name,
-            title: content.testimonials.items[1].title,
-            rating: 5,
-          },
-          {
-            quote: content.testimonials.items[2].quote,
-            name: content.testimonials.items[2].name,
-            title: content.testimonials.items[2].title,
-            rating: 5,
-          },
-          {
-            quote: content.testimonials.items[3].quote,
-            name: content.testimonials.items[3].name,
-            title: content.testimonials.items[3].title,
-            rating: 5,
-          },
-        ]}
+        items={content.testimonials.items.map((item) => ({ ...item, rating: 5 as const }))}
       />
 
       <PromptResultExamples
