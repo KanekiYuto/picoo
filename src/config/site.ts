@@ -44,33 +44,6 @@ export const siteConfig = {
     discord: "https://discord.gg/sQT3rkAN28",
   },
 
-  // 导航链接
-  links: {
-    models: [
-      { label: "Seedream 4.5", href: "/models/seedream/seedream4_5" },
-    ],
-    apps: [
-      { label: "AI Hairstyle Changer", href: "/apps/ai-hairstyle-changer" },
-      { label: "AI Hair Color Changer", href: "/apps/ai-hair-color-changer" },
-    ],
-    resources: [
-      { label: "Pricing", href: "/pricing" },
-      { label: "Help Center", href: "/help" },
-    ],
-    community: [
-      { label: "Discord", href: "https://discord.gg/sQT3rkAN28" },
-    ],
-    contact: [
-      { label: "Discord", href: "https://discord.gg/sQT3rkAN28" },
-      { label: "Email", href: "mailto:support@fluxreve.com" },
-    ],
-    legal: [
-      { label: "Privacy Policy", href: "/legal/privacy" },
-      { label: "Terms of Service", href: "/legal/terms" },
-      { label: "Refund Policy", href: "/legal/refund" },
-    ],
-  },
-
   // 版权信息
   copyright: {
     year: new Date().getFullYear(),

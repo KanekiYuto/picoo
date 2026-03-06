@@ -33,49 +33,49 @@ export function Footer({ className }: FooterProps) {
   const tSections = useTranslations('layout.footer.sections');
   const tLinks = useTranslations('layout.footer.links');
 
-  // 链接标签翻译映射
-  const translateLabel = (label: string): string => {
-    const labelMap: Record<string, string> = {
-      'Seedream 4.5': tLinks('seedream45'),
-      'AI Hairstyle Changer': tLinks('aiHairstyleChanger'),
-      'AI Hair Color Changer': tLinks('aiHairColorChanger'),
-      'Pricing': tLinks('pricing'),
-      'Help Center': tLinks('helpCenter'),
-      'Discord': tLinks('discord'),
-      'Email': tLinks('email'),
-      'Privacy Policy': tLinks('privacyPolicy'),
-      'Terms of Service': tLinks('termsOfService'),
-      'Refund Policy': tLinks('refundPolicy'),
-    };
-    return labelMap[label] || label;
-  };
-
-  const footerLinks = {
-    models: {
+  const sections = [
+    {
       title: tSections('models'),
-      links: siteConfig.links.models,
+      links: [
+        { label: tLinks('seedream45'), href: '/models/seedream/seedream4_5' },
+      ],
     },
-    apps: {
+    {
       title: tSections('apps'),
-      links: siteConfig.links.apps,
+      links: [
+        { label: tLinks('aiHairstyleChanger'), href: '/apps/ai-hairstyle-changer' },
+        { label: tLinks('aiHairColorChanger'), href: '/apps/ai-hair-color-changer' },
+      ],
     },
-    resources: {
+    {
       title: tSections('resources'),
-      links: siteConfig.links.resources,
+      links: [
+        { label: tLinks('pricing'), href: '/pricing' },
+        { label: tLinks('helpCenter'), href: '/help' },
+      ],
     },
-    community: {
+    {
       title: tSections('community'),
-      links: siteConfig.links.community,
+      links: [
+        { label: tLinks('discord'), href: 'https://discord.gg/sQT3rkAN28' },
+      ],
     },
-    contact: {
+    {
       title: tSections('contact'),
-      links: siteConfig.links.contact,
+      links: [
+        { label: tLinks('discord'), href: 'https://discord.gg/sQT3rkAN28' },
+        { label: tLinks('email'), href: 'mailto:support@fluxreve.com' },
+      ],
     },
-    legal: {
+    {
       title: tSections('legal'),
-      links: siteConfig.links.legal,
+      links: [
+        { label: tLinks('privacyPolicy'), href: '/legal/privacy' },
+        { label: tLinks('termsOfService'), href: '/legal/terms' },
+        { label: tLinks('refundPolicy'), href: '/legal/refund' },
+      ],
     },
-  };
+  ];
 
   return (
     <motion.footer
@@ -89,12 +89,12 @@ export function Footer({ className }: FooterProps) {
       )}
     >
       <div className="mx-auto max-w-6xl px-8 py-12">
-        {/* Navigation Links */}
+        {/* 导航链接 */}
         <motion.div
           variants={fadeInUp}
           className="mb-12 grid grid-cols-2 gap-6 md:mb-16 md:grid-cols-3 md:gap-8 lg:mb-20 lg:grid-cols-7"
         >
-          {Object.values(footerLinks).map((section) => (
+          {sections.map((section) => (
             <div key={section.title}>
               <div className="font-medium text-muted-foreground text-xs md:text-sm mb-3 md:mb-4">
                 {section.title}
@@ -106,7 +106,7 @@ export function Footer({ className }: FooterProps) {
                       href={link.href}
                       className="text-foreground text-xs md:text-sm transition-colors hover:text-primary"
                     >
-                      {translateLabel(link.label)}
+                      {link.label}
                     </Link>
                   </li>
                 ))}
@@ -115,7 +115,7 @@ export function Footer({ className }: FooterProps) {
           ))}
         </motion.div>
 
-        {/* Large Brand Name */}
+        {/* 大号品牌名称 */}
         <motion.div
           variants={fadeInUp}
           className="relative overflow-hidden py-8 md:py-12 lg:py-16 xl:py-20"
@@ -125,7 +125,7 @@ export function Footer({ className }: FooterProps) {
           </div>
         </motion.div>
 
-        {/* Bottom Bar */}
+        {/* 底部栏 */}
         <motion.div
           variants={fadeInUp}
           className="flex flex-col md:flex-row items-center justify-between gap-4 md:gap-6 pt-6 md:pt-8"
@@ -134,7 +134,7 @@ export function Footer({ className }: FooterProps) {
             © {siteConfig.copyright.year} {siteConfig.fullName}. {siteConfig.copyright.text}
           </p>
 
-          {/* Social Links */}
+          {/* 社交链接 */}
           <div className="flex gap-3 md:gap-4">
             {socialLinks.map((social) => {
               const Icon = social.icon;
