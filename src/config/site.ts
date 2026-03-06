@@ -56,7 +56,6 @@ export const siteConfig = {
     resources: [
       { label: "Pricing", href: "/pricing" },
       { label: "Help Center", href: "/help" },
-      { label: 'Back Links', href: '/back-links' }
     ],
     community: [
       { label: "Discord", href: "https://discord.gg/sQT3rkAN28" },
