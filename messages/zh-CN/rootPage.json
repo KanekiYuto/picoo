@@ -8,7 +8,11 @@
       "prefix": "AI创作，",
       "highlight": "一站搞定"
     },
-    "description": "集成<models>Veo、Gemini</models>等顶级AI模型，视频图像创作更快更专业"
+    "description": "集成<models>Veo、Gemini</models>等顶级AI模型，视频图像创作更快更专业",
+    "buttons": {
+      "start": "免费开始",
+      "pricing": "查看定价"
+    }
   },
   "modelsShowcase": {
     "title": {

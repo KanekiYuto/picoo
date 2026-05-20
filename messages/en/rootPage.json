@@ -8,7 +8,11 @@
       "prefix": "AI Creation, ",
       "highlight": "All in One"
     },
-    "description": "Integrated with top AI models like <models>Veo, Gemini</models>, faster and more professional video and image creation"
+    "description": "Integrated with top AI models like <models>Veo, Gemini</models>, faster and more professional video and image creation",
+    "buttons": {
+      "start": "Start",
+      "pricing": "View Pricing"
+    }
   },
   "modelsShowcase": {
     "title": {

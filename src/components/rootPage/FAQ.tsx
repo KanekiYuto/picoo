@@ -14,19 +14,20 @@ interface FAQItemProps {
 
 function FAQItem({ question, answer, isOpen, onToggle }: FAQItemProps) {
   return (
-    <div className="border-b border-border/50">
+    <div className="border-b border-border/70 last:border-b-0">
       <button
         onClick={onToggle}
-        className="w-full flex items-center justify-between py-6 text-left group"
+        aria-expanded={isOpen}
+        className="group flex w-full items-center justify-between gap-4 py-5 text-left sm:py-6"
       >
-        <span className="text-lg md:text-xl text-foreground font-medium pr-8 group-hover:text-primary transition-colors">
+        <span className="text-base font-semibold leading-6 text-foreground transition-colors group-hover:text-primary sm:text-lg">
           {question}
         </span>
-        <div className="flex-shrink-0 w-10 h-10 rounded-full border-2 border-border/50 flex items-center justify-center group-hover:border-primary transition-colors">
+        <div className="flex size-9 shrink-0 items-center justify-center rounded-full bg-background-1 transition-colors group-hover:bg-primary/10">
           {isOpen ? (
-            <Minus className="w-5 h-5 text-foreground" />
+            <Minus className="size-4 text-foreground" />
           ) : (
-            <Plus className="w-5 h-5 text-foreground" />
+            <Plus className="size-4 text-foreground" />
           )}
         </div>
       </button>
@@ -40,8 +41,8 @@ function FAQItem({ question, answer, isOpen, onToggle }: FAQItemProps) {
             transition={{ duration: 0.3, ease: 'easeInOut' }}
             className="overflow-hidden"
           >
-            <div className="pb-6 pr-16">
-              <p className="text-base md:text-lg text-muted-foreground leading-relaxed">
+            <div className="pb-5 pr-10 sm:pb-6 md:pr-14">
+              <p className="max-w-3xl text-sm leading-7 text-muted-foreground sm:text-base">
                 {answer}
               </p>
             </div>
@@ -66,32 +67,31 @@ export function FAQ() {
   }));
 
   return (
-    <section>
-      <div className="container mx-auto px-4">
-        <div className="max-w-4xl mx-auto">
-          {/* 标题 */}
+    <section className="px-3 sm:px-4 md:px-6 lg:px-8">
+      <div className="mx-auto max-w-7xl">
+        <div className="grid gap-6 rounded-[1.5rem] border border-border bg-gradient-to-br from-background via-background to-primary/10 p-4 backdrop-blur sm:gap-8 sm:rounded-[2rem] sm:p-6 md:grid-cols-[0.9fr_1.4fr] md:gap-10 md:p-8 lg:p-10">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
             viewport={{ once: true }}
-            className="text-center mb-16"
+            className="md:sticky md:top-24 md:self-start"
           >
-            <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-6">
+            <div className="mb-4 h-1.5 w-14 rounded-full bg-primary sm:mb-5 sm:w-16" />
+            <h2 className="mb-4 text-3xl font-semibold leading-tight tracking-normal text-foreground sm:text-4xl md:text-5xl">
               {t('title')}
             </h2>
-            <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto">
+            <p className="max-w-md text-base leading-7 text-muted-foreground md:text-lg">
               {t('subtitle')}
             </p>
           </motion.div>
 
-          {/* FAQ 列表 */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.1 }}
             viewport={{ once: true }}
-            className="space-y-0"
+            className="rounded-2xl border border-border bg-background-1 px-3.5 sm:px-5 md:px-6"
           >
             {faqItems.map((faq, index) => (
               <FAQItem

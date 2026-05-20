@@ -5,8 +5,6 @@ import { Hero } from '@/components/rootPage/Hero';
 import { ModelsShowcase } from '@/components/rootPage/ModelsShowcase';
 import { FAQ } from '@/components/rootPage/FAQ';
 import { CTA } from '@/components/rootPage/CTA';
-import { Pricing } from '@/components/pricing/Pricing';
-import { PricingHeader } from '@/components/pricing/PricingHeader';
 import { Footer } from '@/components/layout';
 import { RootPageHeader } from '@/components/rootPage/RootPageHeader';
 
@@ -30,12 +28,8 @@ export default function Home() {
       <Hero />
 
       {/* Main Content */}
-      <div className="flex flex-col gap-16 md:gap-32 lg:gap-48">
+      <div className="flex flex-col gap-20 md:gap-28 lg:gap-36">
         <ModelsShowcase />
-        <div className='px-4 md:px-6 lg:px-8'>
-          <PricingHeader />
-          <Pricing />
-        </div>
         <FAQ />
         <CTA />
         <Footer />

@@ -2,10 +2,9 @@
 
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
-import HoverArrowButton from "@/components/hover-arrow-button";
 import { useGeneratorStore } from '@/store/useGeneratorStore';
 import { useTranslations } from 'next-intl';
-import { Check } from 'lucide-react';
+import { ArrowUpRight, Check } from 'lucide-react';
 import { requireAuth } from '@/lib/guards';
 
 /**
@@ -29,84 +28,67 @@ export function CTA() {
   };
 
   return (
-    <section className="relative">
-      <div className="container mx-auto px-4">
-        <div className="max-w-4xl mx-auto text-center">
-          {/* 主标题 */}
-          <motion.h2
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            viewport={{ once: true }}
-            className="text-5xl md:text-6xl lg:text-7xl font-bold text-foreground mb-8 tracking-tight"
-          >
-            {t('title')}
-          </motion.h2>
-
-          {/* 副标题 */}
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.1 }}
-            viewport={{ once: true }}
-            className="text-xl md:text-2xl text-muted-foreground mb-12 max-w-2xl mx-auto leading-relaxed"
-          >
-            {t('description')}
-          </motion.p>
-
-          {/* 功能列表 */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            viewport={{ once: true }}
-            className="flex flex-wrap justify-center gap-6 mb-12"
-          >
-            {features.map((feature, index) => (
-              <div key={index} className="flex items-center gap-2 text-foreground/80">
-                <div className="w-5 h-5 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-                  <Check className="w-3 h-3 text-primary" strokeWidth={3} />
-                </div>
-                <span className="text-base">{feature}</span>
-              </div>
-            ))}
-          </motion.div>
-
-          {/* 按钮组 */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.3 }}
-            viewport={{ once: true }}
-            className="flex justify-center"
-          >
-            {/* <Button
-              onClick={handleStart}
-              variant="default"
-              size="payment"
-              className="text-xl font-semibold px-12 py-6 h-auto"
+    <section className="relative px-3 sm:px-4 md:px-6 lg:px-8">
+      <div className="mx-auto max-w-7xl">
+        <div className="relative overflow-hidden px-0 py-10 sm:px-8 sm:py-12 md:px-12 md:py-14">
+          <div className="mx-auto flex max-w-4xl flex-col items-center text-center">
+            <motion.h2
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              viewport={{ once: true }}
+              className="max-w-3xl text-3xl font-semibold leading-tight tracking-normal text-foreground sm:text-4xl md:text-5xl lg:text-6xl"
             >
-              {t('primaryButton')}
-            </Button> */}
-            <HoverArrowButton
-              text={t('primaryButton')}
-              duration={0.3}
-              iconSize={20}
-              className="bg-black text-white dark:bg-white dark:text-black"
-              onClick={() => console.log("Clicked!")}
-            />
-          </motion.div>
+              {t('title')}
+            </motion.h2>
 
-          {/* 底部提示 */}
-          <motion.p
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            transition={{ duration: 0.6, delay: 0.4 }}
-            viewport={{ once: true }}
-            className="mt-8 text-sm text-muted-foreground"
-          >
-            {t('footer')}
-          </motion.p>
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.1 }}
+              viewport={{ once: true }}
+              className="mt-5 max-w-2xl text-base leading-7 text-muted-foreground md:text-lg"
+            >
+              {t('description')}
+            </motion.p>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.16 }}
+              viewport={{ once: true }}
+              className="mt-7 flex flex-wrap justify-center gap-2.5"
+            >
+              {features.map((feature, index) => (
+                <div key={index} className="flex items-center gap-2 rounded-full border border-border bg-background px-3.5 py-2 text-sm text-foreground">
+                  <Check className="size-3.5 text-primary" strokeWidth={3} />
+                  <span>{feature}</span>
+                </div>
+              ))}
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              viewport={{ once: true }}
+              className="mt-8 flex w-full flex-col items-center gap-3 sm:w-auto"
+            >
+              <Button
+                type="button"
+                onClick={handleStart}
+                variant="default"
+                size="payment"
+                className="h-12 w-full rounded-lg px-8 text-base font-semibold sm:w-auto md:h-14 md:text-lg"
+              >
+                {t('primaryButton')}
+                <ArrowUpRight data-icon="inline-end" />
+              </Button>
+              <p className="text-sm text-muted-foreground">
+                {t('footer')}
+              </p>
+            </motion.div>
+          </div>
         </div>
       </div>
     </section>

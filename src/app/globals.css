@@ -26,8 +26,8 @@
   --neutral-white: 255 255 255;
   --neutral-black: 0 0 0;
 
-  --primary: #ff3466;
-  --primary-hover: #ff5580;
+  --primary: #5a48c8;
+  --primary-hover: #6f5ee8;
   --border: oklch(0.922 0 0);
   --muted: oklch(0.45 0 0);
   --scrollbar-color: oklch(0.45 0 0 / 0.6);
@@ -85,8 +85,8 @@
 }
 
 .dark {
-  --primary: #ff3466;
-  --primary-hover: #ff5580;
+  --primary: #5a48c8;
+  --primary-hover: #6f5ee8;
   --border: #3a3a3a;
   --muted: oklch(0.50 0 0);
   --scrollbar-color: oklch(0.40 0 0 / 0.6);
@@ -209,12 +209,12 @@
 
 /* 工具类 - 主渐变色 */
 .bg-gradient-primary {
-  background: linear-gradient(to right, #ff3466, #c721ff);
+  background: linear-gradient(to right, #5a48c8, #a79bff);
 }
 
 /* 渐变文本 */
 .text-gradient-primary {
-  background: linear-gradient(to right, #ff3466, #c721ff);
+  background: linear-gradient(to right, #5a48c8, #a79bff);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -265,7 +265,7 @@ body {
 
 .gradient-border-focusable:focus,
 .gradient-border-focusable:focus-visible {
-  background-image: linear-gradient(var(--background), var(--background)), linear-gradient(144deg, #FF3466, #C721FF);
+  background-image: linear-gradient(var(--background), var(--background)), linear-gradient(144deg, #5a48c8, #a79bff);
 }
 
 /* 加载动画 */

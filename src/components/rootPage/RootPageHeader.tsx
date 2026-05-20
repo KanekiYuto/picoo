@@ -8,7 +8,6 @@ import { Moon, Sun, Menu, X } from "lucide-react";
 import { UserButton } from "@/components/auth/UserButton";
 import { useUserStore } from "@/store/useUserStore";
 import { useThemeStore } from "@/store/useThemeStore";
-import { useModalStore } from "@/store/useModalStore";
 import { useGeneratorStore } from "@/store/useGeneratorStore";
 import { LanguageSwitcher } from "@/components/layout/LanguageSwitcher";
 import { siteConfig } from "@/config/site";
@@ -30,7 +29,6 @@ export function RootPageHeader({ className }: RootPageHeaderProps) {
   const tFooter = useTranslations("layout.footer.links");
   const { user, isLoading } = useUserStore();
   const { theme, toggleTheme } = useThemeStore();
-  const { openLoginModal } = useModalStore();
   const { openGeneratorModal } = useGeneratorStore();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -52,16 +50,16 @@ export function RootPageHeader({ className }: RootPageHeaderProps) {
         className
       )}
     >
-      <div className="container mx-auto px-4 lg:px-6">
-        <div className="h-16 flex items-center justify-between">
+      <div className="container mx-auto px-3 sm:px-4 lg:px-6">
+        <div className="h-14 flex items-center justify-between sm:h-16">
           {/* 左侧：汉堡菜单按钮（移动端）+ Logo 和站点名称 */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3">
             {/* 汉堡菜单按钮（移动端） */}
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden flex h-10 w-10 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground cursor-pointer"
+              className="md:hidden flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground cursor-pointer sm:h-10 sm:w-10"
               aria-label="Toggle menu"
             >
               {mobileMenuOpen ? (
@@ -71,20 +69,17 @@ export function RootPageHeader({ className }: RootPageHeaderProps) {
               )}
             </motion.button>
 
-            <Link href="/" className="flex items-center gap-3 cursor-pointer group">
-              <div className="relative w-8 h-8 transition-transform group-hover:scale-105">
+            <Link href="/" className="flex items-center gap-2 cursor-pointer group sm:gap-3">
+              <div className="relative h-8 w-8 transition-transform group-hover:scale-105 sm:h-10 sm:w-10">
                 <Image
                   key={theme}
                   src={theme === 'light' ? siteConfig.logo.light : siteConfig.logo.dark}
                   alt={`${siteConfig.name} Logo`}
                   fill
-                  sizes="32px"
+                  sizes="40px"
                   className="object-contain rounded-lg"
                 />
               </div>
-              <span className="hidden md:inline text-xl font-bold text-foreground">
-                {siteConfig.name}
-              </span>
             </Link>
           </div>
 
@@ -102,13 +97,13 @@ export function RootPageHeader({ className }: RootPageHeaderProps) {
           </nav>
 
           {/* 右侧：操作按钮 */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5 sm:gap-2">
             {/* 主题切换按钮 */}
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={toggleTheme}
-              className="flex h-10 w-10 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground cursor-pointer"
+              className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground cursor-pointer sm:h-10 sm:w-10"
               aria-label={t("toggleTheme")}
             >
               {theme === 'light' ? (
@@ -122,7 +117,7 @@ export function RootPageHeader({ className }: RootPageHeaderProps) {
             <LanguageSwitcher />
 
             {/* 用户按钮或登录按钮 */}
-            <div className="ml-2">
+            <div className="ml-1 sm:ml-2">
               {isLoading ? (
                 <div className="h-10 w-10 rounded-full bg-secondary animate-pulse ring-2 ring-border" />
               ) : user ? (
@@ -130,7 +125,7 @@ export function RootPageHeader({ className }: RootPageHeaderProps) {
               ) : (
                 <motion.button
                   onClick={handleGetStarted}
-                  className="flex h-10 px-6 items-center justify-center rounded-full bg-foreground text-background font-medium text-sm cursor-pointer hover:opacity-90 transition-opacity"
+                  className="flex h-9 px-4 items-center justify-center rounded-full bg-foreground text-background font-medium text-sm cursor-pointer hover:opacity-90 transition-opacity sm:h-10 sm:px-6"
                 >
                   {t("signIn")}
                 </motion.button>
@@ -150,7 +145,7 @@ export function RootPageHeader({ className }: RootPageHeaderProps) {
             transition={{ duration: 0.2 }}
             className="md:hidden border-t border-border/50 bg-background/95 backdrop-blur-md"
           >
-            <nav className="container mx-auto px-4 py-4 flex flex-col gap-2">
+            <nav className="container mx-auto px-3 py-3 flex flex-col gap-2 sm:px-4 sm:py-4">
               {navLinks.map((link) => (
                 <Link
                   key={link.href}
