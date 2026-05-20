@@ -14,13 +14,14 @@ import {
 // 声明 gtag 函数类型
 declare global {
   interface Window {
-    gtag?: (command: string, action: string, params: Record<string, any>) => void;
+    gtag?: (command: string, action: string, params: Record<string, unknown>) => void;
   }
 }
 
 export default function SubscriptionSuccessClient() {
   const t = useTranslations('subscription-success');
   const tPlans = useTranslations('common.plans');
+  type PlanMessageKey = Parameters<typeof tPlans>[0];
   const router = useRouter();
   const searchParams = useSearchParams();
   const [countdown, setCountdown] = useState(10000);
@@ -142,7 +143,7 @@ export default function SubscriptionSuccessClient() {
               {isCreditPackFlow ? t('creditNotFound') : t('notFound')}
             </p>
             <Button
-              onClick={() => router.push(isCreditPackFlow ? '/settings/home' : '/settings/billing')}
+              onClick={() => router.push(isCreditPackFlow ? '/settings/credits' : '/settings/billing')}
               variant="outline"
               className="border-white/30 text-white hover:bg-white/10"
             >
@@ -214,7 +215,7 @@ export default function SubscriptionSuccessClient() {
                   <div>
                     <div className="text-xs md:text-sm text-white/50 mb-1 md:mb-1.5">{t('details.plan')}</div>
                     <div className="text-sm md:text-base text-white font-medium">
-                      {tPlans((subscriptionData?.planType ?? 'unknown') as any, {
+                      {tPlans((subscriptionData?.planType ?? 'unknown') as PlanMessageKey, {
                         defaultValue: subscriptionData?.planType ?? 'unknown',
                       })}
                     </div>
@@ -287,7 +288,7 @@ export default function SubscriptionSuccessClient() {
           </Button>
 
           <Button
-            onClick={() => router.push(creditPackData ? '/settings/home' : '/settings/billing')}
+            onClick={() => router.push(creditPackData ? '/settings/credits' : '/settings/billing')}
             disabled={isRedirecting}
             variant="ghost"
             className="w-full text-white/70 hover:text-white hover:bg-white/5 h-11 md:h-12 text-sm md:text-base"

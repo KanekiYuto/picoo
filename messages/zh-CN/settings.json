@@ -1,22 +1,18 @@
 {
-  "layout": {
+  "page": {
     "title": "设置",
-    "closeMenu": "关闭菜单",
-    "nav": {
-      "myInfo": "我的信息",
-      "profile": "个人资料",
-      "credits": "积分",
-      "creditsBalance": "积分",
-      "usage": "用量",
-      "billing": "账单",
-      "subscriptionPlan": "订阅计划",
-      "billingDetails": "账单详情"
-    }
+    "description": "管理账户、订阅、积分和使用记录。",
+    "accountTitle": "账户",
+    "accountDescription": "管理您的账户资料和登录身份。",
+    "billingTitle": "订阅",
+    "billingDescription": "查看当前套餐、账单信息和订阅状态。",
+    "creditsTitle": "积分",
+    "creditsDescription": "查看积分余额、有效期和积分明细。",
+    "usageTitle": "用量",
+    "usageDescription": "查看积分消耗统计和使用记录。"
   },
   "profile": {
-    "title": "个人设置",
-    "description": "管理您的个人信息",
-    "openMenu": "打开设置菜单",
+    "sectionTitle": "账户",
     "editProfile": "编辑资料",
     "sections": {
       "settings": "设置"
@@ -39,9 +35,6 @@
     "notSignedIn": "未登录"
   },
   "credits": {
-    "title": "积分管理",
-    "description": "查看和管理您的积分余额",
-    "openMenu": "打开设置菜单",
     "overview": {
       "currentBalance": "当前积分",
       "availableCredits": "可用积分",
@@ -84,9 +77,7 @@
     }
   },
   "usage": {
-    "title": "用量明细",
-    "description": "查看您的积分使用记录和消费明细",
-    "openMenu": "打开设置菜单",
+    "sectionTitle": "用量概览",
     "stats": {
       "totalConsumed": "总消耗",
       "recordCount": "记录数",
@@ -120,9 +111,7 @@
     }
   },
   "billing": {
-    "title": "订阅管理",
-    "description": "管理您的订阅计划和账单信息",
-    "openMenu": "打开设置菜单",
+    "sectionTitle": "订阅",
     "currentPlan": "当前订阅计划",
     "upgradePlan": "升级套餐",
     "billingAmount": "金额",

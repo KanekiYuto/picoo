@@ -1,6 +1,8 @@
 "use client";
 
 import { Clock } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 interface CreditItem {
   id: string;
@@ -39,14 +41,16 @@ export function CreditsList({
 }: CreditsListProps) {
   if (filteredCredits.length === 0) {
     return (
-      <div className="bg-background-1 border border-background-2 rounded-2xl p-6 text-center text-muted-foreground">
+      <Card className="overflow-hidden rounded-2xl border-background-2 bg-background-1 shadow-none">
+        <CardContent className="p-6 text-center text-muted-foreground">
         {credits.length === 0 ? noCreditsLabel : noMatchingLabel}
-      </div>
+        </CardContent>
+      </Card>
     );
   }
 
   return (
-    <div className="space-y-4">
+    <div className="flex flex-col gap-3">
       {filteredCredits.map((credit) => {
         const percentage =
           credit.amount > 0 ? (credit.remaining / credit.amount) * 100 : 0;
@@ -54,11 +58,12 @@ export function CreditsList({
         const expiresTime = credit.expiresAt
           ? new Date(credit.expiresAt).getTime()
           : null;
+        const currentTime = new Date().getTime();
         const isExpiringSoon =
           expiresTime &&
-          expiresTime > Date.now() &&
-          expiresTime - Date.now() < 7 * 24 * 60 * 60 * 1000;
-        const isExpired = expiresTime && expiresTime <= Date.now();
+          expiresTime > currentTime &&
+          expiresTime - currentTime < 7 * 24 * 60 * 60 * 1000;
+        const isExpired = expiresTime && expiresTime <= currentTime;
 
         let progressColor = "";
         if (usageRate < 50) {
@@ -70,83 +75,78 @@ export function CreditsList({
         }
 
         return (
-          <div
+          <Card
             key={credit.id}
-            className="bg-background-1 border border-background-2 rounded-2xl p-5 md:p-6"
+            className="overflow-hidden rounded-2xl border-background-2 bg-background-1 shadow-none"
           >
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-base font-semibold text-foreground">
+            <CardHeader className="flex flex-row items-start justify-between gap-3 p-4 pb-3">
+              <CardTitle className="text-base">
                 {typeLabel(credit.type)}
-              </h3>
-              <span
-                className={`px-3 py-1 text-xs font-medium rounded ${
-                  isExpired
-                    ? "bg-red-950/80 text-red-400"
-                    : isExpiringSoon
-                    ? "bg-yellow-950/80 text-yellow-400"
-                    : "bg-green-950/80 text-green-400"
-                }`}
+              </CardTitle>
+              <Badge
+                variant={isExpired ? "error" : isExpiringSoon ? "warning" : "success"}
               >
                 {isExpired
                   ? statusExpiredLabel
                   : isExpiringSoon
                   ? statusExpiringLabel
                   : statusActiveLabel}
-              </span>
-            </div>
+              </Badge>
+            </CardHeader>
 
-            {credit.expiresAt && (
-              <div className="flex items-center gap-2 text-sm text-muted-foreground mb-5 bg-background-2 hover:bg-background-3/50 border border-background-4/50 px-3 py-2 rounded-lg">
-                <Clock className="h-4 w-4" />
-                <span>
-                  {new Date(credit.issuedAt).toLocaleDateString()}{" "}
-                  &rarr; {new Date(credit.expiresAt).toLocaleDateString()}
-                </span>
-              </div>
-            )}
+            <CardContent className="grid gap-4 rounded-t-2xl border-t border-background-2 bg-background p-4 sm:grid-cols-[1fr_220px]">
+              <div className="flex flex-col gap-3">
+                {credit.expiresAt && (
+                  <div className="flex items-center gap-2 rounded-xl bg-background-1 px-3 py-2 text-sm text-muted-foreground">
+                    <Clock />
+                    <span>
+                      {new Date(credit.issuedAt).toLocaleDateString()} {"->"} {new Date(credit.expiresAt).toLocaleDateString()}
+                    </span>
+                  </div>
+                )}
 
-            <div className="mb-4">
-              <div className="flex items-baseline gap-2 mb-2">
-                <span className="text-3xl md:text-4xl font-bold text-foreground">
-                  {credit.remaining.toLocaleString()}
-                </span>
-                <span className="text-lg text-muted-foreground">
-                  / {credit.amount.toLocaleString()}
-                </span>
-                <span className="ml-auto text-base font-medium text-muted">
-                  {percentage.toFixed(0)}%
-                </span>
-              </div>
-            </div>
-
-            <div className="mb-5">
-              <div className="h-3 bg-background-2 hover:bg-background-3 rounded-full overflow-hidden">
-                <div
-                  className={`h-full rounded-full transition-all duration-300 ${progressColor}`}
-                  style={{ width: `${percentage}%` }}
-                />
-              </div>
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div className="bg-background-2 hover:bg-background-3/50 rounded-xl p-3 border border-background-4/50">
-                <div className="text-xs text-muted-foreground mb-1">
-                  {consumedLabel}
+                <div>
+                  <div className="mb-2 flex items-baseline gap-2">
+                    <span className="text-3xl font-bold text-foreground">
+                      {credit.remaining.toLocaleString()}
+                    </span>
+                    <span className="text-base text-muted-foreground">
+                      / {credit.amount.toLocaleString()}
+                    </span>
+                    <span className="ml-auto text-sm font-medium text-muted">
+                      {percentage.toFixed(0)}%
+                    </span>
+                  </div>
                 </div>
-                <div className="text-lg font-semibold text-foreground">
-                  {credit.consumed.toLocaleString()}
+
+                <div className="h-2 overflow-hidden rounded-full bg-muted">
+                  <div
+                    className={`h-full rounded-full transition-all duration-300 ${progressColor}`}
+                    style={{ width: `${percentage}%` }}
+                  />
                 </div>
               </div>
-              <div className="bg-background-2 hover:bg-background-3/50 rounded-xl p-3 border border-background-4/50">
-                <div className="text-xs text-muted-foreground mb-1">
-                  {remainingLabel}
+
+              <div className="grid grid-cols-2 gap-3 sm:grid-cols-1">
+                <div className="rounded-xl bg-background-1 p-3">
+                  <div className="mb-1 text-xs text-muted-foreground">
+                    {consumedLabel}
+                  </div>
+                  <div className="text-lg font-semibold text-foreground">
+                    {credit.consumed.toLocaleString()}
+                  </div>
                 </div>
-                <div className="text-lg font-semibold text-foreground">
-                  {credit.remaining.toLocaleString()}
+                <div className="rounded-xl bg-background-1 p-3">
+                  <div className="mb-1 text-xs text-muted-foreground">
+                    {remainingLabel}
+                  </div>
+                  <div className="text-lg font-semibold text-foreground">
+                    {credit.remaining.toLocaleString()}
+                  </div>
                 </div>
               </div>
-            </div>
-          </div>
+            </CardContent>
+          </Card>
         );
       })}
     </div>

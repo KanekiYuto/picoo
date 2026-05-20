@@ -81,7 +81,7 @@ export function UserButton() {
             >
               {/* 用户信息区域 - 可点击跳转 */}
               <Link
-                href="/settings/profile"
+                href="/settings"
                 onClick={closeMenu}
                 className="block p-4 border-b border-background-3 bg-background-2 hover:bg-background-3 transition-colors cursor-pointer"
               >
@@ -135,7 +135,7 @@ export function UserButton() {
               {/* 菜单项 */}
               <div className="py-2 px-2">
                 <Link
-                  href="/settings/profile"
+                  href="/settings"
                   onClick={closeMenu}
                   className="flex items-center justify-between px-3 py-2 rounded-lg text-sm text-foreground hover:bg-background-2 transition-colors group cursor-pointer"
                 >

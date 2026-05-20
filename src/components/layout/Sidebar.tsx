@@ -88,6 +88,10 @@ function isActiveRoute(currentPath: string, href: string) {
   return currentPath === href || currentPath.startsWith(`${href}/`);
 }
 
+function isExactRoute(currentPath: string, href: string) {
+  return currentPath === href;
+}
+
 function SidebarUserMenu() {
   const { isMobile } = useSidebar();
   const { user, isLoading, clearUser } = useUserStore();
@@ -176,7 +180,7 @@ function SidebarUserMenu() {
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
               <DropdownMenuItem asChild className="h-9 rounded-lg px-2.5">
-                <Link href="/settings/profile">
+                <Link href="/settings">
                   <Settings className="size-4" />
                   {tUserMenu("settings")}
                 </Link>
@@ -239,8 +243,30 @@ export function Sidebar({ className, ...props }: SidebarProps) {
     {
       icon: Settings,
       label: t("settings"),
-      href: "/settings/profile",
+      href: "/settings",
       isActive: isActiveRoute(currentPath, "/settings"),
+      items: [
+        {
+          label: t("settingsAccount"),
+          href: "/settings",
+          isActive: isExactRoute(currentPath, "/settings"),
+        },
+        {
+          label: t("settingsBilling"),
+          href: "/settings/billing",
+          isActive: isExactRoute(currentPath, "/settings/billing"),
+        },
+        {
+          label: t("settingsCredits"),
+          href: "/settings/credits",
+          isActive: isExactRoute(currentPath, "/settings/credits"),
+        },
+        {
+          label: t("settingsUsage"),
+          href: "/settings/usage",
+          isActive: isExactRoute(currentPath, "/settings/usage"),
+        },
+      ],
     },
     {
       icon: HelpCircle,
@@ -332,19 +358,64 @@ export function Sidebar({ className, ...props }: SidebarProps) {
         <SidebarGroup className="mt-auto">
           <SidebarMenu>
             {secondaryItems.map((item) => (
-              <SidebarMenuItem key={item.href}>
-                <SidebarMenuButton
-                  asChild
-                  size="sm"
-                  tooltip={item.label}
-                  isActive={item.isActive}
-                >
-                  <Link href={item.href}>
-                    <item.icon />
-                    <span>{item.label}</span>
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
+              <Collapsible
+                key={item.href}
+                asChild
+                defaultOpen={item.isActive}
+              >
+                <SidebarMenuItem>
+                  {item.items?.length ? (
+                    <CollapsibleTrigger asChild>
+                      <SidebarMenuButton
+                        size="sm"
+                        tooltip={item.label}
+                        isActive={item.isActive}
+                      >
+                        <item.icon />
+                        <span>{item.label}</span>
+                      </SidebarMenuButton>
+                    </CollapsibleTrigger>
+                  ) : (
+                    <SidebarMenuButton
+                      asChild
+                      size="sm"
+                      tooltip={item.label}
+                      isActive={item.isActive}
+                    >
+                      <Link href={item.href}>
+                        <item.icon />
+                        <span>{item.label}</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  )}
+                  {item.items?.length ? (
+                    <>
+                      <CollapsibleTrigger asChild>
+                        <SidebarMenuAction className="data-[state=open]:rotate-90">
+                          <ChevronRight />
+                          <span className="sr-only">{item.label}</span>
+                        </SidebarMenuAction>
+                      </CollapsibleTrigger>
+                      <CollapsibleContent>
+                        <SidebarMenuSub>
+                          {item.items.map((subItem) => (
+                            <SidebarMenuSubItem key={subItem.href}>
+                              <SidebarMenuSubButton
+                                asChild
+                                isActive={subItem.isActive}
+                              >
+                                <Link href={subItem.href}>
+                                  <span>{subItem.label}</span>
+                                </Link>
+                              </SidebarMenuSubButton>
+                            </SidebarMenuSubItem>
+                          ))}
+                        </SidebarMenuSub>
+                      </CollapsibleContent>
+                    </>
+                  ) : null}
+                </SidebarMenuItem>
+              </Collapsible>
             ))}
           </SidebarMenu>
         </SidebarGroup>

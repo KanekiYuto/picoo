@@ -12,6 +12,10 @@
     "assets": "素材",
     "history": "历史",
     "settings": "设置",
+    "settingsAccount": "账户",
+    "settingsBilling": "订阅",
+    "settingsCredits": "积分",
+    "settingsUsage": "用量",
     "help": "帮助",
     "upgradePlan": "升级方案"
   },

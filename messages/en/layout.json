@@ -12,6 +12,10 @@
     "assets": "Assets",
     "history": "History",
     "settings": "Settings",
+    "settingsAccount": "Account",
+    "settingsBilling": "Subscription",
+    "settingsCredits": "Credits",
+    "settingsUsage": "Usage",
     "help": "Help",
     "upgradePlan": "Upgrade Plan"
   },

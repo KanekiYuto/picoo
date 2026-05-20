@@ -2,10 +2,10 @@
 
 import { useTranslations } from "next-intl";
 import { useUserStore } from "@/store/useUserStore";
-import { BillingInfo } from "./_components/BillingInfo";
-import { ProfileSkeleton } from "../profile/_components/ProfileSkeleton";
+import { ProfileSkeleton } from "./profile/_components/ProfileSkeleton";
+import { UserProfile } from "./profile/_components/UserProfile";
 
-export default function BillingPage() {
+export default function SettingsPage() {
   const tPage = useTranslations("settings.page");
   const tProfile = useTranslations("settings.profile");
   const { user, isLoading: userLoading } = useUserStore();
@@ -27,14 +27,14 @@ export default function BillingPage() {
       <div className="px-4 py-8 sm:px-6 lg:px-8">
         <div className="mb-6">
           <h1 className="text-2xl font-bold text-foreground">
-            {tPage("billingTitle")}
+            {tPage("accountTitle")}
           </h1>
           <p className="mt-2 text-sm text-muted-foreground">
-            {tPage("billingDescription")}
+            {tPage("accountDescription")}
           </p>
         </div>
 
-        <BillingInfo />
+        <UserProfile user={user} />
       </div>
     </div>
   );

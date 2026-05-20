@@ -1,13 +1,26 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { motion } from "framer-motion";
-import { Menu, TrendingDown, Calendar, FileText, InboxIcon, ChevronLeft, ChevronRight } from "lucide-react";
+import {
+  Calendar,
+  ChevronLeft,
+  ChevronRight,
+  FileText,
+  InboxIcon,
+  TrendingDown,
+} from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useSettingsNav } from "../_components/SettingsNavContext";
+import { cn } from "@/lib/utils";
 import { useUserStore } from "@/store/useUserStore";
-import { UsageStatsSkeleton } from "./_components/UsageStatsSkeleton";
-import { UsageTableSkeleton } from "./_components/UsageTableSkeleton";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Empty,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from "@/components/ui/empty";
 import {
   Table,
   TableBody,
@@ -16,40 +29,32 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import {
-  Empty,
-  EmptyHeader,
-  EmptyMedia,
-  EmptyTitle,
-} from "@/components/ui/empty";
-import { Badge } from "@/components/ui/badge";
+import { UsageStatsSkeleton } from "./_components/UsageStatsSkeleton";
+import { UsageTableSkeleton } from "./_components/UsageTableSkeleton";
 
-// 用量记录类型
 interface UsageRecord {
   id: string;
   type: string;
   amount: number;
-  balanceBefore: number;
   balanceAfter: number;
   note: string | null;
   createdAt: string;
-  creditType: string;
 }
 
 export default function UsagePage() {
-  const t = useTranslations("settings.usage");
-  const { openMenu } = useSettingsNav();
+  const tPage = useTranslations("settings.page");
+  const tProfile = useTranslations("settings.profile");
+  const tUsage = useTranslations("settings.usage");
   const { user, isLoading: userLoading } = useUserStore();
   const [records, setRecords] = useState<UsageRecord[]>([]);
   const [stats, setStats] = useState({ totalConsumed: 0, totalRecords: 0, avgPerRecord: 0 });
   const [isStatsLoading, setIsStatsLoading] = useState(true);
   const [isRecordsLoading, setIsRecordsLoading] = useState(true);
-  const [filter, setFilter] = useState<'all' | 'consume' | 'refund'>('all');
+  const [usageFilter, setUsageFilter] = useState<"all" | "consume" | "refund">("all");
   const [page, setPage] = useState(1);
   const [pageSize] = useState(20);
   const [totalPages, setTotalPages] = useState(1);
 
-  // 获取统计数据
   useEffect(() => {
     if (!user) {
       setStats({ totalConsumed: 0, totalRecords: 0, avgPerRecord: 0 });
@@ -62,15 +67,15 @@ export default function UsagePage() {
     const fetchStats = async () => {
       try {
         setIsStatsLoading(true);
-        const response = await fetch('/api/credit/usage/stats', {
+        const response = await fetch("/api/credit/usage/stats", {
           signal: controller.signal,
         });
-        if (!response.ok) throw new Error('Failed to fetch stats');
+        if (!response.ok) throw new Error("Failed to fetch stats");
         const data = await response.json();
         setStats(data);
       } catch (error) {
         if (controller.signal.aborted) return;
-        console.error('Failed to fetch stats:', error);
+        console.error("Failed to fetch stats:", error);
       } finally {
         if (controller.signal.aborted) return;
         setIsStatsLoading(false);
@@ -81,7 +86,6 @@ export default function UsagePage() {
     return () => controller.abort();
   }, [user]);
 
-  // 获取分页记录
   useEffect(() => {
     if (!user) {
       setRecords([]);
@@ -94,30 +98,28 @@ export default function UsagePage() {
 
     const fetchRecords = async () => {
       setIsRecordsLoading(true);
-      const minLoadingTime = new Promise((resolve) => setTimeout(resolve, 300));
 
       try {
         const params = new URLSearchParams({
           page: page.toString(),
           pageSize: pageSize.toString(),
-          type: filter,
+          type: usageFilter,
         });
         const response = await fetch(`/api/credit/usage/records?${params}`, {
           signal: controller.signal,
         });
 
-        if (!response.ok) throw new Error('Failed to fetch records');
+        if (!response.ok) throw new Error("Failed to fetch records");
 
         const data = await response.json();
         setRecords(data.records || []);
         setTotalPages(data.totalPages || 1);
       } catch (error) {
         if (controller.signal.aborted) return;
-        console.error('Failed to fetch records:', error);
+        console.error("Failed to fetch records:", error);
         setRecords([]);
         setTotalPages(1);
       } finally {
-        await minLoadingTime;
         if (controller.signal.aborted) return;
         setIsRecordsLoading(false);
       }
@@ -125,246 +127,228 @@ export default function UsagePage() {
 
     fetchRecords();
     return () => controller.abort();
-  }, [user, page, pageSize, filter]);
+  }, [user, page, pageSize, usageFilter]);
 
-  // 筛选条件改变时重置页码
-  const handleFilterChange = (newFilter: 'all' | 'consume' | 'refund') => {
-    setFilter(newFilter);
-    setPage(1);
-  };
-
-  const showStatsSkeleton = userLoading || isStatsLoading;
-  const showRecordsSkeleton = userLoading || isRecordsLoading;
+  const usageFilterOptions = [
+    { value: "all" as const, label: tUsage("filter.all") },
+    { value: "consume" as const, label: tUsage("filter.consume") },
+    { value: "refund" as const, label: tUsage("filter.refund") },
+  ];
 
   if (!user && !userLoading) {
     return (
-      <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="text-muted">未登录</div>
+      <div className="flex min-h-[60vh] items-center justify-center">
+        <div className="text-muted">{tProfile("notSignedIn")}</div>
       </div>
     );
   }
 
   return (
-    <div className="space-y-6 md:space-y-8">
-      {/* Header */}
-      <div className="bg-background-1 border border-background-2 rounded-2xl p-5 md:p-6">
-        <div className="space-y-3">
-          <div className="flex items-center gap-3">
-            <button
-              onClick={openMenu}
-              className="lg:hidden flex-shrink-0 flex items-center justify-center h-9 w-9 rounded-lg bg-sidebar-hover border border-border text-foreground hover:bg-sidebar-active transition-colors"
-              aria-label={t("openMenu")}
-            >
-              <Menu className="h-4.5 w-4.5" />
-            </button>
-            <h1 className="text-xl sm:text-2xl md:text-3xl font-semibold text-foreground">
-              {t("title")}
-            </h1>
-          </div>
-          <p className="text-sm text-muted-foreground max-w-2xl">
-            {t("description")}
+    <div className="bg-background">
+      <div className="px-4 py-8 sm:px-6 lg:px-8">
+        <div className="mb-6">
+          <h1 className="text-2xl font-bold text-foreground">
+            {tPage("usageTitle")}
+          </h1>
+          <p className="mt-2 text-sm text-muted-foreground">
+            {tPage("usageDescription")}
           </p>
         </div>
-      </div>
 
-      {/* 统计卡片 */}
-      {showStatsSkeleton ? (
-        <UsageStatsSkeleton />
-      ) : (
-      <div className="grid gap-4 md:grid-cols-3">
-        <div className="bg-background-1 border border-background-2 rounded-2xl p-5">
-          <div className="flex items-center justify-between mb-3">
-            <div className="flex items-center gap-2 text-sm text-muted">
-              <TrendingDown className="h-4 w-4" />
-              <span>{t("stats.totalConsumed")}</span>
-            </div>
-          </div>
-          <div className="text-3xl font-bold text-foreground">{stats.totalConsumed.toLocaleString()}</div>
-        </div>
+        <div className="flex flex-col gap-4">
+          {userLoading || isStatsLoading ? (
+            <UsageStatsSkeleton />
+          ) : (
+            <Card className="overflow-hidden rounded-2xl border-background-2 bg-background-1 shadow-none">
+              <CardHeader className="flex flex-row items-center gap-2 px-4 py-2.5">
+                <FileText className="size-4 text-muted-foreground" />
+                <CardTitle className="text-sm font-medium">
+                  {tUsage("sectionTitle")}
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="grid gap-3 rounded-t-2xl border-t border-background-2 bg-background p-4 sm:grid-cols-3">
+                <div className="flex items-center gap-2 rounded-xl bg-background-1 p-3">
+                  <TrendingDown />
+                  <div>
+                    <div className="text-xs text-muted-foreground">
+                      {tUsage("stats.totalConsumed")}
+                    </div>
+                    <div className="text-lg font-semibold text-foreground">
+                      {stats.totalConsumed.toLocaleString()}
+                    </div>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2 rounded-xl bg-background-1 p-3">
+                  <Calendar />
+                  <div>
+                    <div className="text-xs text-muted-foreground">
+                      {tUsage("stats.recordCount")}
+                    </div>
+                    <div className="text-lg font-semibold text-foreground">
+                      {stats.totalRecords}
+                    </div>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2 rounded-xl bg-background-1 p-3">
+                  <FileText />
+                  <div>
+                    <div className="text-xs text-muted-foreground">
+                      {tUsage("stats.avgPerRecord")}
+                    </div>
+                    <div className="text-lg font-semibold text-foreground">
+                      {stats.avgPerRecord}
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          )}
 
-        <div className="bg-background-1 border border-background-2 rounded-2xl p-5">
-          <div className="flex items-center justify-between mb-3">
-            <div className="flex items-center gap-2 text-sm text-muted">
-              <Calendar className="h-4 w-4" />
-              <span>{t("stats.recordCount")}</span>
-            </div>
-          </div>
-          <div className="text-3xl font-bold text-foreground">{stats.totalRecords}</div>
-        </div>
+          <Card className="overflow-hidden rounded-2xl border-background-2 bg-background-1 shadow-none">
+            <CardHeader className="flex flex-col gap-3 px-4 py-2.5 sm:flex-row sm:items-center sm:justify-between">
+              <div className="flex items-center gap-2">
+                <Calendar className="size-4 text-muted-foreground" />
+                <CardTitle className="text-sm font-medium">
+                  {tUsage("table.title")}
+                </CardTitle>
+              </div>
+              <div className="flex rounded-full border border-background-2 bg-background-2/40 p-1">
+                {usageFilterOptions.map((option) => (
+                  <Button
+                    key={option.value}
+                    type="button"
+                    variant={usageFilter === option.value ? "default" : "ghost"}
+                    size="sm"
+                    onClick={() => {
+                      setUsageFilter(option.value);
+                      setPage(1);
+                    }}
+                    className={cn("h-7 rounded-full px-3 text-xs", usageFilter !== option.value && "text-muted-foreground")}
+                  >
+                    {option.label}
+                  </Button>
+                ))}
+              </div>
+            </CardHeader>
+            <CardContent className="rounded-t-2xl border-t border-background-2 bg-background p-4">
+              {isRecordsLoading ? (
+                <UsageTableSkeleton />
+              ) : records.length === 0 ? (
+                <Empty className="rounded-xl border border-background-2 bg-background-2/40">
+                  <EmptyHeader>
+                    <EmptyMedia variant="icon" className="bg-sidebar-hover text-muted-foreground">
+                      <InboxIcon />
+                    </EmptyMedia>
+                    <EmptyTitle className="text-sm font-medium text-foreground">
+                      {tUsage("table.noRecords")}
+                    </EmptyTitle>
+                  </EmptyHeader>
+                </Empty>
+              ) : (
+                <div className="flex flex-col gap-3">
+                  <div className="grid gap-3 md:hidden">
+                    {records.map((record) => (
+                      <div key={record.id} className="rounded-xl bg-background-1 p-3">
+                        <div className="mb-3 flex items-start justify-between gap-3">
+                          <div className="min-w-0">
+                            <div className="text-sm font-medium text-foreground">
+                              {record.note || "-"}
+                            </div>
+                            <div className="mt-1 text-xs text-muted-foreground">
+                              {new Date(record.createdAt).toLocaleString()}
+                            </div>
+                          </div>
+                          <Badge variant={record.type === "consume" ? "error" : "success"}>
+                            {tUsage(`table.types.${record.type}`)}
+                          </Badge>
+                        </div>
+                        <div className="flex items-center justify-between text-sm">
+                          <span className={cn("font-semibold", record.amount > 0 ? "text-green-600" : "text-red-600")}>
+                            {record.amount > 0 ? "+" : ""}{record.amount}
+                          </span>
+                          <span className="text-muted-foreground">
+                            {record.balanceAfter.toLocaleString()}
+                          </span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
 
-        <div className="bg-background-1 border border-background-2 rounded-2xl p-5">
-          <div className="flex items-center justify-between mb-3">
-            <div className="flex items-center gap-2 text-sm text-muted">
-              <FileText className="h-4 w-4" />
-              <span>{t("stats.avgPerRecord")}</span>
-            </div>
-          </div>
-          <div className="text-3xl font-bold text-foreground">
-            {stats.avgPerRecord}
-          </div>
-        </div>
-      </div>
-      )}
+                  <div className="hidden overflow-hidden rounded-lg border md:block">
+                    <Table>
+                      <TableHeader className="bg-sidebar-hover/50">
+                        <TableRow className="border-border hover:bg-transparent">
+                          <TableHead>{tUsage("table.columns.time")}</TableHead>
+                          <TableHead>{tUsage("table.columns.type")}</TableHead>
+                          <TableHead>{tUsage("table.columns.description")}</TableHead>
+                          <TableHead>{tUsage("table.columns.amount")}</TableHead>
+                          <TableHead>{tUsage("table.columns.balance")}</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {records.map((record) => (
+                          <TableRow key={record.id} className="border-border hover:bg-sidebar-hover/30">
+                            <TableCell className="text-sm text-foreground">
+                              {new Date(record.createdAt).toLocaleString()}
+                            </TableCell>
+                            <TableCell>
+                              <Badge variant={record.type === "consume" ? "error" : "success"}>
+                                {tUsage(`table.types.${record.type}`)}
+                              </Badge>
+                            </TableCell>
+                            <TableCell className="text-sm text-muted-foreground">
+                              {record.note || "-"}
+                            </TableCell>
+                            <TableCell className="text-sm">
+                              <span className={cn("font-semibold", record.amount > 0 ? "text-green-600" : "text-red-600")}>
+                                {record.amount > 0 ? "+" : ""}{record.amount}
+                              </span>
+                            </TableCell>
+                            <TableCell className="text-sm text-muted-foreground">
+                              {record.balanceAfter.toLocaleString()}
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </div>
 
-      {/* 用量明细表格 */}
-      <div className="space-y-3">
-        <div className="flex items-center justify-between">
-          <h2 className="text-sm font-medium text-muted">{t("table.title")}</h2>
-
-          {/* 筛选按钮 */}
-          <div className="relative flex gap-1 bg-background-1 border border-background-2 rounded-lg p-1">
-            <motion.button
-              onClick={() => handleFilterChange('all')}
-              className={`relative px-3 py-1.5 text-xs font-medium rounded transition-colors cursor-pointer ${
-                filter === 'all'
-                  ? 'text-foreground'
-                  : 'text-muted-foreground hover:text-foreground'
-              }`}
-            >
-              {filter === 'all' && (
-                <motion.div
-                  layoutId="usage-filter-tab"
-                  className="absolute inset-0 bg-foreground rounded"
-                  transition={{ type: "spring", duration: 0.5, bounce: 0.2 }}
-                />
-              )}
-              <span className={`relative z-10 ${filter === 'all' ? 'text-background' : ''}`}>
-                {t("filter.all")}
-              </span>
-            </motion.button>
-            <motion.button
-              onClick={() => handleFilterChange('consume')}
-              className={`relative px-3 py-1.5 text-xs font-medium rounded transition-colors cursor-pointer ${
-                filter === 'consume'
-                  ? 'text-foreground'
-                  : 'text-muted-foreground hover:text-foreground'
-              }`}
-            >
-              {filter === 'consume' && (
-                <motion.div
-                  layoutId="usage-filter-tab"
-                  className="absolute inset-0 bg-foreground rounded"
-                  transition={{ type: "spring", duration: 0.5, bounce: 0.2 }}
-                />
-              )}
-              <span className={`relative z-10 ${filter === 'consume' ? 'text-background' : ''}`}>
-                {t("filter.consume")}
-              </span>
-            </motion.button>
-            <motion.button
-              onClick={() => handleFilterChange('refund')}
-              className={`relative px-3 py-1.5 text-xs font-medium rounded transition-colors cursor-pointer ${
-                filter === 'refund'
-                  ? 'text-foreground'
-                  : 'text-muted-foreground hover:text-foreground'
-              }`}
-            >
-              {filter === 'refund' && (
-                <motion.div
-                  layoutId="usage-filter-tab"
-                  className="absolute inset-0 bg-foreground rounded"
-                  transition={{ type: "spring", duration: 0.5, bounce: 0.2 }}
-                />
-              )}
-              <span className={`relative z-10 ${filter === 'refund' ? 'text-background' : ''}`}>
-                {t("filter.refund")}
-              </span>
-            </motion.button>
-          </div>
-        </div>
-
-        {showRecordsSkeleton ? (
-          <UsageTableSkeleton />
-        ) : records.length === 0 ? (
-          <Empty className="border border-border rounded-2xl bg-sidebar-bg">
-            <EmptyHeader>
-              <EmptyMedia variant="icon" className="bg-sidebar-hover text-muted-foreground">
-                <InboxIcon className="h-6 w-6" />
-              </EmptyMedia>
-              <EmptyTitle className="text-foreground text-sm font-medium">
-                {t("table.noRecords")}
-              </EmptyTitle>
-            </EmptyHeader>
-          </Empty>
-        ) : (
-          <div className="space-y-3">
-            <div className="border border-border rounded-2xl overflow-hidden">
-              <Table>
-                <TableHeader className="bg-sidebar-hover/50">
-                  <TableRow className="hover:bg-transparent border-border">
-                    <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                      {t("table.columns.time")}
-                    </TableHead>
-                    <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                      {t("table.columns.type")}
-                    </TableHead>
-                    <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                      {t("table.columns.description")}
-                    </TableHead>
-                    <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                      {t("table.columns.amount")}
-                    </TableHead>
-                    <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                      {t("table.columns.balance")}
-                    </TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {records.map((record) => (
-                    <TableRow key={record.id} className="hover:bg-sidebar-hover/30 border-border">
-                      <TableCell className="text-sm text-foreground">
-                        {new Date(record.createdAt).toLocaleString()}
-                      </TableCell>
-                      <TableCell>
-                        <Badge variant={record.type === 'consume' ? 'error' : 'success'}>
-                          {t(`table.types.${record.type}`)}
-                        </Badge>
-                      </TableCell>
-                      <TableCell className="text-sm text-muted-foreground">
-                        {record.note || '-'}
-                      </TableCell>
-                      <TableCell className="text-sm">
-                        <span className={`font-semibold ${
-                          record.amount > 0 ? 'text-green-600' : 'text-red-600'
-                        }`}>
-                          {record.amount > 0 ? '+' : ''}{record.amount}
+                  <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                    <div className="text-xs text-muted-foreground">
+                      {tUsage("pagination.pageInfo", { current: page, total: totalPages })}
+                    </div>
+                    <div className="flex gap-2">
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setPage(Math.max(1, page - 1))}
+                        disabled={page <= 1}
+                      >
+                        <ChevronLeft data-icon="inline-start" />
+                        <span className="text-xs font-medium">
+                          {tUsage("pagination.previous")}
                         </span>
-                      </TableCell>
-                      <TableCell className="text-sm text-muted-foreground">
-                        {record.balanceAfter.toLocaleString()}
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
-
-            {/* 分页控件 */}
-            <div className="flex items-center justify-between">
-              <div className="text-xs text-muted-foreground">
-                {t("pagination.pageInfo", { current: page, total: totalPages })}
-              </div>
-              <div className="flex gap-2">
-                <button
-                  onClick={() => setPage(Math.max(1, page - 1))}
-                  disabled={page <= 1}
-                  className="flex items-center gap-1 px-3 py-2 rounded-lg border border-border hover:bg-sidebar-hover disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                >
-                  <ChevronLeft className="h-4 w-4" />
-                  <span className="text-xs font-medium">{t("pagination.previous")}</span>
-                </button>
-                <button
-                  onClick={() => setPage(Math.min(totalPages, page + 1))}
-                  disabled={page >= totalPages}
-                  className="flex items-center gap-1 px-3 py-2 rounded-lg border border-border hover:bg-sidebar-hover disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                >
-                  <span className="text-xs font-medium">{t("pagination.next")}</span>
-                  <ChevronRight className="h-4 w-4" />
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
+                      </Button>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setPage(Math.min(totalPages, page + 1))}
+                        disabled={page >= totalPages}
+                      >
+                        <span className="text-xs font-medium">
+                          {tUsage("pagination.next")}
+                        </span>
+                        <ChevronRight data-icon="inline-end" />
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </div>
       </div>
     </div>
   );

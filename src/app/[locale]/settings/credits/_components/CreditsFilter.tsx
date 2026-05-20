@@ -1,6 +1,7 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 
 type FilterValue = "all" | "active" | "expired";
 
@@ -19,75 +20,26 @@ export function CreditsFilter({
   activeLabel,
   expiredLabel,
 }: CreditsFilterProps) {
+  const options = [
+    { value: "all" as const, label: allLabel },
+    { value: "active" as const, label: activeLabel },
+    { value: "expired" as const, label: expiredLabel },
+  ];
+
   return (
-    <div className="relative flex gap-1 bg-background-1 border border-background-2 rounded-lg p-1">
-      <motion.button
-        onClick={() => onChange("all")}
-        className={`relative px-3 py-1.5 text-xs font-medium rounded transition-colors cursor-pointer ${
-          filter === "all"
-            ? "text-foreground"
-            : "text-muted-foreground hover:text-foreground"
-        }`}
-      >
-        {filter === "all" && (
-          <motion.div
-            layoutId="filter-tab"
-            className="absolute inset-0 bg-foreground rounded"
-            transition={{ type: "spring", duration: 0.5, bounce: 0.2 }}
-          />
-        )}
-        <span
-          className={`relative z-10 ${filter === "all" ? "text-background" : ""}`}
+    <div className="flex rounded-full border border-background-2 bg-background-1 p-1">
+      {options.map((option) => (
+        <Button
+          key={option.value}
+          type="button"
+          variant={filter === option.value ? "default" : "ghost"}
+          size="sm"
+          onClick={() => onChange(option.value)}
+          className={cn("h-7 rounded-full px-3 text-xs", filter !== option.value && "text-muted-foreground")}
         >
-          {allLabel}
-        </span>
-      </motion.button>
-      <motion.button
-        onClick={() => onChange("active")}
-        className={`relative px-3 py-1.5 text-xs font-medium rounded transition-colors cursor-pointer ${
-          filter === "active"
-            ? "text-foreground"
-            : "text-muted-foreground hover:text-foreground"
-        }`}
-      >
-        {filter === "active" && (
-          <motion.div
-            layoutId="filter-tab"
-            className="absolute inset-0 bg-foreground rounded"
-            transition={{ type: "spring", duration: 0.5, bounce: 0.2 }}
-          />
-        )}
-        <span
-          className={`relative z-10 ${
-            filter === "active" ? "text-background" : ""
-          }`}
-        >
-          {activeLabel}
-        </span>
-      </motion.button>
-      <motion.button
-        onClick={() => onChange("expired")}
-        className={`relative px-3 py-1.5 text-xs font-medium rounded transition-colors cursor-pointer ${
-          filter === "expired"
-            ? "text-foreground"
-            : "text-muted-foreground hover:text-foreground"
-        }`}
-      >
-        {filter === "expired" && (
-          <motion.div
-            layoutId="filter-tab"
-            className="absolute inset-0 bg-foreground rounded"
-            transition={{ type: "spring", duration: 0.5, bounce: 0.2 }}
-          />
-        )}
-        <span
-          className={`relative z-10 ${
-            filter === "expired" ? "text-background" : ""
-          }`}
-        >
-          {expiredLabel}
-        </span>
-      </motion.button>
+          {option.label}
+        </Button>
+      ))}
     </div>
   );
 }

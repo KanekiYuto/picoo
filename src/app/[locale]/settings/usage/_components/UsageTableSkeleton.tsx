@@ -4,8 +4,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 export function UsageTableSkeleton() {
   return (
-    <div className="space-y-3">
-      <div className="border border-border rounded-2xl overflow-hidden">
+    <div className="flex flex-col gap-3">
+      <div className="overflow-hidden rounded-xl bg-background-1">
         <div className="bg-sidebar-hover/50 px-5 py-3 flex gap-4">
           <Skeleton className="h-3 w-32 rounded" />
           <Skeleton className="h-3 w-20 rounded" />
@@ -37,4 +37,3 @@ export function UsageTableSkeleton() {
     </div>
   );
 }
-

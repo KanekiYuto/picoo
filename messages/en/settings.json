@@ -1,22 +1,18 @@
 {
-  "layout": {
+  "page": {
     "title": "Settings",
-    "closeMenu": "Close menu",
-    "nav": {
-      "myInfo": "My Info",
-      "profile": "Profile",
-      "credits": "Credits",
-      "creditsBalance": "Credits",
-      "usage": "Usage",
-      "billing": "Billing",
-      "subscriptionPlan": "Subscription plan",
-      "billingDetails": "Billing details"
-    }
+    "description": "Manage your account, subscription, credits, and usage history.",
+    "accountTitle": "Account",
+    "accountDescription": "Manage your account profile and sign-in identity.",
+    "billingTitle": "Subscription",
+    "billingDescription": "View your plan, billing details, and subscription status.",
+    "creditsTitle": "Credits",
+    "creditsDescription": "View your credit balance, expiration, and credit details.",
+    "usageTitle": "Usage",
+    "usageDescription": "View credit consumption stats and usage records."
   },
   "profile": {
-    "title": "Profile settings",
-    "description": "Manage your personal information",
-    "openMenu": "Open settings menu",
+    "sectionTitle": "Account",
     "editProfile": "Edit profile",
     "sections": {
       "settings": "Settings"
@@ -39,9 +35,6 @@
     "notSignedIn": "Not signed in"
   },
   "credits": {
-    "title": "Credits Management",
-    "description": "View and manage your credit balance",
-    "openMenu": "Open settings menu",
     "overview": {
       "currentBalance": "Current Balance",
       "availableCredits": "Available Credits",
@@ -84,9 +77,7 @@
     }
   },
   "usage": {
-    "title": "Usage Details",
-    "description": "View your credit usage history and consumption details",
-    "openMenu": "Open settings menu",
+    "sectionTitle": "Usage overview",
     "stats": {
       "totalConsumed": "Total Consumed",
       "recordCount": "Records",
@@ -120,9 +111,7 @@
     }
   },
   "billing": {
-    "title": "Subscription Management",
-    "description": "Manage your subscription plan and billing information",
-    "openMenu": "Open settings menu",
+    "sectionTitle": "Subscription",
     "currentPlan": "Current Subscription Plan",
     "upgradePlan": "Upgrade Plan",
     "billingAmount": "Amount",

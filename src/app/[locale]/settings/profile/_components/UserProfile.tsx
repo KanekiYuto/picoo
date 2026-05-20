@@ -2,9 +2,20 @@
 
 import { useState } from "react";
 import { useTranslations } from "next-intl";
+import { Pencil, UserIcon } from "lucide-react";
 import type { User } from "@/store/useUserStore";
 import { EditProfileModal } from "../../_components/EditProfileModal";
 import { useUserStore } from "@/store/useUserStore";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardAction,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 interface UserProfileProps {
   user: User;
@@ -25,44 +36,41 @@ export function UserProfile({ user }: UserProfileProps) {
 
   return (
     <>
-      <div className="bg-background-1 border border-background-2 rounded-2xl p-4">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <div className="flex items-center gap-3 md:gap-4">
-            {/* 用户头像 */}
-            <div className="relative h-12 w-12 md:h-16 md:w-16 rounded-full overflow-hidden bg-muted flex-shrink-0">
-              {user.image ? (
-                <img
-                  src={user.image}
-                  alt={avatarAlt}
-                  className="h-full w-full object-cover"
-                />
-              ) : (
-                <div className="flex h-full w-full items-center justify-center text-xl md:text-2xl font-bold text-foreground">
-                  {displayInitial}
-                </div>
-              )}
-            </div>
-
-            {/* 用户信息 */}
+      <Card className="h-full overflow-hidden rounded-2xl border-background-2 bg-background-1 shadow-none">
+        <CardHeader className="flex flex-row items-center gap-2 px-4 py-2.5">
+          <UserIcon className="size-4 text-muted-foreground" />
+          <CardTitle className="text-sm font-medium">{t("sectionTitle")}</CardTitle>
+        </CardHeader>
+        <CardContent className="grid grid-cols-[1fr_auto] items-start gap-4 rounded-t-2xl border-t border-background-2 bg-background px-4 py-4">
+          <div className="flex min-w-0 items-center gap-4">
+            <Avatar size="lg" className="size-12 sm:size-14">
+              <AvatarImage src={user.image ?? undefined} alt={avatarAlt} />
+              <AvatarFallback className="text-base font-semibold">
+                {displayInitial}
+              </AvatarFallback>
+            </Avatar>
             <div className="min-w-0">
-              <div className="text-base md:text-lg font-semibold text-foreground truncate">
+              <CardTitle className="truncate text-lg">
                 {displayName}
-              </div>
-              <div className="text-xs md:text-sm text-muted truncate">
-                {user.email}
-              </div>
+              </CardTitle>
+              <CardDescription className="truncate">{user.email}</CardDescription>
             </div>
           </div>
-
-          {/* 编辑按钮 */}
-          <button
-            onClick={() => setIsEditModalOpen(true)}
-            className="w-full sm:w-auto px-4 py-2 bg-background-2 hover:bg-background-3 border border-background-4 text-foreground text-sm font-medium rounded-xl transition-colors whitespace-nowrap cursor-pointer"
-          >
-            {t("editProfile")}
-          </button>
-        </div>
-      </div>
+          <CardAction>
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon-sm"
+              onClick={() => setIsEditModalOpen(true)}
+              className="rounded-lg text-muted-foreground hover:text-foreground"
+              title={t("editProfile")}
+              aria-label={t("editProfile")}
+            >
+              <Pencil />
+            </Button>
+          </CardAction>
+        </CardContent>
+      </Card>
 
       <EditProfileModal
         isOpen={isEditModalOpen}
