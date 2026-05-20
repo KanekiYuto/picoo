@@ -60,6 +60,7 @@ export async function proxy(request: NextRequest) {
   }
 
   // 处理 i18n 路由
+  // return intlMiddleware(request);
   return intlMiddleware(request);
 }
 

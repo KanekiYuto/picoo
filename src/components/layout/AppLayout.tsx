@@ -1,6 +1,8 @@
 "use client";
 
 import { ReactNode, useState } from "react";
+import { usePathname } from "next/navigation";
+import { useLocale } from "next-intl";
 import { Header } from "./Header";
 import { Sidebar } from "./Sidebar";
 import { MobileSidebar } from "./MobileSidebar";
@@ -13,11 +15,31 @@ interface AppLayoutProps {
   className?: string;
 }
 
+// 配置不显示 Footer 的路径
+const HIDE_FOOTER_PATHS: string[] = [
+];
+
 export function AppLayout({
   children,
   className,
 }: AppLayoutProps) {
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
+  const pathname = usePathname();
+  const locale = useLocale();
+
+  // 判断是否显示 Footer
+  const shouldShowFooter = !HIDE_FOOTER_PATHS.some(path => {
+    const localePrefix = `/${locale}`;
+    // 移除 locale 前缀
+    const pathWithoutLocale = pathname.startsWith(localePrefix)
+      ? pathname.slice(localePrefix.length)
+      : pathname;
+    // 确保根路径为 '/'
+    const normalizedPath = pathWithoutLocale || '/';
+    
+    // 精确匹配或子路径匹配
+    return normalizedPath === path || normalizedPath.startsWith(`${path}/`);
+  });
 
   return (
     <div className={cn("flex flex-col h-screen bg-background lg:flex-row overflow-hidden", className)}>
@@ -41,7 +63,7 @@ export function AppLayout({
         {/* Main 内容区域 - 可滚动 */}
         <main className="relative flex-1 min-h-0 overflow-y-auto custom-scrollbar">
           <MainContent>{children}</MainContent>
-          <Footer />
+          {shouldShowFooter && <Footer />}
         </main>
       </div>
     </div>

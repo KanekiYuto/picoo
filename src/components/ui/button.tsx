@@ -49,6 +49,10 @@ const buttonVariants = cva(
           "text-primary underline-offset-4 hover:underline " +
           "disabled:text-muted-foreground disabled:no-underline " +
           "aria-disabled:text-muted-foreground aria-disabled:no-underline",
+
+        result:
+          "bg-background-1 rounded-lg border border-background-2 " +
+          "cursor-pointer"
       },
       size: {
         default: "h-9 px-4 py-2 has-[>svg]:px-3",

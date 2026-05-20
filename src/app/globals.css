@@ -5,13 +5,21 @@
 :root {
   /* neutral colors */
   --neutral-10: 244 244 244;
+  --neutral-15: 238 238 238;
   --neutral-20: 235 235 235;
+  --neutral-25: 232 232 232;
   --neutral-30: 219 219 219;
+  --neutral-35: 200 200 200;
   --neutral-40: 199 199 199;
+  --neutral-45: 180 180 180;
   --neutral-50: 117 117 117;
+  --neutral-55: 100 100 100;
   --neutral-60: 87 87 87;
+  --neutral-65: 70 70 70;
   --neutral-70: 61 61 61;
+  --neutral-75: 50 50 50;
   --neutral-80: 41 41 41;
+  --neutral-85: 32 32 32;
   --neutral-90: 26 26 26;
   --neutral-95: 20 20 20;
   --neutral-100: 15 15 15;
@@ -34,8 +42,13 @@
   --background-5: rgb(var(--neutral-50));
 
   --background-button: rgb(var(--neutral-95));
-
   --background-generator: rgb(var(--neutral-white));
+
+  --chat-bg: rgb(var(--neutral-10));
+  --chat-bg-1: rgb(var(--neutral-20));
+  --chat-bg-2: rgb(var(--neutral-30));
+  --chat-bg-3: rgb(var(--neutral-40));
+  --chat-bg-4: rgb(var(--neutral-50));
 
   --radius: 0.625rem;
   --secondary-background: oklch(0.98 0 0);
@@ -88,8 +101,13 @@
   --background-5: rgb(var(--neutral-50));
 
   --background-button: rgb(var(--neutral-white));
-
   --background-generator: rgb(var(--neutral-95));
+
+  --chat-bg: rgb(var(--neutral-90));
+  --chat-bg-1: rgb(var(--neutral-85));
+  --chat-bg-2: rgb(var(--neutral-80));
+  --chat-bg-3: rgb(var(--neutral-70));
+  --chat-bg-4: rgb(var(--neutral-60));
 
   --sidebar-bg: #0f0f0f;
   --secondary-background: #151515;
@@ -126,6 +144,12 @@
 }
 
 @theme inline {
+  --color-chat-bg: var(--chat-bg);
+  --color-chat-bg-1: var(--chat-bg-1);
+  --color-chat-bg-2: var(--chat-bg-2);
+  --color-chat-bg-3: var(--chat-bg-3);
+  --color-chat-bg-4: var(--chat-bg-4);
+
   --color-background-generator: var(--background-generator);
   --color-background-button: var(--background-button);
 
@@ -246,9 +270,12 @@ body {
 
 /* 加载动画 */
 @keyframes pulse-bg {
-  0%, 100% {
+
+  0%,
+  100% {
     opacity: 0.5;
   }
+
   50% {
     opacity: 0.8;
   }
@@ -258,6 +285,7 @@ body {
   0% {
     left: -100%;
   }
+
   100% {
     left: 100%;
   }
@@ -285,6 +313,7 @@ body {
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
   }

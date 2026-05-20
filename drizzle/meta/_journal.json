@@ -36,6 +36,13 @@
       "when": 1771151475394,
       "tag": "0005_furry_kulan_gath",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1772801436677,
+      "tag": "0006_friendly_santa_claus",
+      "breakpoints": true
     }
   ]
 }

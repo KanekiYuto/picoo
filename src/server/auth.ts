@@ -1,12 +1,24 @@
+// Auth configuration
 import { betterAuth } from 'better-auth';
 import { drizzleAdapter } from 'better-auth/adapters/drizzle';
 import { nextCookies } from 'better-auth/next-js';
 import { oneTap } from 'better-auth/plugins';
+import { ProxyAgent, setGlobalDispatcher } from 'undici';
 import { db } from './db';
 import * as schema from './db/schema';
 
-// 导入 fetch 配置以解决 Google OAuth 超时问题
-import './fetch-config';
+const proxyUrl =
+  process.env.AUTH_PROXY_URL ||
+  process.env.HTTPS_PROXY ||
+  process.env.HTTP_PROXY ||
+  process.env.ALL_PROXY ||
+  process.env.https_proxy ||
+  process.env.http_proxy ||
+  process.env.all_proxy;
+
+if (proxyUrl) {
+  setGlobalDispatcher(new ProxyAgent(proxyUrl));
+}
 
 export const auth = betterAuth({
   database: drizzleAdapter(db, {

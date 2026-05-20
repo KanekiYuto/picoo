@@ -18,7 +18,7 @@ export function AppPreviewResult() {
   const alt = result.alt ?? t("resultAlt");
 
   return (
-    <div className="absolute inset-0 z-10">
+    <div className="relative flex-1 min-h-[280px]">
       <img
         src={result.url}
         alt={alt}
@@ -30,7 +30,7 @@ export function AppPreviewResult() {
       <div className="absolute right-3 top-3 flex items-center gap-2">
         <Button
           type="button"
-          variant="secondary"
+          variant="result"
           size="icon-sm"
           aria-label={t("download")}
           title={t("download")}
@@ -42,7 +42,7 @@ export function AppPreviewResult() {
         </Button>
         <Button
           type="button"
-          variant="secondary"
+          variant="result"
           size="icon-sm"
           aria-label={t("reset")}
           title={t("reset")}

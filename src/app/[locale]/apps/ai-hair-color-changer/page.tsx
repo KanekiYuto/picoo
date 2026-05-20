@@ -61,6 +61,7 @@ export default async function AiHairColorChangerPage({
         }}
         form={
           <AppFormClient
+            productId="ai-hair-color-changer"
             formContent={content.form}
             imageUploadStrings={content.imageUpload.strings}
           />

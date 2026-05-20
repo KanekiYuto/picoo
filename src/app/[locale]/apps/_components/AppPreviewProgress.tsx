@@ -15,7 +15,7 @@ export function AppPreviewProgress({ progress }: { progress: AppPreviewProgressT
   const percent = value !== null ? Math.round(value * 100) : null;
 
   return (
-    <div className="absolute inset-0 z-20 flex flex-col items-center justify-center gap-6 bg-background-1 px-8">
+    <div className="flex flex-1 flex-col items-center justify-center gap-6 bg-background-1 px-8 py-12">
       <Loader2 className="h-8 w-8 animate-spin text-primary" />
 
       <div className="w-full space-y-3 text-center">

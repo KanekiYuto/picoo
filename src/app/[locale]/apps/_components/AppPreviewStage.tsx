@@ -5,19 +5,12 @@ import { useEffect, useRef } from "react";
 import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
-import { cn } from "@/lib/utils";
 import { useAppPreviewStore } from "./app-preview-store";
 import { AppPreviewError } from "./AppPreviewError";
 import { AppPreviewProgress } from "./AppPreviewProgress";
 import { AppPreviewResult } from "./AppPreviewResult";
 
-export function AppPreviewStage({
-  fallback,
-  frameClassName = "aspect-[4/5] md:aspect-[4/5]",
-}: {
-  fallback: ReactNode;
-  frameClassName?: string;
-}) {
+export function AppPreviewStage({ fallback }: { fallback: ReactNode }) {
   const t = useTranslations("apps.components.preview");
   const pathname = usePathname();
   const reset = useAppPreviewStore((s) => s.reset);
@@ -44,12 +37,13 @@ export function AppPreviewStage({
   const showFallback = !showResult && !showError && !showProgress;
 
   return (
-    <div className="relative w-full">
-      <div className={cn("w-full", frameClassName)} aria-hidden="true" />
-      {showFallback ? <div className="absolute inset-0">{fallback}</div> : null}
-      {showResult ? <AppPreviewResult /> : null}
-      {showError ? <AppPreviewError error={error} /> : null}
-      {showProgress ? <AppPreviewProgress progress={progress} /> : null}
+    <div className="relative flex flex-col flex-1 min-h-0">
+      {showFallback && (
+        <div className="relative flex-1 min-h-[240px]">{fallback}</div>
+      )}
+      {showResult && <AppPreviewResult />}
+      {showError && <AppPreviewError error={error} />}
+      {showProgress && <AppPreviewProgress progress={progress} />}
     </div>
   );
 }

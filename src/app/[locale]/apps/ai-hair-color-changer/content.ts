@@ -18,14 +18,18 @@ export function getAiHairColorChangerContent(t: TranslationFn, tc: TranslationFn
         help: t("form.prompt.help"),
       },
       defaultPrompt: "Change my hair color to chestnut brown",
-      aspectRatio: {
+      size: {
         label: t("form.aspectRatio.label"),
         help: t("form.aspectRatio.help"),
         options: [
-          { value: "1:1", label: "1:1" },
-          { value: "4:5", label: "4:5" },
-          { value: "3:4", label: "3:4" },
-          { value: "9:16", label: "9:16" },
+          { value: "1920*1920", label: "1:1" },
+          { value: "1920*2400", label: "4:5" },
+          { value: "2400*1920", label: "5:4" },
+          { value: "1920*2560", label: "3:4" },
+          { value: "2560*1920", label: "4:3" },
+          { value: "1440*2560", label: "9:16" },
+          { value: "2560*1440", label: "16:9" },
+          { value: "3360*1440", label: "21:9" },
         ] as const,
       },
       submit: t("form.submit"),

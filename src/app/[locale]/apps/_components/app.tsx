@@ -59,8 +59,8 @@ export function App({ title, description, form, previewMedia }: AppProps) {
                 </div>
             </div>
 
-            <div className="order-1 flex items-start justify-center md:order-2">
-                <div className="w-full overflow-hidden rounded-lg border border-background-2 bg-background-1">
+            <div className="order-1 flex md:order-2">
+                <div className="flex flex-col w-full overflow-hidden rounded-lg border border-background-2 bg-background-1">
                     <AppPreviewStage
                         fallback={
                             resolvedPreviewMedia.kind === "video" ? (

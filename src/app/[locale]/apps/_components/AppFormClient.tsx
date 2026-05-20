@@ -23,19 +23,19 @@ import { Loader2, Zap } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { useAppPreviewStore } from "./app-preview-store";
 import { useGenerateImage } from "./useGenerateImage";
-import { getRequiredCredits } from "@/config/model-credit-cost";
+import { getRequiredCredits } from "@/config/credit";
 
 type AppFormValues = {
   image: File | null;
   prompt: string;
-  aspectRatio: string;
+  size: string;
 };
 
 export type AppFormContent = {
   image: { label: string; description: string };
   prompt: { label: string; help: string };
   defaultPrompt: string;
-  aspectRatio: {
+  size: {
     label: string;
     help: string;
     options: readonly { value: string; label: string }[];
@@ -54,9 +54,11 @@ export type ImageUploadStrings = {
 };
 
 export function AppFormClient({
+  productId,
   formContent,
   imageUploadStrings,
 }: {
+  productId: string;
   formContent: AppFormContent;
   imageUploadStrings: ImageUploadStrings;
 }) {
@@ -67,14 +69,14 @@ export function AppFormClient({
     typeof progress?.value === "number"
       ? Math.round(Math.max(0, Math.min(1, progress.value)) * 100)
       : null;
-  const requiredCredits = getRequiredCredits("edit-image", "seedream-v4.5", {});
+  const requiredCredits = getRequiredCredits(productId, 'app', {});
   const { generate } = useGenerateImage();
 
   const form = useForm<AppFormValues>({
     defaultValues: {
       image: null,
       prompt: formContent.defaultPrompt,
-      aspectRatio: "1:1",
+      size: "1920*1920",
     },
   });
 
@@ -82,9 +84,9 @@ export function AppFormClient({
     <Form {...form}>
       <form
         className="space-y-6"
-        onSubmit={form.handleSubmit(({ image, prompt }) => {
+        onSubmit={form.handleSubmit(({ image, prompt, size }) => {
           if (!image) return;
-          generate({ image, prompt });
+          generate({ image, prompt, size });
         })}
       >
         <Field
@@ -122,13 +124,13 @@ export function AppFormClient({
         />
 
         <Field
-          name="aspectRatio"
+          name="size"
           render={({ field }) => (
             <FormItem className="space-y-0">
               <div className="space-y-1">
-                <FormLabel>{formContent.aspectRatio.label}</FormLabel>
+                <FormLabel>{formContent.size.label}</FormLabel>
                 <FormDescription className="text-xs">
-                  {formContent.aspectRatio.help}
+                  {formContent.size.help}
                 </FormDescription>
               </div>
               <Select defaultValue={field.value} onValueChange={field.onChange}>
@@ -138,7 +140,7 @@ export function AppFormClient({
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  {formContent.aspectRatio.options.map((option) => (
+                  {formContent.size.options.map((option) => (
                     <SelectItem key={option.value} value={option.value}>
                       {option.label}
                     </SelectItem>

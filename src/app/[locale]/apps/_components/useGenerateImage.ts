@@ -7,6 +7,7 @@ import { useAppPreviewStore } from "./app-preview-store";
 export interface GenerateImageOptions {
   image: File;
   prompt: string;
+  size: string;
 }
 
 /** 上传图片到 R2，返回 URL */
@@ -28,16 +29,24 @@ async function uploadImage(file: File): Promise<string> {
   return json.data.url as string;
 }
 
-/** 提交 seedream 图生图任务，返回 task_id */
-async function submitGeneration(imageUrl: string, prompt: string): Promise<string> {
-  const res = await fetch(
-    "/api/ai-generator/provider/wavespeed/seedream-v4.5/image-to-image",
-    {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ prompt, images: [imageUrl] }),
-    },
-  );
+/** 提交生成任务，返回任务记录 ID */
+async function submitGeneration(
+  imageUrl: string,
+  prompt: string,
+  size: string,
+): Promise<string> {
+  const res = await fetch("/api/ai-generator/provider/wavespeed/seedream-v4.5/image-to-image", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      prompt,
+      size,
+      images: [imageUrl],
+      enable_base64_output: false,
+      enable_sync_mode: false,
+      is_private: false,
+    }),
+  });
 
   const json = await res.json();
 
@@ -50,7 +59,7 @@ async function submitGeneration(imageUrl: string, prompt: string): Promise<strin
 
 /** 轮询任务状态，完成后返回结果图片 URL */
 async function pollStatus(
-  taskId: string,
+  id: string,
   onProgress: (value: number) => void,
   signal: AbortSignal,
 ): Promise<string> {
@@ -61,7 +70,7 @@ async function pollStatus(
 
     if (signal.aborted) throw new Error("Aborted");
 
-    const res = await fetch(`/api/ai-generator/status/${taskId}`, { signal });
+    const res = await fetch(`/api/ai-generator/status/${id}`, { signal });
     const json = await res.json();
 
     if (!res.ok || !json.success) {
@@ -107,7 +116,7 @@ export function useGenerateImage() {
     };
   }, []);
 
-  async function generate({ image, prompt }: GenerateImageOptions) {
+  async function generate({ image, prompt, size }: GenerateImageOptions) {
     // 终止上一次未完成的轮询
     controllerRef.current?.abort();
     const controller = new AbortController();
@@ -122,7 +131,7 @@ export function useGenerateImage() {
       // 阶段二：提交生成任务
       setProgress({ value: 0.2, label: t("generating") });
 
-      const taskId = await submitGeneration(imageUrl, prompt);
+      const taskId = await submitGeneration(imageUrl, prompt, size);
 
       // 阶段三：轮询进度
       setProgress({ value: 0.3, label: t("generating") });
