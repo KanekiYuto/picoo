@@ -29,8 +29,6 @@ export function GlobalGeneratorModal() {
     handleImageSelect,
     handleImageReplace,
     handleRemoveImage,
-    handleRecentAssetSelect,
-    handleRecentAssetReplace,
   } = useImageUpload();
 
   const {
@@ -154,8 +152,6 @@ export function GlobalGeneratorModal() {
                             onClose={handleUploadPanelClose}
                             onImageSelect={handleImageSelect}
                             onImageReplace={handleImageReplace}
-                            onRecentAssetSelect={handleRecentAssetSelect}
-                            onRecentAssetReplace={handleRecentAssetReplace}
                             initialImageUrl={selectedImageUrl}
                             replaceIndex={replaceIndex}
                           />

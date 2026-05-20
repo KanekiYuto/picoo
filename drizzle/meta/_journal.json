@@ -5,43 +5,8 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1767356107236,
-      "tag": "0000_volatile_sage",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1767382555342,
-      "tag": "0001_naive_hellfire_club",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "7",
-      "when": 1768747558633,
-      "tag": "0003_abnormal_mauler",
-      "breakpoints": true
-    },
-    {
-      "idx": 4,
-      "version": "7",
-      "when": 1768748825578,
-      "tag": "0004_powerful_bill_hollister",
-      "breakpoints": true
-    },
-    {
-      "idx": 5,
-      "version": "7",
-      "when": 1771151475394,
-      "tag": "0005_furry_kulan_gath",
-      "breakpoints": true
-    },
-    {
-      "idx": 6,
-      "version": "7",
-      "when": 1772801436677,
-      "tag": "0006_friendly_santa_claus",
+      "when": 1779267191778,
+      "tag": "0000_yummy_shaman",
       "breakpoints": true
     }
   ]

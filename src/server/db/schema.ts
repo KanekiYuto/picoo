@@ -236,40 +236,6 @@ export const storage = pgTable('storage', {
 ]);
 
 // 素材表
-export const asset = pgTable('asset', {
-  // UUID 主键,由数据库自动生成
-  id: uuid('id').primaryKey().defaultRandom(),
-  // 用户ID
-  userId: text('user_id')
-    .notNull()
-    .references(() => user.id, { onDelete: 'cascade' }),
-  // 存储资源ID (外键引用)
-  storageId: uuid('storage_id')
-    .notNull()
-    .references(() => storage.id, { onDelete: 'cascade' }),
-  // 标签(用于分类和搜索)
-  tags: text('tags').array(),
-  // 描述
-  description: text('description'),
-  // 创建时间
-  createdAt: timestamp('created_at').notNull().defaultNow(),
-  // 更新时间
-  updatedAt: timestamp('updated_at').notNull().defaultNow(),
-  // 删除时间 (软删除标记)
-  deletedAt: timestamp('deleted_at'),
-}, (table) => [
-  // 用户素材查询
-  index('asset_user_id_idx').on(table.userId),
-  // 用户时间范围查询（倒序）
-  index('asset_user_id_created_at_idx').on(table.userId, table.createdAt.desc()),
-  // 存储资源ID查询
-  index('asset_storage_id_idx').on(table.storageId),
-  // 软删除逻辑查询
-  index('asset_deleted_at_idx').on(table.deletedAt),
-  // 用户未删除的素材查询
-  index('asset_user_id_deleted_at_idx').on(table.userId, table.deletedAt),
-]);
-
 // 生成任务表
 export const generationTask = pgTable('generation_task', {
   // UUID 主键,由数据库自动生成

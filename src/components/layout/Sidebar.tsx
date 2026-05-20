@@ -6,7 +6,6 @@ import { siteConfig } from "@/config/site";
 import {
   Home,
   LayoutGrid,
-  Image as ImageIcon,
   Clock,
   Settings,
   HelpCircle,
@@ -27,7 +26,6 @@ interface NavItem {
 const navItemsConfig: Omit<NavItem, "labelKey">[] = [
   { icon: Home, href: "/home" },
   { icon: LayoutGrid, href: "/apps" },
-  { icon: ImageIcon, href: "/assets" },
   { icon: Clock, href: "/history" },
 ];
 
@@ -49,8 +47,7 @@ export function Sidebar({ className }: SidebarProps) {
   const navItems: NavItem[] = [
     { ...navItemsConfig[0], labelKey: t("home") },
     { ...navItemsConfig[1], labelKey: t("apps") },
-    { ...navItemsConfig[2], labelKey: t("assets") },
-    { ...navItemsConfig[3], labelKey: t("history") },
+    { ...navItemsConfig[2], labelKey: t("history") },
   ];
 
   const bottomItems: NavItem[] = [

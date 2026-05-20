@@ -26,7 +26,6 @@ const intlMiddleware = createMiddleware({
 
 // 需要身份验证的 API 路由模式
 const protectedApiPatterns = [
-  /^\/api\/asset\/?/,
   /^\/api\/history\/?/,
   /^\/api\/subscription\/?/,
   /^\/api\/upload\/?/,
@@ -70,8 +69,6 @@ export const config = {
     '/',
     '/((?!_next/static|_next/image|_vercel|\\.well-known|api/|.*\\..*).+)',
     // 受保护的 API 路由
-    '/api/asset',
-    '/api/asset/:path*',
     '/api/history',
     '/api/history/:path*',
     '/api/subscription',

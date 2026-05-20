@@ -5,8 +5,6 @@ export interface UseImageUploadReturn {
   handleImageSelect: (file: File) => Promise<void>;
   handleImageReplace: (file: File, index: number) => Promise<void>;
   handleRemoveImage: (index: number) => void;
-  handleRecentAssetSelect: (url: string) => void;
-  handleRecentAssetReplace: (url: string, index: number) => void;
   clearUploadImages: () => void;
 }
 
@@ -33,7 +31,7 @@ export function useImageUpload(): UseImageUploadReturn {
       const formData = new FormData();
       formData.append('file', file);
 
-      const response = await fetch('/api/asset/upload', {
+      const response = await fetch('/api/upload', {
         method: 'POST',
         body: formData,
       });
@@ -100,7 +98,7 @@ export function useImageUpload(): UseImageUploadReturn {
       const formData = new FormData();
       formData.append('file', file);
 
-      const response = await fetch('/api/asset/upload', {
+      const response = await fetch('/api/upload', {
         method: 'POST',
         body: formData,
       });
@@ -158,24 +156,6 @@ export function useImageUpload(): UseImageUploadReturn {
     });
   };
 
-  const handleRecentAssetSelect = (url: string) => {
-    setUploadImages((prev) => [...prev, url]);
-  };
-
-  const handleRecentAssetReplace = (url: string, index: number) => {
-    setUploadImages((prev) => {
-      const newImages = [...prev];
-      const oldUrl = newImages[index];
-      // 清理 blob URL
-      if (blobUrlsRef.current.has(oldUrl)) {
-        URL.revokeObjectURL(oldUrl);
-        blobUrlsRef.current.delete(oldUrl);
-      }
-      newImages[index] = url;
-      return newImages;
-    });
-  };
-
   const clearUploadImages = () => {
     setUploadImages((prev) => {
       prev.forEach((url) => {
@@ -193,8 +173,6 @@ export function useImageUpload(): UseImageUploadReturn {
     handleImageSelect,
     handleImageReplace,
     handleRemoveImage,
-    handleRecentAssetSelect,
-    handleRecentAssetReplace,
     clearUploadImages,
   };
 }
