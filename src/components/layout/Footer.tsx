@@ -1,159 +1,153 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { fadeInUp, staggerContainer } from "@/lib/animations";
+import { ShieldCheckIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { siteConfig } from "@/config/site";
-import { Link } from '@i18n/routing';
-import { useTranslations } from 'next-intl';
+import { Link } from "@i18n/routing";
+import { useTranslations } from "next-intl";
 
 interface FooterProps {
   className?: string;
 }
 
-// SVG 图标组件
-const DiscordIcon = ({ className }: { className?: string }) => (
-  <svg
-    role="img"
-    viewBox="0 0 24 24"
-    xmlns="http://www.w3.org/2000/svg"
-    className={className}
-    fill="currentColor"
-  >
-    <title>Discord</title>
-    <path d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.9555 2.4189-2.1569 2.4189zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.4189-2.1568 2.4189Z" />
-  </svg>
-);
+type FooterLinkItem = {
+  label: string;
+  href: string;
+};
 
-const socialLinks = [
-  { icon: DiscordIcon, href: siteConfig.social.discord, label: "Discord" },
-];
+type FooterSection = {
+  title: string;
+  links: FooterLinkItem[];
+};
+
+function isExternalLink(href: string) {
+  return href.startsWith("http://") || href.startsWith("https://") || href.startsWith("mailto:");
+}
+
+function FooterLink({ href, children }: { href: string; children: React.ReactNode }) {
+  if (isExternalLink(href)) {
+    return (
+      <a
+        href={href}
+        target={href.startsWith("mailto:") ? undefined : "_blank"}
+        rel={href.startsWith("mailto:") ? undefined : "noreferrer"}
+        className="text-[15px] leading-7 text-muted-foreground transition-colors hover:text-foreground dark:text-zinc-300 dark:hover:text-white"
+      >
+        {children}
+      </a>
+    );
+  }
+
+  return (
+    <Link
+      href={href}
+      className="text-[15px] leading-7 text-muted-foreground transition-colors hover:text-foreground dark:text-zinc-300 dark:hover:text-white"
+    >
+      {children}
+    </Link>
+  );
+}
+
+function FooterColumn({ title, links }: FooterSection) {
+  return (
+    <section className="min-w-0">
+      <h3 className="text-sm font-semibold text-muted-foreground">{title}</h3>
+      <div className="mt-5 grid gap-1.5">
+        {links.map((item) => (
+          <FooterLink key={`${title}-${item.label}`} href={item.href}>
+            {item.label}
+          </FooterLink>
+        ))}
+      </div>
+    </section>
+  );
+}
 
 export function Footer({ className }: FooterProps) {
-  const tSections = useTranslations('layout.footer.sections');
-  const tLinks = useTranslations('layout.footer.links');
+  const tSections = useTranslations("layout.footer.sections");
+  const tLinks = useTranslations("layout.footer.links");
+  const tFooter = useTranslations("layout.footer");
 
-  const sections = [
+  const sections: FooterSection[] = [
     {
-      title: tSections('models'),
+      title: tSections("models"),
       links: [
-        { label: tLinks('seedream45'), href: '/models/seedream/seedream4_5' },
+        { label: tLinks("seedream45"), href: "/models/seedream/seedream4_5" },
       ],
     },
     {
-      title: tSections('apps'),
+      title: tSections("apps"),
       links: [
-        { label: tLinks('aiHairstyleChanger'), href: '/apps/ai-hairstyle-changer' },
-        { label: tLinks('aiHairColorChanger'), href: '/apps/ai-hair-color-changer' },
+        { label: tLinks("aiHairstyleChanger"), href: "/apps/ai-hairstyle-changer" },
+        { label: tLinks("aiHairColorChanger"), href: "/apps/ai-hair-color-changer" },
       ],
     },
     {
-      title: tSections('resources'),
+      title: tSections("resources"),
       links: [
-        { label: tLinks('pricing'), href: '/pricing' },
-        { label: tLinks('helpCenter'), href: '/help' },
+        { label: tLinks("pricing"), href: "/pricing" },
+        { label: tLinks("helpCenter"), href: "/help" },
       ],
     },
     {
-      title: tSections('community'),
+      title: tSections("community"),
       links: [
-        { label: tLinks('discord'), href: 'https://discord.gg/sQT3rkAN28' },
+        { label: tLinks("discord"), href: siteConfig.social.discord },
       ],
     },
     {
-      title: tSections('contact'),
+      title: tSections("contact"),
       links: [
-        { label: tLinks('discord'), href: 'https://discord.gg/sQT3rkAN28' },
-        { label: tLinks('email'), href: 'mailto:support@fluxreve.com' },
+        { label: tLinks("discord"), href: siteConfig.social.discord },
+        { label: tLinks("email"), href: `mailto:${siteConfig.contact.email}` },
       ],
     },
     {
-      title: tSections('legal'),
+      title: tSections("legal"),
       links: [
-        { label: tLinks('privacyPolicy'), href: '/legal/privacy' },
-        { label: tLinks('termsOfService'), href: '/legal/terms' },
-        { label: tLinks('refundPolicy'), href: '/legal/refund' },
+        { label: tLinks("privacyPolicy"), href: "/legal/privacy" },
+        { label: tLinks("termsOfService"), href: "/legal/terms" },
+        { label: tLinks("refundPolicy"), href: "/legal/refund" },
       ],
     },
   ];
 
   return (
-    <motion.footer
-      variants={staggerContainer}
-      initial="initial"
-      whileInView="animate"
-      viewport={{ once: true }}
-      className={cn(
-        "bg-background-1 relative rounded-t-3xl",
-        className
-      )}
-    >
-      <div className="mx-auto max-w-6xl px-8 py-12">
-        {/* 导航链接 */}
-        <motion.div
-          variants={fadeInUp}
-          className="mb-12 grid grid-cols-2 gap-6 md:mb-16 md:grid-cols-3 md:gap-8 lg:mb-20 lg:grid-cols-7"
-        >
-          {sections.map((section) => (
-            <div key={section.title}>
-              <div className="font-medium text-muted-foreground text-xs md:text-sm mb-3 md:mb-4">
-                {section.title}
+    <footer className={cn("px-3 pb-3 sm:px-4 sm:pb-4 md:px-6 md:pb-6", className)}>
+      <div className="overflow-hidden rounded-[2rem] border border-border bg-background-1 text-foreground dark:border-white/5 dark:bg-[#111112]">
+        <div className="px-5 py-6 md:px-8 md:py-8">
+          <div className="grid gap-10">
+            <aside className="max-w-[520px]">
+              <div className="max-w-[520px] border-l border-border pl-5 text-[clamp(2rem,3.6vw,3.25rem)] font-semibold leading-[0.96] tracking-normal text-foreground dark:text-white">
+                {tFooter("taglineLine1")}
+                <br />
+                {tFooter("taglineLine2")}
               </div>
-              <ul className="space-y-2 md:space-y-3">
-                {section.links.map((link) => (
-                  <li key={link.label}>
-                    <Link
-                      href={link.href}
-                      className="text-foreground text-xs md:text-sm transition-colors hover:text-primary"
-                    >
-                      {link.label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
+            </aside>
+
+            <div className="grid gap-x-5 gap-y-10 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6">
+              {sections.map((section) => (
+                <FooterColumn
+                  key={section.title}
+                  title={section.title}
+                  links={section.links}
+                />
+              ))}
             </div>
-          ))}
-        </motion.div>
-
-        {/* 大号品牌名称 */}
-        <motion.div
-          variants={fadeInUp}
-          className="relative overflow-hidden py-8 md:py-12 lg:py-16 xl:py-20"
-        >
-          <div className="text-[4rem] sm:text-[6rem] md:text-[10rem] lg:text-[14rem] xl:text-[18rem] font-bold text-foreground/8 leading-none tracking-tighter text-center select-none">
-            {siteConfig.name}
           </div>
-        </motion.div>
+        </div>
 
-        {/* 底部栏 */}
-        <motion.div
-          variants={fadeInUp}
-          className="flex flex-col md:flex-row items-center justify-between gap-4 md:gap-6 pt-6 md:pt-8"
-        >
-          <p className="text-xs md:text-sm text-muted-foreground text-center md:text-left">
-            © {siteConfig.copyright.year} {siteConfig.fullName}. {siteConfig.copyright.text}
-          </p>
-
-          {/* 社交链接 */}
-          <div className="flex gap-3 md:gap-4">
-            {socialLinks.map((social) => {
-              const Icon = social.icon;
-              return (
-                <a
-                  key={social.label}
-                  href={social.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-muted-foreground transition-colors hover:text-primary"
-                  aria-label={social.label}
-                >
-                  <Icon className="h-4 w-4 md:h-5 md:w-5" />
-                </a>
-              );
-            })}
+        <div className="border-t border-border px-5 py-4 md:px-8">
+          <div className="flex flex-col gap-3 text-sm text-muted-foreground md:flex-row md:items-center md:justify-between">
+            <div className="flex items-center gap-2">
+              <ShieldCheckIcon className="size-4" />
+              <p>
+                © {siteConfig.copyright.year} {siteConfig.fullName}. {siteConfig.copyright.text}
+              </p>
+            </div>
           </div>
-        </motion.div>
+        </div>
       </div>
-    </motion.footer>
+    </footer>
   );
 }

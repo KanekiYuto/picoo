@@ -1,158 +1,358 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { cn } from "@/lib/utils";
-import { siteConfig } from "@/config/site";
+import type { ComponentProps } from "react";
+import Image from "next/image";
+import { usePathname } from "next/navigation";
+import { useLocale, useTranslations } from "next-intl";
 import {
+  ChevronsUpDown,
+  ChevronRight,
+  Clock,
+  CreditCard,
+  HelpCircle,
   Home,
   LayoutGrid,
-  Clock,
+  LogIn,
+  LogOut,
   Settings,
-  HelpCircle,
 } from "lucide-react";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { useLocale } from "next-intl";
-import { useTranslations } from "next-intl";
-import Image from "next/image";
+import { Link } from "@i18n/routing";
+import { signOut } from "@/lib/auth-client";
+import { siteConfig } from "@/config/site";
 import { useThemeStore } from "@/store/useThemeStore";
+import { useUserStore } from "@/store/useUserStore";
+import { useCreditStore } from "@/store/useCreditStore";
+import { useModalStore } from "@/store/useModalStore";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+  Sidebar as ShadcnSidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarGroup,
+  SidebarGroupLabel,
+  SidebarHeader,
+  SidebarMenu,
+  SidebarMenuAction,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarMenuSub,
+  SidebarMenuSubButton,
+  SidebarMenuSubItem,
+  useSidebar,
+} from "@/components/ui/sidebar";
 
 interface NavItem {
   icon: React.ComponentType<{ className?: string }>;
-  labelKey: string;
+  label: string;
   href: string;
+  isActive?: boolean;
+  items?: {
+    label: string;
+    href: string;
+    isActive?: boolean;
+  }[];
 }
 
-const navItemsConfig: Omit<NavItem, "labelKey">[] = [
-  { icon: Home, href: "/home" },
-  { icon: LayoutGrid, href: "/apps" },
-  { icon: Clock, href: "/history" },
-];
-
-const bottomItemsConfig: Omit<NavItem, "labelKey">[] = [
-  { icon: Settings, href: "/settings/profile" },
-  { icon: HelpCircle, href: "/help" },
-];
-
-interface SidebarProps {
+interface SidebarProps extends ComponentProps<typeof ShadcnSidebar> {
   className?: string;
 }
 
-export function Sidebar({ className }: SidebarProps) {
+function normalizePath(pathname: string, locale: string) {
+  const localePrefix = `/${locale}`;
+  const pathWithoutLocale = pathname.startsWith(localePrefix)
+    ? pathname.slice(localePrefix.length)
+    : pathname;
+
+  return pathWithoutLocale || "/";
+}
+
+function isActiveRoute(currentPath: string, href: string) {
+  if (href === "/") {
+    return currentPath === "/";
+  }
+
+  return currentPath === href || currentPath.startsWith(`${href}/`);
+}
+
+function SidebarUserMenu() {
+  const { isMobile } = useSidebar();
+  const { user, isLoading, clearUser } = useUserStore();
+  const clearCredits = useCreditStore((state) => state.clear);
+  const { openLoginModal } = useModalStore();
+  const tHeader = useTranslations("layout.header");
+  const tUserMenu = useTranslations("common.userMenu");
+  const userInitial = user?.name?.charAt(0).toUpperCase() || "U";
+
+  const handleSignOut = async () => {
+    await signOut();
+    clearUser();
+    clearCredits();
+  };
+
+  if (isLoading) {
+    return (
+      <SidebarMenu>
+        <SidebarMenuItem>
+          <SidebarMenuButton size="lg" disabled>
+            <Avatar className="size-8 rounded-lg">
+              <AvatarFallback className="rounded-lg">...</AvatarFallback>
+            </Avatar>
+            <div className="grid flex-1 text-left text-sm leading-tight">
+              <span className="truncate font-medium">Loading</span>
+            </div>
+          </SidebarMenuButton>
+        </SidebarMenuItem>
+      </SidebarMenu>
+    );
+  }
+
+  if (!user) {
+    return (
+      <SidebarMenu>
+        <SidebarMenuItem>
+          <SidebarMenuButton onClick={openLoginModal} className="cursor-pointer">
+            <LogIn />
+            <span>{tHeader("signIn")}</span>
+          </SidebarMenuButton>
+        </SidebarMenuItem>
+      </SidebarMenu>
+    );
+  }
+
+  return (
+    <SidebarMenu>
+      <SidebarMenuItem>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <SidebarMenuButton
+              size="lg"
+              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+            >
+              <Avatar className="size-8 rounded-lg">
+                <AvatarImage src={user.image || undefined} alt={user.name || "User"} />
+                <AvatarFallback className="rounded-lg">{userInitial}</AvatarFallback>
+              </Avatar>
+              <div className="grid flex-1 text-left text-sm leading-tight">
+                <span className="truncate font-medium">{user.name}</span>
+                <span className="truncate text-xs">{user.email}</span>
+              </div>
+              <ChevronsUpDown className="ml-auto size-4" />
+            </SidebarMenuButton>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent
+            className="w-64 rounded-xl border-border bg-popover p-1.5 shadow-lg"
+            side={isMobile ? "bottom" : "right"}
+            align="end"
+            sideOffset={8}
+          >
+            <DropdownMenuLabel className="p-0 font-normal">
+              <div className="flex items-center gap-2.5 rounded-lg px-2 py-2 text-left text-sm">
+                <Avatar className="size-9 rounded-lg">
+                  <AvatarImage src={user.image || undefined} alt={user.name || "User"} />
+                  <AvatarFallback className="rounded-lg">{userInitial}</AvatarFallback>
+                </Avatar>
+                <div className="grid flex-1 text-left text-sm leading-tight">
+                  <span className="truncate font-medium">{user.name}</span>
+                  <span className="truncate text-xs text-muted-foreground">
+                    {user.email}
+                  </span>
+                </div>
+              </div>
+            </DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuGroup>
+              <DropdownMenuItem asChild className="h-9 rounded-lg px-2.5">
+                <Link href="/settings/profile">
+                  <Settings className="size-4" />
+                  {tUserMenu("settings")}
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild className="h-9 rounded-lg px-2.5">
+                <Link href="/settings/billing">
+                  <CreditCard className="size-4" />
+                  {tUserMenu("manageSubscription")}
+                </Link>
+              </DropdownMenuItem>
+            </DropdownMenuGroup>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onClick={handleSignOut} className="h-9 rounded-lg px-2.5">
+              <LogOut className="size-4" />
+              {tUserMenu("logout")}
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </SidebarMenuItem>
+    </SidebarMenu>
+  );
+}
+
+export function Sidebar({ className, ...props }: SidebarProps) {
   const pathname = usePathname();
   const locale = useLocale();
   const t = useTranslations("layout.sidebar");
   const { theme } = useThemeStore();
+  const currentPath = normalizePath(pathname, locale);
 
   const navItems: NavItem[] = [
-    { ...navItemsConfig[0], labelKey: t("home") },
-    { ...navItemsConfig[1], labelKey: t("apps") },
-    { ...navItemsConfig[2], labelKey: t("history") },
+    {
+      icon: Home,
+      label: t("home"),
+      href: "/home",
+      isActive: isActiveRoute(currentPath, "/home"),
+    },
+    {
+      icon: LayoutGrid,
+      label: t("apps"),
+      href: "/apps",
+      isActive: isActiveRoute(currentPath, "/apps"),
+      items: [
+        {
+          label: t("apps"),
+          href: "/apps",
+          isActive: currentPath === "/apps",
+        },
+      ],
+    },
+    {
+      icon: Clock,
+      label: t("history"),
+      href: "/history",
+      isActive: isActiveRoute(currentPath, "/history"),
+    },
   ];
 
-  const bottomItems: NavItem[] = [
-    { ...bottomItemsConfig[0], labelKey: t("settings") },
-    { ...bottomItemsConfig[1], labelKey: t("help") },
+  const secondaryItems: NavItem[] = [
+    {
+      icon: Settings,
+      label: t("settings"),
+      href: "/settings/profile",
+      isActive: isActiveRoute(currentPath, "/settings"),
+    },
+    {
+      icon: HelpCircle,
+      label: t("help"),
+      href: "/help",
+      isActive: isActiveRoute(currentPath, "/help"),
+    },
   ];
-
-  // 判断是否激活的辅助函数（处理国际化路由）
-  const isActiveRoute = (href: string) => {
-    // 移除当前 locale 前缀来比较路径
-    const localePrefix = `/${locale}`;
-    const pathWithoutLocale = pathname.startsWith(localePrefix)
-      ? pathname.slice(localePrefix.length)
-      : pathname;
-    const normalizedPath = pathWithoutLocale || '/';
-
-    if (href === '/') {
-      return normalizedPath === '/';
-    }
-
-    return normalizedPath.startsWith(href);
-  };
 
   return (
-    <aside
-      className={cn(
-        "hidden lg:flex lg:flex-col lg:w-16 flex-shrink-0 bg-background",
-        className
-      )}
-    >
-      {/* Logo */}
-      <Link href="/" className="flex h-16 items-center justify-center">
-        <div className="relative h-10 w-10 overflow-hidden rounded-lg">
-          <Image
-            src={theme === 'light' ? siteConfig.logo.light : siteConfig.logo.dark}
-            alt={`${siteConfig.name} Logo`}
-            width={40}
-            height={40}
-            className="object-contain"
-            priority
-          />
-        </div>
-      </Link>
-
-      {/* 主导航 */}
-      <nav className="flex flex-1 flex-col py-4">
-        <div className="flex flex-col gap-1 px-2">
-          {navItems.map((item) => {
-            const Icon = item.icon;
-            const isActive = isActiveRoute(item.href);
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                className="group relative flex flex-col items-center gap-1"
-              >
-                <motion.div
-                  className={cn(
-                    "flex h-12 w-12 items-center justify-center rounded-xl transition-colors relative",
-                    isActive
-                      ? "bg-background-2 text-foreground before:absolute before:left-0 before:top-1/2 before:-translate-y-1/2 before:h-8 before:w-1 before:rounded-r before:bg-primary"
-                      : "text-muted-foreground hover:bg-background-2 hover:text-foreground"
-                  )}
-                >
-                  <Icon className="h-5 w-5" />
-                </motion.div>
-                <span className={cn(
-                  "text-[10px] transition-colors",
-                  isActive ? "text-foreground font-medium" : "text-muted-foreground"
-                )}>{item.labelKey}</span>
+    <ShadcnSidebar variant="inset" className={className} {...props}>
+      <SidebarHeader>
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <SidebarMenuButton size="lg" asChild>
+              <Link href="/">
+                <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
+                  <Image
+                    src={theme === "light" ? siteConfig.logo.light : siteConfig.logo.dark}
+                    alt={`${siteConfig.name} Logo`}
+                    width={24}
+                    height={24}
+                    className="size-6 rounded-md object-contain"
+                    priority
+                  />
+                </div>
+                <div className="grid flex-1 text-left text-sm leading-tight">
+                  <span className="truncate font-medium">{siteConfig.name}</span>
+                </div>
               </Link>
-            );
-          })}
-        </div>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
+      </SidebarHeader>
 
-        {/* 底部导航 */}
-        <div className="mt-auto flex flex-col gap-1 px-2 pt-4">
-          {bottomItems.map((item) => {
-            const Icon = item.icon;
-            const isActive = isActiveRoute(item.href);
-            return (
-              <Link
+      <SidebarContent>
+        <SidebarGroup>
+          <SidebarGroupLabel>{t("apps")}</SidebarGroupLabel>
+          <SidebarMenu>
+            {navItems.map((item) => (
+              <Collapsible
                 key={item.href}
-                href={item.href}
-                className="group relative flex flex-col items-center gap-1"
+                asChild
+                defaultOpen={item.isActive}
               >
-                <motion.div
-                  className={cn(
-                    "flex h-12 w-12 items-center justify-center rounded-xl transition-colors relative",
-                    isActive
-                      ? "bg-background-2 text-foreground before:absolute before:left-0 before:top-1/2 before:-translate-y-1/2 before:h-8 before:w-1 before:rounded-r before:bg-primary"
-                      : "text-muted-foreground hover:bg-background-2 hover:text-foreground"
-                  )}
+                <SidebarMenuItem>
+                  <SidebarMenuButton
+                    asChild
+                    tooltip={item.label}
+                    isActive={item.isActive}
+                  >
+                    <Link href={item.href}>
+                      <item.icon />
+                      <span>{item.label}</span>
+                    </Link>
+                  </SidebarMenuButton>
+                  {item.items?.length ? (
+                    <>
+                      <CollapsibleTrigger asChild>
+                        <SidebarMenuAction className="data-[state=open]:rotate-90">
+                          <ChevronRight />
+                          <span className="sr-only">{item.label}</span>
+                        </SidebarMenuAction>
+                      </CollapsibleTrigger>
+                      <CollapsibleContent>
+                        <SidebarMenuSub>
+                          {item.items.map((subItem) => (
+                            <SidebarMenuSubItem key={subItem.href}>
+                              <SidebarMenuSubButton
+                                asChild
+                                isActive={subItem.isActive}
+                              >
+                                <Link href={subItem.href}>
+                                  <span>{subItem.label}</span>
+                                </Link>
+                              </SidebarMenuSubButton>
+                            </SidebarMenuSubItem>
+                          ))}
+                        </SidebarMenuSub>
+                      </CollapsibleContent>
+                    </>
+                  ) : null}
+                </SidebarMenuItem>
+              </Collapsible>
+            ))}
+          </SidebarMenu>
+        </SidebarGroup>
+
+        <SidebarGroup className="mt-auto">
+          <SidebarMenu>
+            {secondaryItems.map((item) => (
+              <SidebarMenuItem key={item.href}>
+                <SidebarMenuButton
+                  asChild
+                  size="sm"
+                  tooltip={item.label}
+                  isActive={item.isActive}
                 >
-                  <Icon className="h-5 w-5" />
-                </motion.div>
-                <span className={cn(
-                  "text-[10px] transition-colors",
-                  isActive ? "text-foreground font-medium" : "text-muted-foreground"
-                )}>{item.labelKey}</span>
-              </Link>
-            );
-          })}
-        </div>
-      </nav>
-    </aside>
+                  <Link href={item.href}>
+                    <item.icon />
+                    <span>{item.label}</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            ))}
+          </SidebarMenu>
+        </SidebarGroup>
+      </SidebarContent>
+
+      <SidebarFooter>
+        <SidebarUserMenu />
+      </SidebarFooter>
+    </ShadcnSidebar>
   );
 }

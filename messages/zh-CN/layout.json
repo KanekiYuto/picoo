@@ -16,6 +16,8 @@
     "upgradePlan": "升级方案"
   },
   "footer": {
+    "taglineLine1": "AI，",
+    "taglineLine2": "驱动无限创意。",
     "sections": {
       "models": "模型",
       "apps": "应用",

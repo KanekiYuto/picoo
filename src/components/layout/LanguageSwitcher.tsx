@@ -44,7 +44,7 @@ export function LanguageSwitcher() {
           aria-label="Change language"
           variant="outline"
           size="sm"
-          className="h-9 min-w-0 gap-2 rounded-full border-border bg-transparent pl-2.5 pr-3 text-muted-foreground hover:bg-secondary hover:text-foreground sm:h-10"
+          className="h-8 min-w-0 gap-2 rounded-full border-border/80 bg-background-1 pl-2.5 pr-3 text-muted-foreground hover:border-border hover:bg-background-2 hover:text-foreground"
         >
           <GlobeIcon className="size-4" />
           <span className="hidden max-w-28 truncate sm:inline">

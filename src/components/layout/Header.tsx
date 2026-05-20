@@ -1,97 +1,168 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { useState } from "react";
 import { useTranslations } from "next-intl";
-import { cn } from "@/lib/utils";
-import { Menu, X, Moon, Sun } from "lucide-react";
-import { UserButton } from "@/components/auth/UserButton";
-import { useUserStore } from "@/store/useUserStore";
+import { Coins, Moon, RefreshCw, Sun } from "lucide-react";
 import { useThemeStore } from "@/store/useThemeStore";
-import { useModalStore } from "@/store/useModalStore";
+import { useCreditStore, type CreditItem, type CreditSummary } from "@/store/useCreditStore";
 import { LanguageSwitcher } from "./LanguageSwitcher";
+import { Button } from "@/components/ui/button";
+import { SidebarTrigger } from "@/components/ui/sidebar";
+import { cn } from "@/lib/utils";
 
 interface HeaderProps {
   className?: string;
-  onMenuClick?: () => void;
-  isMobileMenuOpen?: boolean;
 }
 
-export function Header({ className, onMenuClick, isMobileMenuOpen }: HeaderProps) {
+export function Header({ className }: HeaderProps) {
   const t = useTranslations("layout.header");
-  const { user, isLoading } = useUserStore();
+  const tUserMenu = useTranslations("common.userMenu");
   const { theme, toggleTheme } = useThemeStore();
-  const { openLoginModal } = useModalStore();
+  const balance = useCreditStore((state) => state.balance);
+  const creditState = useCreditStore((state) => state.state);
+  const setCreditLoading = useCreditStore((state) => state.setLoading);
+  const setCredits = useCreditStore((state) => state.setCredits);
+  const setCreditError = useCreditStore((state) => state.setError);
+  const clearCredits = useCreditStore((state) => state.clear);
+  const [isRefreshingCredits, setIsRefreshingCredits] = useState(false);
+
+  const handleRefreshCredits = async () => {
+    if (isRefreshingCredits) {
+      return;
+    }
+
+    setIsRefreshingCredits(true);
+    setCreditLoading(true);
+
+    try {
+      const fetchJson = async (url: string) => {
+        const response = await fetch(url, { cache: "no-store" });
+        if (response.status === 401) throw new Error("Unauthorized");
+        if (!response.ok) throw new Error(`Failed to fetch ${url}`);
+        return response.json();
+      };
+
+      const [statsResult, recordsResult] = await Promise.allSettled([
+        fetchJson("/api/credit/balance/stats"),
+        fetchJson("/api/credit/balance/records"),
+      ]);
+
+      const credits =
+        recordsResult.status === "fulfilled"
+          ? (recordsResult.value?.credits || []) as CreditItem[]
+          : [];
+
+      const isUnauthorized =
+        (statsResult.status === "rejected" &&
+          statsResult.reason instanceof Error &&
+          statsResult.reason.message === "Unauthorized") ||
+        (recordsResult.status === "rejected" &&
+          recordsResult.reason instanceof Error &&
+          recordsResult.reason.message === "Unauthorized");
+
+      if (isUnauthorized) {
+        clearCredits();
+        return;
+      }
+
+      let summary: CreditSummary | null =
+        statsResult.status === "fulfilled"
+          ? {
+              totalRemaining: statsResult.value?.totalRemaining || 0,
+              totalConsumed: statsResult.value?.totalConsumed || 0,
+              activeCreditsCount: statsResult.value?.activeCreditsCount || 0,
+            }
+          : null;
+
+      if (!summary && credits.length > 0) {
+        const now = Date.now();
+        const totalRemaining = credits.reduce((sum: number, credit: CreditItem) => {
+          const expiresAtMs =
+            credit.expiresAt === null ? null : new Date(credit.expiresAt).getTime();
+          const isValid = expiresAtMs === null || expiresAtMs >= now;
+          return sum + (isValid ? Number(credit.remaining) : 0);
+        }, 0);
+        const totalConsumed = credits.reduce(
+          (sum: number, credit: CreditItem) => sum + Number(credit.consumed),
+          0
+        );
+        const activeCreditsCount = credits.filter((credit: CreditItem) => {
+          const expiresAtMs =
+            credit.expiresAt === null ? null : new Date(credit.expiresAt).getTime();
+          const isValid = expiresAtMs === null || expiresAtMs >= now;
+          return isValid && Number(credit.remaining) > 0;
+        }).length;
+        summary = { totalRemaining, totalConsumed, activeCreditsCount };
+      }
+
+      if (statsResult.status === "rejected" && recordsResult.status === "rejected") {
+        throw new Error("Failed to fetch credits");
+      }
+
+      setCredits({
+        credits,
+        summary,
+        balance: summary?.totalRemaining || 0,
+      });
+    } catch (error) {
+      console.error("Failed to refresh credits:", error);
+      if (error instanceof Error && error.message === "Unauthorized") {
+        clearCredits();
+        return;
+      }
+      setCreditError("Failed to refresh credits");
+    } finally {
+      setCreditLoading(false);
+      setIsRefreshingCredits(false);
+    }
+  };
 
   return (
-    <>
-      <header
-        className={cn(
-          "sticky top-0 z-50 bg-header-bg h-16 flex-shrink-0",
-          className
-        )}
-      >
-        <div className="h-full flex items-center justify-between px-4 lg:px-6">
-          {/* 左侧：移动端菜单按钮 */}
-          <div className="flex items-center gap-3 lg:hidden">
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={onMenuClick}
-              className="flex h-10 w-10 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
-              aria-label={isMobileMenuOpen ? t("closeMenu") : t("openMenu")}
-            >
-              {isMobileMenuOpen ? (
-                <X className="h-5 w-5" />
-              ) : (
-                <Menu className="h-5 w-5" />
-              )}
-            </motion.button>
-          </div>
+    <header
+      className={cn(
+        "flex h-12 shrink-0 items-center gap-2 border-b bg-background/80 backdrop-blur transition-[width,height] ease-linear",
+        className
+      )}
+    >
+      <div className="flex w-full items-center gap-1 px-3 sm:px-4 lg:px-5">
+        <SidebarTrigger className="-ml-1" />
+        <div className="ml-auto flex items-center gap-1.5">
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon"
+            onClick={toggleTheme}
+            aria-label={t("toggleTheme")}
+            className="size-8"
+          >
+            {theme === "light" ? <Moon /> : <Sun />}
+          </Button>
 
-          {/* Right: Actions */}
-          <div className="ml-auto flex items-center gap-2">
+          <LanguageSwitcher />
 
-            {/* 主题切换按钮 */}
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={toggleTheme}
-              className="flex h-10 w-10 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground cursor-pointer"
-              aria-label={t("toggleTheme")}
-            >
-              {theme === 'light' ? (
-                <Moon className="h-5 w-5" />
-              ) : (
-                <Sun className="h-5 w-5" />
-              )}
-            </motion.button>
-
-            {/* 语言切换按钮 */}
-            <LanguageSwitcher />
-
-            {/* 用户按钮或登录按钮 */}
-            <div className="ml-2">
-              {isLoading ? (
-                // 加载骨架屏
-                <div className="h-10 w-10 rounded-full bg-secondary animate-pulse ring-2 ring-border" />
-              ) : user ? (
-                // 已登录显示用户按钮
-                <UserButton />
-              ) : (
-                // 未登录显示登录按钮
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={openLoginModal}
-                  className="flex h-10 px-4 items-center justify-center rounded-full bg-gradient-to-br from-primary to-primary-hover text-white font-medium text-sm cursor-pointer"
-                >
-                  {t("signIn")}
-                </motion.button>
-              )}
-            </div>
-          </div>
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={handleRefreshCredits}
+            disabled={isRefreshingCredits}
+            className="ml-1 h-8 gap-2 rounded-full border-border/80 bg-background-1 pl-2.5 pr-3 text-sm text-foreground hover:border-border hover:bg-background-2"
+            title={tUserMenu("pointsDetails")}
+          >
+            <Coins data-icon="inline-start" />
+            <span className="font-semibold tabular-nums">
+              {creditState === "loading" ? "..." : balance}
+            </span>
+            <span className="hidden text-muted-foreground sm:inline">
+              {tUserMenu("points")}
+            </span>
+            <RefreshCw
+              data-icon="inline-end"
+              className={cn(isRefreshingCredits && "animate-spin")}
+            />
+          </Button>
         </div>
-      </header>
-    </>
+      </div>
+    </header>
   );
 }
