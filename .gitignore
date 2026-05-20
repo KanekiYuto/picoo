@@ -44,8 +44,6 @@ next-env.d.ts
 messages/en.json
 messages/zh-CN.json
 
-pnpm-lock.yaml
-
 # next-sitemap
 /public/robots.txt
 /public/sitemap*.xml
